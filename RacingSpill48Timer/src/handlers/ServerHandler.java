@@ -7,7 +7,6 @@ import server.EchoServer;
  * @author jonah
  *
  */
-
 public class ServerHandler {
 
 	EchoServer currentServer;
