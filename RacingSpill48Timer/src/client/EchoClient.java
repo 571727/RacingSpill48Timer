@@ -17,7 +17,7 @@ public class EchoClient {
 		TCPEchoClient tcpclient = new TCPEchoClient(ip, serverport);
 		
 		System.out.println("TCP client started: " + ip + " #");
-		
+		//Connect først og si at du er med.
 		
 		//Kjør ut og inn her.
 		String text = JOptionPane.showInputDialog(null, "Message to transform");

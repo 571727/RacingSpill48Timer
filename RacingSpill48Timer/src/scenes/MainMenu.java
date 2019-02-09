@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 
 import adt.Scene;
 import elem.Player;
-import handlers.ConnectionHandler;
 import handlers.SceneHandler;
+import handlers.ServerHandler;
 
 public class MainMenu extends Scene {
 
@@ -16,10 +16,10 @@ public class MainMenu extends Scene {
 	private JButton host;
 	private JButton join;
 	private Player player;
-	private ConnectionHandler connectionHandler;
+	private ServerHandler serverHandler;
 
 	public MainMenu() {
-
+		serverHandler = new ServerHandler();
 		options = new JButton("Options");
 		host = new JButton("Host");
 		join = new JButton("Join");
@@ -30,7 +30,7 @@ public class MainMenu extends Scene {
 		host.addActionListener((ActionEvent e) -> {
 			//init server and player and then go to lobby
 			String name = JOptionPane.showInputDialog("What's your username?");
-			
+			serverHandler.createNew();
 			player = new Player(name);
 			SceneHandler.instance.changeScene(1);
 		});

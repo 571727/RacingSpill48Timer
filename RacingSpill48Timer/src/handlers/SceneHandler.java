@@ -36,8 +36,12 @@ public class SceneHandler {
 	}
 
 	public void changeScene(int scenenr) {
+		
 		windows.remove(scenes[currentScene]);
 		windows.add(scenes[scenenr]);
 		currentScene = scenenr;
+		
+		windows.invalidate();
+		windows.validate();
 	}
 }

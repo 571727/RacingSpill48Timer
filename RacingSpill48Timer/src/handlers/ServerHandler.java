@@ -3,20 +3,53 @@ package handlers;
 import server.EchoServer;
 
 /**
- * Handles which server is running at this computer. Only run one at a time. Also controls what is sent in and out.
+ * Handles which server is running at this computer. Only run one at a time.
+ * Also controls what is sent in and out.
+ * 
  * @author jonah
  *
  */
 public class ServerHandler {
 
-	EchoServer currentServer;
-	
+	private Thread thread;
+	private EchoServer currentServer;
+
 	public ServerHandler() {
-		
+
 	}
-	
+
 	public ServerHandler(EchoServer currentServer) {
-		this.currentServer = currentServer;
+		createNew(currentServer);
 	}
-	
+
+	public void createNew() {
+		createNew(new EchoServer());
+	}
+
+	public void createNew(EchoServer newServer) {
+		if(currentServer != null && currentServer.isRunning())
+			join();
+
+		currentServer = newServer;
+		
+		thread = new Thread(currentServer);
+		thread.start();
+	}
+
+	/**
+	 * close tha program yo
+	 */
+	public void join() {
+		try {
+			if (thread.isAlive()) {
+				
+				currentServer.setRunning(false);
+				thread.join();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("Joined");
+	}
+
 }

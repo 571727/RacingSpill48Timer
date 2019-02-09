@@ -4,27 +4,62 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import connection_standard.Config;
+/**
+ * Passer på lokal server. Kan bare brukes med en client.
+ * @author jonah
+ *
+ */
+public class EchoServer implements Runnable {
 
-public class EchoServer {
-
+	private int serverport;
+	private boolean running;
+	private ServerSocket welcomeSocket;
+	
 	public EchoServer() {
-		int serverport = Config.SERVERPORT;
-		
+		serverport = Config.SERVERPORT;
 		System.out.println("TCP server starting at port " + serverport);
+
+	}
+
+	@Override
+	public void run() {
+		running = true;
 		
-		try (ServerSocket welcomeSocket = new ServerSocket(serverport)){
-			
+		try  {
+			welcomeSocket = new ServerSocket(serverport);
 			TCPEchoServer server = new TCPEchoServer(welcomeSocket);
-			
-			while(true) {
-				
+
+			while (running) {
+
 				server.process();
-				
+
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			System.out.println("TCP server: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
+
 	
+	
+	/*
+	 * Getters and setters
+	 */
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		
+		this.running = running;
+		
+		if(running == false) {
+			try {
+				welcomeSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }
