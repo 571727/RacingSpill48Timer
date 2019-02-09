@@ -4,6 +4,7 @@ import adt.Scene;
 import scenes.FixCar;
 import scenes.Lobby;
 import scenes.MainMenu;
+import scenes.Options;
 import scenes.Race;
 import window.Windows;
 
@@ -31,6 +32,7 @@ public class SceneHandler {
 		scenes[1] = new Lobby();
 		scenes[2] = new FixCar();
 		scenes[3] = new Race();
+		scenes[4] = new Options();
 	}
 
 	public void changeScene(int scenenr) {

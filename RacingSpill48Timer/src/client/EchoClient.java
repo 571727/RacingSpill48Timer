@@ -3,7 +3,6 @@ package client;
 import javax.swing.JOptionPane;
 
 import connection_standard.Config;
-import no.hvl.dat110.tcpexample.system.Configuration;
 
 public class EchoClient {
 

@@ -6,7 +6,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		new GameHandler(4);
+		new GameHandler(5);
 		
 	}
 
