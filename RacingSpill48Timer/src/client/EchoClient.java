@@ -6,6 +6,8 @@ import connection_standard.Config;
 
 public class EchoClient {
 
+	private TCPEchoClient tcpclient;
+	
 	public EchoClient() {
 		this(Config.SERVER);
 	}
@@ -13,20 +15,24 @@ public class EchoClient {
 	public EchoClient(String ip) {
 		
 		int serverport = Config.SERVERPORT;
+		tcpclient = new TCPEchoClient(ip, serverport);
 		
-		TCPEchoClient tcpclient = new TCPEchoClient(ip, serverport);
+	}
+	
+	public String sendRequest(String text) {
 		
-		System.out.println("TCP client started: " + ip + " #");
+		
+//		System.out.println("TCP client started: " + ip + " #");
 		//Connect først og si at du er med.
 		
 		//Kjør ut og inn her.
-		String text = JOptionPane.showInputDialog(null, "Message to transform");
 
 		if (text != null) {
 			
 			text = tcpclient.convert(text);
-			JOptionPane.showMessageDialog(null, text);
+			return text;
 		}
+		return null;
 	}
 	
 	

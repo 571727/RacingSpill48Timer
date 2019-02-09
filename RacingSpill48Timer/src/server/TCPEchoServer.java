@@ -13,9 +13,12 @@ import javax.swing.JOptionPane;
 public class TCPEchoServer {
 
 	private ServerSocket welcomeSocket;
-
-	public TCPEchoServer(ServerSocket welcomeSocket) {
+	private ServerInfo info;
+	
+	
+	public TCPEchoServer(ServerSocket welcomeSocket, ServerInfo info) {
 		this.welcomeSocket = welcomeSocket;
+		this.info = info;
 	}
 
 	public void process() {
@@ -33,7 +36,6 @@ public class TCPEchoServer {
 			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
 			int n = 0;
-			outtext = "fuck you bith";
 			do {
 
 				System.out.println("SERVER SENDING: " + outtext);
@@ -59,11 +61,10 @@ public class TCPEchoServer {
 	/**
 	 * take the first word and run the rest to its responsible function. Like SQL.
 	 * 
-	 * JOIN#name+id#host-boolean 
+	 * JOIN#name+id#host-boolean
 	 * LEAVE#name+id 
 	 * CLOSE 
-	 * UPDATELOBBY#name+id#mysitsh
-	 * READY#name+id#boolean 
+	 * UPDATELOBBY#name+id#ready
 	 * UPDATERACE#name+id#mysitsh
 	 * 
 	 * @param text input from client
@@ -82,8 +83,6 @@ public class TCPEchoServer {
 			return join(input);
 		case "UPDATELOBBY":
 			return updateLobby(input);
-		case "READY":
-			return join(input);
 		case "UPDATERACE":
 			return join(input);
 
@@ -93,10 +92,7 @@ public class TCPEchoServer {
 	}
 
 	private String join(String[] input) {
-		
-		
-		
-		return null;
+		return info.joinLobby(input);
 	}
 	
 	private String leave(String[] input) {

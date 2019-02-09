@@ -31,7 +31,7 @@ public class MainMenu extends Scene {
 			//init server and player and then go to lobby
 			String name = JOptionPane.showInputDialog("What's your username?");
 			serverHandler.createNew();
-			player = new Player(name);
+			player = new Player(name, 1);
 			SceneHandler.instance.changeScene(1);
 		});
 		join.addActionListener((ActionEvent e) -> {
@@ -39,7 +39,7 @@ public class MainMenu extends Scene {
 			String name = JOptionPane.showInputDialog("What's your username?");
 			String ip = JOptionPane.showInputDialog("What's the ip?");
 			
-			player = new Player(name, ip);
+			player = new Player(name, 0, ip);
 			SceneHandler.instance.changeScene(1);
 			
 

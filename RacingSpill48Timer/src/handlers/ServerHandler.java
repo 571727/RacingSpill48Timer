@@ -1,6 +1,7 @@
 package handlers;
 
 import server.EchoServer;
+import server.ServerInfo;
 
 /**
  * Handles which server is running at this computer. Only run one at a time.
@@ -13,7 +14,8 @@ public class ServerHandler {
 
 	private Thread thread;
 	private EchoServer currentServer;
-
+	private ServerInfo info;
+	
 	public ServerHandler() {
 
 	}
@@ -23,7 +25,8 @@ public class ServerHandler {
 	}
 
 	public void createNew() {
-		createNew(new EchoServer());
+		info = new ServerInfo();
+		createNew(new EchoServer(info));
 	}
 
 	public void createNew(EchoServer newServer) {

@@ -44,4 +44,8 @@ public class SceneHandler {
 		windows.invalidate();
 		windows.validate();
 	}
+
+	public Scene getCurrentScene() {
+		return scenes[currentScene];
+	}
 }

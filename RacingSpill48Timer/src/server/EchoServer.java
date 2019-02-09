@@ -14,11 +14,13 @@ public class EchoServer implements Runnable {
 	private int serverport;
 	private boolean running;
 	private ServerSocket welcomeSocket;
+	private ServerInfo info;
 	
-	public EchoServer() {
+	public EchoServer(ServerInfo info) {
 		serverport = Config.SERVERPORT;
+		this.info = info;
 		System.out.println("TCP server starting at port " + serverport);
-
+		
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public class EchoServer implements Runnable {
 		
 		try  {
 			welcomeSocket = new ServerSocket(serverport);
-			TCPEchoServer server = new TCPEchoServer(welcomeSocket);
+			TCPEchoServer server = new TCPEchoServer(welcomeSocket, info);
 
 			while (running) {
 
