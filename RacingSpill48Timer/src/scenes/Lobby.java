@@ -1,5 +1,7 @@
 package scenes;
 
-public class Lobby {
+import adt.Scene;
+
+public class Lobby  extends Scene{
 
 }

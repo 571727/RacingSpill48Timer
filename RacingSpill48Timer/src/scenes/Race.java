@@ -1,5 +1,7 @@
 package scenes;
 
-public class Race {
+import adt.Scene;
+
+public class Race  extends Scene{
 
 }

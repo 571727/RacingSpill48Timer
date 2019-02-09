@@ -1,5 +1,7 @@
 package scenes;
 
-public class FixCar {
+import adt.Scene;
+
+public class FixCar extends Scene{
 
 }
