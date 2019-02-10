@@ -1,11 +1,14 @@
 package scenes;
 
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowEvent;
 import java.util.Random;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 
 import adt.Scene;
 import elem.Player;
@@ -26,6 +29,9 @@ public class Race extends Scene implements Runnable {
 	private Player player;
 	private Lobby lobby;
 	private JFrame racingWindow;
+	private JButton goToLobby;
+	private JScrollPane scrollPane;
+	private JLabel results;
 	private RaceVisual visual;
 	private RaceKeyHandler keys;
 	private String[] places;
@@ -46,6 +52,16 @@ public class Race extends Scene implements Runnable {
 		places[2] = "Britain";
 		places[3] = "Germany";
 		
+		
+		results = new JLabel("Driving");
+		goToLobby = new JButton("Go back to the lobby");
+		goToLobby.setEnabled(false);
+		
+		scrollPane = new JScrollPane(results);
+		scrollPane.setPreferredSize(new Dimension(500, 300));
+		
+		add(scrollPane);
+		add(goToLobby);
 	}
 
 	public void initWindow() {
@@ -110,6 +126,8 @@ public class Race extends Scene implements Runnable {
 	public void checkDistanceLeft() {
 		if(player.getCar().getDistance() >= currentLength) {
 			//Push results and wait for everyone to finish. Then get a winner.
+			
+			
 		}
 	}
 	

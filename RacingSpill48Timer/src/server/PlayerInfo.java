@@ -6,6 +6,7 @@ public class PlayerInfo {
 	private int host;
 	private String name;
 	private String time;
+	private int finished;
 	private int points;
 	private String carName;
 
@@ -29,6 +30,23 @@ public class PlayerInfo {
 	 */
 	public String getLobbyInfo() {
 		return name + "#" + ready + "#" + host + "#" + carName + "#" + points;
+	}
+	
+	public void newRace() {
+		finished = 0;
+	}
+	
+	/**
+	 * fra og med input[3]
+	 * 
+	 * @param input
+	 */
+	public void updateRaceResults(String[] input) {
+		
+	}
+	
+	public String getRaceResults() {
+		return name + "#" + time;
 	}
 
 	/**
