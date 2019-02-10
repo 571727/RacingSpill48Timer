@@ -28,13 +28,12 @@ public class SceneHandler {
 
 		windows = new Windows(600, 500, "Racing shit");
 		scenes = new Scene[numScenes];
-
 		
-		scenes[1] = new Lobby();
 		scenes[2] = new FixCar();
 		scenes[3] = new Race();
 		scenes[4] = new Options();
-		scenes[0] = new MainMenu((Lobby) scenes[1], (Race) scenes[3]);
+		scenes[1] = new Lobby((Race) scenes[3]);
+		scenes[0] = new MainMenu((Lobby) scenes[1]);
 		
 		JFXPanel fxPanel = new JFXPanel();
 		windows.add(fxPanel);

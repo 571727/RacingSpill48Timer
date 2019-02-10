@@ -33,7 +33,7 @@ public class Player{
 		this.ip = ip;
 		this.host = host;
 		ready = 0;
-
+		this.car = new Car(car);
 		Random r = new Random();
 		id = r.nextInt(200);
 
@@ -85,6 +85,14 @@ public class Player{
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+
+	public Car getCar() {
+		return car;
+	}
+
+	public void setCar(Car car) {
+		this.car = car;
 	}
 
 }

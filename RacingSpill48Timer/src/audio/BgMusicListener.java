@@ -17,7 +17,7 @@ public class BgMusicListener implements AudioSpectrumListener {
 		// Maybe use action for something later, cause it's awesome
 		lastPlayed = -1;
 		this.songs = songs;
-		media = new MediaAudio("music/music1");
+		media = new MediaAudio("music/music3");
 
 	}
 

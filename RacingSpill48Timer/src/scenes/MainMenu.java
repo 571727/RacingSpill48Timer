@@ -19,17 +19,16 @@ public class MainMenu extends Scene {
 	private Thread thread;
 	private ServerHandler serverHandler;
 	private Lobby lobby;
-	private Race race;
 
-	public MainMenu(Lobby lobby, Race race) {
+	public MainMenu(Lobby lobby) {
 		// Init variables
 		serverHandler = new ServerHandler();
 		options = new JButton("Options");
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		this.race = race;
 
+		
 		// Eventlisteners
 		options.addActionListener((ActionEvent e) -> {
 			SceneHandler.instance.changeScene(4);
@@ -122,8 +121,7 @@ public class MainMenu extends Scene {
 	}
 
 	private String carSelection() {
-		Object[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla",
-				"Just Bought This New Lamborghini Here" };
+		Object[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla"};
 		return (String) JOptionPane.showInputDialog(null, "Choose your car, mate", "Carznstuff",
 				JOptionPane.PLAIN_MESSAGE, null, possibilities, "Supra");
 	}

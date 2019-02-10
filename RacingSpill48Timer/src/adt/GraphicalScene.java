@@ -1,7 +1,6 @@
 package adt;
 
 
-import javax.swing.JPanel;
 
 public abstract class GraphicalScene extends Scene{
 

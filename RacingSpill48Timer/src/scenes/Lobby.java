@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import adt.Scene;
@@ -24,12 +25,26 @@ public class Lobby extends Scene implements Runnable {
 	private Player player;
 	private boolean running;
 	private ServerHandler server;
+	private JScrollPane scrollPane;
+	private boolean everyoneReady;
+	private Race race;
+	private Thread thread;
 
-	public Lobby() {
+
+	public Lobby(Race race) {
+
+		this.race = race;
 		label = new JLabel("HELLLLLLLLLLLLLLLLOOOOO?!", SwingConstants.CENTER);
-		label.setPreferredSize(new Dimension(400, 50));
-		goBack = new JButton("Go back to main menu");
+		ready = new JButton("Ready?");
+		fixCar = new JButton("Upgrade or fix my car");
+		start = new JButton("Start race");
 
+		scrollPane = new JScrollPane(label);
+		scrollPane.setPreferredSize(new Dimension(500, 300));
+
+		ready.addActionListener((ActionEvent e) -> player.setReady((player.getReady() + 1) % 2));
+
+		goBack = new JButton("Go back to main menu");
 		goBack.addActionListener((ActionEvent e) -> {
 			if (server != null) {
 				server.join();
@@ -38,32 +53,80 @@ public class Lobby extends Scene implements Runnable {
 			player.leaveServer();
 			SceneHandler.instance.changeScene(0);
 		});
-		add(label);
-		add(goBack, BorderLayout.SOUTH);
 
+		start.addActionListener((ActionEvent e) -> {
+			if (everyoneReady) {
+				// start the race
+				SceneHandler.instance.changeScene(3);
+				race.setPlayer(player);
+				race.setLobby(this);
+				race.initWindow();
+				thread = new Thread(race);
+				thread.start();
+			}
+		});
+
+		add(scrollPane);
+		add(goBack, BorderLayout.SOUTH);
+		add(ready, BorderLayout.SOUTH);
+		add(fixCar, BorderLayout.SOUTH);
+		add(start, BorderLayout.SOUTH);
 	}
 
 	/**
-	 * FIXME properly show users
 	 * 
 	 * @param string - outtext from server
 	 */
 	public void update(String string) {
 
+		everyoneReady = true;
 		String[] outputs = string.split("#");
 
 		String result = "<html>Players: <br/>";
-
+		int n = 0;
 		for (int i = 1; i < outputs.length; i++) {
-			result += outputs[i];
-			if ((i - 1) % 4 == 0)
-				result += "<br/>";
+			n++;
+
+			switch (n) {
+
+			case 1:
+				result += outputs[i] + ", ";
+				break;
+			case 2:
+				if (Integer.valueOf(outputs[i]) == 1) {
+					result += "Ready, ";
+				} else {
+					result += "Not ready, ";
+					everyoneReady = false;
+				}
+				break;
+			case 3:
+				if (Integer.valueOf(outputs[i]) == 1)
+					result += "Host, ";
+				break;
+			case 4:
+				result += "Points: " + outputs[i] + "<br/>";
+				n = 0;
+				break;
+			}
+
 		}
-
 		result += "</html>";
-
+		
+		//Show all players on screen
 		label.setText(result);
 
+		//Disable start game button
+		if (everyoneReady)
+			start.setEnabled(true);
+		else
+			start.setEnabled(false);
+		
+		//Disable fix car button
+		if(player.getReady() == 1)
+			fixCar.setEnabled(false);
+		else
+			fixCar.setEnabled(true);
 	}
 
 	/**
@@ -73,7 +136,7 @@ public class Lobby extends Scene implements Runnable {
 	public void createNewLobby(String name, int host, String car, ServerHandler server) {
 		player = new Player(name, host, car);
 		update(player.joinServer());
-		initButtons();
+		initButtonState();
 		this.server = server;
 	}
 
@@ -85,29 +148,18 @@ public class Lobby extends Scene implements Runnable {
 	public void joinNewLobby(String name, int host, String car, String ip) {
 		player = new Player(name, host, car, ip);
 		update(player.joinServer());
-		initButtons();
+		initButtonState();
 	}
 
 	/**
 	 * GUI for player
 	 */
-	private void initButtons() {
+	private void initButtonState() {
 
-		if (ready == null) {
-			ready = new JButton("Ready?");
-			fixCar = new JButton("Upgrade or fix my car");
-			start = new JButton("Start race");
-
-			ready.addActionListener((ActionEvent e) -> player.setReady((player.getReady() + 1) % 2));
-
-			add(ready, BorderLayout.SOUTH);
-			add(fixCar, BorderLayout.SOUTH);
-			add(start, BorderLayout.SOUTH);
-		}
 		if (player.getHost() != 1)
-			start.setEnabled(false);
+			start.setVisible(false);
 		else
-			start.setEnabled(true);
+			start.setVisible(true);
 	}
 
 	/**
@@ -116,7 +168,7 @@ public class Lobby extends Scene implements Runnable {
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 1.0;
+		double amountOfTicks = 4.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
