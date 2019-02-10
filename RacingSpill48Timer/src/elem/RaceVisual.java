@@ -18,6 +18,7 @@ import scenes.Race;
 
 public class RaceVisual extends Canvas {
 
+	private Race race;
 	private Player player;
 	private GraphicsEnvironment env;
 	private GraphicsDevice device;
@@ -25,40 +26,56 @@ public class RaceVisual extends Canvas {
 	private BufferedImage image;
 	private int y;
 
-	public RaceVisual(Player player) {
+	public RaceVisual(Player player, Race race) {
 		this.player = player;
+		this.race = race;
 		env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = env.getDefaultScreenDevice();
 		config = device.getDefaultConfiguration();
 
-		y = 0; 
-		
+		y = 0;
+
 		try {
-			
-			image = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/" + player.getCar().getCarStyle() + ".png"));
+
+			image = ImageIO
+					.read(RaceVisual.class.getResourceAsStream("/pics/" + player.getCar().getCarStyle() + ".png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
-
+	
 	public void tick() {
-
+		if(player.getCar().isGas()) {
+			y = -5;
+		}
+		else
+			y = 0;
 	}
 
 	public void render() {
+		
+		
 		BufferStrategy bs = this.getBufferStrategy();
 		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
-		
+
 		g.setColor(Color.white);
 		g.fillRect(0, 0, Race.WIDTH, Race.HEIGHT);
-		
+
 		g.drawImage(image, 0, y, Race.WIDTH, Race.HEIGHT, null);
 
+		g.setColor(Color.green);
+		g.drawString("Speed: " + String.valueOf(player.getCar().getSpeedActual()), 100, 100);
+		g.drawString("Gear: " + String.valueOf(player.getCar().getGear()), 100, 150);
+		g.drawString("Clutch: " + String.valueOf(player.getCar().isClutch()), 100, 200);
+		
+		g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), 100, 250);
+		g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), 100, 300);
+		g.drawString("Distance covered: " + String.valueOf(player.getCar().getDistance()), 100, 350);
 //		if (clutch)
 //			g.drawString("clutching", 500, 100);
 //		else

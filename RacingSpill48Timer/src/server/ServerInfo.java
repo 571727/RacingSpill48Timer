@@ -20,15 +20,17 @@ public class ServerInfo {
 	}
 	
 	/**
-	 * input 1 = name + id
-	 * input 2 = host boolean
+	 * input 1 = name 
+	 * input 2 = id
+	 * input 3 = host boolean
+	 * input 4 = carname
 	 */
 	
 	public String joinLobby(String[] input) {
 		
-		PlayerInfo newPlayer = new PlayerInfo(input[1], input[2]);
+		PlayerInfo newPlayer = new PlayerInfo(input[1], input[3], input[4]);
 		
-		players.put(input[1], newPlayer);
+		players.put(input[1] + input[2], newPlayer);
 		
 		return updateLobby(newPlayer);
 	}
@@ -49,21 +51,22 @@ public class ServerInfo {
 	}
 	
 	/**
-	 * input 1 = name + id
-	 * input 2 = sitsh
+	 * input 1 = name
+	 * input 2 =  id
+	 * input 3 = sitsh
 	 * 
 	 * @return name#ready#car#... 
 	 */
 	public String updateLobby(String[] input) {
 		
-		PlayerInfo player = players.get(input[1]);
+		PlayerInfo player = players.get(input[1] + input[2]);
 		player.updateLobby(input);
 		
 		return updateLobby(player);
 	}
 	
 	public void leave(String[] input) {
-		players.remove(input[1]);
+		players.remove(input[1] + input[2]);
 	}
 	
 }

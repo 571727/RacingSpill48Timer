@@ -2,31 +2,33 @@ package server;
 
 public class PlayerInfo {
 
-	int ready;
-	int host;
-	String name;
-	String time;
-	int points;
+	private int ready;
+	private int host;
+	private String name;
+	private String time;
+	private int points;
+	private String carName;
 
-	public PlayerInfo(String name, String host) {
+	public PlayerInfo(String name, String host, String carName) {
 		this.name = name;
 		this.host = Integer.valueOf(host);
+		this.carName = carName;
 	}
 
 	/**
-	 * fra og med input[2]
+	 * fra og med input[3]
 	 * 
 	 * @param input
 	 */
 	public void updateLobby(String[] input) {
-		ready = Integer.parseInt(input[2]);
+		ready = Integer.parseInt(input[3]);
 	}
 
 	/**
 	 * @return name#ready#host#points
 	 */
 	public String getLobbyInfo() {
-		return name + "#" + ready + "#" + host + "#" + points;
+		return name + "#" + ready + "#" + host + "#" + carName + "#" + points;
 	}
 
 	/**

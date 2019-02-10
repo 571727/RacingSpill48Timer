@@ -2,6 +2,8 @@ package scenes;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.WindowEvent;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -26,38 +28,56 @@ public class Race extends Scene implements Runnable {
 	private JFrame racingWindow;
 	private RaceVisual visual;
 	private RaceKeyHandler keys;
+	private String[] places;
+	private String currentPlace;
+	private int currentLength;
+	private Random r;
 	private boolean running;
 	
 	public static int WIDTH;
-	public static int HEIGHT; 
+	public static int HEIGHT;
 
 	public Race() {
-
+		r = new Random();
+		
+		places = new String[4];
+		places[0] = "Japan";
+		places[1] = "America";
+		places[2] = "Britain";
+		places[3] = "Germany";
+		
 	}
 
 	public void initWindow() {
 
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 		keys = new RaceKeyHandler(player.getCar());
-		visual = new RaceVisual(player);
+		visual = new RaceVisual(player, this);
 		WIDTH = device.getDisplayMode().getWidth();
 		HEIGHT = device.getDisplayMode().getHeight();
 
 		racingWindow = new JFrame();
 		racingWindow.setTitle("The race");
 		device.setFullScreenWindow(racingWindow);
-//		racingWindow.setBounds(50, 50, 50, 50);
+//		racingWindow.setBounds(50, 50, 500, 500);
 		racingWindow.setResizable(false);
 		racingWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		racingWindow.setLocationRelativeTo(null);
 
 		racingWindow.add(visual);
 		racingWindow.addKeyListener(keys);
+		racingWindow.requestFocus();
 		
 		racingWindow.setVisible(true);
 		racingWindow.pack();
 	}
 
+	public void tick() {
+		racingWindow.requestFocus();
+		player.getCar().updateSpeed();
+		checkDistanceLeft();
+	}
+	
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
@@ -74,6 +94,7 @@ public class Race extends Scene implements Runnable {
 				delta--;
 				
 				visual.tick();
+				tick();
 
 			}
 			frames++;
@@ -84,6 +105,21 @@ public class Race extends Scene implements Runnable {
 				frames = 0;
 			}
 		}
+	}
+	
+	public void checkDistanceLeft() {
+		if(player.getCar().getDistance() >= currentLength) {
+			//Push results and wait for everyone to finish. Then get a winner.
+		}
+	}
+	
+	/**
+	 * Creates a new racetrack somewhere in the world and with some length of some type.
+	 */
+	public void randomizeConfiguration() {
+		currentPlace = places[r.nextInt(places.length)];
+		
+		currentLength = 1000 * (r.nextInt(4) + 1);
 	}
 
 	public Player getPlayer() {
@@ -100,6 +136,22 @@ public class Race extends Scene implements Runnable {
 
 	public void setLobby(Lobby lobby) {
 		this.lobby = lobby;
+	}
+
+	public String getCurrentPlace() {
+		return currentPlace;
+	}
+
+	public void setCurrentPlace(String currentPlace) {
+		this.currentPlace = currentPlace;
+	}
+
+	public int getCurrentLength() {
+		return currentLength;
+	}
+
+	public void setCurrentLength(int currentLength) {
+		this.currentLength = currentLength;
 	}
 
 }

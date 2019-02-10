@@ -60,6 +60,7 @@ public class Lobby extends Scene implements Runnable {
 				SceneHandler.instance.changeScene(3);
 				race.setPlayer(player);
 				race.setLobby(this);
+				race.randomizeConfiguration();
 				race.initWindow();
 				thread = new Thread(race);
 				thread.start();
@@ -105,6 +106,10 @@ public class Lobby extends Scene implements Runnable {
 					result += "Host, ";
 				break;
 			case 4:
+				result += outputs[i] + ", ";
+				break;
+				
+			case 5:
 				result += "Points: " + outputs[i] + "<br/>";
 				n = 0;
 				break;

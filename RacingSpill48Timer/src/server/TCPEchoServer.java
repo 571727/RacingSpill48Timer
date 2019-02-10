@@ -68,7 +68,7 @@ public class TCPEchoServer {
 	/**
 	 * take the first word and run the rest to its responsible function. Like SQL.
 	 * 
-	 * JOIN#name+id#host-boolean LEAVE#name+id CLOSE UPDATELOBBY#name+id#ready
+	 * JOIN#name+id#host-boolean#carname LEAVE#name+id CLOSE UPDATELOBBY#name+id#ready
 	 * UPDATERACE#name+id#mysitsh
 	 * 
 	 * @param text input from client

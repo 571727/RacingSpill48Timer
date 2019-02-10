@@ -6,7 +6,7 @@ import javax.sound.sampled.LineEvent;
 
 import javafx.scene.media.AudioSpectrumListener;
 
-public class BgMusicListener implements AudioSpectrumListener {
+public class BgMusicListener {
 
 	private Random r = new Random();
 	private int lastPlayed;
@@ -17,7 +17,7 @@ public class BgMusicListener implements AudioSpectrumListener {
 		// Maybe use action for something later, cause it's awesome
 		lastPlayed = -1;
 		this.songs = songs;
-		media = new MediaAudio("music/music3");
+		media = new MediaAudio("/music/" + findRandomSong());
 
 	}
 
@@ -31,7 +31,7 @@ public class BgMusicListener implements AudioSpectrumListener {
 	private void attempt() {
 		media.play();
 
-		media.getMediaPlayer().setOnEndOfMedia(() -> media.playNewSong("music/" + findRandomSong()));
+		media.getMediaPlayer().setOnEndOfMedia(() -> media.playNewSong("/music/" + findRandomSong()));
 	}
 
 	private String findRandomSong() {
@@ -42,11 +42,6 @@ public class BgMusicListener implements AudioSpectrumListener {
 		} while (nextSong == lastPlayed);
 
 		return songs[nextSong];
-	}
-
-	@Override
-	public void spectrumDataUpdate(double arg0, double arg1, float[] arg2, float[] arg3) {
-
 	}
 
 }

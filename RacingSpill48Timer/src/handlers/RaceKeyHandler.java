@@ -15,36 +15,19 @@ public class RaceKeyHandler implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		if(e.getKeyCode() == 87) {
 			//W
 			car.acc();
 		}
 		if(e.getKeyCode() == 83) {
 			//S
-			car.brake();
+			car.brakeOn();
 		}
 		if(e.getKeyCode() == 32) {
 			//Space
-			car.clutch();
+			car.clutchOn();
 		}
 		
-		if(e.getKeyCode() == 69) {
-			//E
-			car.nos();
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println(e.getKeyCode());
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println(e.getKeyCode());
 		if(e.getKeyCode() == 16) {
 			//LShift
 			car.shiftUp();
@@ -53,5 +36,31 @@ public class RaceKeyHandler implements KeyListener{
 			//LShift
 			car.shiftDown();
 		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == 87) {
+			//W
+			car.dcc();
+		}
+		if(e.getKeyCode() == 83) {
+			//S
+			car.brakeOff();
+		}
+		if(e.getKeyCode() == 32) {
+			//Space
+			car.clutchOff();
+		}
+		
+		
+		if(e.getKeyCode() == 69) {
+			//E
+			car.nos();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
 	}
 }

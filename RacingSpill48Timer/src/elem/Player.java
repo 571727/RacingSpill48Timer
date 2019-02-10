@@ -22,6 +22,7 @@ public class Player{
 	private String ip;
 	private EchoClient client;
 	private Car car;
+	private String carName;
 
 
 	public Player(String name, int host, String car) {
@@ -34,6 +35,7 @@ public class Player{
 		this.host = host;
 		ready = 0;
 		this.car = new Car(car);
+		carName = car;
 		Random r = new Random();
 		id = r.nextInt(200);
 
@@ -47,20 +49,20 @@ public class Player{
 	 * JOIN#name+id#host-boolean
 	 */
 	public String joinServer() {
-		return client.sendRequest("JOIN#" + name + id + "#" + host);
+		return client.sendRequest("JOIN#" + name + "#" + id + "#" + host + "#" + carName);
 	}
 
 	/**
 	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
 	 */
 	public String updateLobbyFromServer() {
-		return client.sendRequest("UPDATELOBBY#" + name + id + "#" + ready);
+		return client.sendRequest("UPDATELOBBY#" + name  + "#" +  id + "#" + ready);
 	}
 	/**
 	 * LEAVE#name+id 
 	 */
 	public void leaveServer() {
-		client.sendRequest("LEAVE#" + name + id);
+		client.sendRequest("LEAVE#" + name  + "#" +  id);
 	}
 
 	public int getHost() {

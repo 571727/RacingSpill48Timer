@@ -1,33 +1,44 @@
 package elem;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+import audio.RaceAudio;
 
 public class Car {
 
 	private boolean gas;
 	private boolean brake;
 	private boolean clutch;
-	private boolean nos;
-	private float speed;
+	private long nosTimeLeft;
+	private long nosTimeToGive;
+	private int nosAmountLeft;
+	private float nosStrength;
+	private float speedLinear;
+	private float speedActual;
 	private float hp;
 	private float weightloss;
 	private float totalWeight;
 	private float spdinc;
+	private float distance;
 	private int gear;
 	private int totalGear;
 	private int totalRPM;
 	private String carStyle;
+	private RaceAudio audio;
 
 	public Car(String cartype) {
-		
+
 //		function oppdaterFart(evt)
 //		{
-//			likningfart = (-2 * (fart*fart) + girHogd * fart)/girLengd;
+//			likningfart = 
 //		}
-		speed = 0f;
+
+		speedLinear = 0f;
+		nosTimeLeft = 0;
+		nosTimeToGive = 3000;
+		nosAmountLeft = 1;
+		nosStrength = 3.0f;
+
+		//Kanskje Lada der kjørelyden er hardbass.
+		
 		
 		switch (cartype) {
 		case "M3":
@@ -73,40 +84,126 @@ public class Car {
 			setCarStyle("corolla");
 			break;
 		}
-		
-		
-		
+		audio = new RaceAudio(carStyle);
 		spdinc = (hp + (totalWeight - weightloss)) / 1000;
 	}
 
+	public void updateSpeed() {
+		if (!brake) {
+
+			if (gas && !clutch && gearCheck()) {
+				speedLinear += spdinc;
+				if (nosTimeLeft > System.currentTimeMillis())
+					speedLinear += nosStrength;
+			} else {
+
+				if (speedLinear > 0)
+					speedLinear -= 0.5f;
+				else
+					speedLinear = 0;
+			}
+
+		} else {
+
+			if (speedLinear > 0)
+				speedLinear -= spdinc;
+			else
+				speedLinear = 0;
+
+		}
+
+		speedActual = (float) ((-2 * Math.pow(speedLinear, 2) + totalRPM * speedLinear) / totalRPM);
+
+		// delt på 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
+		distance += speedActual / 24;
+	}
+
+	public float getSpeedLinear() {
+		return speedLinear;
+	}
+
+	public void setSpeedLinear(float speedLinear) {
+		this.speedLinear = speedLinear;
+	}
+
+	public float getSpeedActual() {
+		return speedActual;
+	}
+
+	public void setSpeedActual(float speedActual) {
+		this.speedActual = speedActual;
+	}
+
+	private boolean gearCheck() {
+		return speedActual < gear * 100;
+	}
+
 	public void acc() {
-		// TODO Auto-generated method stub
+		if (!gas) {
+			gas = true;
+			audio.motorAcc();
+		}
 
 	}
 
-	public void brake() {
-		// TODO Auto-generated method stub
-
+	public void dcc() {
+		if (gas) {
+			gas = false;
+			audio.turboSurge();
+			audio.motorDcc();
+		}
 	}
 
-	public void clutch() {
-		// TODO Auto-generated method stub
+	public void brakeOn() {
+		if (!brake) {
+			brake = true;
+		}
+	}
 
+	public void brakeOff() {
+		if (brake) {
+			brake = false;
+		}
+	}
+
+	public void clutchOn() {
+		if (!clutch) {
+			clutch = true;
+			if (speedActual > 10 && gear > 0) {
+				audio.turboSurge();
+				audio.motorDcc();
+			}
+		}
+	}
+
+	public void clutchOff() {
+		if (clutch) {
+			clutch = false;
+			if (gas) {
+				audio.motorAcc();
+			}
+		}
 	}
 
 	public void shiftUp() {
-		// TODO Auto-generated method stub
-
+		if (gear < totalGear && clutch) {
+			gear++;
+			audio.gearSound();
+		}
 	}
 
 	public void shiftDown() {
-		// TODO Auto-generated method stub
-
+		if (gear > 0 && clutch) {
+			gear--;
+			audio.gearSound();
+		}
 	}
 
 	public void nos() {
-		// TODO Auto-generated method stub
-
+		if (nosAmountLeft > 0) {
+			nosTimeLeft = System.currentTimeMillis() + nosTimeToGive;
+			audio.nos();
+		}
 	}
 
 	public boolean isGas() {
@@ -133,20 +230,12 @@ public class Car {
 		this.clutch = clutch;
 	}
 
-	public boolean isNos() {
-		return nos;
-	}
-
-	public void setNos(boolean nos) {
-		this.nos = nos;
-	}
-
 	public float getSpeed() {
-		return speed;
+		return speedLinear;
 	}
 
 	public void setSpeed(float speed) {
-		this.speed = speed;
+		this.speedLinear = speed;
 	}
 
 	public float getHp() {
@@ -211,6 +300,14 @@ public class Car {
 
 	public void setCarStyle(String carStyle) {
 		this.carStyle = carStyle;
+	}
+
+	public float getDistance() {
+		return distance;
+	}
+
+	public void setDistance(float distance) {
+		this.distance = distance;
 	}
 
 }
