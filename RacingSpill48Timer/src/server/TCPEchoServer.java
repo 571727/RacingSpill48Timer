@@ -10,12 +10,19 @@ import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
+/**
+ * TODO legg til sjekk av hvem som sender inn requests. Om en ikke har sendt inn
+ * en request på lenge så betyr det at den clienten har forsvunnet.
+ * 
+ * @author jonah
+ *
+ */
+
 public class TCPEchoServer {
 
 	private ServerSocket welcomeSocket;
 	private ServerInfo info;
-	
-	
+
 	public TCPEchoServer(ServerSocket welcomeSocket, ServerInfo info) {
 		this.welcomeSocket = welcomeSocket;
 		this.info = info;
@@ -61,10 +68,7 @@ public class TCPEchoServer {
 	/**
 	 * take the first word and run the rest to its responsible function. Like SQL.
 	 * 
-	 * JOIN#name+id#host-boolean
-	 * LEAVE#name+id 
-	 * CLOSE 
-	 * UPDATELOBBY#name+id#ready
+	 * JOIN#name+id#host-boolean LEAVE#name+id CLOSE UPDATELOBBY#name+id#ready
 	 * UPDATERACE#name+id#mysitsh
 	 * 
 	 * @param text input from client
@@ -74,7 +78,7 @@ public class TCPEchoServer {
 		String[] input = request.split("#");
 
 		switch (input[0]) {
-		
+
 		case "JOIN":
 			return join(input);
 		case "LEAVE":
@@ -94,22 +98,17 @@ public class TCPEchoServer {
 	private String join(String[] input) {
 		return info.joinLobby(input);
 	}
-	
+
 	private String leave(String[] input) {
-		
-		
-		return null;
+
+		info.leave(input);
+		return "";
 	}
-	
+
 	private String updateLobby(String[] input) {
-		
-		
-		return null;
+		return info.updateLobby(input);
 	}
-	
-	
-	
-	
+
 	/*
 	 * Getters and setters
 	 */

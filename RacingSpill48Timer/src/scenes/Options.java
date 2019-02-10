@@ -1,19 +1,21 @@
 package scenes;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+
 import adt.Scene;
+import handlers.SceneHandler;
 
-public class Options extends Scene{
+public class Options extends Scene {
+	private JButton goBack;
 
-	@Override
-	public void tick() {
-		// TODO Auto-generated method stub
-		
+	public Options() {
+
+		goBack = new JButton("Go back to main menu");
+
+		goBack.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(0));
+
+		add(goBack);
 	}
-
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

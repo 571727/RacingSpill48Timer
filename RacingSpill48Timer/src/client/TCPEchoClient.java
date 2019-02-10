@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.Socket;
+
+import handlers.SceneHandler;
 
 public class TCPEchoClient {
 	
@@ -41,10 +44,8 @@ public class TCPEchoClient {
 			
 			
 		} catch (IOException ex) {
-			
-			System.out.println("TCP client: " + ex.getMessage());
-			ex.printStackTrace();
-			System.exit(1);
+			System.err.println("TCP client: " + ex.getMessage());
+			SceneHandler.instance.changeScene(0);
 			
 		}
 		

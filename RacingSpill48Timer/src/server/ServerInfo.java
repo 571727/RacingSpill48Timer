@@ -62,4 +62,8 @@ public class ServerInfo {
 		return updateLobby(player);
 	}
 	
+	public void leave(String[] input) {
+		players.remove(input[1]);
+	}
+	
 }

@@ -1,6 +1,7 @@
 package handlers;
 
 import adt.Scene;
+import javafx.embed.swing.JFXPanel;
 import scenes.FixCar;
 import scenes.Lobby;
 import scenes.MainMenu;
@@ -28,11 +29,15 @@ public class SceneHandler {
 		windows = new Windows(600, 500, "Racing shit");
 		scenes = new Scene[numScenes];
 
-		scenes[0] = new MainMenu();
+		
 		scenes[1] = new Lobby();
 		scenes[2] = new FixCar();
 		scenes[3] = new Race();
 		scenes[4] = new Options();
+		scenes[0] = new MainMenu((Lobby) scenes[1], (Race) scenes[3]);
+		
+		JFXPanel fxPanel = new JFXPanel();
+		windows.add(fxPanel);
 	}
 
 	public void changeScene(int scenenr) {
@@ -43,6 +48,8 @@ public class SceneHandler {
 		
 		windows.invalidate();
 		windows.validate();
+		
+		windows.repaint();
 	}
 
 	public Scene getCurrentScene() {
