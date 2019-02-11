@@ -57,13 +57,7 @@ public class Lobby extends Scene implements Runnable {
 		start.addActionListener((ActionEvent e) -> {
 			if (everyoneReady) {
 				// start the race
-				SceneHandler.instance.changeScene(3);
-				race.setPlayer(player);
-				race.setLobby(this);
-				race.randomizeConfiguration();
-				race.initWindow();
-				thread = new Thread(race);
-				thread.start();
+				player.startRace();
 			}
 		});
 
@@ -111,6 +105,11 @@ public class Lobby extends Scene implements Runnable {
 				
 			case 5:
 				result += "Points: " + outputs[i] + "<br/>";
+				break;
+			case 6:
+				if(Integer.valueOf(outputs[i]) == 1) {
+					raceStarted();
+				}
 				n = 0;
 				break;
 			}
@@ -132,6 +131,7 @@ public class Lobby extends Scene implements Runnable {
 			fixCar.setEnabled(false);
 		else
 			fixCar.setEnabled(true);
+		
 	}
 
 	/**
@@ -167,13 +167,23 @@ public class Lobby extends Scene implements Runnable {
 			start.setVisible(true);
 	}
 
+	private void raceStarted() {
+		SceneHandler.instance.changeScene(3);
+		race.setPlayer(player);
+		race.setLobby(this);
+		race.randomizeConfiguration();
+		race.initWindow();
+		thread = new Thread(race);
+		thread.start();
+	}
+	
 	/**
 	 * Merely to update lobby once per second
 	 */
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 4.0;
+		double amountOfTicks = 10.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();

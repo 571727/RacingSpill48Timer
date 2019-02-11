@@ -56,13 +56,26 @@ public class Player{
 	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
 	 */
 	public String updateLobbyFromServer() {
-		return client.sendRequest("UPDATELOBBY#" + name  + "#" +  id + "#" + ready);
+		return client.sendRequest("UPDATELOBBY#" + name  + "#" +  id + "#" + ready );
 	}
+	
+	public void startRace(){
+		client.sendRequest("STARTRACE#" + host + "#" + 1);
+	}
+	
+	public void stopRace(){
+		client.sendRequest("STARTRACE#" + host + "#" + 0);
+	}
+	
 	/**
 	 * LEAVE#name+id 
 	 */
 	public void leaveServer() {
 		client.sendRequest("LEAVE#" + name  + "#" +  id);
+	}
+	
+	public String updateRace(int finished, long time) {
+		return client.sendRequest("UPDATERACE#" + finished + "#" + time);
 	}
 
 	public int getHost() {

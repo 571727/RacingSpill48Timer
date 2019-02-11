@@ -34,20 +34,23 @@ public class PlayerInfo {
 	
 	public void newRace() {
 		finished = 0;
+		time = "";
 	}
 	
 	/**
 	 * fra og med input[3]
-	 * 
+	 * input[3] finished
+	 * input[4] timecurrently
 	 * @param input
+	 * 
 	 */
-	public void updateRaceResults(String[] input) {
-		
+	public String updateRaceResults(String[] input) {
+		return null;
 	}
 	
-	public String getRaceResults() {
-		return name + "#" + time;
-	}
+//	public String getRaceResults() {
+//		return name + "#" finished + "#" + time + "#" + pointsGained or something.;
+//	}
 
 	/**
 	 * @return name#ready#car#...

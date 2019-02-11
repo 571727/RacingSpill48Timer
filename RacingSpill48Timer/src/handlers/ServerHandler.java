@@ -39,6 +39,7 @@ public class ServerHandler {
 		thread.start();
 	}
 
+	
 	/**
 	 * close tha program yo
 	 */

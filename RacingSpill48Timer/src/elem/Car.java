@@ -169,7 +169,7 @@ public class Car {
 	public void clutchOn() {
 		if (!clutch) {
 			clutch = true;
-			if (speedActual > 10 && gear > 0) {
+			if (gas) {
 				audio.turboSurge();
 				audio.motorDcc();
 			}

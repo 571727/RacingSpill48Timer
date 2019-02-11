@@ -15,8 +15,10 @@ import elem.Player;
 import elem.RaceVisual;
 import handlers.RaceKeyHandler;
 import handlers.SceneHandler;
+
 /**
  * Kjør thread på lobby når du skal tilbake
+ * 
  * @author jonah
  *
  */
@@ -37,29 +39,32 @@ public class Race extends Scene implements Runnable {
 	private String[] places;
 	private String currentPlace;
 	private int currentLength;
+	private long time;
+	private long startTime;
+	private long waitTime;
 	private Random r;
 	private boolean running;
-	
+	private boolean everyoneDone;
+
 	public static int WIDTH;
 	public static int HEIGHT;
 
 	public Race() {
 		r = new Random();
-		
+
 		places = new String[4];
 		places[0] = "Japan";
 		places[1] = "America";
 		places[2] = "Britain";
 		places[3] = "Germany";
-		
-		
+
 		results = new JLabel("Driving");
 		goToLobby = new JButton("Go back to the lobby");
 		goToLobby.setEnabled(false);
-		
+
 		scrollPane = new JScrollPane(results);
 		scrollPane.setPreferredSize(new Dimension(500, 300));
-		
+
 		add(scrollPane);
 		add(goToLobby);
 	}
@@ -83,17 +88,40 @@ public class Race extends Scene implements Runnable {
 		racingWindow.add(visual);
 		racingWindow.addKeyListener(keys);
 		racingWindow.requestFocus();
-		
+
 		racingWindow.setVisible(true);
 		racingWindow.pack();
+
+		running = false;
+		time = -1;
+		startTime = -1;
+		waitTime = System.currentTimeMillis() + 5000;
+		visual.setStartCountDown(false);
 	}
 
 	public void tick() {
-		racingWindow.requestFocus();
+		if (racingWindow.isVisible())
+			racingWindow.requestFocus();
 		player.getCar().updateSpeed();
 		checkDistanceLeft();
+
+		// Controls countdown and cheating and such shait.
+		if (visual != null) {
+			if (!visual.isStartCountDown() && waitTime < System.currentTimeMillis()) {
+				visual.setStartCountDown(true);
+				waitTime = System.currentTimeMillis() + 3000;
+				visual.setStartTime(System.currentTimeMillis());
+			} else if (waitTime < System.currentTimeMillis() && !running) {
+				startTime = System.currentTimeMillis();
+				running = true;
+				visual.setRunning(true);
+				player.stopRace();
+			} else if (running) {
+				time = System.currentTimeMillis() - startTime;
+			}
+		}
 	}
-	
+
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
@@ -108,13 +136,18 @@ public class Race extends Scene implements Runnable {
 			lastTime = now;
 			while (delta >= 1) {
 				delta--;
-				
-				visual.tick();
-				tick();
+
+				if (visual != null) {
+					visual.tick();
+					tick();
+				} else {
+					updateResults();
+				}
 
 			}
 			frames++;
-			visual.render();
+			if (visual != null)
+				visual.render();
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS RACEEE: " + frames);
@@ -122,21 +155,84 @@ public class Race extends Scene implements Runnable {
 			}
 		}
 	}
-	
+
+	private void updateResults() {
+		everyoneDone = true;
+
+		String outtext = player.updateRace(1, time);
+
+		String[] outputs = outtext.split("#");
+
+		String result = "<html>Players: <br/>";
+		int n = 0;
+		for (int i = 1; i < outputs.length; i++) {
+			n++;
+
+			switch (n) {
+
+			case 1:
+				result += outputs[i] + ", ";
+				break;
+			case 2:
+				if (Integer.valueOf(outputs[i]) == 1) {
+					result += "Ready, ";
+				} else {
+					result += "Not ready, ";
+					everyoneDone = false;
+				}
+				break;
+			case 3:
+				if (Integer.valueOf(outputs[i]) == 1)
+					result += "Host, ";
+				break;
+			case 4:
+				result += outputs[i] + ", ";
+				break;
+
+			case 5:
+				result += "Points: " + outputs[i] + "<br/>";
+				break;
+			case 6:
+				if (Integer.valueOf(outputs[i]) == 1) {
+					raceStarted();
+				}
+				n = 0;
+				break;
+			}
+
+		}
+		result += "</html>";
+
+		// Show all players on screen
+		results.setText(result);
+
+		// Disable start game button
+		if (everyoneDone)
+			goToLobby.setEnabled(true);
+		else
+			goToLobby.setEnabled(false);
+	}
+
 	public void checkDistanceLeft() {
-		if(player.getCar().getDistance() >= currentLength) {
-			//Push results and wait for everyone to finish. Then get a winner.
-			
-			
+		if (player.getCar().getDistance() >= currentLength) {
+			// Push results and wait for everyone to finish. Then get a winner.
+			visual = null;
+			racingWindow.setVisible(false);
+			racingWindow.dispose();
+			// player.updateRace(1, time);
+
+		} else {
+//			player.updateRace(0, time);
 		}
 	}
-	
+
 	/**
-	 * Creates a new racetrack somewhere in the world and with some length of some type.
+	 * Creates a new racetrack somewhere in the world and with some length of some
+	 * type.
 	 */
 	public void randomizeConfiguration() {
 		currentPlace = places[r.nextInt(places.length)];
-		
+
 		currentLength = 1000 * (r.nextInt(4) + 1);
 	}
 

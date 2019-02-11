@@ -14,11 +14,20 @@ import java.util.Map.Entry;
 public class ServerInfo {
 
 	private HashMap<String, PlayerInfo> players;
+	private int started;
 	
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
 	}
 	
+	public int getStarted() {
+		return started;
+	}
+
+	public void setStarted(int started) {
+		this.started = started;
+	}
+
 	/**
 	 * input 1 = name 
 	 * input 2 = id
@@ -44,7 +53,7 @@ public class ServerInfo {
 		
 		for (Entry<String, PlayerInfo> entry : players.entrySet()) 
 		{ 
-			result += "#" + entry.getValue().getLobbyInfo();
+			result += "#" + entry.getValue().getLobbyInfo() + "#" + started;
 		}
 		
 		return result;
@@ -65,8 +74,18 @@ public class ServerInfo {
 		return updateLobby(player);
 	}
 	
+	public void startRace(String[] input) {
+		if(Integer.valueOf(input[1]) == 1) {
+			started = Integer.valueOf(input[2]);
+		}
+	}
+	
 	public void leave(String[] input) {
 		players.remove(input[1] + input[2]);
+	}
+
+	public String updateRace(String[] input) {
+		return null;
 	}
 	
 }

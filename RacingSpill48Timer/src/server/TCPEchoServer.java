@@ -22,6 +22,15 @@ public class TCPEchoServer {
 
 	private ServerSocket welcomeSocket;
 	private ServerInfo info;
+	private int startRace;
+
+	public int getStartRace() {
+		return startRace;
+	}
+
+	public void setStartRace(int startRace) {
+		this.startRace = startRace;
+	}
 
 	public TCPEchoServer(ServerSocket welcomeSocket, ServerInfo info) {
 		this.welcomeSocket = welcomeSocket;
@@ -46,7 +55,9 @@ public class TCPEchoServer {
 			do {
 
 				System.out.println("SERVER SENDING: " + outtext);
-
+				if(outtext == null) {
+					outtext = "";
+				}
 				outToClient.write(outtext.getBytes());
 				outToClient.flush();
 
@@ -88,8 +99,9 @@ public class TCPEchoServer {
 		case "UPDATELOBBY":
 			return updateLobby(input);
 		case "UPDATERACE":
-			return join(input);
-
+			return info.updateRace(input);
+		case "STARTRACE":
+			info.startRace(input);
 		}
 
 		return null;
