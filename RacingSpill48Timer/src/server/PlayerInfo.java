@@ -8,6 +8,9 @@ public class PlayerInfo {
 	private long time;
 	private int finished;
 	private int points;
+	private int money;
+	
+
 	private String carName;
 
 	public PlayerInfo(String name, String host, String carName) {
@@ -74,6 +77,14 @@ public class PlayerInfo {
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+	
+	public int getMoney() {
+		return money;
+	}
+
+	public void setMoney(int money) {
+		this.money = money;
 	}
 
 }

@@ -32,6 +32,8 @@ public class RaceAudio {
 
 	}
 
+	//FIXME baser lyd på turtall
+	
 	public void motorAcc() {
 		if (motor != null && motor.isPlaying()) {
 			motor.stop();

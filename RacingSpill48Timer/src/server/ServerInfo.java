@@ -92,6 +92,8 @@ public class ServerInfo {
 
 	/**
 	 * UPDATERACE#name#id#finished(0-1)#longtimemillis
+	 * 
+	 * Første gang får alle 10 andre gang får ingen poeng?
 	 */
 	public String updateRace(String[] input) {
 
@@ -100,6 +102,7 @@ public class ServerInfo {
 		// If racing and
 		if (started == 1 && Integer.valueOf(input[3]) == 1 && player.getFinished() != 1) {
 			player.setPoints(10 / (amountFinished + 1));
+			amountFinished++;
 		}
 
 		player.updateRaceResults(input);

@@ -28,6 +28,7 @@ public class BgMusicListener {
 	public void turnOff() {
 	}
 
+	//Denne kjører bare to ganger
 	private void attempt() {
 		media.play();
 

@@ -95,6 +95,7 @@ public class Lobby extends Scene implements Runnable {
 				break;
 			case 2:
 				if (Integer.valueOf(outputs[i]) == 1) {
+					//FIXME viser ready når en står inne i racet...
 					result += "Ready, ";
 				} else {
 					result += "Not ready, ";
