@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Holds info about who is a part of this game. Also holds info about the cars when racing.
+ * Holds info about who is a part of this game. Also holds info about the cars
+ * when racing.
+ * 
  * @author jonah
  *
  */
@@ -15,11 +17,12 @@ public class ServerInfo {
 
 	private HashMap<String, PlayerInfo> players;
 	private int started;
-	
+	private int amountFinished;
+
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
 	}
-	
+
 	public int getStarted() {
 		return started;
 	}
@@ -29,63 +32,92 @@ public class ServerInfo {
 	}
 
 	/**
-	 * input 1 = name 
-	 * input 2 = id
-	 * input 3 = host boolean
-	 * input 4 = carname
+	 * input 1 = name input 2 = id input 3 = host boolean input 4 = carname
 	 */
-	
+
 	public String joinLobby(String[] input) {
-		
+
 		PlayerInfo newPlayer = new PlayerInfo(input[1], input[3], input[4]);
-		
+
 		players.put(input[1] + input[2], newPlayer);
-		
-		return updateLobby(newPlayer);
+
+		return updateLobby();
 	}
-	
-	
+
 	/**
-	 * @return name#ready#car#... 
+	 * @return name#ready#car#...
 	 */
-	public String updateLobby(PlayerInfo player) {
+	public String updateLobby() {
 		String result = "";
-		
-		for (Entry<String, PlayerInfo> entry : players.entrySet()) 
-		{ 
+
+		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 			result += "#" + entry.getValue().getLobbyInfo() + "#" + started;
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
-	 * input 1 = name
-	 * input 2 =  id
-	 * input 3 = sitsh
+	 * input 1 = name input 2 = id input 3 = sitsh
 	 * 
-	 * @return name#ready#car#... 
+	 * @return name#ready#car#...
 	 */
 	public String updateLobby(String[] input) {
-		
+
 		PlayerInfo player = players.get(input[1] + input[2]);
+		if (player == null) {
+			return null;
+		}
 		player.updateLobby(input);
-		
-		return updateLobby(player);
+
+		return updateLobby();
 	}
-	
+
 	public void startRace(String[] input) {
-		if(Integer.valueOf(input[1]) == 1) {
+		if (Integer.valueOf(input[1]) == 1) {
+			if (Integer.valueOf(input[2]) == 1) {
+				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
+					entry.getValue().newRace();
+				}
+
+				amountFinished = 0;
+			}
 			started = Integer.valueOf(input[2]);
 		}
 	}
-	
+
 	public void leave(String[] input) {
 		players.remove(input[1] + input[2]);
 	}
 
+	/**
+	 * UPDATERACE#name#id#finished(0-1)#longtimemillis
+	 */
 	public String updateRace(String[] input) {
-		return null;
+
+		PlayerInfo player = players.get(input[1] + input[2]);
+
+		// If racing and
+		if (started == 1 && Integer.valueOf(input[3]) == 1 && player.getFinished() != 1) {
+			player.setPoints(10 / (amountFinished + 1));
+		}
+
+		player.updateRaceResults(input);
+
+		return updateRaceLobby();
 	}
-	
+
+	/**
+	 * @return name#ready#car#...
+	 */
+	public String updateRaceLobby() {
+		String result = "";
+
+		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
+			result += "#" + entry.getValue().getRaceInfo();
+		}
+
+		return result;
+	}
+
 }

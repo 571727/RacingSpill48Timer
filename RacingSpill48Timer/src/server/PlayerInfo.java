@@ -5,7 +5,7 @@ public class PlayerInfo {
 	private int ready;
 	private int host;
 	private String name;
-	private String time;
+	private long time;
 	private int finished;
 	private int points;
 	private String carName;
@@ -34,7 +34,7 @@ public class PlayerInfo {
 	
 	public void newRace() {
 		finished = 0;
-		time = "";
+		time = 0;
 	}
 	
 	/**
@@ -44,8 +44,9 @@ public class PlayerInfo {
 	 * @param input
 	 * 
 	 */
-	public String updateRaceResults(String[] input) {
-		return null;
+	public void updateRaceResults(String[] input) {
+		finished = Integer.valueOf(input[3]);
+		time = Long.valueOf(input[4]);
 	}
 	
 //	public String getRaceResults() {
@@ -56,7 +57,23 @@ public class PlayerInfo {
 	 * @return name#ready#car#...
 	 */
 	public String getRaceInfo() {
-		return name;
+		return name + "#" + finished + "#" + time;
+	}
+
+	public int getFinished() {
+		return finished;
+	}
+
+	public void setFinished(int finished) {
+		this.finished = finished;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
 	}
 
 }

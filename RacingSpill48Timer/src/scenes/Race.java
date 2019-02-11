@@ -3,6 +3,9 @@ package scenes;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -38,6 +41,7 @@ public class Race extends Scene implements Runnable {
 	private RaceKeyHandler keys;
 	private String[] places;
 	private String currentPlace;
+	private Thread lobbyThread;
 	private int currentLength;
 	private long time;
 	private long startTime;
@@ -45,6 +49,7 @@ public class Race extends Scene implements Runnable {
 	private Random r;
 	private boolean running;
 	private boolean everyoneDone;
+	private boolean cheating;
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -65,15 +70,34 @@ public class Race extends Scene implements Runnable {
 		scrollPane = new JScrollPane(results);
 		scrollPane.setPreferredSize(new Dimension(500, 300));
 
+		goToLobby.addActionListener((ActionEvent e) -> {
+			// Reset some shit and go to lobby
+			player.setReady(0);
+			SceneHandler.instance.changeScene(1);
+
+			lobbyThread = new Thread(lobby);
+			lobbyThread.start();
+		});
+
 		add(scrollPane);
 		add(goToLobby);
 	}
 
 	public void initWindow() {
 
+		visual = new RaceVisual(player, this);
+
+		everyoneDone = false;
+		cheating = false;
+		running = false;
+		time = -1;
+		startTime = -1;
+		waitTime = System.currentTimeMillis() + 5000;
+		visual.setStartCountDown(false);
+
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 		keys = new RaceKeyHandler(player.getCar());
-		visual = new RaceVisual(player, this);
+
 		WIDTH = device.getDisplayMode().getWidth();
 		HEIGHT = device.getDisplayMode().getHeight();
 
@@ -84,6 +108,17 @@ public class Race extends Scene implements Runnable {
 		racingWindow.setResizable(false);
 		racingWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		racingWindow.setLocationRelativeTo(null);
+		
+		racingWindow.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				try {
+					player.leaveServer();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
 
 		racingWindow.add(visual);
 		racingWindow.addKeyListener(keys);
@@ -92,11 +127,6 @@ public class Race extends Scene implements Runnable {
 		racingWindow.setVisible(true);
 		racingWindow.pack();
 
-		running = false;
-		time = -1;
-		startTime = -1;
-		waitTime = System.currentTimeMillis() + 5000;
-		visual.setStartCountDown(false);
 	}
 
 	public void tick() {
@@ -108,17 +138,37 @@ public class Race extends Scene implements Runnable {
 		// Controls countdown and cheating and such shait.
 		if (visual != null) {
 			if (!visual.isStartCountDown() && waitTime < System.currentTimeMillis()) {
+
+				// Wait for 5 secounds before the race starts
+
 				visual.setStartCountDown(true);
 				waitTime = System.currentTimeMillis() + 3000;
 				visual.setStartTime(System.currentTimeMillis());
+
 			} else if (waitTime < System.currentTimeMillis() && !running) {
+
+				// Wait for 3 secounds. Start countdown.
+
 				startTime = System.currentTimeMillis();
 				running = true;
 				visual.setRunning(true);
-				player.stopRace();
 			} else if (running) {
+
+				// Stopwatch
+
 				time = System.currentTimeMillis() - startTime;
+			} else if (waitTime > System.currentTimeMillis()) {
+				// CHEATING!!!
+				if (player.getCar().getSpeedActual() > 2) {
+					cheating = true;
+					racingWindow.removeKeyListener(keys);
+					player.getCar().reset();
+				}
 			}
+		}
+
+		if (cheating && waitTime < System.currentTimeMillis()) {
+			closeWindow();
 		}
 	}
 
@@ -130,7 +180,7 @@ public class Race extends Scene implements Runnable {
 		double delta = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
-		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class)) {
+		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !everyoneDone) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
@@ -175,27 +225,14 @@ public class Race extends Scene implements Runnable {
 				break;
 			case 2:
 				if (Integer.valueOf(outputs[i]) == 1) {
-					result += "Ready, ";
+					result += "Finished, ";
 				} else {
-					result += "Not ready, ";
+					result += "Not finished, ";
 					everyoneDone = false;
 				}
 				break;
 			case 3:
-				if (Integer.valueOf(outputs[i]) == 1)
-					result += "Host, ";
-				break;
-			case 4:
-				result += outputs[i] + ", ";
-				break;
-
-			case 5:
-				result += "Points: " + outputs[i] + "<br/>";
-				break;
-			case 6:
-				if (Integer.valueOf(outputs[i]) == 1) {
-					raceStarted();
-				}
+				result += "Time: " + outputs[i] + "<br/>";
 				n = 0;
 				break;
 			}
@@ -205,25 +242,29 @@ public class Race extends Scene implements Runnable {
 
 		// Show all players on screen
 		results.setText(result);
-
 		// Disable start game button
-		if (everyoneDone)
+		if (everyoneDone) {
+			// Stop race aka make ready the next race
+			player.stopRace();
 			goToLobby.setEnabled(true);
-		else
+
+		} else
 			goToLobby.setEnabled(false);
 	}
 
 	public void checkDistanceLeft() {
 		if (player.getCar().getDistance() >= currentLength) {
 			// Push results and wait for everyone to finish. Then get a winner.
-			visual = null;
-			racingWindow.setVisible(false);
-			racingWindow.dispose();
-			// player.updateRace(1, time);
-
+			closeWindow();
+			player.getCar().reset();
 		} else {
-//			player.updateRace(0, time);
 		}
+	}
+
+	public void closeWindow() {
+		visual = null;
+		racingWindow.setVisible(false);
+		racingWindow.dispose();
 	}
 
 	/**
@@ -266,6 +307,14 @@ public class Race extends Scene implements Runnable {
 
 	public void setCurrentLength(int currentLength) {
 		this.currentLength = currentLength;
+	}
+
+	public boolean isCheating() {
+		return cheating;
+	}
+
+	public void setCheating(boolean cheating) {
+		this.cheating = cheating;
 	}
 
 }

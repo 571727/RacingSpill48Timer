@@ -28,8 +28,9 @@ public class RaceVisual extends Canvas {
 	private boolean startCountDown;
 	private boolean running;
 	private long startTime;
-	private float currentBackground;
+	private double currentBackground;
 	private int y;
+	private int baller = 0;
 
 	public RaceVisual(Player player, Race race) {
 		this.player = player;
@@ -82,38 +83,43 @@ public class RaceVisual extends Canvas {
 		g.drawImage(carImage, -8, y, Race.WIDTH + 16, Race.HEIGHT + 9, null);
 
 		g.setColor(Color.green);
-		g.drawString("Speed: " + String.valueOf(player.getCar().getSpeedActual()), 100, 100);
+		g.drawString("SpeedActual: " + String.valueOf(player.getCar().getSpeedActual()), 100, 100);
+		g.drawString("SpeedLinear: " + String.valueOf(player.getCar().getSpeedLinear()), 100, 125);
 		g.drawString("Gear: " + String.valueOf(player.getCar().getGear()), 100, 150);
 		g.drawString("Clutch: " + String.valueOf(player.getCar().isClutch()), 100, 200);
 
 		g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), 100, 250);
 		g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), 100, 300);
 		g.drawString("Distance covered: " + String.valueOf(player.getCar().getDistance()), 100, 350);
+		g.drawString(String.valueOf(System.currentTimeMillis() - startTime), 100, 375);
 
 		
-		if(startCountDown && !running) {
+		if(startCountDown) {
 			if(1000 > System.currentTimeMillis() - startTime) {
 				g.setColor(Color.red);
-				g.fillOval(Race.WIDTH / 2 - 100, Race.HEIGHT / 3 , 50, 50);
+				baller = 1;
 			} else if(2000 > System.currentTimeMillis() - startTime) {
 				g.setColor(Color.red);
-				g.fillOval(Race.WIDTH / 2 - 100, Race.HEIGHT / 3 , 50, 50);
-				g.fillOval(Race.WIDTH / 2 - 25, Race.HEIGHT / 3 , 50, 50);
+				baller = 2;
 			} else if(3000 > System.currentTimeMillis() - startTime) {
 				g.setColor(Color.red);
-				g.fillOval(Race.WIDTH / 2 - 100, Race.HEIGHT / 3 , 50, 50);
-				g.fillOval(Race.WIDTH / 2 - 25, Race.HEIGHT / 3 , 50, 50);
-				g.fillOval(Race.WIDTH / 2 + 50, Race.HEIGHT / 3 , 50, 50);
+				baller = 3;
 			} else if(4000 > System.currentTimeMillis() - startTime) {
-				g.setColor(Color.green);
-				g.fillOval(Race.WIDTH / 2 - 100, Race.HEIGHT / 3 , 50, 50);
-				g.fillOval(Race.WIDTH / 2 - 25, Race.HEIGHT / 3 , 50, 50);
-				g.fillOval(Race.WIDTH / 2 + 50, Race.HEIGHT / 3 , 50, 50);
+				baller = 3;
+			} else {
+				baller = 0;
 			}
 		} else if (!running) {
-			g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - 100, Race.HEIGHT / 5);
+			g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - 100, Race.HEIGHT / 6);
+		} 
+		
+		for(int i = 0; i < baller; i++) {
+			g.fillOval(Race.WIDTH / 2 + (-100 + (75 * i)), Race.HEIGHT / 3 , 50, 50);
 		}
 		
+		if(race.isCheating()) {
+			g.drawString("You went too early!!!", Race.WIDTH / 2 - 50, Race.HEIGHT / 8);
+		}
 		
 		g.dispose();
 		bs.show();

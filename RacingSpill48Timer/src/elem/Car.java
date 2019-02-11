@@ -5,19 +5,24 @@ import audio.RaceAudio;
 public class Car {
 
 	private boolean gas;
+	private boolean idle;
 	private boolean brake;
 	private boolean clutch;
 	private long nosTimeLeft;
 	private long nosTimeToGive;
+	private int nosTimeToGiveStandard;
 	private int nosAmountLeft;
-	private float nosStrength;
-	private float speedLinear;
-	private float speedActual;
-	private float hp;
-	private float weightloss;
-	private float totalWeight;
-	private float spdinc;
-	private float distance;
+	private int nosAmountLeftStandard;
+	private double nosStrength;
+	private double nosStrengthStandard;
+	private double speedLinear;
+	private double speedActual;
+	private double hp;
+	private double weightloss;
+	private double totalWeight;
+	private double spdinc;
+	private double distance;
+	private double topSpeed;
 	private int gear;
 	private int totalGear;
 	private int totalRPM;
@@ -34,12 +39,15 @@ public class Car {
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosTimeToGive = 3000;
+		nosTimeToGiveStandard = 3000;
 		nosAmountLeft = 1;
+		nosAmountLeftStandard = 1;
 		nosStrength = 3.0f;
+		nosStrengthStandard = 3.0f;
+		topSpeed = 400;
 
-		//Kanskje Lada der kjørelyden er hardbass.
-		
-		
+		// Kanskje Lada der kjørelyden er hardbass.
+
 		switch (cartype) {
 		case "M3":
 			hp = 338;
@@ -93,6 +101,8 @@ public class Car {
 
 			if (gas && !clutch && gearCheck()) {
 				speedLinear += spdinc;
+				idle = false;
+
 				if (nosTimeLeft > System.currentTimeMillis())
 					speedLinear += nosStrength;
 			} else {
@@ -101,6 +111,11 @@ public class Car {
 					speedLinear -= 0.5f;
 				else
 					speedLinear = 0;
+
+				if (speedActual < 2 && !idle) {
+					idle = true;
+					audio.motorIdle();
+				}
 			}
 
 		} else {
@@ -110,32 +125,37 @@ public class Car {
 			else
 				speedLinear = 0;
 
+			if (speedActual < 2 && !idle) {
+				idle = true;
+				audio.motorIdle();
+			}
+
 		}
 
-		speedActual = (float) ((-2 * Math.pow(speedLinear, 2) + totalRPM * speedLinear) / totalRPM);
+		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
 
 		// delt på 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
 		distance += speedActual / 24;
 	}
 
-	public float getSpeedLinear() {
+	public double getSpeedLinear() {
 		return speedLinear;
 	}
 
-	public void setSpeedLinear(float speedLinear) {
+	public void setSpeedLinear(double speedLinear) {
 		this.speedLinear = speedLinear;
 	}
 
-	public float getSpeedActual() {
+	public double getSpeedActual() {
 		return speedActual;
 	}
 
-	public void setSpeedActual(float speedActual) {
+	public void setSpeedActual(double speedActual) {
 		this.speedActual = speedActual;
 	}
 
 	private boolean gearCheck() {
-		return speedActual < gear * 100;
+		return speedLinear < gear * (500 / totalGear);
 	}
 
 	public void acc() {
@@ -206,6 +226,29 @@ public class Car {
 		}
 	}
 
+	public void reset() {
+		idle = false;
+		gas = false;
+		brake = false;
+		clutch = false;
+		speedLinear = 0f;
+		nosTimeLeft = 0;
+		nosTimeToGive = nosTimeToGiveStandard;
+		nosAmountLeft = nosAmountLeftStandard;
+		nosStrength = nosStrengthStandard;
+		speedActual = 0;
+		distance = 0;
+		gear = 0;
+		audio.stopAll();
+	}
+
+	public String showStats() {
+		return "<html>" + carStyle.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
+				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
+				+ "Amount of gears: " + totalGear + "<br/>" + "Max RPM: " + totalRPM;
+
+	}
+
 	public boolean isGas() {
 		return gas;
 	}
@@ -230,43 +273,43 @@ public class Car {
 		this.clutch = clutch;
 	}
 
-	public float getSpeed() {
+	public double getSpeed() {
 		return speedLinear;
 	}
 
-	public void setSpeed(float speed) {
+	public void setSpeed(double speed) {
 		this.speedLinear = speed;
 	}
 
-	public float getHp() {
+	public double getHp() {
 		return hp;
 	}
 
-	public void setHp(float hp) {
+	public void setHp(double hp) {
 		this.hp = hp;
 	}
 
-	public float getWeightloss() {
+	public double getWeightloss() {
 		return weightloss;
 	}
 
-	public void setWeightloss(float weightloss) {
+	public void setWeightloss(double weightloss) {
 		this.weightloss = weightloss;
 	}
 
-	public float getTotalWeight() {
+	public double getTotalWeight() {
 		return totalWeight;
 	}
 
-	public void setTotalWeight(float totalWeight) {
+	public void setTotalWeight(double totalWeight) {
 		this.totalWeight = totalWeight;
 	}
 
-	public float getSpdinc() {
+	public double getSpdinc() {
 		return spdinc;
 	}
 
-	public void setSpdinc(float spdinc) {
+	public void setSpdinc(double spdinc) {
 		this.spdinc = spdinc;
 	}
 
@@ -302,11 +345,11 @@ public class Car {
 		this.carStyle = carStyle;
 	}
 
-	public float getDistance() {
+	public double getDistance() {
 		return distance;
 	}
 
-	public void setDistance(float distance) {
+	public void setDistance(double distance) {
 		this.distance = distance;
 	}
 

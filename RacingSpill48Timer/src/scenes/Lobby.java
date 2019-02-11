@@ -28,23 +28,28 @@ public class Lobby extends Scene implements Runnable {
 	private JScrollPane scrollPane;
 	private boolean everyoneReady;
 	private Race race;
+	private FixCar fixCarScene;
 	private Thread thread;
 
+	public Lobby(Race race, FixCar fixCarScene) {
 
-	public Lobby(Race race) {
-
+		// Init shit
 		this.race = race;
+		this.fixCarScene = fixCarScene;
 		label = new JLabel("HELLLLLLLLLLLLLLLLOOOOO?!", SwingConstants.CENTER);
 		ready = new JButton("Ready?");
 		fixCar = new JButton("Upgrade or fix my car");
 		start = new JButton("Start race");
-
+		goBack = new JButton("Go back to main menu");
 		scrollPane = new JScrollPane(label);
 		scrollPane.setPreferredSize(new Dimension(500, 300));
 
+		// ActionListeners
 		ready.addActionListener((ActionEvent e) -> player.setReady((player.getReady() + 1) % 2));
-
-		goBack = new JButton("Go back to main menu");
+		fixCar.addActionListener((ActionEvent e) -> {
+			SceneHandler.instance.changeScene(2);
+			fixCarScene.init(player);
+		});
 		goBack.addActionListener((ActionEvent e) -> {
 			if (server != null) {
 				server.join();
@@ -61,6 +66,7 @@ public class Lobby extends Scene implements Runnable {
 			}
 		});
 
+		// Add to JPanel
 		add(scrollPane);
 		add(goBack, BorderLayout.SOUTH);
 		add(ready, BorderLayout.SOUTH);
@@ -102,12 +108,12 @@ public class Lobby extends Scene implements Runnable {
 			case 4:
 				result += outputs[i] + ", ";
 				break;
-				
+
 			case 5:
 				result += "Points: " + outputs[i] + "<br/>";
 				break;
 			case 6:
-				if(Integer.valueOf(outputs[i]) == 1) {
+				if (Integer.valueOf(outputs[i]) == 1) {
 					raceStarted();
 				}
 				n = 0;
@@ -116,22 +122,22 @@ public class Lobby extends Scene implements Runnable {
 
 		}
 		result += "</html>";
-		
-		//Show all players on screen
+
+		// Show all players on screen
 		label.setText(result);
 
-		//Disable start game button
+		// Disable start game button
 		if (everyoneReady)
 			start.setEnabled(true);
 		else
 			start.setEnabled(false);
-		
-		//Disable fix car button
-		if(player.getReady() == 1)
+
+		// Disable fix car button
+		if (player.getReady() == 1)
 			fixCar.setEnabled(false);
 		else
 			fixCar.setEnabled(true);
-		
+
 	}
 
 	/**
@@ -143,6 +149,7 @@ public class Lobby extends Scene implements Runnable {
 		update(player.joinServer());
 		initButtonState();
 		this.server = server;
+		SceneHandler.instance.addClosingListener(player);
 	}
 
 	/**
@@ -154,6 +161,7 @@ public class Lobby extends Scene implements Runnable {
 		player = new Player(name, host, car, ip);
 		update(player.joinServer());
 		initButtonState();
+		SceneHandler.instance.addClosingListener(player);
 	}
 
 	/**
@@ -168,6 +176,7 @@ public class Lobby extends Scene implements Runnable {
 	}
 
 	private void raceStarted() {
+
 		SceneHandler.instance.changeScene(3);
 		race.setPlayer(player);
 		race.setLobby(this);
@@ -176,19 +185,20 @@ public class Lobby extends Scene implements Runnable {
 		thread = new Thread(race);
 		thread.start();
 	}
-	
+
 	/**
-	 * Merely to update lobby once per second
+	 * Merely to update lobby 5 per second
 	 */
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 10.0;
+		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
-		while (SceneHandler.instance.getCurrentScene().getClass().equals(Lobby.class)) {
+		while (SceneHandler.instance.getCurrentScene().getClass().equals(Lobby.class)
+				|| SceneHandler.instance.getCurrentScene().getClass().equals(FixCar.class)) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
@@ -206,6 +216,7 @@ public class Lobby extends Scene implements Runnable {
 				frames = 0;
 			}
 		}
+		System.err.println("thread ended");
 	}
 
 	/*

@@ -74,8 +74,11 @@ public class Player{
 		client.sendRequest("LEAVE#" + name  + "#" +  id);
 	}
 	
+	/**
+	 * UPDATERACE#name#id#finished(0-1)#longtimemillis
+	 */
 	public String updateRace(int finished, long time) {
-		return client.sendRequest("UPDATERACE#" + finished + "#" + time);
+		return client.sendRequest("UPDATERACE#" + name + "#" + id + "#" + finished + "#" + time);
 	}
 
 	public int getHost() {

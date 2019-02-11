@@ -1,6 +1,7 @@
 package handlers;
 
 import adt.Scene;
+import elem.Player;
 import javafx.embed.swing.JFXPanel;
 import scenes.FixCar;
 import scenes.Lobby;
@@ -32,11 +33,15 @@ public class SceneHandler {
 		scenes[2] = new FixCar();
 		scenes[3] = new Race();
 		scenes[4] = new Options();
-		scenes[1] = new Lobby((Race) scenes[3]);
+		scenes[1] = new Lobby((Race) scenes[3], (FixCar) scenes[2]);
 		scenes[0] = new MainMenu((Lobby) scenes[1]);
 		
 		JFXPanel fxPanel = new JFXPanel();
 		windows.add(fxPanel);
+	}
+	
+	public void addClosingListener(Player player) {
+		windows.closing(player);
 	}
 
 	public void changeScene(int scenenr) {
