@@ -16,7 +16,7 @@ public class GameHandler {
 		SceneHandler.instance.changeScene(0);
 		
 		
-		music = new BgMusicListener(9);
+		music = new BgMusicListener(10);
 		
 		// Loop som kjører viss kode basert på scene, hvis i det hele tatt-
 

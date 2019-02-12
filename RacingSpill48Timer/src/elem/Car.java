@@ -53,7 +53,7 @@ public class Car implements Cloneable {
 
 		switch (cartype) {
 		case "M3":
-			hp = 338;
+			hp = 300;
 			totalWeight = 1549;
 			totalGear = 6;
 			totalRPM = 8000;
@@ -96,7 +96,11 @@ public class Car implements Cloneable {
 			break;
 		}
 		audio = new RaceAudio(carStyle);
-		spdinc = (hp + (totalWeight - weightloss)) / 1000;
+		
+		double w = (totalWeight - weightloss);
+		double weightcalc = ( 0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
+		spdinc = (hp / weightcalc) / 100f;
+		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
 	public boolean isHasTurbo() {
@@ -266,6 +270,7 @@ public class Car implements Cloneable {
 		if (nosAmountLeft > 0) {
 			nosTimeLeft = System.currentTimeMillis() + nosTimeToGive;
 			audio.nos();
+			nosAmountLeft--;
 		}
 	}
 

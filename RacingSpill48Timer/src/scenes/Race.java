@@ -115,14 +115,11 @@ public class Race extends Scene implements Runnable {
 		waitTime = System.currentTimeMillis() + 5000;
 		visual.setStartCountDown(false);
 
-
 		racingWindow.add(visual);
 		racingWindow.addKeyListener(keys);
 		racingWindow.requestFocus();
 
 		SceneHandler.instance.justRemove();
-
-
 	}
 
 	public synchronized void endMe() {
