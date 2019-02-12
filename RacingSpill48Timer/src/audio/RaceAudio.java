@@ -8,6 +8,7 @@ public class RaceAudio {
 	private MediaAudio gear;
 	private MediaAudio motor;
 	private MediaAudio turbo;
+	private MediaAudio redline;
 	private MediaAudio nos;
 	private String carname;
 
@@ -38,6 +39,9 @@ public class RaceAudio {
 		if (motor != null && motor.isPlaying()) {
 			motor.stop();
 		}
+		if (redline != null && redline.isPlaying()) {
+			redline.stop();
+		}
 
 		motor = new MediaAudio("/sfx/motorAcc" + carname);
 		motor.play();
@@ -55,6 +59,15 @@ public class RaceAudio {
 		if (motor != null && motor.isPlaying()) {
 			motor.stop();
 		}
+	}
+	
+	public void redline() {
+		if (motor != null && motor.isPlaying()) {
+			motor.stop();
+		}
+		
+		redline = new MediaAudio("/sfx/redline");
+		redline.play();
 	}
 
 	public void nos() {
@@ -90,6 +103,10 @@ public class RaceAudio {
 		if (nos != null && nos.isPlaying()) {
 			nos.stop();
 		}
+		if (redline != null && redline.isPlaying()) {
+			redline.stop();
+		}
 	}
+
 
 }

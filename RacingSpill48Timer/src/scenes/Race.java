@@ -46,7 +46,6 @@ public class Race extends Scene implements Runnable {
 	private long time;
 	private long startTime;
 	private long waitTime;
-	private Random r;
 	private boolean running;
 	private boolean everyoneDone;
 	private boolean cheating;
@@ -55,13 +54,14 @@ public class Race extends Scene implements Runnable {
 	public static int HEIGHT;
 
 	public Race() {
-		r = new Random();
 
 		places = new String[4];
 		places[0] = "Japan";
 		places[1] = "America";
 		places[2] = "Britain";
 		places[3] = "Germany";
+
+		currentPlace = places[0];
 
 		results = new JLabel("Driving");
 		goToLobby = new JButton("Go back to the lobby");
@@ -85,6 +85,12 @@ public class Race extends Scene implements Runnable {
 
 	public void initWindow() {
 
+		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+		keys = new RaceKeyHandler(player.getCar());
+
+		WIDTH = device.getDisplayMode().getWidth();
+		HEIGHT = device.getDisplayMode().getHeight();
+		
 		visual = new RaceVisual(player, this);
 
 		everyoneDone = false;
@@ -95,36 +101,22 @@ public class Race extends Scene implements Runnable {
 		waitTime = System.currentTimeMillis() + 5000;
 		visual.setStartCountDown(false);
 
-		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-		keys = new RaceKeyHandler(player.getCar());
+		racingWindow = SceneHandler.instance.getWindows();
 
-		WIDTH = device.getDisplayMode().getWidth();
-		HEIGHT = device.getDisplayMode().getHeight();
-
-		racingWindow = new JFrame();
-		racingWindow.setTitle("The race");
-		device.setFullScreenWindow(racingWindow);
-//		racingWindow.setBounds(50, 50, 500, 500);
-		racingWindow.setResizable(false);
-		racingWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		racingWindow.setLocationRelativeTo(null);
-		
-		racingWindow.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				try {
-					player.leaveServer();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		});
-		
+		if (SceneHandler.instance.isFullScreen()) {
+			racingWindow.setVisible(false);
+			racingWindow.dispose();
+			racingWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			racingWindow.setUndecorated(true);
+			racingWindow.setVisible(true);
+		}
 
 		racingWindow.add(visual);
 		racingWindow.addKeyListener(keys);
 		racingWindow.requestFocus();
 
-		racingWindow.setVisible(true);
+		SceneHandler.instance.justRemove();
+
 		racingWindow.pack();
 
 	}
@@ -213,7 +205,7 @@ public class Race extends Scene implements Runnable {
 
 		String[] outputs = outtext.split("#");
 
-		String result = "<html>Players: <br/>";
+		String result = "<html>Tracklength: " + currentLength + " meters.<br/><br/>Players: <br/>";
 		int n = 0;
 		for (int i = 1; i < outputs.length; i++) {
 			n++;
@@ -232,7 +224,10 @@ public class Race extends Scene implements Runnable {
 				}
 				break;
 			case 3:
-				result += "Time: " + outputs[i] + "<br/>";
+				if (Long.valueOf(outputs[i]) == -1)
+					result += "DNF<br/>";
+				else
+					result += "Time: " + (Float.valueOf(outputs[i]) / 1000) + " seconds<br/>";
 				n = 0;
 				break;
 			}
@@ -258,23 +253,22 @@ public class Race extends Scene implements Runnable {
 			closeWindow();
 			player.getCar().reset();
 		} else {
+			player.updateRace(0, time);
 		}
 	}
 
 	public void closeWindow() {
+		racingWindow.remove(visual);
 		visual = null;
+		SceneHandler.instance.changeScene(3);
+
 		racingWindow.setVisible(false);
 		racingWindow.dispose();
-	}
-
-	/**
-	 * Creates a new racetrack somewhere in the world and with some length of some
-	 * type.
-	 */
-	public void randomizeConfiguration() {
-		currentPlace = places[r.nextInt(places.length)];
-
-		currentLength = 1000 * (r.nextInt(4) + 1);
+		racingWindow.setUndecorated(false);
+		racingWindow.setExtendedState(JFrame.NORMAL);
+		racingWindow.setBounds(50, 50, 600, 500);
+		racingWindow.setLocationRelativeTo(null);
+		racingWindow.setVisible(true);
 	}
 
 	public Player getPlayer() {
@@ -305,8 +299,8 @@ public class Race extends Scene implements Runnable {
 		return currentLength;
 	}
 
-	public void setCurrentLength(int currentLength) {
-		this.currentLength = currentLength;
+	public void setCurrentLength() {
+		currentLength = player.getTrackLength();
 	}
 
 	public boolean isCheating() {

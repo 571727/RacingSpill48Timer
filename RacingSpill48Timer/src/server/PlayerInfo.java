@@ -62,6 +62,13 @@ public class PlayerInfo {
 	public String getRaceInfo() {
 		return name + "#" + finished + "#" + time;
 	}
+	
+	public void addPointsAndMoney(int amountPlayers, int amountFinished) {
+		if(!(amountPlayers == -1 || amountFinished == -1)) {
+			points += (amountPlayers + 1) / (amountFinished + 1);
+			money += 100f * (0.75f * (amountFinished + 1));
+		}
+	}
 
 	public int getFinished() {
 		return finished;
@@ -86,5 +93,7 @@ public class PlayerInfo {
 	public void setMoney(int money) {
 		this.money = money;
 	}
+
+	
 
 }

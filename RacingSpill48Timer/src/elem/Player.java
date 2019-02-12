@@ -23,7 +23,10 @@ public class Player{
 	private EchoClient client;
 	private Car car;
 	private String carName;
-
+	private Random r;
+	private int points;
+	private int money;
+	private int[] inflation;
 
 	public Player(String name, int host, String car) {
 		this(name, host, car, Config.SERVER);
@@ -36,15 +39,27 @@ public class Player{
 		ready = 0;
 		this.car = new Car(car);
 		carName = car;
-		Random r = new Random();
-		id = r.nextInt(200);
-
+		r = new Random();
+		id = r.nextInt(999);
+		inflation = new int[8];
 		client = new EchoClient(ip);
 
 		// Request stats about lobby and update lobby
 		joinServer();
 	}
 
+	public String getPointsAndMoney() {
+		String result = client.sendRequest("GETPOINTSMONEY#" + name + "#" + id);
+		String[] output = result.split("#");
+		points = Integer.valueOf(output[0]);
+		money = Integer.valueOf(output[1]);
+		return "<html>" + name + ": <br/>" + "Points: " + points + ".<br/>" + "Money: " + money + ".";
+	}
+	
+	public void setPointsAndMoney(int newPoints, int newMoney) {
+		client.sendRequest("SETPOINTSMONEY#" + name + "#" + id + "#" + newPoints + "#" + newMoney);
+	}
+	
 	/**
 	 * JOIN#name+id#host-boolean
 	 */
@@ -65,6 +80,10 @@ public class Player{
 	
 	public void stopRace(){
 		client.sendRequest("STARTRACE#" + host + "#" + 0);
+	}
+	
+	public int getTrackLength() {
+		return Integer.valueOf(client.sendRequest("GETLENGTH"));
 	}
 	
 	/**
@@ -111,6 +130,30 @@ public class Player{
 
 	public void setCar(Car car) {
 		this.car = car;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int getMoney() {
+		return money;
+	}
+
+	public void setMoney(int money) {
+		this.money = money;
+	}
+
+	public int[] getInflation() {
+		return inflation;
+	}
+
+	public void setInflation(int[] inflation) {
+		this.inflation = inflation;
 	}
 
 }

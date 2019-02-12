@@ -2,12 +2,14 @@ package elem;
 
 import audio.RaceAudio;
 
-public class Car {
+public class Car implements Cloneable {
 
 	private boolean gas;
 	private boolean idle;
 	private boolean brake;
 	private boolean clutch;
+	private boolean hasTurbo;
+	private boolean hasNOS;
 	private long nosTimeLeft;
 	private long nosTimeToGive;
 	private int nosTimeToGiveStandard;
@@ -31,20 +33,18 @@ public class Car {
 
 	public Car(String cartype) {
 
-//		function oppdaterFart(evt)
-//		{
-//			likningfart = 
-//		}
+		hasTurbo = false;
+		hasNOS = false;
 
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosTimeToGive = 3000;
 		nosTimeToGiveStandard = 3000;
-		nosAmountLeft = 1;
-		nosAmountLeftStandard = 1;
-		nosStrength = 3.0f;
-		nosStrengthStandard = 3.0f;
-		topSpeed = 400;
+		nosAmountLeft = 0;
+		nosAmountLeftStandard = 0;
+		nosStrength = 0;
+		nosStrengthStandard = 0;
+		topSpeed = 250;
 
 		// Kanskje Lada der kjørelyden er hardbass.
 
@@ -94,6 +94,30 @@ public class Car {
 		}
 		audio = new RaceAudio(carStyle);
 		spdinc = (hp + (totalWeight - weightloss)) / 1000;
+	}
+
+	public boolean isHasTurbo() {
+		return hasTurbo;
+	}
+
+	public void setHasTurbo(boolean hasTurbo) {
+		this.hasTurbo = hasTurbo;
+	}
+
+	public boolean isHasNOS() {
+		return hasNOS;
+	}
+
+	public void setHasNOS(boolean hasNOS) {
+		this.hasNOS = hasNOS;
+	}
+
+	public double getTopSpeed() {
+		return topSpeed;
+	}
+
+	public void setTopSpeed(double topSpeed) {
+		this.topSpeed = topSpeed;
 	}
 
 	public void updateSpeed() {
@@ -155,7 +179,13 @@ public class Car {
 	}
 
 	private boolean gearCheck() {
-		return speedLinear < gear * (500 / totalGear);
+		if (speedLinear < gear * (500 / totalGear)) {
+
+			return true;
+		} else {
+			audio.redline();
+			return false;
+		}
 	}
 
 	public void acc() {
@@ -245,8 +275,12 @@ public class Car {
 	public String showStats() {
 		return "<html>" + carStyle.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
 				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Max RPM: " + totalRPM;
+				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed;
 
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 	public boolean isGas() {
@@ -353,4 +387,31 @@ public class Car {
 		this.distance = distance;
 	}
 
+	public double getNosStrengthStandard() {
+		return nosStrengthStandard;
+	}
+
+	public void setNosStrengthStandard(double nosStrengthStandard) {
+		this.nosStrengthStandard = nosStrengthStandard;
+	}
+
+	public int getNosAmountLeftStandard() {
+		return nosAmountLeftStandard;
+	}
+
+	public void setNosAmountLeftStandard(int nosAmountLeftStandard) {
+		this.nosAmountLeftStandard = nosAmountLeftStandard;
+	}
+
+	/**
+	 * @return radian that represents rpm from -180 to ca. 35 - 40 idk yet
+	 */
+	public double getTachometer() {
+		int gearRep = Integer.valueOf(gear);
+		if (gearRep == 0) {
+			gearRep++;
+		}
+		return (2.1 / gearRep) * speedLinear - 180;
+
+	}
 }

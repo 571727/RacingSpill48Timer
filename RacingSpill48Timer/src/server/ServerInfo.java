@@ -3,6 +3,7 @@ package server;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 /**
@@ -18,9 +19,12 @@ public class ServerInfo {
 	private HashMap<String, PlayerInfo> players;
 	private int started;
 	private int amountFinished;
+	private int length;
+	private Random r;
 
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
+		r = new Random();
 	}
 
 	public int getStarted() {
@@ -73,23 +77,42 @@ public class ServerInfo {
 		return updateLobby();
 	}
 
+	/**
+	 * input[2] -> 1 = race started. 0 = race ready to start
+	 */
 	public void startRace(String[] input) {
 		if (Integer.valueOf(input[1]) == 1) {
 			if (Integer.valueOf(input[2]) == 1) {
 				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 					entry.getValue().newRace();
 				}
-
+				length = randomizeConfiguration();
+			} else {
 				amountFinished = 0;
+				length = 0;
 			}
 			started = Integer.valueOf(input[2]);
 		}
+	}
+
+	/**
+	 * Creates a new racetrack somewhere in the world and with some length of some
+	 * type.
+	 * 
+	 * @return length of the track
+	 */
+	public int randomizeConfiguration() {
+		return 1000 * (r.nextInt(4) + 1);
 	}
 
 	public void leave(String[] input) {
 		players.remove(input[1] + input[2]);
 	}
 
+	public String getTrackLength() {
+		return String.valueOf(length);
+	}
+	
 	/**
 	 * UPDATERACE#name#id#finished(0-1)#longtimemillis
 	 * 
@@ -99,9 +122,12 @@ public class ServerInfo {
 
 		PlayerInfo player = players.get(input[1] + input[2]);
 
-		// If racing and
+		// If racing, finished and is first time telling that it has finished
 		if (started == 1 && Integer.valueOf(input[3]) == 1 && player.getFinished() != 1) {
-			player.setPoints(10 / (amountFinished + 1));
+			if(Long.valueOf(input[4]) != -1)
+				player.addPointsAndMoney(players.size(), amountFinished);
+			else
+				player.addPointsAndMoney(-1, -1);
 			amountFinished++;
 		}
 
@@ -121,6 +147,18 @@ public class ServerInfo {
 		}
 
 		return result;
+	}
+	
+	public void setPointsMoney(String[] input) {
+		PlayerInfo player = players.get(input[1] + input[2]);
+		player.setPoints(Integer.valueOf(input[3]));
+		player.setMoney(Integer.valueOf(input[4]));
+	}
+
+	public String getPointsMoney(String[] input) {
+		PlayerInfo player = players.get(input[1] + input[2]);
+		
+		return player.getPoints() + "#" + player.getMoney();
 	}
 
 }

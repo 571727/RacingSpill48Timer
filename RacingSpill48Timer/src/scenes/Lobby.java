@@ -181,8 +181,10 @@ public class Lobby extends Scene implements Runnable {
 		SceneHandler.instance.changeScene(3);
 		race.setPlayer(player);
 		race.setLobby(this);
-		race.randomizeConfiguration();
 		race.initWindow();
+		race.setCurrentLength();
+		player.setReady(0);
+		player.updateLobbyFromServer();
 		thread = new Thread(race);
 		thread.start();
 	}

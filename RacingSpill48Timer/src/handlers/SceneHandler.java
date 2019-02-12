@@ -15,8 +15,10 @@ public class SceneHandler {
 	public static SceneHandler instance;
 	
 	private Windows windows;
+	
 	private Scene[] scenes;
 	private int currentScene;
+	private boolean fullscreen;
 	
 	
 	public SceneHandler(int numScenes) {
@@ -27,6 +29,7 @@ public class SceneHandler {
 		else
 			instance = this;
 
+		fullscreen = true;
 		windows = new Windows(600, 500, "Racing shit");
 		scenes = new Scene[numScenes];
 		
@@ -49,7 +52,16 @@ public class SceneHandler {
 		windows.remove(scenes[currentScene]);
 		windows.add(scenes[scenenr]);
 		currentScene = scenenr;
+
+		windows.invalidate();
+		windows.validate();
 		
+		windows.repaint();
+	}
+	
+	public void justRemove() {
+		windows.remove(scenes[currentScene]);
+
 		windows.invalidate();
 		windows.validate();
 		
@@ -59,4 +71,17 @@ public class SceneHandler {
 	public Scene getCurrentScene() {
 		return scenes[currentScene];
 	}
+	
+	public Windows getWindows() {
+		return windows;
+	}
+
+	public void setWindows(Windows windows) {
+		this.windows = windows;
+	}
+
+	public boolean isFullScreen() {
+		return fullscreen;
+	}
+
 }

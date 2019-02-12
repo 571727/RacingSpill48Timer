@@ -11,38 +11,42 @@ public class BgMusicListener {
 	private Random r = new Random();
 	private int lastPlayed;
 	private MediaAudio media;
-	private String[] songs;
+	private int songs;
 
-	public BgMusicListener(String[] songs) {
+	public BgMusicListener(int songs) {
 		// Maybe use action for something later, cause it's awesome
 		lastPlayed = -1;
 		this.songs = songs;
-		media = new MediaAudio("/music/" + findRandomSong());
-
+		playAndChooseNextRandomly();
 	}
 
 	public void playAndChooseNextRandomly() {
-		attempt();
+		if(media != null && media.isPlaying())
+			media.stop();
+		media = new MediaAudio("/music/music" + findRandomSong());
+		
+		media.play();
+		media.getMediaPlayer().setOnEndOfMedia(() -> playAndChooseNextRandomly());
 	}
 
 	public void turnOff() {
 	}
 
-	//Denne kjører bare to ganger
-	private void attempt() {
-		media.play();
-
-		media.getMediaPlayer().setOnEndOfMedia(() -> media.playNewSong("/music/" + findRandomSong()));
-	}
-
-	private String findRandomSong() {
-		int nextSong = 0;
+	private int findRandomSong() {
+		int nextSong = 1;
 
 		do {
-			nextSong = r.nextInt(songs.length);
+			nextSong = r.nextInt(songs) + 1;
 		} while (nextSong == lastPlayed);
+		lastPlayed = nextSong;
+		return nextSong;
+	}
 
-		return songs[nextSong];
+	public void playOrStop() {
+		if(media != null && media.isPlaying())
+			media.stop();
+		else
+			playAndChooseNextRandomly();
 	}
 
 }
