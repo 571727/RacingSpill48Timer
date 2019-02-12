@@ -34,7 +34,10 @@ public class RaceVisual extends Canvas {
 	private boolean running;
 	private long startTime;
 	private double currentBackground;
+	private int x;
 	private int y;
+	private int width;
+	private int height;
 	private int baller = 0;
 	private int widthTachometer;
 	private int heightTachometer;
@@ -50,6 +53,7 @@ public class RaceVisual extends Canvas {
 	private int ySpeed;
 	private int xDistance;
 	private int yDistance;
+	private BufferStrategy bs;
 
 	public RaceVisual(Player player, Race race) {
 		this.player = player;
@@ -99,28 +103,43 @@ public class RaceVisual extends Canvas {
 
 	public void tick() {
 		if (player.getCar().isGas() && !player.getCar().isClutch()) {
+			if(player.getCar().isNOSON()) {
+				y = -18;
+				x = -16;
+				width = Race.WIDTH + 32;
+				height = Race.HEIGHT + 15;
+			} else {
 			y = -9;
-		} else
+			x = -8;
+			width = Race.WIDTH + 16;
+			height = Race.HEIGHT + 9;
+			}
+		} else {
 			y = -2;
+			x = -8;
+			width = Race.WIDTH + 16;
+			height = Race.HEIGHT + 9;
+		}
 
 		currentBackground = ((currentBackground + player.getCar().getSpeedActual() / 100) % backgroundImages.length);
 	}
 
-	public void render() {
+	public void render(Graphics g) {
+		try {
+			bs = this.getBufferStrategy();
+			if (bs == null) {
+				this.createBufferStrategy(3);
+				return;
+			}
+			g = bs.getDrawGraphics();
 
-		BufferStrategy bs = this.getBufferStrategy();
-		if (bs == null) {
-			this.createBufferStrategy(3);
-			return;
-		}
-		Graphics g = bs.getDrawGraphics();
+			g.drawImage(backgroundImages[(int) currentBackground], 0, 0, Race.WIDTH, Race.HEIGHT, null);
+			
+			g.drawImage(carImage, x, y, width, height, null);
 
-		g.drawImage(backgroundImages[(int) currentBackground], 0, 0, Race.WIDTH, Race.HEIGHT, null);
-		g.drawImage(carImage, -8, y, Race.WIDTH + 16, Race.HEIGHT + 9, null);
-
-		// DEBUG
-		g.setFont(font);
-		g.setColor(Color.green);
+			// DEBUG
+			g.setFont(font);
+			g.setColor(Color.green);
 //		g.drawString("SpeedActual: " + String.valueOf(player.getCar().getSpeedActual()), 100, 100);
 //		g.drawString("Tachometer rotation: " + String.valueOf(player.getCar().getTachometer()), 100, 175);
 //		g.drawString("SpeedLinear: " + String.valueOf(player.getCar().getSpeedLinear()), 100, 125);
@@ -132,69 +151,75 @@ public class RaceVisual extends Canvas {
 //		g.drawString("Distance covered: " + String.valueOf(player.getCar().getDistance()), 100, 350);
 //		g.drawString(String.valueOf(System.currentTimeMillis() - startTime), 100, 375);
 
-		// Prerace stuff
+			// Prerace stuff
 
-		if (startCountDown) {
-			if (1000 > System.currentTimeMillis() - startTime) {
-				g.setColor(Color.red);
-				baller = 1;
-			} else if (2000 > System.currentTimeMillis() - startTime) {
-				g.setColor(Color.red);
-				baller = 2;
-			} else if (3000 > System.currentTimeMillis() - startTime) {
-				g.setColor(Color.red);
-				baller = 3;
-			} else if (4000 > System.currentTimeMillis() - startTime) {
-				g.setColor(Color.green);
-				baller = 3;
-			} else {
-				baller = 0;
+			if (startCountDown) {
+				if (1000 > System.currentTimeMillis() - startTime) {
+					g.setColor(Color.red);
+					baller = 1;
+				} else if (2000 > System.currentTimeMillis() - startTime) {
+					g.setColor(Color.red);
+					baller = 2;
+				} else if (3000 > System.currentTimeMillis() - startTime) {
+					g.setColor(Color.red);
+					baller = 3;
+				} else if (4000 > System.currentTimeMillis() - startTime) {
+					g.setColor(Color.green);
+					baller = 3;
+				} else {
+					baller = 0;
+				}
+			} else if (!running) {
+				g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - 100, Race.HEIGHT / 6);
 			}
-		} else if (!running) {
-			g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - 100, Race.HEIGHT / 6);
+
+			if (player.getCar().isGearTooHigh())
+				g.drawString("YOU'VE SHIFTED TOO EARLY!!!", Race.WIDTH / 2 - 100, Race.HEIGHT / 7);
+
+			for (int i = 0; i < baller; i++) {
+				g.fillOval(Race.WIDTH / 2 + (-100 + (75 * i)), Race.HEIGHT / 3, 50, 50);
+			}
+
+			if (race.isCheating()) {
+				g.drawString("You went too early!!!", Race.WIDTH / 2 - 50, Race.HEIGHT / 8);
+			}
+
+			// Tachometer stuff
+			Graphics2D g2d = (Graphics2D) g;
+			g.drawImage(tachometer, xTachometer, yTachometer, widthTachometer, heightTachometer, null);
+
+			AffineTransform trans = new AffineTransform();
+			trans.setTransform(identity);
+			trans.translate(xTachopointer,
+					yTachopointer - (tachopointer.getHeight() * (0.005 * player.getCar().getTachometer() + 0.85)));
+			trans.scale(scaleXTachopointer, scaleYTachopointer);
+			trans.rotate(Math.toRadians(player.getCar().getTachometer()));
+			g2d.drawImage(tachopointer, trans, this);
+
+			g.setColor(Color.white);
+			g.drawString(String.format("%.0f", player.getCar().getSpeedActual()), xSpeed, ySpeed);
+			if (player.getCar().getGear() > 0)
+				g.drawString(String.valueOf(player.getCar().getGear()), xGear, yGear);
+			else
+				g.drawString("N", xGear, yGear);
+
+			g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), xDistance, yDistance);
+			g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), xDistance, yDistance + 50);
+			g.drawString("Distance covered: " + String.format("%.0f", player.getCar().getDistance()), xDistance,
+					yDistance + 100);
+			if (System.currentTimeMillis() - startTime - 3000 < 1000000
+					&& System.currentTimeMillis() - startTime - 3000 >= 0)
+				g.drawString("Time in sec: "
+						+ String.format("%.2f", Float.valueOf(System.currentTimeMillis() - startTime - 3000) / 1000),
+						xDistance,
+						yDistance + 150);
+
+			g.drawString("NOS bottles left: " + String.valueOf(player.getCar().getNosAmountLeft()), xDistance, yDistance + 200);
+		} finally {
+			if (g != null) {
+				g.dispose();
+			}
 		}
-
-		if (player.getCar().isGearTooHigh())
-			g.drawString("YOU'VE SHIFTED TOO EARLY!!!", Race.WIDTH / 2 - 100, Race.HEIGHT / 7);
-
-		for (int i = 0; i < baller; i++) {
-			g.fillOval(Race.WIDTH / 2 + (-100 + (75 * i)), Race.HEIGHT / 3, 50, 50);
-		}
-
-		if (race.isCheating()) {
-			g.drawString("You went too early!!!", Race.WIDTH / 2 - 50, Race.HEIGHT / 8);
-		}
-
-		// Tachometer stuff
-		Graphics2D g2d = (Graphics2D) g;
-		g.drawImage(tachometer, xTachometer, yTachometer, widthTachometer, heightTachometer, null);
-
-		AffineTransform trans = new AffineTransform();
-		trans.setTransform(identity);
-		trans.translate(xTachopointer,
-				yTachopointer - (tachopointer.getHeight() * (0.005 * player.getCar().getTachometer() + 0.85)));
-		trans.scale(scaleXTachopointer, scaleYTachopointer);
-		trans.rotate(Math.toRadians(player.getCar().getTachometer()));
-		g2d.drawImage(tachopointer, trans, this);
-
-		g.setColor(Color.white);
-		g.drawString(String.format("%.0f", player.getCar().getSpeedActual()), xSpeed, ySpeed);
-		if (player.getCar().getGear() > 0)
-			g.drawString(String.valueOf(player.getCar().getGear()), xGear, yGear);
-		else
-			g.drawString("N", xGear, yGear);
-		
-		g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), xDistance, yDistance);
-		g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), xDistance, yDistance + 50);
-		g.drawString("Distance covered: " + String.format("%.0f", player.getCar().getDistance()), xDistance, yDistance + 100);
-		if (System.currentTimeMillis() - startTime - 3000 < 1000000
-				&& System.currentTimeMillis() - startTime - 3000 >= 0)
-			g.drawString(
-					"Time in sec: "
-							+ String.format("%.2f", Float.valueOf(System.currentTimeMillis() - startTime - 3000) / 1000),
-					100, 375);
-
-		g.dispose();
 		bs.show();
 	}
 

@@ -29,15 +29,15 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		title = new JLabel("Some racing game");
+		title = new JLabel("Some racing game v.1.02");
 		tutorial = new JLabel("<html>These are all the controls:<br/>"
 				+ "Throttle: W<br/>"
 				+ "Clutch: Space<br/>"
 				+ "Shift: UP-LShift, DOWN-LCtrl<br/>"
 				+ "NOS: E<br/>"
 				+ "Brakes: S</html>");
-		title.setPreferredSize(new Dimension(500,25));
-		tutorial.setPreferredSize(new Dimension(500,200));
+		title.setPreferredSize(new Dimension(500,20));
+		tutorial.setPreferredSize(new Dimension(500,150));
 		
 		// Eventlisteners
 		options.addActionListener((ActionEvent e) -> {
@@ -80,9 +80,10 @@ public class MainMenu extends Scene {
 		serverHandler.createNew();
 
 		SceneHandler.instance.changeScene(1);
-
-		lobby.createNewLobby(name, 1, car, serverHandler);
 		thread = new Thread(lobby);
+		
+		lobby.createNewLobby(name, 1, car, serverHandler, thread);
+		
 		thread.start();
 	}
 
@@ -122,9 +123,10 @@ public class MainMenu extends Scene {
 			return;
 		
 		SceneHandler.instance.changeScene(1);
-
-		lobby.joinNewLobby(name, 0, car, ip);
 		thread = new Thread(lobby);
+		
+		lobby.joinNewLobby(name, 0, car, ip, thread);
+		
 		thread.start();
 	}
 

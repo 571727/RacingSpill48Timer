@@ -127,8 +127,19 @@ public class ServerInfo {
 
 		// If racing, finished and is first time telling that it has finished
 		if (started == 1 && Integer.valueOf(input[3]) == 1 && player.getFinished() != 1) {
-			if(Long.valueOf(input[4]) != -1)
-				player.addPointsAndMoney(players.size(), amountFinished);
+			
+			if(Long.valueOf(input[4]) != -1) {
+				
+				int amountFaster = 0;
+				
+				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
+					if(entry.getValue().getFinished() == 1 && entry.getValue().getTime() < Long.valueOf(input[4])) {
+						amountFaster++;
+					}
+				}
+				
+				player.addPointsAndMoney(players.size(), amountFaster);
+			}
 			else
 				player.addPointsAndMoney(-1, -1);
 			amountFinished++;

@@ -19,9 +19,12 @@ public class SceneHandler {
 	private Scene[] scenes;
 	private int currentScene;
 	private boolean fullscreen;
+
+	public int HEIGHT;
+	public int WIDTH;
 	
 	
-	public SceneHandler(int numScenes) {
+	public SceneHandler(int numScenes, Options options) {
 		// Make this class static
 		if (instance != null)
 			// Destroy myself
@@ -35,7 +38,7 @@ public class SceneHandler {
 		
 		scenes[2] = new FixCar();
 		scenes[3] = new Race();
-		scenes[4] = new Options();
+		scenes[4] = options;
 		scenes[1] = new Lobby((Race) scenes[3], (FixCar) scenes[2]);
 		scenes[0] = new MainMenu((Lobby) scenes[1]);
 		
@@ -79,9 +82,22 @@ public class SceneHandler {
 	public void setWindows(Windows windows) {
 		this.windows = windows;
 	}
+	
+	public void setFullScreen(boolean b) {
+		fullscreen = b;
+	}
 
 	public boolean isFullScreen() {
 		return fullscreen;
+	}
+
+	public int getWIDTH() {
+		return WIDTH;
+	}
+
+	public void setHEIGHT(int i) {
+		HEIGHT = i;
+		WIDTH = HEIGHT * 16 / 9;
 	}
 
 }

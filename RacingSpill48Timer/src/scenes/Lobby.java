@@ -31,6 +31,8 @@ public class Lobby extends Scene implements Runnable {
 	private FixCar fixCarScene;
 	private Thread thread;
 	private boolean gameEnded;
+	private Thread lobbyThread;
+	private boolean started;
 
 	public Lobby(Race race, FixCar fixCarScene) {
 
@@ -84,7 +86,7 @@ public class Lobby extends Scene implements Runnable {
 		everyoneReady = true;
 		String[] outputs = string.split("#");
 		int racesLeft = Integer.valueOf(player.getRacesLeft());
-		
+
 		String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
 		int n = 0;
 		for (int i = 1; i < outputs.length; i++) {
@@ -124,7 +126,7 @@ public class Lobby extends Scene implements Runnable {
 
 		}
 		result += "</html>";
-		
+
 		if (racesLeft == 0 && Integer.valueOf(outputs[6]) != 1) {
 			endGame();
 			return;
@@ -147,11 +149,12 @@ public class Lobby extends Scene implements Runnable {
 	}
 
 	private void endGame() {
+		player.getCar().reset();
 		gameEnded = true;
 		start.setEnabled(false);
 		fixCar.setEnabled(false);
 		ready.setEnabled(false);
-		label.setText("<html>And the winner is: " + player.getWinner());
+		label.setText("And the winner is: " + player.getWinner());
 		player.leaveServer();
 	}
 
@@ -159,7 +162,8 @@ public class Lobby extends Scene implements Runnable {
 	 * @param name - username
 	 * @param host - int value (0,1) represents boolean
 	 */
-	public void createNewLobby(String name, int host, String car, ServerHandler server) {
+	public void createNewLobby(String name, int host, String car, ServerHandler server, Thread lobbyThread) {
+		this.lobbyThread = lobbyThread;
 		gameEnded = false;
 		player = new Player(name, host, car);
 		player.createNewRaces();
@@ -174,7 +178,8 @@ public class Lobby extends Scene implements Runnable {
 	 * @param host - int value (0,1) represents boolean
 	 * @param ip
 	 */
-	public void joinNewLobby(String name, int host, String car, String ip) {
+	public void joinNewLobby(String name, int host, String car, String ip, Thread lobbyThread) {
+		this.lobbyThread = lobbyThread;
 		gameEnded = false;
 		player = new Player(name, host, car, ip);
 		update(player.joinServer());
@@ -194,16 +199,20 @@ public class Lobby extends Scene implements Runnable {
 	}
 
 	private void raceStarted() {
-
-		SceneHandler.instance.changeScene(3);
-		race.setPlayer(player);
-		race.setLobby(this);
-		race.initWindow();
-		race.setCurrentLength();
-		player.setReady(0);
-		player.updateLobbyFromServer();
-		thread = new Thread(race);
-		thread.start();
+		if (!started) {
+			started = true;
+			SceneHandler.instance.changeScene(3);
+			race.setPlayer(player);
+			race.setLobby(this);
+			race.setLobbyThread(lobbyThread);
+			race.initWindow();
+			race.setCurrentLength();
+			player.setReady(0);
+			player.updateLobbyFromServer();
+			thread = new Thread(race);
+			System.err.println("starting next thread");
+			thread.start();
+		}
 	}
 
 	/**
@@ -211,6 +220,7 @@ public class Lobby extends Scene implements Runnable {
 	 */
 	@Override
 	public void run() {
+		started = false;
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
@@ -228,8 +238,6 @@ public class Lobby extends Scene implements Runnable {
 				delta--;
 				frames++;
 			}
-//			if (running)
-//				SceneHandler.instance.getCurrentScene().render();
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
@@ -237,7 +245,7 @@ public class Lobby extends Scene implements Runnable {
 				frames = 0;
 			}
 		}
-		System.err.println("thread ended");
+
 	}
 
 	/*

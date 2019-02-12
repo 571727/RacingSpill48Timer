@@ -3,6 +3,7 @@ package audio;
 import java.io.File;
 
 import elem.RaceVisual;
+import handlers.GameHandler;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -15,6 +16,11 @@ public class MediaAudio {
 	public MediaAudio(String file) {
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);
+		setVolume();
+	}
+	
+	public void setVolume() {
+		mediaPlayer.setVolume(GameHandler.volume);
 	}
 
 	public void play() {
@@ -28,14 +34,6 @@ public class MediaAudio {
 	public boolean isPlaying() {
 		return mediaPlayer.getStatus().equals(Status.PLAYING);
 	}
-
-	public void playNewSong(String file) {
-		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
-		mediaPlayer = new MediaPlayer(hit);
-		
-		mediaPlayer.play();
-	}
-	
 	
 	public Media getHit() {
 		return hit;

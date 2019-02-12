@@ -29,7 +29,8 @@ public class BgMusicListener {
 		media.getMediaPlayer().setOnEndOfMedia(() -> playAndChooseNextRandomly());
 	}
 
-	public void turnOff() {
+	public void updateVolume() {
+		media.setVolume();
 	}
 
 	private int findRandomSong() {

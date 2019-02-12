@@ -110,6 +110,14 @@ public class PlayerInfo {
 		this.carName = carName;
 	}
 
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+
 	
 
 }

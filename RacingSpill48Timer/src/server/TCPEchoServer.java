@@ -40,13 +40,13 @@ public class TCPEchoServer {
 	public void process() {
 
 		try {
-			System.out.println("SERVER ACCEPTING");
+//			System.out.println("SERVER ACCEPTING");
 			// sitter her og venter.
 			Socket connectionSocket = welcomeSocket.accept();
 
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 			String text = inFromClient.readLine();
-			System.out.println("SERVER RECEIVED: " + text);
+//			System.out.println("SERVER RECEIVED: " + text);
 			String outtext = understandRequest(text);
 
 			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
@@ -54,7 +54,7 @@ public class TCPEchoServer {
 			int n = 0;
 			do {
 
-				System.out.println("SERVER SENDING: " + outtext);
+//				System.out.println("SERVER SENDING: " + outtext);
 				if (outtext == null) {
 					outtext = "";
 				}

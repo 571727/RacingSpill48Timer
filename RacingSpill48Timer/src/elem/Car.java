@@ -11,6 +11,7 @@ public class Car implements Cloneable {
 	private boolean hasTurbo;
 	private boolean hasNOS;
 	private boolean gearTooHigh;
+	private boolean NOSON;
 	private long nosTimeLeft;
 	private long nosTimeToGive;
 	private int nosTimeToGiveStandard;
@@ -135,8 +136,12 @@ public class Car implements Cloneable {
 				}
 				idle = false;
 
-				if (nosTimeLeft > System.currentTimeMillis())
+				if (nosTimeLeft > System.currentTimeMillis()) {
 					speedLinear += nosStrength;
+					NOSON = true;
+				} else {
+					NOSON = false;
+				}
 			} else {
 
 				if (speedLinear > 0)
@@ -429,5 +434,21 @@ public class Car implements Cloneable {
 
 	public void setGearTooHigh(boolean gearTooHigh) {
 		this.gearTooHigh = gearTooHigh;
+	}
+
+	public int getNosAmountLeft() {
+		return nosAmountLeft;
+	}
+
+	public void setNosAmountLeft(int nosAmountLeft) {
+		this.nosAmountLeft = nosAmountLeft;
+	}
+
+	public boolean isNOSON() {
+		return NOSON;
+	}
+
+	public void setNOSON(boolean nOSON) {
+		NOSON = nOSON;
 	}
 }

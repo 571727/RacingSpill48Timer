@@ -1,12 +1,10 @@
 package scenes;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -88,8 +86,24 @@ public class Race extends Scene implements Runnable {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 		keys = new RaceKeyHandler(player.getCar());
 
-		WIDTH = device.getDisplayMode().getWidth();
-		HEIGHT = device.getDisplayMode().getHeight();
+		
+
+		racingWindow = SceneHandler.instance.getWindows();
+
+		racingWindow.setVisible(false);
+		racingWindow.dispose();
+		if (SceneHandler.instance.isFullScreen()) {
+			WIDTH = device.getDisplayMode().getWidth();
+			HEIGHT = device.getDisplayMode().getHeight();
+			racingWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			racingWindow.setUndecorated(true);
+		} else {
+			WIDTH = SceneHandler.instance.WIDTH;
+			HEIGHT = SceneHandler.instance.HEIGHT;
+			racingWindow.setBounds(10, 10, WIDTH, HEIGHT);
+			racingWindow.setLocationRelativeTo(null);
+		}
+		racingWindow.setVisible(true);
 		
 		visual = new RaceVisual(player, this);
 
@@ -101,15 +115,6 @@ public class Race extends Scene implements Runnable {
 		waitTime = System.currentTimeMillis() + 5000;
 		visual.setStartCountDown(false);
 
-		racingWindow = SceneHandler.instance.getWindows();
-
-		if (SceneHandler.instance.isFullScreen()) {
-			racingWindow.setVisible(false);
-			racingWindow.dispose();
-			racingWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
-			racingWindow.setUndecorated(true);
-			racingWindow.setVisible(true);
-		}
 
 		racingWindow.add(visual);
 		racingWindow.addKeyListener(keys);
@@ -117,8 +122,16 @@ public class Race extends Scene implements Runnable {
 
 		SceneHandler.instance.justRemove();
 
-		racingWindow.pack();
 
+	}
+
+	public synchronized void endMe() {
+		try {
+			lobbyThread.join();
+			System.err.println("thread ended");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void tick() {
@@ -172,6 +185,9 @@ public class Race extends Scene implements Runnable {
 		double delta = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
+
+		endMe();
+
 		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !everyoneDone) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
@@ -188,8 +204,10 @@ public class Race extends Scene implements Runnable {
 
 			}
 			frames++;
-			if (visual != null)
-				visual.render();
+			if (visual != null) {
+				Graphics g = null;
+				visual.render(g);
+			}
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS RACEEE: " + frames);
@@ -200,7 +218,6 @@ public class Race extends Scene implements Runnable {
 
 	private void updateResults() {
 		everyoneDone = true;
-
 		String outtext = player.updateRace(1, time);
 
 		String[] outputs = outtext.split("#");
@@ -261,7 +278,8 @@ public class Race extends Scene implements Runnable {
 		racingWindow.remove(visual);
 		visual = null;
 		SceneHandler.instance.changeScene(3);
-
+		racingWindow.removeKeyListener(keys);
+		keys = null;
 		racingWindow.setVisible(false);
 		racingWindow.dispose();
 		racingWindow.setUndecorated(false);
@@ -309,6 +327,10 @@ public class Race extends Scene implements Runnable {
 
 	public void setCheating(boolean cheating) {
 		this.cheating = cheating;
+	}
+
+	public void setLobbyThread(Thread lobbyThread) {
+		this.lobbyThread = lobbyThread;
 	}
 
 }

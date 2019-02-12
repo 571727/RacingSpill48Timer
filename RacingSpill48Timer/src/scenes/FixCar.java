@@ -70,6 +70,7 @@ public class FixCar extends Scene {
 				player.setInflation(temp);
 
 				init(player);
+				player.getCar().reset();
 			}
 		});
 		buyPoints.addActionListener((ActionEvent e) -> {
@@ -82,6 +83,7 @@ public class FixCar extends Scene {
 				player.setInflation(temp);
 
 				init(player);
+				player.getCar().reset();
 			}
 		});
 
