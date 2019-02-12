@@ -99,6 +99,18 @@ public class Player{
 	public String updateRace(int finished, long time) {
 		return client.sendRequest("UPDATERACE#" + name + "#" + id + "#" + finished + "#" + time);
 	}
+	
+	public String getRacesLeft() {
+		return client.sendRequest("GETRACESLEFT");
+	}
+	
+	public String getWinner() {
+		return client.sendRequest("WINNER");
+	}
+	
+	public void createNewRaces() {
+		client.sendRequest("NEWRACES");
+	}
 
 	public int getHost() {
 		return host;
@@ -155,5 +167,7 @@ public class Player{
 	public void setInflation(int[] inflation) {
 		this.inflation = inflation;
 	}
+
+
 
 }

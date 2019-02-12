@@ -10,6 +10,7 @@ public class Car implements Cloneable {
 	private boolean clutch;
 	private boolean hasTurbo;
 	private boolean hasNOS;
+	private boolean gearTooHigh;
 	private long nosTimeLeft;
 	private long nosTimeToGive;
 	private int nosTimeToGiveStandard;
@@ -35,7 +36,8 @@ public class Car implements Cloneable {
 
 		hasTurbo = false;
 		hasNOS = false;
-
+		gearTooHigh = false;
+		
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosTimeToGive = 3000;
@@ -124,7 +126,13 @@ public class Car implements Cloneable {
 		if (!brake) {
 
 			if (gas && !clutch && gearCheck()) {
-				speedLinear += spdinc;
+				if (speedLinear < ((gear - 1) * (500 / totalGear) - 35)) {
+					speedLinear += spdinc / 4 * 3;
+					gearTooHigh = true;
+				} else {
+					speedLinear += spdinc;
+					gearTooHigh = false;
+				}
 				idle = false;
 
 				if (nosTimeLeft > System.currentTimeMillis())
@@ -413,5 +421,13 @@ public class Car implements Cloneable {
 		}
 		return (2.1 / gearRep) * speedLinear - 180;
 
+	}
+
+	public boolean isGearTooHigh() {
+		return gearTooHigh;
+	}
+
+	public void setGearTooHigh(boolean gearTooHigh) {
+		this.gearTooHigh = gearTooHigh;
 	}
 }

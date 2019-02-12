@@ -20,6 +20,7 @@ public class ServerInfo {
 	private int started;
 	private int amountFinished;
 	private int length;
+	private int races;
 	private Random r;
 
 	public ServerInfo() {
@@ -83,6 +84,8 @@ public class ServerInfo {
 	public void startRace(String[] input) {
 		if (Integer.valueOf(input[1]) == 1) {
 			if (Integer.valueOf(input[2]) == 1) {
+				races--;
+				
 				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 					entry.getValue().newRace();
 				}
@@ -102,7 +105,7 @@ public class ServerInfo {
 	 * @return length of the track
 	 */
 	public int randomizeConfiguration() {
-		return 1000 * (r.nextInt(4) + 1);
+		return 500 * (r.nextInt(4) + 1);
 	}
 
 	public void leave(String[] input) {
@@ -159,6 +162,26 @@ public class ServerInfo {
 		PlayerInfo player = players.get(input[1] + input[2]);
 		
 		return player.getPoints() + "#" + player.getMoney();
+	}
+
+	public void newRaces() {
+		races = 9;
+	}
+
+	public String getRacesLeft() {
+		return String.valueOf(races);
+	}
+	
+	public String getPlayerWithMostPoints() {
+		PlayerInfo winner = null;
+		
+		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
+			if(winner == null || entry.getValue().getPoints() > winner.getPoints()) {
+				winner = entry.getValue();
+			}
+		}
+		
+		return winner.getName() + ", " + winner.getCarName();
 	}
 
 }

@@ -110,6 +110,13 @@ public class TCPEchoServer {
 			break;
 		case "GETPOINTSMONEY":
 			return info.getPointsMoney(input);
+		case "NEWRACES":
+			info.newRaces();
+			break;
+		case "GETRACESLEFT":
+			return info.getRacesLeft();
+		case "WINNER":
+			return info.getPlayerWithMostPoints();
 		}
 
 		return null;

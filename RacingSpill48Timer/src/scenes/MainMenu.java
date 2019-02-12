@@ -1,13 +1,13 @@
 package scenes;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import adt.Scene;
-import elem.Player;
-import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
 
@@ -16,6 +16,8 @@ public class MainMenu extends Scene {
 	private JButton options;
 	private JButton host;
 	private JButton join;
+	private JLabel title;
+	private JLabel tutorial;
 	private Thread thread;
 	private ServerHandler serverHandler;
 	private Lobby lobby;
@@ -27,7 +29,15 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-
+		title = new JLabel("Some racing game");
+		tutorial = new JLabel("<html>These are all the controls:<br/>"
+				+ "Throttle: W<br/>"
+				+ "Clutch: Space<br/>"
+				+ "Shift: UP-LShift, DOWN-LCtrl<br/>"
+				+ "NOS: E<br/>"
+				+ "Brakes: S</html>");
+		title.setPreferredSize(new Dimension(500,25));
+		tutorial.setPreferredSize(new Dimension(500,200));
 		
 		// Eventlisteners
 		options.addActionListener((ActionEvent e) -> {
@@ -38,15 +48,13 @@ public class MainMenu extends Scene {
 		join.addActionListener((ActionEvent e) -> join());
 
 		// Add to jpanel
+		add(title);
 		add(options);
 		add(host);
 		add(join);
-
+		add(tutorial);
 	}
 
-	/**
-	 * FIXME om man trykker cancel går man videre med null verdier.
-	 */
 
 	private void host() {
 		// init server and player and then go to lobby
