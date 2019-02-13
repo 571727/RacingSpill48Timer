@@ -104,10 +104,10 @@ public class RaceVisual extends Canvas {
 	public void tick() {
 		if (player.getCar().isGas() && !player.getCar().isClutch()) {
 			if(player.getCar().isNOSON()) {
-				y = -18;
+				y = -15;
 				x = -16;
 				width = Race.WIDTH + 32;
-				height = Race.HEIGHT + 15;
+				height = Race.HEIGHT + 16;
 			} else {
 			y = -9;
 			x = -8;

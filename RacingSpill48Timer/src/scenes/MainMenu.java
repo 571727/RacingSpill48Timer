@@ -29,7 +29,7 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		title = new JLabel("Some racing game v.1.03");
+		title = new JLabel("Some racing game v.1.1");
 		tutorial = new JLabel("<html>These are all the controls:<br/>"
 				+ "Throttle: W<br/>"
 				+ "Clutch: Space<br/>"

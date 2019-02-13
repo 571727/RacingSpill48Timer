@@ -86,8 +86,6 @@ public class Race extends Scene implements Runnable {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 		keys = new RaceKeyHandler(player.getCar());
 
-		
-
 		racingWindow = SceneHandler.instance.getWindows();
 
 		racingWindow.setVisible(false);
@@ -104,7 +102,7 @@ public class Race extends Scene implements Runnable {
 			racingWindow.setLocationRelativeTo(null);
 		}
 		racingWindow.setVisible(true);
-		
+
 		visual = new RaceVisual(player, this);
 
 		everyoneDone = false;
@@ -112,7 +110,7 @@ public class Race extends Scene implements Runnable {
 		running = false;
 		time = -1;
 		startTime = -1;
-		waitTime = System.currentTimeMillis() + 5000;
+		waitTime = System.currentTimeMillis() + 3000;
 		visual.setStartCountDown(false);
 
 		racingWindow.add(visual);
@@ -176,6 +174,8 @@ public class Race extends Scene implements Runnable {
 
 	@Override
 	public void run() {
+		endMe();
+
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 20.0;
 		double ns = 1000000000 / amountOfTicks;
@@ -183,7 +183,7 @@ public class Race extends Scene implements Runnable {
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 
-		endMe();
+		initWindow();
 
 		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !everyoneDone) {
 			long now = System.nanoTime();
@@ -239,9 +239,15 @@ public class Race extends Scene implements Runnable {
 				break;
 			case 3:
 				if (Long.valueOf(outputs[i]) == -1)
-					result += "DNF<br/>";
+					result += "DNF";
 				else
-					result += "Time: " + (Float.valueOf(outputs[i]) / 1000) + " seconds<br/>";
+					result += "Time: " + (Float.valueOf(outputs[i]) / 1000) + " seconds";
+				break;
+			case 4:
+				if (Integer.valueOf(outputs[i - 2]) == 1)
+					result += outputs[i];
+
+				result += "<br/>";
 				n = 0;
 				break;
 			}

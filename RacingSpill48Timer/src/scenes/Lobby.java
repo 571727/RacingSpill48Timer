@@ -205,7 +205,6 @@ public class Lobby extends Scene implements Runnable {
 			race.setPlayer(player);
 			race.setLobby(this);
 			race.setLobbyThread(lobbyThread);
-			race.initWindow();
 			race.setCurrentLength();
 			player.setReady(0);
 			player.updateLobbyFromServer();

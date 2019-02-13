@@ -9,7 +9,8 @@ public class PlayerInfo {
 	private int finished;
 	private int points;
 	private int money;
-	
+	private int pointsAdded;
+	private int moneyAdded;
 
 	private String carName;
 
@@ -34,16 +35,15 @@ public class PlayerInfo {
 	public String getLobbyInfo() {
 		return name + "#" + ready + "#" + host + "#" + carName + "#" + points;
 	}
-	
+
 	public void newRace() {
 		finished = 0;
 		time = 0;
 	}
-	
+
 	/**
-	 * fra og med input[3]
-	 * input[3] finished
-	 * input[4] timecurrently
+	 * fra og med input[3] input[3] finished input[4] timecurrently
+	 * 
 	 * @param input
 	 * 
 	 */
@@ -51,7 +51,7 @@ public class PlayerInfo {
 		finished = Integer.valueOf(input[3]);
 		time = Long.valueOf(input[4]);
 	}
-	
+
 //	public String getRaceResults() {
 //		return name + "#" finished + "#" + time + "#" + pointsGained or something.;
 //	}
@@ -60,13 +60,18 @@ public class PlayerInfo {
 	 * @return name#ready#car#...
 	 */
 	public String getRaceInfo() {
-		return name + "#" + finished + "#" + time;
+		if (finished == 0)
+			return name + "#" + finished + "#" + time + "#";
+		else
+			return name + "#" + finished + "#" + time + "#, +" + pointsAdded + " points, +$" + moneyAdded;
 	}
-	
-	public void addPointsAndMoney(int amountPlayers, int amountFinished) {
-		if(!(amountPlayers == -1 || amountFinished == -1)) {
-			points += (amountPlayers + 1) / (amountFinished + 1);
-			money += 100f * (0.75f * (amountFinished + 1));
+
+	public void addPointsAndMoney(int amountPlayers, int place) {
+		if (!(amountPlayers == -1 || place == -1)) {
+			points += (amountPlayers + 1) / (place + 1);
+			money += 100f * place;
+			pointsAdded = (amountPlayers + 1) / (place + 1);
+			moneyAdded = (int) (100f * place);
 		}
 	}
 
@@ -85,7 +90,7 @@ public class PlayerInfo {
 	public void setPoints(int points) {
 		this.points = points;
 	}
-	
+
 	public int getMoney() {
 		return money;
 	}
@@ -118,6 +123,20 @@ public class PlayerInfo {
 		this.time = time;
 	}
 
-	
+	public int getPointsAdded() {
+		return pointsAdded;
+	}
+
+	public void setPointsAdded(int pointsAdded) {
+		this.pointsAdded = pointsAdded;
+	}
+
+	public int getMoneyAdded() {
+		return moneyAdded;
+	}
+
+	public void setMoneyAdded(int moneyAdded) {
+		this.moneyAdded = moneyAdded;
+	}
 
 }
