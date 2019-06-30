@@ -119,7 +119,6 @@ public class Lobby extends Scene implements Runnable {
 		String[] outputs = string.split("#");
 
 		int racesLeft = Integer.valueOf(player.getRacesLeft());
-		player.pingServer();
 
 		String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
 		int n = 0;
@@ -267,12 +266,16 @@ public class Lobby extends Scene implements Runnable {
 		int frames = 0;
 		while ((SceneHandler.instance.getCurrentScene().getClass().equals(Lobby.class)
 				|| SceneHandler.instance.getCurrentScene().getClass().equals(FixCar.class)
-				|| SceneHandler.instance.getCurrentScene().getClass().equals(Options.class)) && !gameEnded) {
+				|| SceneHandler.instance.getCurrentScene().getClass().equals(Options.class)
+				|| (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !started)) && !gameEnded) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
-				if (!gameEnded)
+				
+				player.pingServer();
+				
+				if (!gameEnded && !started)
 					update(player.updateLobbyFromServer());
 				delta--;
 				frames++;
@@ -296,5 +299,13 @@ public class Lobby extends Scene implements Runnable {
 
 	public void setRunning(boolean running) {
 		this.running = running;
+	}
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public void setStarted(boolean started) {
+		this.started = started;
 	}
 }

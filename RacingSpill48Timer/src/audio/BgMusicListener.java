@@ -35,10 +35,10 @@ public class BgMusicListener {
 	}
 
 	private int findRandomSong() {
-		int nextSong = 1;
+		int nextSong = 0;
 
 		do {
-			nextSong = r.nextInt(songs) + 1;
+			nextSong = r.nextInt(songs);
 		} while (nextSong == lastPlayed);
 		lastPlayed = nextSong;
 		return nextSong;

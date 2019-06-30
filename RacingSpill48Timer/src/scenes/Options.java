@@ -79,7 +79,9 @@ public class Options extends Scene {
 					try {
 						result = Integer.valueOf(res);
 					} catch (Exception ex) {
-						System.err.println(ex.getMessage());
+						
+						if(ex.getMessage().equals("null"))
+							return;
 						res = null;
 						JOptionPane.showMessageDialog(null, "Not correctly done, sir");
 					}

@@ -95,6 +95,9 @@ public class TCPEchoServer {
 		case "PING":
 			info.ping(input);
 			break;
+		case "IN":
+			info.inTheRace(input);
+			break;
 		case "JOIN":
 			return join(input);
 		case "LEAVE":

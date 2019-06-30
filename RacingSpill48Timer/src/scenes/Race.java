@@ -76,9 +76,6 @@ public class Race extends Scene implements Runnable {
 			// Reset some shit and go to lobby
 			player.setReady(0);
 			SceneHandler.instance.changeScene(1);
-
-			lobbyThread = new Thread(lobby);
-			lobbyThread.start();
 		});
 
 		add(scrollPane);
@@ -146,15 +143,14 @@ public class Race extends Scene implements Runnable {
 		player.getCar().updateSpeed();
 		checkDistanceLeft();
 
-
 		// Controls countdown and cheating and such shait.
 		if (visual != null && !running) {
 			int raceLights = player.getStatusRaceLights();
 
 			if (raceLights != this.raceLights) {
-				
+
 				this.raceLights = raceLights;
-				
+
 				// CONTROL LIGHTS
 				if (raceLights == 4) {
 					SFX.playSound("greenLight");
@@ -168,22 +164,23 @@ public class Race extends Scene implements Runnable {
 					visual.setBallColor(Color.RED);
 					visual.setBallCount(raceLights);
 				}
-				
+
 			}
-			
+
 			// CHEATING
 			if (raceLights < 4 && player.getCar().getSpeedActual() > 2) {
 				cheating = true;
 				racingWindow.removeKeyListener(keys);
 				player.getCar().reset();
 			}
-		} else if(raceLights == 4 && waitTime < System.currentTimeMillis()) {
+		} else if (raceLights == 4 && waitTime < System.currentTimeMillis()) {
 			raceLights = 0;
 			visual.setBallCount(raceLights);
+			startTime = System.currentTimeMillis();
 		}
-		
+
 		if (cheating) {
-			//TODO
+			// TODO
 			finishRace();
 		}
 	}
@@ -214,14 +211,17 @@ public class Race extends Scene implements Runnable {
 				} else {
 					updateResults();
 				}
-				
+
 				player.pingServer();
-				
+
 			}
 			frames++;
 			if (visual != null) {
 				Graphics g = null;
 				visual.render(g);
+				if (player.isInTheRace() == false) {
+					player.inTheRace();
+				}
 			}
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
@@ -229,6 +229,12 @@ public class Race extends Scene implements Runnable {
 				frames = 0;
 			}
 		}
+
+		player.outOfTheRace();
+		lobby.setStarted(false);
+		lobbyThread = new Thread(lobby);
+		lobbyThread.start();
+
 	}
 
 	private void updateResults() {
@@ -239,9 +245,10 @@ public class Race extends Scene implements Runnable {
 
 		String result = "<html>Tracklength: " + currentLength + " meters.<br/><br/>Players: <br/>";
 		int n = 0;
+		boolean finished = false;
 		for (int i = 1; i < outputs.length; i++) {
 			n++;
-
+			
 			switch (n) {
 
 			case 1:
@@ -250,16 +257,21 @@ public class Race extends Scene implements Runnable {
 			case 2:
 				if (Integer.valueOf(outputs[i]) == 1) {
 					result += "Finished, ";
+					finished = true;
 				} else {
 					result += "Not finished, ";
 					everyoneDone = false;
+					finished = false;
 				}
 				break;
 			case 3:
-				if (Long.valueOf(outputs[i]) == -1)
+				if (Long.valueOf(outputs[i]) == -1) {
 					result += "DNF";
-				else
+				} else if (finished || startTime == -1) {
 					result += "Time: " + (Float.valueOf(outputs[i]) / 1000) + " seconds";
+				} else {
+					result += "Time: " + (System.currentTimeMillis() - startTime / 1000) + " seconds";
+				}
 				break;
 			case 4:
 				if (Integer.valueOf(outputs[i - 2]) == 1)
@@ -291,7 +303,7 @@ public class Race extends Scene implements Runnable {
 			finishRace();
 		}
 	}
-	
+
 	private void finishRace() {
 		System.out.println("Finished");
 		closeWindow();

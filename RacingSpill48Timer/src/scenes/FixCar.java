@@ -104,6 +104,9 @@ public class FixCar extends Scene {
 		cashStats.setText(player.getPointsAndMoney());
 		cartStats.setText("");
 		upgradedCar = null;
+		
+		buyPoints.setEnabled(false);
+		buyMoney.setEnabled(false);
 	}
 
 	private String[] initButtonTexts() {
@@ -114,7 +117,10 @@ public class FixCar extends Scene {
 
 	private void showUpgrades(ActionEvent e) {
 		JButton source = (JButton) e.getSource();
-
+		
+		buyPoints.setEnabled(true);
+		buyMoney.setEnabled(true);
+		
 		try {
 			upgradedCar = (Car) player.getCar().clone();
 		} catch (CloneNotSupportedException e1) {

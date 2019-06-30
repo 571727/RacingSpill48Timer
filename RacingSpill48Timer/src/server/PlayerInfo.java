@@ -14,6 +14,7 @@ public class PlayerInfo {
 	private int moneyAdded;
 
 	private String carName;
+	private boolean inTheRace;
 
 	public PlayerInfo(String name, String id, String host, String carName) {
 		this.name = name;
@@ -41,6 +42,7 @@ public class PlayerInfo {
 	public void newRace() {
 		finished = 0;
 		timeLapsedInRace = 0;
+		inTheRace = false;
 	}
 
 	/**
@@ -145,6 +147,12 @@ public class PlayerInfo {
 		return id;
 	}
 
+	public void setIn(boolean in) {
+		inTheRace = in;
+	}
 
+	public boolean isIn() {
+		return inTheRace;
+	}
 
 }

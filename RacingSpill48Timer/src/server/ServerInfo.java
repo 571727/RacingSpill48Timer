@@ -35,6 +35,7 @@ public class ServerInfo implements Runnable {
 	private boolean greenLights;
 	private boolean allFinished;
 	private Random r;
+	private int amountInTheRace;
 
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
@@ -98,18 +99,17 @@ public class ServerInfo implements Runnable {
 	public void finishPlayer(String[] input) {
 		PlayerInfo player = players.get(input[1] + input[2]);
 		player.setFinished(1);
+		amountFinished++;
 
-		if (greenLights)
+		if (greenLights) {
 			player.setTime(System.currentTimeMillis() - raceStartedTime);
-		else
+		} else {
 			player.setTime(-1);
-
-		boolean allFinished = true;
-		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
-			if (entry.getValue().getFinished() != 1)
-				allFinished = false;
+			if(player.isIn() == false)
+				inTheRace(input);
 		}
-		this.allFinished = allFinished;
+
+		this.allFinished = amountFinished == players.size();
 	}
 
 	private void updateRaceStatus() {
@@ -127,12 +127,17 @@ public class ServerInfo implements Runnable {
 		if (raceLights == 4)
 			return true;
 
-		// Wait for 3 secounds before the race starts && wait for each racelight
-		if (raceStartedTime + regulatingWaitTime < System.currentTimeMillis()) {
-			regulatingWaitTime = waitTime + (r.nextInt(600) - 300);
+		if (amountInTheRace == players.size()) {
+			// Wait for 3 secounds before the race starts && wait for each racelight
+			if (raceStartedTime + regulatingWaitTime < System.currentTimeMillis()) {
+				regulatingWaitTime = waitTime - 300 + r.nextInt(1200);
+				raceStartedTime = System.currentTimeMillis();
+				raceLights++;
+			}
+		} else {
 			raceStartedTime = System.currentTimeMillis();
-			raceLights++;
 		}
+
 		// Racelights red
 		return false;
 
@@ -157,6 +162,7 @@ public class ServerInfo implements Runnable {
 				raceStartedTime = System.currentTimeMillis();
 				regulatingWaitTime = waitTime * 3;
 			} else {
+				amountInTheRace = 0;
 				amountFinished = 0;
 				length = 0;
 			}
@@ -185,6 +191,11 @@ public class ServerInfo implements Runnable {
 
 	public String getTrackLength() {
 		return String.valueOf(length);
+	}
+
+	public void inTheRace(String[] input) {
+		players.get(input[1] + input[2]).setIn(true);
+		amountInTheRace++;
 	}
 
 	/**
@@ -288,12 +299,11 @@ public class ServerInfo implements Runnable {
 		}
 	}
 
-	
 	@Override
 	public void run() {
 
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 20.0;
+		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 

@@ -33,7 +33,7 @@ public class SceneHandler {
 			instance = this;
 
 		fullscreen = true;
-		windows = new Windows(1280, 800, "Racing shit");
+		windows = new Windows(1280, 800, "A Smooth Cruise");
 		scenes = new Scene[numScenes];
 		
 		scenes[2] = new FixCar();

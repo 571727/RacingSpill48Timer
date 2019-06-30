@@ -27,6 +27,7 @@ public class Player{
 	private int points;
 	private int money;
 	private int[] inflation;
+	private boolean inTheRace;
 
 	public Player(String name, int host, String car) {
 		this(name, host, car, Config.SERVER);
@@ -74,6 +75,11 @@ public class Player{
 		return client.sendRequest("UPDATELOBBY#" + name  + "#" +  id + "#" + ready );
 	}
 	
+	public void inTheRace() {
+		inTheRace = true;
+		client.sendRequest("IN#" + name  + "#" +  id);
+	}
+	
 	public void startRace(){
 		client.sendRequest("STARTRACE#" + host + "#" + 1);
 	}
@@ -94,6 +100,7 @@ public class Player{
 	}
 	
 	public int getStatusRaceLights() {
+		//FIXME numberformatexception
 		return Integer.valueOf(client.sendRequest("RACELIGHTS"));
 	}
 	
@@ -180,6 +187,14 @@ public class Player{
 
 	public boolean isHost() {
 		return host == 1;
+	}
+
+	public boolean isInTheRace() {
+		return inTheRace;
+	}
+
+	public void outOfTheRace() {
+		inTheRace = false;
 	}
 
 
