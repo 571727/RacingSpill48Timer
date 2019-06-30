@@ -1,5 +1,6 @@
 package handlers;
 
+
 import adt.Scene;
 import elem.Player;
 import javafx.embed.swing.JFXPanel;
@@ -15,14 +16,13 @@ public class SceneHandler {
 	public static SceneHandler instance;
 	
 	private Windows windows;
-	
 	private Scene[] scenes;
+	private int lastScene;
 	private int currentScene;
 	private boolean fullscreen;
-
+	private boolean specified;
 	public int HEIGHT;
 	public int WIDTH;
-	
 	
 	public SceneHandler(int numScenes, Options options) {
 		// Make this class static
@@ -33,7 +33,7 @@ public class SceneHandler {
 			instance = this;
 
 		fullscreen = true;
-		windows = new Windows(600, 500, "Racing shit");
+		windows = new Windows(1280, 800, "Racing shit");
 		scenes = new Scene[numScenes];
 		
 		scenes[2] = new FixCar();
@@ -51,7 +51,7 @@ public class SceneHandler {
 	}
 
 	public void changeScene(int scenenr) {
-		
+		lastScene = currentScene;
 		windows.remove(scenes[currentScene]);
 		windows.add(scenes[scenenr]);
 		currentScene = scenenr;
@@ -60,6 +60,7 @@ public class SceneHandler {
 		windows.validate();
 		
 		windows.repaint();
+		
 	}
 	
 	public void justRemove() {
@@ -98,6 +99,18 @@ public class SceneHandler {
 	public void setHEIGHT(int i) {
 		HEIGHT = i;
 		WIDTH = HEIGHT * 16 / 9;
+	}
+
+	public int getLastScene() {
+		return lastScene;
+	}
+
+	public boolean isSpecified() {
+		return specified;
+	}
+
+	public void setSpecified(boolean specified) {
+		this.specified = specified;
 	}
 
 }

@@ -17,7 +17,6 @@ public class MainMenu extends Scene {
 	private JButton host;
 	private JButton join;
 	private JLabel title;
-	private JLabel tutorial;
 	private Thread thread;
 	private ServerHandler serverHandler;
 	private Lobby lobby;
@@ -29,21 +28,13 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		title = new JLabel("Some racing game v.1.1");
-		tutorial = new JLabel("<html>These are all the controls:<br/>"
-				+ "Throttle: W<br/>"
-				+ "Clutch: Space<br/>"
-				+ "Shift: UP-LShift, DOWN-LCtrl<br/>"
-				+ "NOS: E<br/>"
-				+ "Brakes: S</html>");
-		title.setPreferredSize(new Dimension(500,20));
-		tutorial.setPreferredSize(new Dimension(500,150));
+		title = new JLabel("Some racing game v.1.2");
 		
-		// Eventlisteners
-		options.addActionListener((ActionEvent e) -> {
-			SceneHandler.instance.changeScene(4);
-		});
+		title.setPreferredSize(new Dimension(550, 20));
+		
 
+		// Eventlisteners
+		options.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(4));
 		host.addActionListener((ActionEvent e) -> host());
 		join.addActionListener((ActionEvent e) -> join());
 
@@ -52,13 +43,12 @@ public class MainMenu extends Scene {
 		add(options);
 		add(host);
 		add(join);
-		add(tutorial);
-	}
 
+	}
 
 	private void host() {
 		// init server and player and then go to lobby
-		//Register your username
+		// Register your username
 		String name;
 		do {
 			name = JOptionPane.showInputDialog("What's your username? Don't use #");
@@ -71,8 +61,8 @@ public class MainMenu extends Scene {
 			}
 
 		} while (name.isEmpty() || name.contains("#"));
-		
-		//Register your car
+
+		// Register your car
 		String car = carSelection();
 		if (car == null)
 			return;
@@ -81,15 +71,15 @@ public class MainMenu extends Scene {
 
 		SceneHandler.instance.changeScene(1);
 		thread = new Thread(lobby);
-		
+
 		lobby.createNewLobby(name, 1, car, serverHandler, thread);
-		
+
 		thread.start();
 	}
 
 	private void join() {
 		// init some shit like ip and player and then go to lobby
-		//Register your username
+		// Register your username
 		String name;
 		do {
 			name = JOptionPane.showInputDialog("What's your username? Don't use #");
@@ -102,8 +92,8 @@ public class MainMenu extends Scene {
 			}
 
 		} while (name.isEmpty() || name.contains("#"));
-		
-		//Register hosts ip
+
+		// Register hosts ip
 		String ip;
 		do {
 			ip = JOptionPane.showInputDialog("What's the ip?");
@@ -116,22 +106,22 @@ public class MainMenu extends Scene {
 			}
 
 		} while (ip.isEmpty());
-		
-		//Register your car
+
+		// Register your car
 		String car = carSelection();
 		if (car == null)
 			return;
-		
+
 		SceneHandler.instance.changeScene(1);
 		thread = new Thread(lobby);
-		
+
 		lobby.joinNewLobby(name, 0, car, ip, thread);
-		
+
 		thread.start();
 	}
 
 	private String carSelection() {
-		Object[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla"};
+		Object[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
 		return (String) JOptionPane.showInputDialog(null, "Choose your car, mate", "Carznstuff",
 				JOptionPane.PLAIN_MESSAGE, null, possibilities, "Supra");
 	}

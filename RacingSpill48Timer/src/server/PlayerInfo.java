@@ -5,7 +5,8 @@ public class PlayerInfo {
 	private int ready;
 	private int host;
 	private String name;
-	private long time;
+	private String id;
+	private long timeLapsedInRace;
 	private int finished;
 	private int points;
 	private int money;
@@ -14,8 +15,9 @@ public class PlayerInfo {
 
 	private String carName;
 
-	public PlayerInfo(String name, String host, String carName) {
+	public PlayerInfo(String name, String id, String host, String carName) {
 		this.name = name;
+		this.id = id;
 		this.host = Integer.valueOf(host);
 		this.carName = carName;
 	}
@@ -38,7 +40,7 @@ public class PlayerInfo {
 
 	public void newRace() {
 		finished = 0;
-		time = 0;
+		timeLapsedInRace = 0;
 	}
 
 	/**
@@ -49,7 +51,7 @@ public class PlayerInfo {
 	 */
 	public void updateRaceResults(String[] input) {
 		finished = Integer.valueOf(input[3]);
-		time = Long.valueOf(input[4]);
+		timeLapsedInRace = Long.valueOf(input[4]);
 	}
 
 //	public String getRaceResults() {
@@ -61,9 +63,9 @@ public class PlayerInfo {
 	 */
 	public String getRaceInfo() {
 		if (finished == 0)
-			return name + "#" + finished + "#" + time + "#";
+			return name + "#" + finished + "#" + timeLapsedInRace + "#";
 		else
-			return name + "#" + finished + "#" + time + "#, +" + pointsAdded + " points, +$" + moneyAdded;
+			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded;
 	}
 
 	public void addPointsAndMoney(int amountPlayers, int place) {
@@ -116,11 +118,11 @@ public class PlayerInfo {
 	}
 
 	public long getTime() {
-		return time;
+		return timeLapsedInRace;
 	}
 
 	public void setTime(long time) {
-		this.time = time;
+		this.timeLapsedInRace = time;
 	}
 
 	public int getPointsAdded() {
@@ -138,5 +140,11 @@ public class PlayerInfo {
 	public void setMoneyAdded(int moneyAdded) {
 		this.moneyAdded = moneyAdded;
 	}
+
+	public String getID() {
+		return id;
+	}
+
+
 
 }

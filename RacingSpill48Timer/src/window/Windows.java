@@ -14,17 +14,21 @@ public class Windows extends JFrame {
 	 */
 	private static final long serialVersionUID = 8073737083600458127L;
 	private WindowAdapter closingProtocol;
+	public static int WIDTH;
+	public static int HEIGHT;
 
 	public Windows(int width, int height, String title) {
+		
+		WIDTH = width;
+		HEIGHT = height;
+		
 		setTitle(title);
 		setBounds(50, 50, width, height);
 		setVisible(true);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		setLocationRelativeTo(null);
 		setResizable(false);
-
 	}
 
 	public void closing(Player player) {

@@ -100,7 +100,7 @@ public class Car implements Cloneable {
 		double w = (totalWeight - weightloss);
 		double weightcalc = ( 0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
 		spdinc = (hp / weightcalc) / 100f;
-		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
+//		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
 	public boolean isHasTurbo() {

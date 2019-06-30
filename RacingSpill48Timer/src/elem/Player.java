@@ -43,7 +43,7 @@ public class Player{
 		id = r.nextInt(999);
 		inflation = new int[8];
 		client = new EchoClient(ip);
-
+		
 		// Request stats about lobby and update lobby
 		joinServer();
 	}
@@ -93,11 +93,21 @@ public class Player{
 		client.sendRequest("LEAVE#" + name  + "#" +  id);
 	}
 	
-	/**
-	 * UPDATERACE#name#id#finished(0-1)#longtimemillis
-	 */
-	public String updateRace(int finished, long time) {
-		return client.sendRequest("UPDATERACE#" + name + "#" + id + "#" + finished + "#" + time);
+	public int getStatusRaceLights() {
+		return Integer.valueOf(client.sendRequest("RACELIGHTS"));
+	}
+	
+	public void finishRace() {
+		// TODO Auto-generated method stub
+		client.sendRequest("F#" + name + "#" + id);
+	}
+
+	public String updateRaceLobby() {
+		return client.sendRequest("UPDATERACE");
+	}
+	
+	public void pingServer() {
+		client.sendRequest("PING#" + name + "#" + id);
 	}
 	
 	public String getRacesLeft() {
@@ -166,6 +176,10 @@ public class Player{
 
 	public void setInflation(int[] inflation) {
 		this.inflation = inflation;
+	}
+
+	public boolean isHost() {
+		return host == 1;
 	}
 
 

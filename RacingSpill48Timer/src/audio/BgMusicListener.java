@@ -17,14 +17,15 @@ public class BgMusicListener {
 		// Maybe use action for something later, cause it's awesome
 		lastPlayed = -1;
 		this.songs = songs;
-		playAndChooseNextRandomly();
+		if (songs != 0)
+			playAndChooseNextRandomly();
 	}
 
 	public void playAndChooseNextRandomly() {
-		if(media != null && media.isPlaying())
+		if (media != null && media.isPlaying())
 			media.stop();
 		media = new MediaAudio("/music/music" + findRandomSong());
-		
+
 		media.play();
 		media.getMediaPlayer().setOnEndOfMedia(() -> playAndChooseNextRandomly());
 	}
@@ -44,7 +45,7 @@ public class BgMusicListener {
 	}
 
 	public void playOrStop() {
-		if(media != null && media.isPlaying())
+		if (media != null && media.isPlaying())
 			media.stop();
 		else
 			playAndChooseNextRandomly();

@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 /**
  * TODO legg til sjekk av hvem som sender inn requests. Om en ikke har sendt inn
- * en request på lenge så betyr det at den clienten har forsvunnet.
+ * en request pï¿½ lenge sï¿½ betyr det at den clienten har forsvunnet.
  * 
  * @author jonah
  *
@@ -89,7 +89,12 @@ public class TCPEchoServer {
 		String[] input = request.split("#");
 
 		switch (input[0]) {
-
+		case "F":
+			info.finishPlayer(input);
+			break;
+		case "PING":
+			info.ping(input);
+			break;
 		case "JOIN":
 			return join(input);
 		case "LEAVE":
@@ -99,7 +104,9 @@ public class TCPEchoServer {
 		case "UPDATELOBBY":
 			return updateLobby(input);
 		case "UPDATERACE":
-			return info.updateRace(input);
+			return info.updateRace();
+		case "RACELIGHTS":
+			return info.getRaceLightsStatus();
 		case "STARTRACE":
 			info.startRace(input);
 			break;

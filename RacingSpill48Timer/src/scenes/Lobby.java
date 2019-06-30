@@ -3,6 +3,10 @@ package scenes;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,6 +26,7 @@ public class Lobby extends Scene implements Runnable {
 	private JButton fixCar;
 	private JButton start;
 	private JButton goBack;
+	private JButton options;
 	private Player player;
 	private boolean running;
 	private ServerHandler server;
@@ -33,6 +38,7 @@ public class Lobby extends Scene implements Runnable {
 	private boolean gameEnded;
 	private Thread lobbyThread;
 	private boolean started;
+	private JLabel ipLabel;
 
 	public Lobby(Race race, FixCar fixCarScene) {
 
@@ -44,9 +50,29 @@ public class Lobby extends Scene implements Runnable {
 		fixCar = new JButton("Upgrade or fix my car");
 		start = new JButton("Start race");
 		goBack = new JButton("Go back to main menu");
+		options = new JButton("Options");
 		scrollPane = new JScrollPane(label);
 		scrollPane.setPreferredSize(new Dimension(500, 300));
+		ipLabel = new JLabel("IPs: ");
 
+		String ipLabelText = "<html> IPs: ";
+		try {
+			Enumeration enumIP = NetworkInterface.getNetworkInterfaces();
+
+			while (enumIP.hasMoreElements()) {
+				NetworkInterface n = (NetworkInterface) enumIP.nextElement();
+				Enumeration ee = n.getInetAddresses();
+				while (ee.hasMoreElements()) {
+					InetAddress i = (InetAddress) ee.nextElement();
+					ipLabelText += "<br/>" + i.getHostAddress();
+				}
+			}
+		} catch (SocketException e1) {
+			e1.printStackTrace();
+		}
+		ipLabelText += "</html>";
+		ipLabel.setText(ipLabelText);
+		
 		// ActionListeners
 		ready.addActionListener((ActionEvent e) -> player.setReady((player.getReady() + 1) % 2));
 		fixCar.addActionListener((ActionEvent e) -> {
@@ -69,12 +95,16 @@ public class Lobby extends Scene implements Runnable {
 			}
 		});
 
+		options.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(4));
+
 		// Add to JPanel
 		add(scrollPane);
 		add(goBack, BorderLayout.SOUTH);
+		add(options, BorderLayout.SOUTH);
 		add(ready, BorderLayout.SOUTH);
 		add(fixCar, BorderLayout.SOUTH);
 		add(start, BorderLayout.SOUTH);
+		add(ipLabel);
 	}
 
 	/**
@@ -82,10 +112,14 @@ public class Lobby extends Scene implements Runnable {
 	 * @param string - outtext from server
 	 */
 	public void update(String string) {
+		if(string == null)
+			return;
 
 		everyoneReady = true;
 		String[] outputs = string.split("#");
+
 		int racesLeft = Integer.valueOf(player.getRacesLeft());
+		player.pingServer();
 
 		String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
 		int n = 0;
@@ -192,10 +226,15 @@ public class Lobby extends Scene implements Runnable {
 	 */
 	private void initButtonState() {
 
-		if (player.getHost() != 1)
-			start.setVisible(false);
-		else
+		if (player.isHost()) {
 			start.setVisible(true);
+			ipLabel.setVisible(true);
+		}
+		else {
+			start.setVisible(false);
+			ipLabel.setVisible(false);
+		}
+		
 	}
 
 	private void raceStarted() {
@@ -227,7 +266,8 @@ public class Lobby extends Scene implements Runnable {
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		while ((SceneHandler.instance.getCurrentScene().getClass().equals(Lobby.class)
-				|| SceneHandler.instance.getCurrentScene().getClass().equals(FixCar.class)) && !gameEnded) {
+				|| SceneHandler.instance.getCurrentScene().getClass().equals(FixCar.class)
+				|| SceneHandler.instance.getCurrentScene().getClass().equals(Options.class)) && !gameEnded) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;

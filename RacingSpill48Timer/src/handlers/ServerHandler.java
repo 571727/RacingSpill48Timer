@@ -15,7 +15,8 @@ public class ServerHandler {
 	private Thread thread;
 	private EchoServer currentServer;
 	private ServerInfo info;
-	
+
+	private Thread infoThread;
 	public ServerHandler() {
 
 	}
@@ -27,6 +28,8 @@ public class ServerHandler {
 	public void createNew() {
 		info = new ServerInfo();
 		createNew(new EchoServer(info));
+		infoThread = new Thread(info);
+		infoThread.start();
 	}
 
 	public void createNew(EchoServer newServer) {
@@ -47,8 +50,11 @@ public class ServerHandler {
 		try {
 			if (thread.isAlive()) {
 				
+				info.setRunning(false);
+				infoThread.join();
 				currentServer.setRunning(false);
 				thread.join();
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
