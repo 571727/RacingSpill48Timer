@@ -113,4 +113,8 @@ public class SceneHandler {
 		this.specified = specified;
 	}
 
+	public int getCurrentSceneID() {
+		return currentScene;
+	}
+
 }

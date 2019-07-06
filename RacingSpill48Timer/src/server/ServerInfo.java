@@ -210,7 +210,7 @@ public class ServerInfo implements Runnable {
 
 			for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 				PlayerInfo player = entry.getValue();
-				int amountFaster = 0;
+				int place = 0;
 				long thisTime = player.getTime();
 
 				if (thisTime == -1) {
@@ -224,15 +224,17 @@ public class ServerInfo implements Runnable {
 						if (otherEntry.getKey() != entry.getKey()) {
 
 							long otherTime = otherEntry.getValue().getTime();
-							if (thisTime < otherTime) {
-								amountFaster++;
+							if (thisTime > otherTime) {
+								place++;
 							}
 						}
 					}
 
-					player.addPointsAndMoney(players.size(), amountFaster);
+					player.addPointsAndMoney(players.size(), place);
 				}
 			}
+			
+			allFinished = false;
 		}
 
 		return updateRaceLobby();

@@ -15,10 +15,13 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
+import handlers.SceneHandler;
 import scenes.Race;
+import sun.misc.Queue;
 
 public class RaceVisual extends Canvas {
 
@@ -61,6 +64,16 @@ public class RaceVisual extends Canvas {
 	private float blurSpeed;
 	private int blurShake;
 	private Random r;
+	private Animation nitros;
+
+	private Queue<Car> finishedPlayers;
+	private boolean finished;
+	private BufferedImage resBackground;
+	private Animation resShadow;
+	private boolean playingFinishingCar;
+	private Animation resCar;
+	private int resCarWidth;
+	private int resCarMovement;
 
 	public RaceVisual(Player player, Race race) {
 		this.player = player;
@@ -84,11 +97,15 @@ public class RaceVisual extends Canvas {
 		yDistance = 100;
 
 		background = new Animation("road", 6);
+		nitros = new Animation("nitros", 4);
+		resShadow = new Animation("res00", 57);
 
 		font = new Font("Calibri", 0, 54);
 		r = new Random();
 		blurShake = 3;
 		blurSpeed = 220;
+
+		finished = false;
 
 		y = 0;
 		startTime = 0;
@@ -103,6 +120,7 @@ public class RaceVisual extends Canvas {
 			tachopointer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tacho.png"));
 			// 311 x 225 px
 			tachometer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tachometer.png"));
+
 		} catch (IOException e) {
 			System.err.println("didn't find the picture you were looking for");
 			e.printStackTrace();
@@ -111,27 +129,72 @@ public class RaceVisual extends Canvas {
 	}
 
 	public void tick() {
-		if (player.getCar().isGas() && !player.getCar().isClutch()) {
-			if (player.getCar().isNOSON()) {
-				y = -15;
-				x = -16;
-				width = Race.WIDTH + 32;
-				height = Race.HEIGHT + 16;
+		if (!finished) {
+			if (player.getCar().isGas() && !player.getCar().isClutch()) {
+				if (player.getCar().isNOSON()) {
+					y = -15;
+					x = -16;
+					width = Race.WIDTH + 32;
+					height = Race.HEIGHT + 16;
+					nitros.setCurrentFrame(r.nextInt(4));
+				} else {
+					y = -9;
+					x = -8;
+					width = Race.WIDTH + 16;
+					height = Race.HEIGHT + 9;
+				}
 			} else {
-				y = -9;
+				y = -2;
 				x = -8;
 				width = Race.WIDTH + 16;
 				height = Race.HEIGHT + 9;
 			}
-		} else {
-			y = -2;
-			x = -8;
-			width = Race.WIDTH + 16;
-			height = Race.HEIGHT + 9;
-		}
 
-		background.setCurrentFrame(
-				(background.getCurrentFrame() + player.getCar().getSpeedActual() / 100) % background.getFrameCount());
+			background.setCurrentFrame((background.getCurrentFrame() + player.getCar().getSpeedActual() / 100)
+					% background.getFrameCount());
+		} else {
+			if (playingFinishingCar) {
+				resShadow.incrementCurrentFrame();
+
+				if (resShadow.getCurrentFrame() == 0) {
+					playingFinishingCar = false;
+				}
+			}
+
+			if (!playingFinishingCar && !finishedPlayers.isEmpty()) {
+				try {
+					finishedPlayers.dequeue();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				playingFinishingCar = true;
+			}
+		}
+	}
+
+	public void playFinishScene(boolean cheated) {
+
+		finishedPlayers = new Queue<Car>();
+
+		finished = true;
+
+		carImage = null;
+		tachopointer = null;
+		tachometer = null;
+		fastness = null;
+
+		
+		resCarWidth = (int) (Race.WIDTH * 1.16f);
+		resCarMovement = (resCarWidth + Race.WIDTH) / resShadow.getFrameCount();
+
+		if (!cheated)
+			finishedPlayers.enqueue(player.getCar());
+
+	}
+
+	public void addFinish() {
+		// FIXME
+		finishedPlayers.enqueue(player.getCar());
 	}
 
 	public void render(Graphics g) {
@@ -145,24 +208,10 @@ public class RaceVisual extends Canvas {
 
 			Graphics2D g2d = (Graphics2D) g;
 
-			g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
-
-			g2d.drawImage(carImage, x, y, width, height, null);
-
-			if (player.getCar().getSpeedActual() > blurSpeed) 
-				blur(g2d);
-			
-			g2d.setFont(font);
-
-			// DEBUG
-//			drawDebug(g, 300);
-
-			// Prerace stuff
-			drawRaceHUD(g2d);
-
-			drawTachometer(g2d);
-
-			drawInfoHUD(g2d);
+			if (!finished)
+				raceScene(g2d);
+			else
+				finishedScene(g2d);
 
 		} finally {
 			if (g != null) {
@@ -173,29 +222,87 @@ public class RaceVisual extends Canvas {
 		Toolkit.getDefaultToolkit().sync();
 	}
 
-	private void blur(Graphics2D g2d) {
-		float alpha = 0.01f * ((float) player.getCar().getSpeedActual() - blurSpeed);
+	private void finishedScene(Graphics2D g2d) {
+
+		g2d.drawImage(resShadow.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
+
+	}
+
+	private void raceScene(Graphics2D g2d) {
+		g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
+
+		shakeImage(g2d, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(), blurSpeed / 2,
+				blurSpeed * 1.5f, blurShake * 2);
+
+		if (player.getCar().isNOSON()) {
+			blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
+					(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
+		}
+
+		if (player.getCar().getSpeedActual() > blurSpeed)
+			blur(g2d, fastness, 0, 0, Race.WIDTH, Race.HEIGHT, (float) player.getCar().getSpeedActual(), blurSpeed,
+					100f, blurShake);
+
+		g2d.setFont(font);
+
+		// DEBUG
+//		drawDebug(g, 300);
+
+		// Prerace stuff
+		drawRaceHUD(g2d);
+
+		drawTachometer(g2d);
+
+		drawInfoHUD(g2d);
+	}
+
+	private void blur(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
+			float fromValue, float tillAdditionalValue, int shake) {
+		float alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
+
+		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+		g2d.setComposite(ac);
+
+		float xShake = shake(shake, alpha);
+		float yShake = shake(shake, alpha);
+
+		g2d.drawImage(img, -shake + x, -shake + y, (width + 2 * shake) + (int) xShake,
+				(height + 2 * shake) + (int) yShake, null);
+		g2d.setComposite(ac.derive(1f));
+	}
+
+	private void shakeImage(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
+			float fromValue, float tillAdditionalValue, int shake) {
+		float alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
+		float xShake = shake(shake, alpha);
+		float yShake = shake(shake, alpha);
+
+		g2d.drawImage(img, -shake + x, -shake + y, (width + 2 * shake) + (int) xShake,
+				(height + 2 * shake) + (int) yShake, null);
+	}
+
+	private float shake(int amount) {
+		return r.nextInt(amount * 2) - amount;
+	}
+
+	private float shake(int amount, float alpha) {
+		return shake(amount) * alpha;
+	}
+
+	private float alpha(float comparedValue, float fromValue, float tillAdditionalValue, int shake) {
+		float alpha = (comparedValue - fromValue) / tillAdditionalValue;
 
 		if (alpha > 1f)
 			alpha = 1f;
 
-		alpha += ((r.nextInt(blurShake * 2) - blurShake) / 100f) * alpha;
+		alpha += (shake(shake) / tillAdditionalValue) * alpha;
 
 		if (alpha > 1f)
 			alpha = 1f;
 		else if (alpha < 0f) {
 			alpha = 0f;
 		}
-
-		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-		g2d.setComposite(ac);
-
-		float xShake = (r.nextInt(blurShake * 2) - blurShake) * alpha;
-		float yShake = (r.nextInt(blurShake * 2) - blurShake) * alpha;
-
-		g2d.drawImage(fastness, -blurShake, -blurShake, (Race.WIDTH + 2 * blurShake) + (int) xShake,
-				(Race.HEIGHT + 2 * blurShake) + (int) yShake, null);
-		g2d.setComposite(ac.derive(1f));
+		return alpha;
 	}
 
 	private void drawDebug(Graphics2D g, int h) {

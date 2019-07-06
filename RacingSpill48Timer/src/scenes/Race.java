@@ -51,6 +51,7 @@ public class Race extends Scene implements Runnable {
 	private boolean everyoneDone;
 	private boolean cheating;
 	private int raceLights;
+	private boolean finished;
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -74,8 +75,7 @@ public class Race extends Scene implements Runnable {
 
 		goToLobby.addActionListener((ActionEvent e) -> {
 			// Reset some shit and go to lobby
-			player.setReady(0);
-			SceneHandler.instance.changeScene(1);
+			
 		});
 
 		add(scrollPane);
@@ -114,6 +114,7 @@ public class Race extends Scene implements Runnable {
 		everyoneDone = false;
 		cheating = false;
 		running = false;
+		finished = false;
 		time = -1;
 		startTime = -1;
 
@@ -181,7 +182,7 @@ public class Race extends Scene implements Runnable {
 
 		if (cheating) {
 			// TODO
-			finishRace();
+			finishRace(true);
 		}
 	}
 
@@ -205,15 +206,15 @@ public class Race extends Scene implements Runnable {
 			while (delta >= 1) {
 				delta--;
 
-				if (visual != null) {
+				if (visual != null)
 					visual.tick();
+
+				if (!finished)
 					tick();
-				} else {
+				else
 					updateResults();
-				}
 
 				player.pingServer();
-
 			}
 			frames++;
 			if (visual != null) {
@@ -248,7 +249,7 @@ public class Race extends Scene implements Runnable {
 		boolean finished = false;
 		for (int i = 1; i < outputs.length; i++) {
 			n++;
-			
+
 			switch (n) {
 
 			case 1:
@@ -300,23 +301,30 @@ public class Race extends Scene implements Runnable {
 	public void checkDistanceLeft() {
 		if (player.getCar().getDistance() >= currentLength) {
 			// Push results and wait for everyone to finish. Then get a winner.'
-			finishRace();
+			finishRace(false);
 		}
 	}
 
-	private void finishRace() {
+	private void finishRace(boolean cheated) {
 		System.out.println("Finished");
-		closeWindow();
+		
 		player.finishRace();
 		player.getCar().reset();
+		finished = true;
+
+		racingWindow.removeKeyListener(keys);
+		keys = null;
+
+		visual.playFinishScene(cheated);
+
+		// Legg til knapper og sånt
 	}
 
 	public void closeWindow() {
 		racingWindow.remove(visual);
 		visual = null;
-		SceneHandler.instance.changeScene(3);
-		racingWindow.removeKeyListener(keys);
-		keys = null;
+		player.setReady(0);
+		SceneHandler.instance.changeScene(1);		
 		racingWindow.setVisible(false);
 		racingWindow.dispose();
 		racingWindow.setUndecorated(false);

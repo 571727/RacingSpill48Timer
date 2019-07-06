@@ -49,18 +49,9 @@ public class MainMenu extends Scene {
 	private void host() {
 		// init server and player and then go to lobby
 		// Register your username
-		String name;
-		do {
-			name = JOptionPane.showInputDialog("What's your username? Don't use #");
-
-			try {
-				if (name.isEmpty() || name.contains("#"))
-					JOptionPane.showMessageDialog(null, "Write your username properly please");
-			} catch (NullPointerException e) {
-				return;
-			}
-
-		} while (name.isEmpty() || name.contains("#"));
+		String name = username();
+		if(name == null)
+			return;
 
 		// Register your car
 		String car = carSelection();
@@ -80,19 +71,10 @@ public class MainMenu extends Scene {
 	private void join() {
 		// init some shit like ip and player and then go to lobby
 		// Register your username
-		String name;
-		do {
-			name = JOptionPane.showInputDialog("What's your username? Don't use #");
-
-			try {
-				if (name.isEmpty() || name.contains("#"))
-					JOptionPane.showMessageDialog(null, "Write your username properly please");
-			} catch (NullPointerException e) {
-				return;
-			}
-
-		} while (name.isEmpty() || name.contains("#"));
-
+		String name = username();
+		if(name == null)
+			return;
+		
 		// Register hosts ip
 		String ip;
 		do {
@@ -124,6 +106,22 @@ public class MainMenu extends Scene {
 		Object[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
 		return (String) JOptionPane.showInputDialog(null, "Choose your car, mate", "Carznstuff",
 				JOptionPane.PLAIN_MESSAGE, null, possibilities, "Supra");
+	}
+	
+	private String username() {
+		String name = null;
+		do {
+			name = JOptionPane.showInputDialog("<html>What's your username?<br/> Don't use # and max 12 letters</html>");
+
+			try {
+				if (name.isEmpty() || name.contains("#") || name.length() > 12)
+					JOptionPane.showMessageDialog(null, "Write your username properly please");
+			} catch (NullPointerException e) {
+				break;
+			}
+
+		} while (name.isEmpty() || name.contains("#") || name.length() > 12);
+		return name;
 	}
 
 }

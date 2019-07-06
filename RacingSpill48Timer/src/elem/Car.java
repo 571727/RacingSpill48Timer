@@ -49,7 +49,7 @@ public class Car implements Cloneable {
 		nosStrengthStandard = 0;
 		topSpeed = 250;
 
-		// Kanskje Lada der kjørelyden er hardbass.
+		// Kanskje Lada der kjï¿½relyden er hardbass.
 
 		switch (cartype) {
 		case "M3":
@@ -175,7 +175,7 @@ public class Car implements Cloneable {
 
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
 
-		// delt på 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
+		// delt pï¿½ 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
 		distance += speedActual / 24;
 	}
 
