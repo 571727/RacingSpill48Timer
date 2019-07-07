@@ -1,5 +1,7 @@
 package startup;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.newdawn.easyogg.OggClip;
@@ -15,8 +17,12 @@ public class Main {
 		// OggClip ogg = new OggClip(new FileInputStream("startup2.ogg"));
 
 		try {
-			OggClip ogg = new OggClip(new FileInputStream("startup2.ogg"));
-			OggClip ogg = new OggClip("startup2.ogg");
+			
+			File f = new File("startup2.ogg");
+			System.out.println(f.getAbsolutePath());
+			
+			OggClip ogg = new OggClip(new FileInputStream("res/startup2.ogg"));
+//			OggClip ogg = new OggClip(Main.class.getResource("startup2.ogg").toString());
 			System.out.println("Play()");
 			ogg.loop();
 			ogg.setBalance(-1.0f);
