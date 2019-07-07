@@ -10,6 +10,7 @@ import handlers.SceneHandler;
 import scenes.FixCar;
 import scenes.Lobby;
 import scenes.Options;
+import startup.Main;
 
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
@@ -105,7 +106,7 @@ public class ServerInfo implements Runnable {
 			player.setTime(System.currentTimeMillis() - raceStartedTime);
 		} else {
 			player.setTime(-1);
-			if(player.isIn() == false)
+			if (player.isIn() == false)
 				inTheRace(input);
 		}
 
@@ -233,7 +234,7 @@ public class ServerInfo implements Runnable {
 					player.addPointsAndMoney(players.size(), place);
 				}
 			}
-			
+
 			allFinished = false;
 		}
 
@@ -261,8 +262,14 @@ public class ServerInfo implements Runnable {
 
 	public String getPointsMoney(String[] input) {
 		PlayerInfo player = players.get(input[1] + input[2]);
-
-		return player.getPoints() + "#" + player.getMoney();
+		String res = null;
+		try {
+			res = player.getPoints() + "#" + player.getMoney();
+		} catch (NullPointerException e) {
+			System.err.println("Player " + input[1] + input[2] + " timed out");
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 	public void newRaces() {
@@ -314,7 +321,8 @@ public class ServerInfo implements Runnable {
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
-				checkPings();
+				if (!Main.DEBUG)
+					checkPings();
 				updateRaceStatus();
 				delta--;
 			}

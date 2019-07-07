@@ -1,6 +1,8 @@
 package handlers;
 
 
+import java.awt.Color;
+
 import adt.Scene;
 import elem.Player;
 import javafx.embed.swing.JFXPanel;
@@ -33,7 +35,7 @@ public class SceneHandler {
 			instance = this;
 
 		fullscreen = true;
-		windows = new Windows(1280, 800, "A Smooth Cruise");
+		windows = new Windows(1280, 800, "A Smooth Cruise", Color.BLACK);
 		scenes = new Scene[numScenes];
 		
 		scenes[2] = new FixCar();

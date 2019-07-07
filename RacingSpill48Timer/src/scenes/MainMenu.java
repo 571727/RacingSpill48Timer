@@ -28,7 +28,7 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		title = new JLabel("A Smooth Cruise v.1.2_1");
+		title = new JLabel("A Smooth Cruise v.1.2_2");
 		
 		title.setPreferredSize(new Dimension(550, 20));
 		

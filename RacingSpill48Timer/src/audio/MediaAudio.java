@@ -2,12 +2,12 @@ package audio;
 
 import java.io.File;
 
-import elem.RaceVisual;
 import handlers.GameHandler;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import scenes.RaceVisual;
 
 public class MediaAudio {
 	private Media hit;

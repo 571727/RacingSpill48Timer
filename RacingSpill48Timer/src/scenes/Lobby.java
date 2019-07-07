@@ -273,6 +273,9 @@ public class Lobby extends Scene implements Runnable {
 			lastTime = now;
 			while (delta >= 1) {
 				
+				if (SceneHandler.instance.getWindows().isVisible())
+					SceneHandler.instance.getWindows().requestFocus();
+				
 				player.pingServer();
 				
 				if (!gameEnded && !started)

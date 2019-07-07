@@ -1,5 +1,6 @@
 package window;
 
+import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -17,7 +18,7 @@ public class Windows extends JFrame {
 	public static int WIDTH;
 	public static int HEIGHT;
 
-	public Windows(int width, int height, String title) {
+	public Windows(int width, int height, String title, Color color) {
 		
 		WIDTH = width;
 		HEIGHT = height;
@@ -29,6 +30,7 @@ public class Windows extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
+		getContentPane().setBackground(color);
 	}
 
 	public void closing(Player player) {

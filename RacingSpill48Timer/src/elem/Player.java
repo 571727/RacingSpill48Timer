@@ -105,7 +105,6 @@ public class Player{
 	}
 	
 	public void finishRace() {
-		// TODO Auto-generated method stub
 		client.sendRequest("F#" + name + "#" + id);
 	}
 
@@ -114,7 +113,7 @@ public class Player{
 	}
 	
 	public void pingServer() {
-		System.out.println("PING");
+//		System.out.println("PING");
 		client.sendRequest("PING#" + name + "#" + id);
 	}
 	

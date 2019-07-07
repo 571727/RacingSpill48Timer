@@ -7,10 +7,12 @@ import javax.imageio.ImageIO;
 
 public class Animation {
 
-	private double currentFrame;
-	private int frameCount;
-	private String frameName;
-	private BufferedImage[] frames;
+	protected double currentFrame;
+	protected int frameCount;
+	protected String frameName;
+	protected BufferedImage[] frames;
+	private int width;
+	private int height;
 
 	public Animation(String frameName, int frameCount) {
 		this(frameName, frameCount, 0);
@@ -22,7 +24,8 @@ public class Animation {
 		this.frameName = frameName;
 		this.frameCount = frameCount;
 		frames = new BufferedImage[frameCount];
-
+		
+		//Hent bilde
 		try {
 			for (int i = 0; i < frames.length; i++) {
 				frames[i] = ImageIO.read(Animation.class.getResourceAsStream("/pics/" + frameName + i + ".png"));
@@ -30,6 +33,22 @@ public class Animation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		width = frames[0].getWidth();
+		height = frames[0].getHeight();
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 	
 	public BufferedImage getFrame() {

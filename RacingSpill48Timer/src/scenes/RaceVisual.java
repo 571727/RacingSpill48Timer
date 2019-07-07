@@ -1,4 +1,4 @@
-package elem;
+package scenes;
 
 import java.awt.AlphaComposite;
 import java.awt.Canvas;
@@ -14,16 +14,20 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
+import adt.Visual;
+import adt.VisualElement;
+import elem.Animation;
+import elem.Player;
 import handlers.SceneHandler;
-import scenes.Race;
 import sun.misc.Queue;
 
-public class RaceVisual extends Canvas {
+public class RaceVisual extends Visual {
 
 	private Race race;
 	private Player player;
@@ -35,7 +39,6 @@ public class RaceVisual extends Canvas {
 	private BufferedImage tachometer;
 	private BufferedImage fastness;
 	private AffineTransform identity = new AffineTransform();
-	private Font font;
 	private boolean startCountDown;
 	private boolean running;
 	private long startTime;
@@ -59,26 +62,17 @@ public class RaceVisual extends Canvas {
 	private int ySpeed;
 	private int xDistance;
 	private int yDistance;
-	private BufferStrategy bs;
 	private Animation background;
 	private float blurSpeed;
 	private int blurShake;
-	private Random r;
 	private Animation nitros;
-
-	private Queue<Car> finishedPlayers;
-	private boolean finished;
-	private BufferedImage resBackground;
-	private Animation resShadow;
-	private boolean playingFinishingCar;
-	private Animation resCar;
-	private int resCarWidth;
-	private int resCarMovement;
-
+	private ArrayList<VisualElement> visualElements;
 	public RaceVisual(Player player, Race race) {
+		super();
+		visualElements = new ArrayList<VisualElement>();
+		this.race = race;		
 		this.player = player;
-		this.race = race;
-
+		
 		widthTachometer = (int) (Race.WIDTH / 5f);
 		heightTachometer = (int) (widthTachometer / 311f * 225f);
 		xTachometer = Race.WIDTH - (widthTachometer + (Race.WIDTH / 24));
@@ -98,14 +92,10 @@ public class RaceVisual extends Canvas {
 
 		background = new Animation("road", 6);
 		nitros = new Animation("nitros", 4);
-		resShadow = new Animation("res00", 57);
 
-		font = new Font("Calibri", 0, 54);
-		r = new Random();
 		blurShake = 3;
 		blurSpeed = 220;
 
-		finished = false;
 
 		y = 0;
 		startTime = 0;
@@ -128,75 +118,33 @@ public class RaceVisual extends Canvas {
 
 	}
 
+	@Override
 	public void tick() {
-		if (!finished) {
-			if (player.getCar().isGas() && !player.getCar().isClutch()) {
-				if (player.getCar().isNOSON()) {
-					y = -15;
-					x = -16;
-					width = Race.WIDTH + 32;
-					height = Race.HEIGHT + 16;
-					nitros.setCurrentFrame(r.nextInt(4));
-				} else {
-					y = -9;
-					x = -8;
-					width = Race.WIDTH + 16;
-					height = Race.HEIGHT + 9;
-				}
+		if (player.getCar().isGas() && !player.getCar().isClutch()) {
+			if (player.getCar().isNOSON()) {
+				y = -15;
+				x = -16;
+				width = Race.WIDTH + 32;
+				height = Race.HEIGHT + 16;
+				nitros.setCurrentFrame(r.nextInt(4));
 			} else {
-				y = -2;
+				y = -9;
 				x = -8;
 				width = Race.WIDTH + 16;
 				height = Race.HEIGHT + 9;
 			}
-
-			background.setCurrentFrame((background.getCurrentFrame() + player.getCar().getSpeedActual() / 100)
-					% background.getFrameCount());
 		} else {
-			if (playingFinishingCar) {
-				resShadow.incrementCurrentFrame();
-
-				if (resShadow.getCurrentFrame() == 0) {
-					playingFinishingCar = false;
-				}
-			}
-
-			if (!playingFinishingCar && !finishedPlayers.isEmpty()) {
-				try {
-					finishedPlayers.dequeue();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				playingFinishingCar = true;
-			}
+			y = -2;
+			x = -8;
+			width = Race.WIDTH + 16;
+			height = Race.HEIGHT + 9;
 		}
+
+		background.setCurrentFrame(
+				(background.getCurrentFrame() + player.getCar().getSpeedActual() / 100) % background.getFrameCount());
 	}
 
-	public void playFinishScene(boolean cheated) {
-
-		finishedPlayers = new Queue<Car>();
-
-		finished = true;
-
-		carImage = null;
-		tachopointer = null;
-		tachometer = null;
-		fastness = null;
-
-		
-		resCarWidth = (int) (Race.WIDTH * 1.16f);
-		resCarMovement = (resCarWidth + Race.WIDTH) / resShadow.getFrameCount();
-
-		if (!cheated)
-			finishedPlayers.enqueue(player.getCar());
-
-	}
-
-	public void addFinish() {
-		// FIXME
-		finishedPlayers.enqueue(player.getCar());
-	}
-
+	@Override
 	public void render(Graphics g) {
 		try {
 			bs = this.getBufferStrategy();
@@ -208,11 +156,35 @@ public class RaceVisual extends Canvas {
 
 			Graphics2D g2d = (Graphics2D) g;
 
-			if (!finished)
-				raceScene(g2d);
-			else
-				finishedScene(g2d);
+			g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
+			shakeImage(g2d, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(), blurSpeed / 2,
+					blurSpeed * 1.5f, blurShake * 2);
+
+			if (player.getCar().isNOSON()) {
+				blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
+						(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
+			}
+
+			if (player.getCar().getSpeedActual() > blurSpeed)
+				blur(g2d, fastness, 0, 0, Race.WIDTH, Race.HEIGHT, (float) player.getCar().getSpeedActual(), blurSpeed,
+						100f, blurShake);
+
+			g2d.setFont(font);
+			
+			// DEBUG
+//			drawDebug(g, 300);
+
+			// Prerace stuff
+			drawRaceHUD(g2d);
+
+			drawTachometer(g2d);
+
+			drawInfoHUD(g2d);
+			
+			for(int i = 0; i < visualElements.size(); i++) {
+				visualElements.get(i).render(g);
+			}
 		} finally {
 			if (g != null) {
 				g.dispose();
@@ -220,40 +192,6 @@ public class RaceVisual extends Canvas {
 		}
 		bs.show();
 		Toolkit.getDefaultToolkit().sync();
-	}
-
-	private void finishedScene(Graphics2D g2d) {
-
-		g2d.drawImage(resShadow.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
-
-	}
-
-	private void raceScene(Graphics2D g2d) {
-		g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
-
-		shakeImage(g2d, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(), blurSpeed / 2,
-				blurSpeed * 1.5f, blurShake * 2);
-
-		if (player.getCar().isNOSON()) {
-			blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
-					(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
-		}
-
-		if (player.getCar().getSpeedActual() > blurSpeed)
-			blur(g2d, fastness, 0, 0, Race.WIDTH, Race.HEIGHT, (float) player.getCar().getSpeedActual(), blurSpeed,
-					100f, blurShake);
-
-		g2d.setFont(font);
-
-		// DEBUG
-//		drawDebug(g, 300);
-
-		// Prerace stuff
-		drawRaceHUD(g2d);
-
-		drawTachometer(g2d);
-
-		drawInfoHUD(g2d);
 	}
 
 	private void blur(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
@@ -413,6 +351,30 @@ public class RaceVisual extends Canvas {
 
 	public void setBallCount(int i) {
 		baller = i;
+	}
+
+	@Override
+	public void setRace(Race race) {
+		this.race = race;		
+	}
+
+	@Override
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	
+	/**
+	 * TODO Does not matter here
+	 */
+	@Override
+	public boolean hasAnimationsRunning() {
+		return false;
+	}
+
+	@Override
+	public void addButton(VisualElement btn) {
+		visualElements.add(btn);		
 	}
 
 }
