@@ -297,7 +297,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	public boolean validPing(long ping) {
-		return ping > System.currentTimeMillis() - 5000;
+		return ping > System.currentTimeMillis() - 20000;
 	}
 
 	public void checkPings() {
