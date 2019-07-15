@@ -1,24 +1,24 @@
 package audio;
 
-import java.io.File;
-
 import handlers.GameHandler;
-import javafx.beans.value.ObservableValue;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
-import scenes.RaceVisual;
+import javafx.util.Duration;
 
 public class MediaAudio {
 	private Media hit;
 	private MediaPlayer mediaPlayer;
+	private AudioClip loopPlayer;
 
 	public MediaAudio(String file) {
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
+		loopPlayer = new AudioClip(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);
 		setVolume();
 	}
-	
+
 	public void setVolume() {
 		mediaPlayer.setVolume(GameHandler.volume);
 	}
@@ -31,10 +31,19 @@ public class MediaAudio {
 		mediaPlayer.stop();
 	}
 
+	public void loop() {
+		mediaPlayer.play();
+		mediaPlayer.setOnEndOfMedia(new Runnable() {
+			public void run() {
+				mediaPlayer.seek(Duration.ZERO);
+			}
+		});
+	}
+
 	public boolean isPlaying() {
 		return mediaPlayer.getStatus().equals(Status.PLAYING);
 	}
-	
+
 	public Media getHit() {
 		return hit;
 	}

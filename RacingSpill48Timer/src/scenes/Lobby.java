@@ -277,6 +277,8 @@ public class Lobby extends Scene implements Runnable {
 					SceneHandler.instance.getWindows().requestFocus();
 				
 				player.pingServer();
+				race.visualTick();
+				race.visualRender();
 				
 				if (!gameEnded && !started)
 					update(player.updateLobbyFromServer());
@@ -288,6 +290,12 @@ public class Lobby extends Scene implements Runnable {
 				timer += 1000;
 				System.out.println("FPS: " + frames);
 				frames = 0;
+			}
+			
+			try {
+				Thread.sleep(4);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 

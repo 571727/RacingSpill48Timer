@@ -179,7 +179,7 @@ public class ServerInfo implements Runnable {
 	 * @return length of the track
 	 */
 	public int randomizeConfiguration() {
-		return 500 * (r.nextInt(4) + 1);
+		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0));
 	}
 
 	public void leave(String[] input) {

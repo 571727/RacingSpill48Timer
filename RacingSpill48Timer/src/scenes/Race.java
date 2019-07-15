@@ -63,6 +63,7 @@ public class Race extends Scene implements Runnable {
 	private boolean rendering;
 	private ArrayList<Boolean> finishedPlayers;
 	VisualButton goBackVisual;
+	private boolean doneWithRace;
 	public static int WIDTH;
 	public static int HEIGHT;
 
@@ -98,6 +99,8 @@ public class Race extends Scene implements Runnable {
 		keys = new RaceKeyHandler(player.getCar());
 
 		racingWindow = SceneHandler.instance.getWindows();
+
+		doneWithRace = false;
 
 		racingWindow.setVisible(false);
 		racingWindow.dispose();
@@ -138,12 +141,11 @@ public class Race extends Scene implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		racingWindow.addKeyListener(keys);
 		SceneHandler.instance.justRemove();
 		racingWindow.setFocusable(true);
 		racingWindow.requestFocus();
-
 
 	}
 
@@ -198,6 +200,18 @@ public class Race extends Scene implements Runnable {
 
 	}
 
+	public void visualTick() {
+		if (currentVisual != null)
+			currentVisual.tick();
+	}
+
+	public void visualRender() {
+		if (currentVisual != null) {
+			Graphics g = null;
+			currentVisual.render(g);
+		}
+	}
+
 	@Override
 	public void run() {
 		joinThread();
@@ -220,9 +234,8 @@ public class Race extends Scene implements Runnable {
 
 				if (racingWindow.isVisible())
 					racingWindow.requestFocus();
-				
-				if (currentVisual != null)
-					currentVisual.tick();
+
+				visualTick();
 
 				if (!finished)
 					tick();
@@ -243,6 +256,12 @@ public class Race extends Scene implements Runnable {
 				timer += 1000;
 				System.out.println("FPS RACEEE: " + frames);
 				frames = 0;
+			}
+			
+			try {
+				Thread.sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -329,12 +348,12 @@ public class Race extends Scene implements Runnable {
 		if (everyoneDone) {
 			// Stop race aka make ready the next race
 			player.stopRace();
-			goToLobby.setEnabled(true);
+			goBackVisual.setEnabled(true);
 			racingWindow.addKeyListener(goBackVisual);
 			racingWindow.requestFocus();
-			
+
 		} else
-			goToLobby.setEnabled(false);
+			goBackVisual.setEnabled(false);
 	}
 
 	public void checkDistanceLeft() {
@@ -356,12 +375,13 @@ public class Race extends Scene implements Runnable {
 
 		try {
 			changeVisual(finishVisual);
+
+			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
+					() -> {
+						closeWindow();
+					});
 			
-			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, () -> {
-				closeWindow();
-			});
-			finishVisual.addButton(goBackVisual);
-//			this.addMouseListener(goBackVisual);
+			finishVisual.addVisualElement(goBackVisual);3
 			
 			SceneHandler.instance.justRemove();
 			racingWindow.requestFocus();
@@ -390,11 +410,12 @@ public class Race extends Scene implements Runnable {
 	}
 
 	public void closeWindow() {
+		doneWithRace = true;
 		racingWindow.remove(currentVisual);
 		raceVisual = null;
 		finishVisual = null;
+		currentVisual = null;
 		player.setReady(0);
-		this.removeMouseListener(goBackVisual);
 		racingWindow.removeKeyListener(goBackVisual);
 		goBackVisual = null;
 		SceneHandler.instance.changeScene(1);

@@ -10,6 +10,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -27,7 +29,7 @@ import elem.Player;
 import handlers.SceneHandler;
 import sun.misc.Queue;
 
-public class RaceVisual extends Visual {
+public class RaceVisual extends Visual{
 
 	private Race race;
 	private Player player;
@@ -373,8 +375,9 @@ public class RaceVisual extends Visual {
 	}
 
 	@Override
-	public void addButton(VisualElement btn) {
+	public void addVisualElement(VisualElement btn) {
 		visualElements.add(btn);		
 	}
+
 
 }

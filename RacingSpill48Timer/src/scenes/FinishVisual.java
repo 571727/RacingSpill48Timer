@@ -3,6 +3,7 @@ package scenes;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class FinishVisual extends Visual {
 	private float resCarMovement;
 	private PlacedAnimation[] animations;
 	private ArrayList<VisualElement> visualElements;
+
 	public FinishVisual(Player player, Race race) {
 		this.race = race;
 		this.player = player;
@@ -42,7 +44,7 @@ public class FinishVisual extends Visual {
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
 
 		animations = new PlacedAnimation[0];
-		
+
 		visualElements = new ArrayList<VisualElement>();
 
 		try {
@@ -61,13 +63,15 @@ public class FinishVisual extends Visual {
 		animations = finishedPlayers.toArray(animations);
 
 		for (PlacedAnimation ma : animations) {
-			ma.moveX((int) resCarMovement);
-			ma.incrementCurrentFrame();
-			if (ma.getX() > Race.WIDTH)
-				finishedPlayers.remove(ma);
+			if (ma != null) {
+				ma.moveX((int) resCarMovement);
+				ma.incrementCurrentFrame();
+				if (ma.getX() > Race.WIDTH)
+					finishedPlayers.remove(ma);
+			}
 		}
-		
-		for(int i = 0; i < visualElements.size(); i++) {
+
+		for (int i = 0; i < visualElements.size(); i++) {
 			visualElements.get(i).tick();
 		}
 
@@ -86,22 +90,27 @@ public class FinishVisual extends Visual {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.drawImage(resBackground, 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
-			for(PlacedAnimation ma : animations) {
-				g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
+			for (PlacedAnimation ma : animations) {
+				if (ma != null)
+					g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
 			}
-			
-			for(int i = 0; i < visualElements.size(); i++) {
+
+			for (int i = 0; i < visualElements.size(); i++) {
 				visualElements.get(i).render(g);
 			}
-
-		} finally {
-
+			
+			
 			if (g != null) {
 				g.dispose();
 			}
-		}
-		bs.show();
-		Toolkit.getDefaultToolkit().sync();
+			bs.show();
+			Toolkit.getDefaultToolkit().sync();
+			
+			
+		} catch (Exception e) {
+			System.err.println(e.getMessage() + "In visual");
+		} 
+		
 	}
 
 	public void addFinish() {
@@ -124,7 +133,7 @@ public class FinishVisual extends Visual {
 	}
 
 	@Override
-	public void addButton(VisualElement btn) {
+	public void addVisualElement(VisualElement btn) {
 		visualElements.add(btn);
 	}
 

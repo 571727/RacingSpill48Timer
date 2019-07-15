@@ -8,84 +8,62 @@ import java.awt.event.MouseEvent;
 import adt.Action;
 import adt.VisualElement;
 
-public class VisualButton extends VisualElement implements KeyListener{
+public class VisualButton implements VisualElement {
 
-	private PlacedAnimation img;
+	private MovingAnimation img;
 	private Action action;
-	
-	public VisualButton(String imgName, int amount, int x, int y, int size, Action action) {
-		img = new PlacedAnimation(imgName, amount, x, y);
+	private boolean enabled;
+
+	public VisualButton(String imgName, int amount, int x, int y, int size, int x2, int y2, int framesPerMovement,  Action action) {
+		img = new MovingAnimation(imgName, amount, x, y, x2, y2, framesPerMovement);
 		img.setSize(img.getWidth() * size, img.getHeight() * size);
 		this.action = action;
-	}
-	
-	@Override
-	public void mouseClicked(MouseEvent me) {
-		System.out.println("MOUSE1");
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent me) {
-		System.out.println("MOUSE2");
-	}
-
-	@Override
-	public void mouseExited(MouseEvent me) {
-		System.out.println("MOUSE3");
-	}
-
-	@Override
-	public void mousePressed(MouseEvent me) {
-		if(me.getX() >= img.getX() &&  me.getX() <= img.getX() + img.getWidth()) {
-			if(me.getY() >= img.getY() &&  me.getY() <= img.getY() + img.getHeight()) {
-				action.doStuff();
-			}
-		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent me) {
-		System.out.println("MOUSE4");
+		enabled = true;
 	}
 
 	@Override
 	public void tick() {
-		
+		if (enabled)
+			img.incrementMovement();
 	}
 
 	@Override
 	public void render(Graphics g) {
-		//FIXME not run after everybodydone
-		g.drawImage(img.getFrame(), img.getX(), img.getY(), img.getWidth(), img.getHeight(), null);
+		// FIXME not run after everybodydone
+		if (enabled)
+			g.drawImage(img.getFrame(), img.getX(), img.getY(), img.getWidth(), img.getHeight(), null);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		System.out.println(arg0.getKeyCode());
-		if(arg0.getKeyCode() == 10)
+		if (arg0.getKeyCode() == 10)
 			action.doStuff();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+	}
+
+	@Override
+	public boolean isWithin(int x, int y) {
+		return (x >= img.getX() && x <= img.getX() + img.getWidth())
+				&& (y >= img.getY() && x <= img.getY() + img.getHeight());
+	}
+
+	@Override
+	public void run() {
+		action.doStuff();
+	}
+
+	public void setEnabled(boolean b) {
+		enabled = b;
 	}
 
 }

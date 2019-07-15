@@ -1,12 +1,13 @@
 package adt;
 
 import java.awt.Graphics;
+import java.awt.event.KeyListener;
 
-import javax.swing.event.MouseInputAdapter;
+public interface VisualElement extends KeyListener{
 
-public abstract class VisualElement extends MouseInputAdapter {
-
-	public abstract void tick();
-	public abstract void render(Graphics g);
+	public void tick();
+	public void render(Graphics g);
+	public boolean isWithin(int x, int y);
+	public void run();
 	
 }
