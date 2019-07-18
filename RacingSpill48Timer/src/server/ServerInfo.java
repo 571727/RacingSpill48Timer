@@ -115,8 +115,8 @@ public class ServerInfo implements Runnable {
 
 	private void updateRaceStatus() {
 
-		if (started != 1)
-			return;
+//		if (started != 1)
+//			return;
 
 		greenLights = updateRaceLights();
 		// Update time per player
@@ -128,7 +128,11 @@ public class ServerInfo implements Runnable {
 		if (raceLights == 4)
 			return true;
 
+		//Everyone in the race
 		if (amountInTheRace == players.size()) {
+			
+			started = 0;
+			
 			// Wait for 3 secounds before the race starts && wait for each racelight
 			if (raceStartedTime + regulatingWaitTime < System.currentTimeMillis()) {
 				regulatingWaitTime = waitTime - 300 + r.nextInt(1200);
@@ -147,11 +151,19 @@ public class ServerInfo implements Runnable {
 	public String getRaceLightsStatus() {
 		return String.valueOf(raceLights);
 	}
+	
+	private void stopRace() {
+		amountInTheRace = 0;
+		amountFinished = 0;
+		length = 0;
+		started = 0;
+	}
 
 	/**
 	 * input[2] -> 1 = race started. 0 = race ready to start
 	 */
 	public void startRace(String[] input) {
+		//host?
 		if (Integer.valueOf(input[1]) == 1) {
 			if (Integer.valueOf(input[2]) == 1) {
 				races--;
@@ -163,9 +175,7 @@ public class ServerInfo implements Runnable {
 				raceStartedTime = System.currentTimeMillis();
 				regulatingWaitTime = waitTime * 3;
 			} else {
-				amountInTheRace = 0;
-				amountFinished = 0;
-				length = 0;
+				stopRace();
 			}
 			started = Integer.valueOf(input[2]);
 			raceLights = 0;
@@ -179,7 +189,7 @@ public class ServerInfo implements Runnable {
 	 * @return length of the track
 	 */
 	public int randomizeConfiguration() {
-		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0));
+		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0) + 1);
 	}
 
 	public void leave(String[] input) {

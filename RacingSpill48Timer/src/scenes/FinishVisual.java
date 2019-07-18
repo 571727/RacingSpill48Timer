@@ -47,15 +47,6 @@ public class FinishVisual extends Visual {
 
 		visualElements = new ArrayList<VisualElement>();
 
-		try {
-
-			resBackground = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/back.jpg"));
-
-		} catch (IOException e) {
-			System.err.println("didn't find the picture you were looking for");
-			e.printStackTrace();
-		}
-
 	}
 
 	@Override
@@ -135,6 +126,10 @@ public class FinishVisual extends Visual {
 	@Override
 	public void addVisualElement(VisualElement btn) {
 		visualElements.add(btn);
+	}
+
+	public void setBackground(BufferedImage resBackground) {
+		this.resBackground = resBackground;
 	}
 
 }

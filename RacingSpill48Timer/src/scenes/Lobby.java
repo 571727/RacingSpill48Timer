@@ -259,7 +259,7 @@ public class Lobby extends Scene implements Runnable {
 	public void run() {
 		started = false;
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 5.0;
+		double amountOfTicks = 15.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
@@ -277,7 +277,7 @@ public class Lobby extends Scene implements Runnable {
 					SceneHandler.instance.getWindows().requestFocus();
 				
 				player.pingServer();
-				race.visualTick();
+				race.lobbyTick();
 				race.visualRender();
 				
 				if (!gameEnded && !started)
@@ -318,5 +318,21 @@ public class Lobby extends Scene implements Runnable {
 
 	public void setStarted(boolean started) {
 		this.started = started;
+	}
+
+	public Race getRace() {
+		return race;
+	}
+
+	public void setRace(Race race) {
+		this.race = race;
+	}
+
+	public FixCar getFixCarScene() {
+		return fixCarScene;
+	}
+
+	public void setFixCarScene(FixCar fixCarScene) {
+		this.fixCarScene = fixCarScene;
 	}
 }

@@ -7,8 +7,11 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,6 +21,7 @@ import adt.Scene;
 import adt.Visual;
 import adt.VisualElement;
 import audio.SFX;
+import elem.Animation;
 import elem.Player;
 import elem.VisualButton;
 import elem.VisualString;
@@ -64,6 +68,12 @@ public class Race extends Scene implements Runnable {
 	private ArrayList<Boolean> finishedPlayers;
 	VisualButton goBackVisual;
 	private boolean doneWithRace;
+	private Animation background;
+	private Animation nitros;
+	private BufferedImage fastness;
+	private BufferedImage tachopointer;
+	private BufferedImage tachometer;
+	private BufferedImage resBackground;
 	public static int WIDTH;
 	public static int HEIGHT;
 
@@ -77,15 +87,24 @@ public class Race extends Scene implements Runnable {
 
 		currentPlace = places[0];
 
-		goToLobby = new JButton("Go back to the lobby");
-		goToLobby.setEnabled(false);
+		background = new Animation("road", 6);
+		nitros = new Animation("nitros", 4);
+		try {
 
-		goToLobby.addActionListener((ActionEvent e) -> {
-			// Reset some shit and go to lobby
+			fastness = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/fastness.png"));
 
-		});
+			tachopointer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tacho.png"));
+			// 311 x 225 px
+			tachometer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tachometer.png"));
+			
+			resBackground = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/back.jpg"));
 
-		add(goToLobby);
+		} catch (IOException e) {
+			System.err.println("didn't find the picture you were looking for");
+			e.printStackTrace();
+		}
+
+		
 	}
 
 	public void initWindow() {
@@ -118,8 +137,15 @@ public class Race extends Scene implements Runnable {
 
 		finishedPlayers = new ArrayList<Boolean>();
 
+		
 		raceVisual = new RaceVisual(player, this);
+		raceVisual.setBackground(background);
+		raceVisual.setFastness(fastness);
+		raceVisual.setNitros(nitros);
+		raceVisual.setTachometer(tachometer);
+		raceVisual.setTachopointer(tachopointer);
 		finishVisual = new FinishVisual(player, this);
+		finishVisual.setBackground(resBackground);
 
 		everyoneDone = false;
 		cheating = false;
@@ -194,9 +220,17 @@ public class Race extends Scene implements Runnable {
 
 	}
 
+	public void lobbyTick() {
+		visualTick();
+		if (finished && currentVisual != null) {
+			updateResults();
+		}
+	}
+
 	public void visualTick() {
-		if (currentVisual != null)
+		if (currentVisual != null) {
 			currentVisual.tick();
+		}
 	}
 
 	public void visualRender() {
@@ -212,31 +246,35 @@ public class Race extends Scene implements Runnable {
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 20.0;
-		double ns = 1000000000 / amountOfTicks;
-		double delta = 0;
+		double nst = 1000000000 / amountOfTicks;
+		double nsr = 1000000000 / (amountOfTicks * 3.0);
+		double deltat = 0;
+		double deltar = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 
 		initWindow();
 
-		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !everyoneDone) {
+		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !finished) {
 			long now = System.nanoTime();
-			delta += (now - lastTime) / ns;
+			deltat += (now - lastTime) / nst;
+			deltar += (now - lastTime) / nsr;
 			lastTime = now;
-			while (delta >= 1) {
-				delta--;
+			while (deltat >= 1) {
+				deltat--;
 
 				if (racingWindow.isVisible())
 					racingWindow.requestFocus();
 
 				visualTick();
 
-				if (!finished)
-					tick();
-				else
-					updateResults();
+				tick();
 
 				player.pingServer();
+				
+			}
+			while (deltar >= 1) {
+				deltar--;
 				frames++;
 				if (currentVisual != null) {
 					Graphics g = null;
@@ -251,7 +289,7 @@ public class Race extends Scene implements Runnable {
 				System.out.println("FPS RACEEE: " + frames);
 				frames = 0;
 			}
-			
+
 			try {
 				Thread.sleep(2);
 			} catch (InterruptedException e) {
@@ -373,10 +411,10 @@ public class Race extends Scene implements Runnable {
 					() -> {
 						closeWindow();
 					});
-			
+
 			finishVisual.addVisualElement(goBackVisual);
 			finishVisual.addVisualElement(results);
-			
+
 			SceneHandler.instance.justRemove();
 			racingWindow.requestFocus();
 		} catch (Exception e) {
@@ -404,22 +442,24 @@ public class Race extends Scene implements Runnable {
 	}
 
 	public void closeWindow() {
-		doneWithRace = true;
-		racingWindow.remove(currentVisual);
-		raceVisual = null;
-		finishVisual = null;
-		currentVisual = null;
-		player.setReady(0);
-		racingWindow.removeKeyListener(goBackVisual);
-		goBackVisual = null;
-		SceneHandler.instance.changeScene(1);
-		racingWindow.setVisible(false);
-		racingWindow.dispose();
-		racingWindow.setUndecorated(false);
-		racingWindow.setExtendedState(JFrame.NORMAL);
-		racingWindow.setBounds(50, 50, Windows.WIDTH, Windows.HEIGHT);
-		racingWindow.setLocationRelativeTo(null);
-		racingWindow.setVisible(true);
+		if (!doneWithRace) {
+			doneWithRace = true;
+			racingWindow.remove(currentVisual);
+			raceVisual = null;
+			finishVisual = null;
+			currentVisual = null;
+			player.setReady(0);
+			racingWindow.removeKeyListener(goBackVisual);
+			goBackVisual = null;
+			SceneHandler.instance.changeScene(1);
+			racingWindow.setVisible(false);
+			racingWindow.dispose();
+			racingWindow.setUndecorated(false);
+			racingWindow.setExtendedState(JFrame.NORMAL);
+			racingWindow.setBounds(50, 50, Windows.WIDTH, Windows.HEIGHT);
+			racingWindow.setLocationRelativeTo(null);
+			racingWindow.setVisible(true);
+		}
 	}
 
 	public Player getPlayer() {

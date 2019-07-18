@@ -33,13 +33,14 @@ public class RaceVisual extends Visual{
 
 	private Race race;
 	private Player player;
-	private GraphicsEnvironment env;
-	private GraphicsDevice device;
-	private GraphicsConfiguration config;
+	
 	private BufferedImage carImage;
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage fastness;
+	private Animation background;
+	private Animation nitros;
+	
 	private AffineTransform identity = new AffineTransform();
 	private boolean startCountDown;
 	private boolean running;
@@ -64,11 +65,10 @@ public class RaceVisual extends Visual{
 	private int ySpeed;
 	private int xDistance;
 	private int yDistance;
-	private Animation background;
 	private float blurSpeed;
 	private int blurShake;
-	private Animation nitros;
 	private ArrayList<VisualElement> visualElements;
+	
 	public RaceVisual(Player player, Race race) {
 		super();
 		visualElements = new ArrayList<VisualElement>();
@@ -92,32 +92,24 @@ public class RaceVisual extends Visual{
 		xDistance = 100;
 		yDistance = 100;
 
-		background = new Animation("road", 6);
-		nitros = new Animation("nitros", 4);
 
 		blurShake = 3;
 		blurSpeed = 220;
 
-
 		y = 0;
 		startTime = 0;
 		startCountDown = false;
+		
 		try {
 
 			carImage = ImageIO
 					.read(RaceVisual.class.getResourceAsStream("/pics/" + player.getCar().getCarStyle() + ".png"));
 
-			fastness = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/fastness.png"));
-
-			tachopointer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tacho.png"));
-			// 311 x 225 px
-			tachometer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tachometer.png"));
-
 		} catch (IOException e) {
 			System.err.println("didn't find the picture you were looking for");
 			e.printStackTrace();
 		}
-
+		
 	}
 
 	@Override
@@ -377,6 +369,51 @@ public class RaceVisual extends Visual{
 	@Override
 	public void addVisualElement(VisualElement btn) {
 		visualElements.add(btn);		
+	}
+
+	public BufferedImage getCarImage() {
+		return carImage;
+	}
+
+	public void setCarImage(BufferedImage carImage) {
+		this.carImage = carImage;
+	}
+
+	public BufferedImage getTachopointer() {
+		return tachopointer;
+	}
+
+	public void setTachopointer(BufferedImage tachopointer) {
+		this.tachopointer = tachopointer;
+	}
+
+	public BufferedImage getTachometer() {
+		return tachometer;
+	}
+
+	public void setTachometer(BufferedImage tachometer) {
+		this.tachometer = tachometer;
+	}
+
+	public BufferedImage getFastness() {
+		return fastness;
+	}
+
+	public void setFastness(BufferedImage fastness) {
+		this.fastness = fastness;
+	}
+
+
+	public void setBackground(Animation background) {
+		this.background = background;
+	}
+
+	public Animation getNitros() {
+		return nitros;
+	}
+
+	public void setNitros(Animation nitros) {
+		this.nitros = nitros;
 	}
 
 
