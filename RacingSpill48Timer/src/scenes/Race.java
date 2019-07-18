@@ -1,13 +1,10 @@
 package scenes;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,12 +12,9 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 
 import adt.Scene;
 import adt.Visual;
-import adt.VisualElement;
 import audio.SFX;
 import elem.Animation;
 import elem.Player;
@@ -431,7 +425,7 @@ public class Race extends Scene implements Runnable {
 
 		try {
 			changeVisual(finishVisual);
-			results = new VisualString(WIDTH - WIDTH / 5, HEIGHT / 5, (int) (WIDTH / 5.2f), HEIGHT / 2, Color.white, Color.black, new Font("Calibri", 0, Race.WIDTH / 160));
+			results = new VisualString((int) (WIDTH - WIDTH / 4.8f), HEIGHT / 5, (int) (WIDTH / 4.9f), HEIGHT / 2, Color.white, Color.black, new Font("Calibri", 0, Race.WIDTH / 160));
 
 			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
 					() -> {

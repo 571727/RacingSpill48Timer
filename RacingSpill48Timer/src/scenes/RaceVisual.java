@@ -1,33 +1,18 @@
 package scenes;
 
 import java.awt.AlphaComposite;
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Stack;
-
-import javax.imageio.ImageIO;
 
 import adt.Visual;
 import adt.VisualElement;
 import elem.Animation;
 import elem.Player;
-import handlers.SceneHandler;
-import sun.misc.Queue;
 
 public class RaceVisual extends Visual{
 
