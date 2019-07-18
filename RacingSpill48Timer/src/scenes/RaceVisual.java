@@ -67,7 +67,7 @@ public class RaceVisual extends Visual{
 	private int yDistance;
 	private float blurSpeed;
 	private int blurShake;
-	private ArrayList<VisualElement> visualElements;
+	
 	
 	public RaceVisual(Player player, Race race) {
 		super();
@@ -99,16 +99,6 @@ public class RaceVisual extends Visual{
 		y = 0;
 		startTime = 0;
 		startCountDown = false;
-		
-		try {
-
-			carImage = ImageIO
-					.read(RaceVisual.class.getResourceAsStream("/pics/" + player.getCar().getCarStyle() + ".png"));
-
-		} catch (IOException e) {
-			System.err.println("didn't find the picture you were looking for");
-			e.printStackTrace();
-		}
 		
 	}
 
@@ -366,10 +356,6 @@ public class RaceVisual extends Visual{
 		return false;
 	}
 
-	@Override
-	public void addVisualElement(VisualElement btn) {
-		visualElements.add(btn);		
-	}
 
 	public BufferedImage getCarImage() {
 		return carImage;

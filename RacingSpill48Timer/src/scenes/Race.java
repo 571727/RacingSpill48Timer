@@ -68,12 +68,15 @@ public class Race extends Scene implements Runnable {
 	private ArrayList<Boolean> finishedPlayers;
 	VisualButton goBackVisual;
 	private boolean doneWithRace;
+	
 	private Animation background;
 	private Animation nitros;
+	private BufferedImage[] cars;
 	private BufferedImage fastness;
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage resBackground;
+	
 	public static int WIDTH;
 	public static int HEIGHT;
 
@@ -89,8 +92,15 @@ public class Race extends Scene implements Runnable {
 
 		background = new Animation("road", 6);
 		nitros = new Animation("nitros", 4);
+		
+		cars = new BufferedImage[MainMenu.possibilities.length];
+		
 		try {
 
+			for(int i = 0; i < cars.length; i++) {
+				cars[i] = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/" + MainMenu.possibilities[i].toLowerCase() + ".png"));
+			}
+			
 			fastness = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/fastness.png"));
 
 			tachopointer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tacho.png"));
@@ -103,8 +113,6 @@ public class Race extends Scene implements Runnable {
 			System.err.println("didn't find the picture you were looking for");
 			e.printStackTrace();
 		}
-
-		
 	}
 
 	public void initWindow() {
@@ -139,11 +147,13 @@ public class Race extends Scene implements Runnable {
 
 		
 		raceVisual = new RaceVisual(player, this);
+		raceVisual.setCarImage(findCarImage(player.getCar().getCarStyle()));
 		raceVisual.setBackground(background);
 		raceVisual.setFastness(fastness);
 		raceVisual.setNitros(nitros);
 		raceVisual.setTachometer(tachometer);
 		raceVisual.setTachopointer(tachopointer);
+		
 		finishVisual = new FinishVisual(player, this);
 		finishVisual.setBackground(resBackground);
 
@@ -222,7 +232,7 @@ public class Race extends Scene implements Runnable {
 
 	public void lobbyTick() {
 		visualTick();
-		if (finished && currentVisual != null) {
+		if (finished && currentVisual != null && !everyoneDone) {
 			updateResults();
 		}
 	}
@@ -248,8 +258,10 @@ public class Race extends Scene implements Runnable {
 		double amountOfTicks = 20.0;
 		double nst = 1000000000 / amountOfTicks;
 		double nsr = 1000000000 / (amountOfTicks * 3.0);
+		double nsp = 1000000000 / (amountOfTicks / 8.0);
 		double deltat = 0;
 		double deltar = 0;
+		double deltap = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 
@@ -259,7 +271,14 @@ public class Race extends Scene implements Runnable {
 			long now = System.nanoTime();
 			deltat += (now - lastTime) / nst;
 			deltar += (now - lastTime) / nsr;
+			deltap += (now - lastTime) / nsp;
 			lastTime = now;
+			
+			while (deltap >= 1) {
+				deltap--;
+				player.pingServer();
+			}
+			
 			while (deltat >= 1) {
 				deltat--;
 
@@ -269,10 +288,8 @@ public class Race extends Scene implements Runnable {
 				visualTick();
 
 				tick();
-
-				player.pingServer();
-				
 			}
+			
 			while (deltar >= 1) {
 				deltar--;
 				frames++;
@@ -302,6 +319,14 @@ public class Race extends Scene implements Runnable {
 		lobbyThread = new Thread(lobby);
 		lobbyThread.start();
 
+	}
+	
+	private BufferedImage findCarImage(String car) {
+		for(int i = 0; i < cars.length; i++) {
+			if(MainMenu.possibilities[i].toLowerCase().equals(car))
+				return cars[i];
+		}
+		return null;
 	}
 
 	private void updateResults() {
@@ -444,12 +469,14 @@ public class Race extends Scene implements Runnable {
 	public void closeWindow() {
 		if (!doneWithRace) {
 			doneWithRace = true;
+			racingWindow.removeKeyListener(goBackVisual);
 			racingWindow.remove(currentVisual);
+			finishVisual.removeVisualElements();
+			raceVisual.removeVisualElements();
 			raceVisual = null;
 			finishVisual = null;
 			currentVisual = null;
 			player.setReady(0);
-			racingWindow.removeKeyListener(goBackVisual);
 			goBackVisual = null;
 			SceneHandler.instance.changeScene(1);
 			racingWindow.setVisible(false);

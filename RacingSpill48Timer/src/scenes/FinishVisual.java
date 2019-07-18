@@ -29,7 +29,6 @@ public class FinishVisual extends Visual {
 	private int resCarHeight;
 	private float resCarMovement;
 	private PlacedAnimation[] animations;
-	private ArrayList<VisualElement> visualElements;
 
 	public FinishVisual(Player player, Race race) {
 		this.race = race;
@@ -123,13 +122,10 @@ public class FinishVisual extends Visual {
 		return !finishedPlayers.isEmpty();
 	}
 
-	@Override
-	public void addVisualElement(VisualElement btn) {
-		visualElements.add(btn);
-	}
-
 	public void setBackground(BufferedImage resBackground) {
 		this.resBackground = resBackground;
 	}
+
+	
 
 }

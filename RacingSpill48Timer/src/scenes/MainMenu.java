@@ -20,6 +20,7 @@ public class MainMenu extends Scene {
 	private Thread thread;
 	private ServerHandler serverHandler;
 	private Lobby lobby;
+	public static String[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
 
 	public MainMenu(Lobby lobby) {
 		// Init variables
@@ -103,7 +104,7 @@ public class MainMenu extends Scene {
 	}
 
 	private String carSelection() {
-		Object[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
+		
 		return (String) JOptionPane.showInputDialog(null, "Choose your car, mate", "Carznstuff",
 				JOptionPane.PLAIN_MESSAGE, null, possibilities, "Supra");
 	}

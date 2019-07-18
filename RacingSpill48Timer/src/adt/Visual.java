@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 import java.util.Random;
 
 import elem.Player;
@@ -16,6 +17,7 @@ public abstract class Visual extends Canvas {
 	protected BufferStrategy bs;
 	protected Font font = new Font("Calibri", 0, 54);
 	protected Random r = new Random();
+	protected ArrayList<VisualElement> visualElements;
 	
 	public abstract void tick();
 	public abstract void render(Graphics g);
@@ -23,5 +25,10 @@ public abstract class Visual extends Canvas {
 	public abstract void setRace(Race race);
 	public abstract void setPlayer(Player player);
 	public abstract boolean hasAnimationsRunning();
-	public abstract void addVisualElement(VisualElement btn);
+	public void addVisualElement(VisualElement btn) {
+		visualElements.add(btn);
+	}
+	public void removeVisualElements() {
+		visualElements.clear();
+	}
 }

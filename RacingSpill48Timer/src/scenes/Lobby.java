@@ -259,9 +259,11 @@ public class Lobby extends Scene implements Runnable {
 	public void run() {
 		started = false;
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 15.0;
+		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
+		double nsr = 1000000000 / (amountOfTicks * 4);
 		double delta = 0;
+		double deltar = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		while ((SceneHandler.instance.getCurrentScene().getClass().equals(Lobby.class)
@@ -270,6 +272,7 @@ public class Lobby extends Scene implements Runnable {
 				|| (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !started)) && !gameEnded) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
+			deltar += (now - lastTime) / nsr;
 			lastTime = now;
 			while (delta >= 1) {
 				
@@ -277,13 +280,17 @@ public class Lobby extends Scene implements Runnable {
 					SceneHandler.instance.getWindows().requestFocus();
 				
 				player.pingServer();
-				race.lobbyTick();
-				race.visualRender();
 				
 				if (!gameEnded && !started)
 					update(player.updateLobbyFromServer());
 				delta--;
+			}
+			
+			while (deltar >= 1) {
 				frames++;
+				race.lobbyTick();
+				race.visualRender();
+				deltar--;
 			}
 
 			if (System.currentTimeMillis() - timer > 1000) {

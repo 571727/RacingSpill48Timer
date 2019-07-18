@@ -57,44 +57,39 @@ public class Car implements Cloneable {
 			totalWeight = 1549;
 			totalGear = 6;
 			totalRPM = 8000;
-			setCarStyle("m3");
 			break;
 		case "Supra":
 			hp = 220;
 			totalWeight = 1400;
 			totalGear = 5;
 			totalRPM = 7800;
-			setCarStyle("supra");
 			break;
 		case "Mustang":
 			hp = 310;
 			totalWeight = 1607;
 			totalRPM = 7500;
 			totalGear = 5;
-			setCarStyle("mustang");
 			break;
 		case "Bentley":
 			hp = 650;
 			totalRPM = 2500;
 			totalWeight = 3048;
 			totalGear = 4;
-			setCarStyle("bentley");
 			break;
 		case "Skoda Fabia":
 			hp = 101;
 			totalWeight = 950;
 			totalRPM = 5500;
 			totalGear = 5;
-			setCarStyle("skoda");
 			break;
 		case "Corolla":
 			hp = 120;
 			totalWeight = 1100;
 			totalRPM = 6000;
 			totalGear = 5;
-			setCarStyle("corolla");
 			break;
 		}
+		setCarStyle(cartype.toLowerCase());
 		audio = new RaceAudio(carStyle);
 		
 		double w = (totalWeight - weightloss);
