@@ -20,6 +20,7 @@ import adt.VisualElement;
 import audio.SFX;
 import elem.Player;
 import elem.VisualButton;
+import elem.VisualString;
 import handlers.RaceKeyHandler;
 import handlers.SceneHandler;
 import startup.Main;
@@ -41,8 +42,7 @@ public class Race extends Scene implements Runnable {
 	private Lobby lobby;
 	private JFrame racingWindow;
 	private JButton goToLobby;
-	private JScrollPane scrollPane;
-	private JLabel results;
+	private VisualString results;
 	private Visual currentVisual;
 	private RaceVisual raceVisual;
 	private FinishVisual finishVisual;
@@ -77,19 +77,14 @@ public class Race extends Scene implements Runnable {
 
 		currentPlace = places[0];
 
-		results = new JLabel("Driving");
 		goToLobby = new JButton("Go back to the lobby");
 		goToLobby.setEnabled(false);
-
-		scrollPane = new JScrollPane(results);
-		scrollPane.setPreferredSize(new Dimension(500, 300));
 
 		goToLobby.addActionListener((ActionEvent e) -> {
 			// Reset some shit and go to lobby
 
 		});
 
-		add(scrollPane);
 		add(goToLobby);
 	}
 
@@ -99,7 +94,6 @@ public class Race extends Scene implements Runnable {
 		keys = new RaceKeyHandler(player.getCar());
 
 		racingWindow = SceneHandler.instance.getWindows();
-
 		doneWithRace = false;
 
 		racingWindow.setVisible(false);
@@ -278,7 +272,7 @@ public class Race extends Scene implements Runnable {
 
 		String[] outputs = outtext.split("#");
 
-		String result = "<html>Tracklength: " + currentLength + " meters.<br/><br/>Players: <br/>";
+		String result = "Tracklength: " + currentLength + " meters.<br/>Players: <br/>";
 		int n = 0;
 		int playerIndex = 0;
 		boolean finished = false;
@@ -340,10 +334,8 @@ public class Race extends Scene implements Runnable {
 		if (currentVisual.hasAnimationsRunning())
 			everyoneDone = false;
 
-		result += "</html>";
-
 		// Show all players on screen
-		results.setText(result);
+		results.setText(result, "<br/>");
 		// Disable start game button
 		if (everyoneDone) {
 			// Stop race aka make ready the next race
@@ -375,13 +367,15 @@ public class Race extends Scene implements Runnable {
 
 		try {
 			changeVisual(finishVisual);
+			results = new VisualString(WIDTH - 500, HEIGHT / 5, 480, HEIGHT / 2, Color.white, Color.black);
 
 			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
 					() -> {
 						closeWindow();
 					});
 			
-			finishVisual.addVisualElement(goBackVisual);3
+			finishVisual.addVisualElement(goBackVisual);
+			finishVisual.addVisualElement(results);
 			
 			SceneHandler.instance.justRemove();
 			racingWindow.requestFocus();
