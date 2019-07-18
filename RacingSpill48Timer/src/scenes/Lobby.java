@@ -72,7 +72,7 @@ public class Lobby extends Scene implements Runnable {
 		}
 		ipLabelText += "</html>";
 		ipLabel.setText(ipLabelText);
-		
+
 		// ActionListeners
 		ready.addActionListener((ActionEvent e) -> player.setReady((player.getReady() + 1) % 2));
 		fixCar.addActionListener((ActionEvent e) -> {
@@ -112,72 +112,83 @@ public class Lobby extends Scene implements Runnable {
 	 * @param string - outtext from server
 	 */
 	public void update(String string) {
-		if(string == null)
-			return;
+		try {
+			if (string == null)
+				return;
 
-		everyoneReady = true;
-		String[] outputs = string.split("#");
+			everyoneReady = true;
+			String[] outputs = string.split("#");
 
-		int racesLeft = Integer.valueOf(player.getRacesLeft());
+			int racesLeft = Integer.valueOf(player.getRacesLeft());
 
-		String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
-		int n = 0;
-		for (int i = 1; i < outputs.length; i++) {
-			n++;
+			String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
+			int n = 0;
+			for (int i = 1; i < outputs.length; i++) {
+				n++;
 
-			switch (n) {
+				switch (n) {
 
-			case 1:
-				result += outputs[i] + ", ";
-				break;
-			case 2:
-				if (Integer.valueOf(outputs[i]) == 1) {
-					result += "Ready, ";
-				} else {
-					result += "Not ready, ";
-					everyoneReady = false;
+				case 1:
+					result += outputs[i] + ", ";
+					break;
+				case 2:
+					if (Integer.valueOf(outputs[i]) == 1) {
+						result += "Ready, ";
+					} else {
+						result += "Not ready, ";
+						everyoneReady = false;
+					}
+					break;
+				case 3:
+					if (Integer.valueOf(outputs[i]) == 1)
+						result += "Host, ";
+					break;
+				case 4:
+					result += outputs[i] + ", ";
+					break;
+
+				case 5:
+					result += "Points: " + outputs[i] + "<br/>";
+					break;
+				case 6:
+					if (Integer.valueOf(outputs[i]) == 1) {
+						raceStarted();
+					}
+					n = 0;
+					break;
 				}
-				break;
-			case 3:
-				if (Integer.valueOf(outputs[i]) == 1)
-					result += "Host, ";
-				break;
-			case 4:
-				result += outputs[i] + ", ";
-				break;
 
-			case 5:
-				result += "Points: " + outputs[i] + "<br/>";
-				break;
-			case 6:
-				if (Integer.valueOf(outputs[i]) == 1) {
-					raceStarted();
-				}
-				n = 0;
-				break;
 			}
+			result += "</html>";
 
+			if (racesLeft == 0 && Integer.valueOf(outputs[6]) != 1) {
+				endGame();
+				return;
+			}
+			// Show all players on screen
+			label.setText(result);
+
+			// Disable start game button
+			if (everyoneReady)
+				start.setEnabled(true);
+			else
+				start.setEnabled(false);
+
+			// Disable fix car button
+			if (player.getReady() == 1)
+				fixCar.setEnabled(false);
+			else
+				fixCar.setEnabled(true);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.err.println("server lost probably");
+
+			if (server != null) {
+				server.join();
+				server = null;
+			}
+			SceneHandler.instance.changeScene(0);
 		}
-		result += "</html>";
-
-		if (racesLeft == 0 && Integer.valueOf(outputs[6]) != 1) {
-			endGame();
-			return;
-		}
-		// Show all players on screen
-		label.setText(result);
-
-		// Disable start game button
-		if (everyoneReady)
-			start.setEnabled(true);
-		else
-			start.setEnabled(false);
-
-		// Disable fix car button
-		if (player.getReady() == 1)
-			fixCar.setEnabled(false);
-		else
-			fixCar.setEnabled(true);
 
 	}
 
@@ -228,12 +239,11 @@ public class Lobby extends Scene implements Runnable {
 		if (player.isHost()) {
 			start.setVisible(true);
 			ipLabel.setVisible(true);
-		}
-		else {
+		} else {
 			start.setVisible(false);
 			ipLabel.setVisible(false);
 		}
-		
+
 	}
 
 	private void raceStarted() {
@@ -275,17 +285,17 @@ public class Lobby extends Scene implements Runnable {
 			deltar += (now - lastTime) / nsr;
 			lastTime = now;
 			while (delta >= 1) {
-				
+
 				if (SceneHandler.instance.getWindows().isVisible())
 					SceneHandler.instance.getWindows().requestFocus();
-				
+
 				player.pingServer();
-				
+
 				if (!gameEnded && !started)
 					update(player.updateLobbyFromServer());
 				delta--;
 			}
-			
+
 			while (deltar >= 1) {
 				frames++;
 				race.lobbyTick();
@@ -298,7 +308,7 @@ public class Lobby extends Scene implements Runnable {
 				System.out.println("FPS: " + frames);
 				frames = 0;
 			}
-			
+
 			try {
 				Thread.sleep(4);
 			} catch (InterruptedException e) {

@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 
 import adt.Action;
 import adt.VisualElement;
+import scenes.Race;
 
 public class VisualString implements VisualElement {
 
@@ -16,15 +17,16 @@ public class VisualString implements VisualElement {
 	private Color bc, tc;
 	private String[] strings;
 	private float alpha;
-	private Font font = new Font("Calibri", 0, 16);
+	private Font font;
 	
-	public VisualString(int x, int y, int w, int h, Color bc, Color tc) {
+	public VisualString(int x, int y, int w, int h, Color bc, Color tc, Font font) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.bc = bc;
 		this.tc = tc;
+		this.font = font;
 		alpha = 0.8f;
 	}
 

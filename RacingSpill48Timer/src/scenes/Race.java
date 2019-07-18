@@ -2,6 +2,7 @@ package scenes;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -430,7 +431,7 @@ public class Race extends Scene implements Runnable {
 
 		try {
 			changeVisual(finishVisual);
-			results = new VisualString(WIDTH - 500, HEIGHT / 5, 480, HEIGHT / 2, Color.white, Color.black);
+			results = new VisualString(WIDTH - WIDTH / 5, HEIGHT / 5, (int) (WIDTH / 5.2f), HEIGHT / 2, Color.white, Color.black, new Font("Calibri", 0, Race.WIDTH / 160));
 
 			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
 					() -> {
