@@ -28,7 +28,6 @@ public class FinishVisual extends Visual {
 	private int resCarWidth;
 	private int resCarHeight;
 	private float resCarMovement;
-	private PlacedAnimation[] animations;
 
 	public FinishVisual(Player player, Race race) {
 		this.race = race;
@@ -36,13 +35,11 @@ public class FinishVisual extends Visual {
 
 		resCarWidth = (int) (Race.WIDTH * 1.16f / 2);
 		resCarHeight = (int) (Race.HEIGHT * 0.726f / 2);
-		resCarMovement = Race.WIDTH / 8.5f;
+		resCarMovement = Race.WIDTH / 10f;
 
 		resCar = new PlacedAnimation("resCar", 4, -resCarWidth, (int) (Race.HEIGHT - (Race.HEIGHT / 1.9f)));
 
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
-
-		animations = new PlacedAnimation[0];
 
 		visualElements = new ArrayList<VisualElement>();
 
@@ -50,9 +47,9 @@ public class FinishVisual extends Visual {
 
 	@Override
 	public void tick() {
-		animations = finishedPlayers.toArray(animations);
 
-		for (PlacedAnimation ma : animations) {
+		
+		for (PlacedAnimation ma : finishedPlayers) {
 			if (ma != null) {
 				ma.moveX((int) resCarMovement);
 				ma.incrementCurrentFrame();
@@ -80,7 +77,7 @@ public class FinishVisual extends Visual {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.drawImage(resBackground, 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
-			for (PlacedAnimation ma : animations) {
+			for (PlacedAnimation ma : finishedPlayers) {
 				if (ma != null)
 					g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
 			}

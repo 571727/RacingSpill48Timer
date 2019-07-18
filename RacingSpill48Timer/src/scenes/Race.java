@@ -63,7 +63,7 @@ public class Race extends Scene implements Runnable {
 	private ArrayList<Boolean> finishedPlayers;
 	VisualButton goBackVisual;
 	private boolean doneWithRace;
-	
+
 	private Animation background;
 	private Animation nitros;
 	private BufferedImage[] cars;
@@ -71,7 +71,7 @@ public class Race extends Scene implements Runnable {
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage resBackground;
-	
+
 	public static int WIDTH;
 	public static int HEIGHT;
 
@@ -87,21 +87,22 @@ public class Race extends Scene implements Runnable {
 
 		background = new Animation("road", 6);
 		nitros = new Animation("nitros", 4);
-		
+
 		cars = new BufferedImage[MainMenu.possibilities.length];
-		
+
 		try {
 
-			for(int i = 0; i < cars.length; i++) {
-				cars[i] = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/" + MainMenu.possibilities[i].toLowerCase() + ".png"));
+			for (int i = 0; i < cars.length; i++) {
+				cars[i] = ImageIO.read(RaceVisual.class
+						.getResourceAsStream("/pics/" + MainMenu.possibilities[i].toLowerCase() + ".png"));
 			}
-			
+
 			fastness = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/fastness.png"));
 
 			tachopointer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tacho.png"));
 			// 311 x 225 px
 			tachometer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tachometer.png"));
-			
+
 			resBackground = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/back.jpg"));
 
 		} catch (IOException e) {
@@ -138,9 +139,8 @@ public class Race extends Scene implements Runnable {
 		}
 		racingWindow.setVisible(true);
 
-		finishedPlayers = new ArrayList<Boolean>();
+		finishedPlayers = new ArrayList<Boolean>(12);
 
-		
 		raceVisual = new RaceVisual(player, this);
 		raceVisual.setCarImage(findCarImage(player.getCar().getCarStyle()));
 		raceVisual.setBackground(background);
@@ -148,7 +148,7 @@ public class Race extends Scene implements Runnable {
 		raceVisual.setNitros(nitros);
 		raceVisual.setTachometer(tachometer);
 		raceVisual.setTachopointer(tachopointer);
-		
+
 		finishVisual = new FinishVisual(player, this);
 		finishVisual.setBackground(resBackground);
 
@@ -268,12 +268,12 @@ public class Race extends Scene implements Runnable {
 			deltar += (now - lastTime) / nsr;
 			deltap += (now - lastTime) / nsp;
 			lastTime = now;
-			
+
 			while (deltap >= 1) {
 				deltap--;
 				player.pingServer();
 			}
-			
+
 			while (deltat >= 1) {
 				deltat--;
 
@@ -284,7 +284,7 @@ public class Race extends Scene implements Runnable {
 
 				tick();
 			}
-			
+
 			while (deltar >= 1) {
 				deltar--;
 				frames++;
@@ -315,10 +315,10 @@ public class Race extends Scene implements Runnable {
 		lobbyThread.start();
 
 	}
-	
+
 	private BufferedImage findCarImage(String car) {
-		for(int i = 0; i < cars.length; i++) {
-			if(MainMenu.possibilities[i].toLowerCase().equals(car))
+		for (int i = 0; i < cars.length; i++) {
+			if (MainMenu.possibilities[i].toLowerCase().equals(car))
 				return cars[i];
 		}
 		return null;
@@ -348,23 +348,26 @@ public class Race extends Scene implements Runnable {
 				if (Integer.valueOf(outputs[i]) == 1) {
 					result += "Finished, ";
 					finished = true;
+
+					// Controlling animation of players finishing after a race
+					boolean prevFinished;
+					try {
+						prevFinished = finishedPlayers.get(playerIndex);
+					} catch (IndexOutOfBoundsException e) {
+						prevFinished = false;
+						finishedPlayers.add(playerIndex, true);
+					}
+
+					if (!prevFinished) {
+						if (Long.valueOf(outputs[i + 1]) != -1)
+							finishVisual.addFinish();
+						finishedPlayers.set(playerIndex, true);
+					}
+
 				} else {
 					result += "Not finished, ";
 					everyoneDone = false;
 					finished = false;
-				}
-
-				// Controlling animation of players finishing after a race
-				if (playerIndex + 1 < finishedPlayers.size()) {
-					boolean prevFinished = finishedPlayers.get(playerIndex);
-
-					if (prevFinished != finished) {
-						if (Long.valueOf(outputs[i + 1]) != -1)
-							finishVisual.addFinish();
-						finishedPlayers.set(playerIndex, finished);
-					}
-				} else {
-					finishedPlayers.add(playerIndex, finished);
 				}
 
 				break;
@@ -425,7 +428,8 @@ public class Race extends Scene implements Runnable {
 
 		try {
 			changeVisual(finishVisual);
-			results = new VisualString((int) (WIDTH - WIDTH / 4.8f), HEIGHT / 5, (int) (WIDTH / 4.9f), HEIGHT / 2, Color.white, Color.black, new Font("Calibri", 0, Race.WIDTH / 160));
+			results = new VisualString((int) (WIDTH - WIDTH / 4.4f), HEIGHT / 5, (int) (WIDTH / 4.5f), HEIGHT / 2,
+					Color.white, Color.black, new Font("Calibri", 0, Race.WIDTH / 160));
 
 			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
 					() -> {
@@ -440,9 +444,6 @@ public class Race extends Scene implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		if (!cheated || Main.DEBUG)
-			finishVisual.addFinish();
 
 		// Legg til knapper og sånt
 	}
