@@ -3,14 +3,10 @@ package scenes;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.imageio.ImageIO;
 
 import adt.Visual;
 import adt.VisualElement;
@@ -24,7 +20,6 @@ public class FinishVisual extends Visual {
 
 	private Queue<PlacedAnimation> finishedPlayers;
 	private BufferedImage resBackground;
-	private PlacedAnimation resCar;
 	private int resCarWidth;
 	private int resCarHeight;
 	private float resCarMovement;
@@ -36,8 +31,6 @@ public class FinishVisual extends Visual {
 		resCarWidth = (int) (Race.WIDTH * 1.16f / 2);
 		resCarHeight = (int) (Race.HEIGHT * 0.726f / 2);
 		resCarMovement = Race.WIDTH / 10f;
-
-		resCar = new PlacedAnimation("resCar", 4, -resCarWidth, (int) (Race.HEIGHT - (Race.HEIGHT / 1.9f)));
 
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
 
@@ -101,7 +94,7 @@ public class FinishVisual extends Visual {
 	}
 
 	public void addFinish() {
-		finishedPlayers.add(resCar);
+		finishedPlayers.add(new PlacedAnimation("resCar", 4, -resCarWidth, (int) (Race.HEIGHT - (Race.HEIGHT / 1.9f))));
 	}
 
 	@Override
