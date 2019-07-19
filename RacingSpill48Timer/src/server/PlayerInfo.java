@@ -4,7 +4,7 @@ public class PlayerInfo {
 
 	private int ready;
 	private int host;
-	private String name;
+	protected String name;
 	private String id;
 	private long timeLapsedInRace;
 	private int finished;

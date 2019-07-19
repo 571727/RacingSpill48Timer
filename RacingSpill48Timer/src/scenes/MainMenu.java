@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import adt.Scene;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
+import startup.Main;
 
 public class MainMenu extends Scene {
 
@@ -20,7 +21,6 @@ public class MainMenu extends Scene {
 	private Thread thread;
 	private ServerHandler serverHandler;
 	private Lobby lobby;
-	public static String[] possibilities = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
 
 	public MainMenu(Lobby lobby) {
 		// Init variables
@@ -30,9 +30,8 @@ public class MainMenu extends Scene {
 		join = new JButton("Join");
 		this.lobby = lobby;
 		title = new JLabel("A Smooth Cruise v.1.2_2");
-		
+
 		title.setPreferredSize(new Dimension(550, 20));
-		
 
 		// Eventlisteners
 		options.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(4));
@@ -51,7 +50,7 @@ public class MainMenu extends Scene {
 		// init server and player and then go to lobby
 		// Register your username
 		String name = username();
-		if(name == null)
+		if (name == null)
 			return;
 
 		// Register your car
@@ -73,9 +72,9 @@ public class MainMenu extends Scene {
 		// init some shit like ip and player and then go to lobby
 		// Register your username
 		String name = username();
-		if(name == null)
+		if (name == null)
 			return;
-		
+
 		// Register hosts ip
 		String ip;
 		do {
@@ -104,15 +103,16 @@ public class MainMenu extends Scene {
 	}
 
 	private String carSelection() {
-		
+
 		return (String) JOptionPane.showInputDialog(null, "Choose your car, mate", "Carznstuff",
-				JOptionPane.PLAIN_MESSAGE, null, possibilities, "Supra");
+				JOptionPane.PLAIN_MESSAGE, null, Main.CARTYPES, "Supra");
 	}
-	
+
 	private String username() {
 		String name = null;
 		do {
-			name = JOptionPane.showInputDialog("<html>What's your username?<br/> Don't use # and max 12 letters</html>");
+			name = JOptionPane
+					.showInputDialog("<html>What's your username?<br/> Don't use # and max 12 letters</html>");
 
 			try {
 				if (name.isEmpty() || name.contains("#") || name.length() > 12)

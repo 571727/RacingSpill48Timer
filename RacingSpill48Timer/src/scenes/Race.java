@@ -88,13 +88,13 @@ public class Race extends Scene implements Runnable {
 		background = new Animation("road", 6);
 		nitros = new Animation("nitros", 4);
 
-		cars = new BufferedImage[MainMenu.possibilities.length];
+		cars = new BufferedImage[Main.CARTYPES.length];
 
 		try {
 
 			for (int i = 0; i < cars.length; i++) {
 				cars[i] = ImageIO.read(RaceVisual.class
-						.getResourceAsStream("/pics/" + MainMenu.possibilities[i].toLowerCase() + ".png"));
+						.getResourceAsStream("/pics/" + Main.CARTYPES[i].toLowerCase() + ".png"));
 			}
 
 			fastness = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/fastness.png"));
@@ -318,7 +318,7 @@ public class Race extends Scene implements Runnable {
 
 	private BufferedImage findCarImage(String car) {
 		for (int i = 0; i < cars.length; i++) {
-			if (MainMenu.possibilities[i].toLowerCase().equals(car))
+			if (Main.CARTYPES[i].toLowerCase().equals(car))
 				return cars[i];
 		}
 		return null;
