@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import adt.Visual;
 import adt.VisualElement;
+import audio.SFX;
 import elem.PlacedAnimation;
 import elem.Player;
 
@@ -30,7 +31,7 @@ public class FinishVisual extends Visual {
 
 		resCarWidth = (int) (Race.WIDTH * 1.16f / 2);
 		resCarHeight = (int) (Race.HEIGHT * 0.726f / 2);
-		resCarMovement = Race.WIDTH / 10f;
+		resCarMovement = Race.WIDTH / 8f;
 
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
 
@@ -41,7 +42,6 @@ public class FinishVisual extends Visual {
 	@Override
 	public void tick() {
 
-		
 		for (PlacedAnimation ma : finishedPlayers) {
 			if (ma != null) {
 				ma.moveX((int) resCarMovement);
@@ -72,29 +72,30 @@ public class FinishVisual extends Visual {
 
 			for (PlacedAnimation ma : finishedPlayers) {
 				if (ma != null)
-					g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
+					if (ma.getX() + ma.getWidth() > 0)
+						g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
 			}
 
 			for (int i = 0; i < visualElements.size(); i++) {
 				visualElements.get(i).render(g);
 			}
-			
-			
+
 			if (g != null) {
 				g.dispose();
 			}
 			bs.show();
 			Toolkit.getDefaultToolkit().sync();
-			
-			
+
 		} catch (Exception e) {
 			System.err.println(e.getMessage() + "In visual");
-		} 
-		
+		}
+
 	}
 
-	public void addFinish() {
-		finishedPlayers.add(new PlacedAnimation("resCar", 4, -resCarWidth, (int) (Race.HEIGHT - (Race.HEIGHT / 1.9f))));
+	public void addFinish(String carname, int frameCount) {
+		finishedPlayers.add(new PlacedAnimation("resCar" + carname, frameCount, -3 * resCarWidth,
+				(int) (Race.HEIGHT - (Race.HEIGHT / 1.9f))));
+		SFX.playMP3Sound("driveBy" + carname);
 	}
 
 	@Override
@@ -115,7 +116,5 @@ public class FinishVisual extends Visual {
 	public void setBackground(BufferedImage resBackground) {
 		this.resBackground = resBackground;
 	}
-
-	
 
 }

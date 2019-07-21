@@ -161,7 +161,7 @@ public class Lobby extends Scene implements Runnable {
 			}
 			result += "</html>";
 
-			if (racesLeft == 0 && Integer.valueOf(outputs[6]) != 1) {
+			if (racesLeft == 0 && race.isEveryoneDone()) {
 				endGame();
 				return;
 			}

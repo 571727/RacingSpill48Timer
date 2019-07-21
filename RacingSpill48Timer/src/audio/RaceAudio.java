@@ -1,22 +1,25 @@
 package audio;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Random;
+
+import org.newdawn.easyogg.OggClip;
 
 public class RaceAudio {
 
 	private Random r = new Random();
 	private MediaAudio[] gear;
-	private MediaAudio idle;
+	private OggClip idle;
 	private MediaAudio motor;
 	private MediaAudio[] turbo;
 	private MediaAudio redline;
 	private MediaAudio nos;
-	private String carname;
+	private Runnable idlestopper = () -> idle.stop();
+	private Thread thread;
 
 	public RaceAudio(String carname) {
 		// Maybe use action for something later, cause it's awesome
-		this.carname = carname;
-		
 		gear = new MediaAudio[4];
 		turbo = new MediaAudio[2];
 		
@@ -28,7 +31,11 @@ public class RaceAudio {
 			turbo[i] = new MediaAudio("/sfx/turbosurge" + (i+1));
 		}
 		
-		idle = new MediaAudio("/sfx/motorIdle" + carname);
+		try {
+			idle = new OggClip(new FileInputStream("res/sfx/motorIdle" + carname + ".ogg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		motor= new MediaAudio("/sfx/motorAcc" + carname);
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
@@ -51,8 +58,8 @@ public class RaceAudio {
 	//FIXME baser lyd p� turtall
 	
 	public void motorAcc() {
-		if (idle != null && idle.isPlaying()) {
-			motor.stop();
+		if (idle != null && !(idle.isPaused() || idle.stopped()) ) {
+			stopIdle();
 		}
 		if (redline != null && redline.isPlaying()) {
 			redline.stop();
@@ -120,8 +127,8 @@ public class RaceAudio {
 	}
 
 	public void stopAll() {
-		if (idle != null && idle.isPlaying()) {
-			idle.stop();
+		if (idle != null && !(idle.isPaused() || idle.stopped()) ) {
+			stopIdle();
 		}
 		if (motor != null && motor.isPlaying()) {
 			motor.stop();
@@ -135,6 +142,11 @@ public class RaceAudio {
 		if (redline != null && redline.isPlaying()) {
 			redline.stop();
 		}
+	}
+	
+	private void stopIdle() {
+		thread = new Thread(idlestopper);
+		thread.start();
 	}
 
 

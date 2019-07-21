@@ -274,6 +274,7 @@ public class Car implements Cloneable {
 		gas = false;
 		brake = false;
 		clutch = false;
+		NOSON = false;
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosTimeToGive = nosTimeToGiveStandard;

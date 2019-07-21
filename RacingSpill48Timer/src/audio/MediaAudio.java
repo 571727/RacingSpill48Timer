@@ -13,6 +13,9 @@ public class MediaAudio {
 	private AudioClip loopPlayer;
 
 	public MediaAudio(String file) {
+		System.out.println("Finding file:");
+		System.out.println("\"" + file  +"\"");
+		System.out.println(MediaAudio.class.getResource(file + ".mp3").toString());
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
 		loopPlayer = new AudioClip(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);

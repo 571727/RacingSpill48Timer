@@ -1,20 +1,18 @@
 package server;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 
-import handlers.SceneHandler;
-import scenes.FixCar;
-import scenes.Lobby;
-import scenes.Options;
 import startup.Main;
 
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
  * when racing.
+ * 
+ * På siste race så blir det ikke startet fordi rett etter at alle har komt inn
+ * så sier serveren at det racet er "ferdig". Det er riktig, men det mistolkes
+ * som en fullstedig ferdig game på siste race.
  * 
  * @author jonah
  *
@@ -99,6 +97,9 @@ public class ServerInfo implements Runnable {
 
 	public void finishPlayer(String[] input) {
 		PlayerInfo player = players.get(input[1] + input[2]);
+		if (player == null) {
+			return;
+		}
 		player.setFinished(1);
 		amountFinished++;
 
@@ -128,11 +129,11 @@ public class ServerInfo implements Runnable {
 		if (raceLights == 4)
 			return true;
 
-		//Everyone in the race
+		// Everyone in the race
 		if (amountInTheRace == players.size()) {
-			
+
 			started = 0;
-			
+
 			// Wait for 3 secounds before the race starts && wait for each racelight
 			if (raceStartedTime + regulatingWaitTime < System.currentTimeMillis()) {
 				regulatingWaitTime = waitTime - 300 + r.nextInt(1200);
@@ -151,7 +152,7 @@ public class ServerInfo implements Runnable {
 	public String getRaceLightsStatus() {
 		return String.valueOf(raceLights);
 	}
-	
+
 	private void stopRace() {
 		amountInTheRace = 0;
 		amountFinished = 0;
@@ -163,7 +164,7 @@ public class ServerInfo implements Runnable {
 	 * input[2] -> 1 = race started. 0 = race ready to start
 	 */
 	public void startRace(String[] input) {
-		//host?
+		// host?
 		if (Integer.valueOf(input[1]) == 1) {
 			if (Integer.valueOf(input[2]) == 1) {
 				races--;
@@ -266,12 +267,16 @@ public class ServerInfo implements Runnable {
 
 	public void setPointsMoney(String[] input) {
 		PlayerInfo player = players.get(input[1] + input[2]);
+		if (player == null) {
+			return;
+		}
 		player.setPoints(Integer.valueOf(input[3]));
 		player.setMoney(Integer.valueOf(input[4]));
 	}
 
 	public String getPointsMoney(String[] input) {
 		PlayerInfo player = players.get(input[1] + input[2]);
+
 		String res = null;
 		try {
 			res = player.getPoints() + "#" + player.getMoney();
@@ -283,7 +288,10 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void newRaces() {
-		races = 9;
+		if (!Main.DEBUG)
+			races = 9;
+		else
+			races = 2;
 	}
 
 	public String getRacesLeft() {

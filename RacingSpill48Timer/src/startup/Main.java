@@ -8,11 +8,9 @@ public class Main {
 	public static String[] CARTYPES = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
 	public static String[] AINAMES = { "Jens", "Benz", "Razor", "The Boi", "The Viper", "The Biper", "节奏大师", "Knut",
 			"Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law", "Anime Lover", "noobmaster69", "TeaBottle",
-			"Racerdude" };
+			"Racerdude", "BestRacer97", "Niki Lauda", "Pål the Racer"};
 
 	public static void main(String[] args) {
 		new GameHandler(5);
-		
 	}
-
 }

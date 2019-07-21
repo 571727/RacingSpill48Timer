@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-
-import javax.swing.JOptionPane;
 
 /**
  * TODO legg til sjekk av hvem som sender inn requests. Om en ikke har sendt inn
