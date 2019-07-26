@@ -3,6 +3,10 @@ package scenes;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -11,9 +15,11 @@ import java.util.Enumeration;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import adt.Scene;
+import audio.SFX;
 import elem.Player;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
@@ -40,12 +46,17 @@ public class Lobby extends Scene implements Runnable {
 	private boolean started;
 	private JLabel ipLabel;
 
+	private String chatText = "";
+	private JTextField chatInput;
+	private JLabel chatOutput;
+	private JScrollPane chatScrollPane;
+
 	public Lobby(Race race, FixCar fixCarScene) {
 
 		// Init shit
 		this.race = race;
 		this.fixCarScene = fixCarScene;
-		label = new JLabel("HELLLLLLLLLLLLLLLLOOOOO?!", SwingConstants.CENTER);
+		label = new JLabel("If you can read this, something wrong happend!!!", SwingConstants.CENTER);
 		ready = new JButton("Ready?");
 		fixCar = new JButton("Upgrade or fix my car");
 		start = new JButton("Start race");
@@ -54,6 +65,11 @@ public class Lobby extends Scene implements Runnable {
 		scrollPane = new JScrollPane(label);
 		scrollPane.setPreferredSize(new Dimension(500, 300));
 		ipLabel = new JLabel("IPs: ");
+
+		chatInput = new JTextField("Chat here...");
+		chatOutput = new JLabel();
+		chatScrollPane = new JScrollPane(chatOutput);
+		chatScrollPane.setPreferredSize(new Dimension(500, 300));
 
 		String ipLabelText = "<html> IPs: ";
 		try {
@@ -81,9 +97,10 @@ public class Lobby extends Scene implements Runnable {
 		});
 		goBack.addActionListener((ActionEvent e) -> {
 			if (server != null) {
-				server.join();
+				server.close();
 				server = null;
 			}
+			clearChat();
 			player.leaveServer();
 			SceneHandler.instance.changeScene(0);
 		});
@@ -97,6 +114,43 @@ public class Lobby extends Scene implements Runnable {
 
 		options.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(4));
 
+		// Chatpart:
+		chatInput.setPreferredSize(new Dimension(200, 20));
+		chatInput.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// Pressed enter
+				if (chatInput.isFocusOwner() && !chatInput.getText().isEmpty())
+					if (e.getKeyCode() == 10) {
+						player.addChat(chatInput.getText());
+						chatInput.setText("");
+						SceneHandler.instance.getWindows().requestFocus();
+					}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+		});
+		chatInput.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				chatInput.setText("");
+				chatInput.removeFocusListener(this);
+			}
+		});
+
 		// Add to JPanel
 		add(scrollPane);
 		add(goBack, BorderLayout.SOUTH);
@@ -105,6 +159,8 @@ public class Lobby extends Scene implements Runnable {
 		add(fixCar, BorderLayout.SOUTH);
 		add(start, BorderLayout.SOUTH);
 		add(ipLabel);
+		add(chatInput);
+		add(chatScrollPane);
 	}
 
 	/**
@@ -179,17 +235,41 @@ public class Lobby extends Scene implements Runnable {
 				fixCar.setEnabled(false);
 			else
 				fixCar.setEnabled(true);
+
+			// Update chat
+			String actualChatText = "<html>Chat:";
+			String newText = player.getChat();
+			if (newText != null) {
+				
+				//Adding text to the chatwindow
+				chatText += "<br/>" + newText;
+				
+				//Taunt
+				String[] tauntCheck = newText.split(player.getName() + ": ");
+				if (tauntCheck.length > 1 && tauntCheck[1].startsWith("14")) {
+					SFX.playOggSound("start_the_game_already");
+				}
+			}
+			actualChatText += chatText;
+			actualChatText += "</html>";
+			chatOutput.setText(actualChatText);
+
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			System.err.println("server lost probably");
 
 			if (server != null) {
-				server.join();
+				server.close();
 				server = null;
 			}
 			SceneHandler.instance.changeScene(0);
 		}
 
+	}
+
+	private void clearChat() {
+		chatOutput.setText("");
+		chatText = "";
 	}
 
 	private void endGame() {
@@ -198,6 +278,7 @@ public class Lobby extends Scene implements Runnable {
 		start.setEnabled(false);
 		fixCar.setEnabled(false);
 		ready.setEnabled(false);
+		clearChat();
 		label.setText("And the winner is: " + player.getWinner());
 		player.leaveServer();
 	}
@@ -256,6 +337,7 @@ public class Lobby extends Scene implements Runnable {
 			race.setCurrentLength();
 			player.setReady(0);
 			player.updateLobbyFromServer();
+			player.getCar().updateVolume();
 			thread = new Thread(race);
 			System.err.println("starting next thread");
 			thread.start();
@@ -286,8 +368,8 @@ public class Lobby extends Scene implements Runnable {
 			lastTime = now;
 			while (delta >= 1) {
 
-				if (SceneHandler.instance.getWindows().isVisible())
-					SceneHandler.instance.getWindows().requestFocus();
+//				if (SceneHandler.instance.getWindows().isVisible())
+//					SceneHandler.instance.getWindows().requestFocus();
 
 				player.pingServer();
 

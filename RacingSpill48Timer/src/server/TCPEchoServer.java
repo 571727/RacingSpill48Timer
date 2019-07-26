@@ -124,6 +124,11 @@ public class TCPEchoServer {
 			return info.getRacesLeft();
 		case "WINNER":
 			return info.getPlayerWithMostPoints();
+		case "ADDCHAT":
+			info.addChat(input);
+			break;
+		case "GETCHAT":
+			return info.getChat(input);
 		}
 
 		return null;

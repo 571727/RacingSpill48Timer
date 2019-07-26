@@ -51,8 +51,8 @@ public class RaceVisual extends Visual {
 	private int ySpeed;
 	private int xDistance;
 	private int yDistance;
-	private float blurSpeed;
-	private int blurShake;
+	private double blurSpeed;
+	private double blurShake;
 
 	public RaceVisual(Player player, Race race) {
 		super();
@@ -77,7 +77,7 @@ public class RaceVisual extends Visual {
 		xDistance = 100;
 		yDistance = 100;
 
-		blurShake = 3;
+		blurShake = 3.0;
 		blurSpeed = 220;
 
 		y = 0;
@@ -88,7 +88,7 @@ public class RaceVisual extends Visual {
 
 	@Override
 	public void tick() {
-		if (player.getCar().isGas() && !player.getCar().isClutch()) {
+		if (player.getCar().isGas() && !player.getCar().isClutch() && player.getCar().getGear() != 0) {
 			if (player.getCar().isNOSON()) {
 				y = -15;
 				x = -16;
@@ -127,10 +127,10 @@ public class RaceVisual extends Visual {
 			g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
 			AffineTransform trans = new AffineTransform();
-			shakeAndScaleImage(trans, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(), blurSpeed / 2,
-					blurSpeed * 1.5f, blurShake * 2);
+			shakeAndScaleImage(trans, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(),
+					blurSpeed / 2, blurSpeed * 1.5f, blurShake * 2);
 			if (player.getCar().isIdle())
-				rotateIdle(trans, (player.getCar().getRpm() / player.getCar().getTotalRPM() + 1), blurShake * 2);
+				rotateIdle(trans, ((double)player.getCar().getRpm() / (double)player.getCar().getTotalRPM() + 1), blurShake / 16);
 
 			g2d.drawImage(carImage, trans, this);
 
@@ -170,8 +170,9 @@ public class RaceVisual extends Visual {
 	private void rotateIdle(AffineTransform trans, double comparedValue, double shake) {
 
 		double finetuneShake = 16.0;
+		comparedValue = Math.pow(comparedValue, 2);
 
-		double ranShake = r.nextInt((int) (shake * comparedValue)) / finetuneShake;
+		double ranShake = r.nextInt((int) (shake * 100 * comparedValue)) / (100 * finetuneShake);
 		double rad = Math.toRadians(ranShake - (shake / (2 * finetuneShake)));
 		trans.rotate(rad, width / 2, height - (height / 8));
 
@@ -193,8 +194,9 @@ public class RaceVisual extends Visual {
 		width = (int) (width + 2 * shake) + (int) xShake;
 		height = (int) (height + 2 * shake) + (int) yShake;
 
+		trans.translate((-shake + x) / imgW * 100, (-shake + y) / imgH * 100);
 		trans.scale(width / imgW, height / imgH);
-		trans.translate((-shake + x) / imgW, (-shake + y) / imgH);
+		System.out.println(trans.getTranslateX() + ", " + trans.getTranslateY());
 	}
 
 	private double shake(double amount) {
@@ -206,7 +208,7 @@ public class RaceVisual extends Visual {
 	}
 
 	private void blur(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
-			double fromValue, double tillAdditionalValue, int shake) {
+			double fromValue, double tillAdditionalValue, double shake) {
 		double alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
 
 		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
@@ -215,8 +217,8 @@ public class RaceVisual extends Visual {
 		double xShake = shake(shake, alpha);
 		double yShake = shake(shake, alpha);
 
-		g2d.drawImage(img, -shake + x, -shake + y, (width + 2 * shake) + (int) xShake,
-				(height + 2 * shake) + (int) yShake, null);
+		g2d.drawImage(img, (int) (shake + x), (int) (-shake + y), (width + 2 * (int) shake) + (int) xShake,
+				(height + 2 * (int) shake) + (int) yShake, null);
 		g2d.setComposite(ac.derive(1f));
 	}
 
@@ -242,7 +244,7 @@ public class RaceVisual extends Visual {
 		g.drawString("Tachometer rotation: " + String.valueOf(player.getCar().getTachometer()), 100, 175 + h);
 		g.drawString("SpeedLinear: " + String.valueOf(player.getCar().getSpeedLinear()), 100, 125 + h);
 		g.drawString("Engine On: " + String.valueOf(player.getCar().isEngineOn()), 100, 150 + h);
-		g.drawString("Clutch: " + String.valueOf(player.getCar().isClutch()), 100, 200 + h);
+		g.drawString("resistence: " + String.valueOf(player.getCar().getResistance()), 100, 200 + h);
 
 		g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), 100, 250 + h);
 		g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), 100, 300 + h);

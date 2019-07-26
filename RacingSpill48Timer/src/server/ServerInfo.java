@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import startup.Main;
 
@@ -26,6 +28,7 @@ public class ServerInfo implements Runnable {
 
 	private HashMap<String, PlayerInfo> players;
 	private HashMap<String, Long> ping;
+	private HashMap<PlayerInfo, Queue<String>> chat;
 	private int started;
 	private int amountFinished;
 	private int length;
@@ -45,6 +48,7 @@ public class ServerInfo implements Runnable {
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
 		ping = new HashMap<String, Long>();
+		chat = new HashMap<PlayerInfo, Queue<String>>();
 		r = new Random();
 		races = -1;
 		setRunning(true);
@@ -66,8 +70,11 @@ public class ServerInfo implements Runnable {
 
 		PlayerInfo newPlayer = new PlayerInfo(input[1], input[2], input[3], input[4]);
 
+		addChat(newPlayer.getName() + " joined the game.");
+
 		players.put(input[1] + input[2], newPlayer);
 		ping.put(input[1] + input[2], System.currentTimeMillis());
+		chat.put(newPlayer, new ConcurrentLinkedQueue<String>());
 
 		return updateLobby();
 	}
@@ -92,7 +99,7 @@ public class ServerInfo implements Runnable {
 	 */
 	public String updateLobby(String[] input) {
 
-		PlayerInfo player = players.get(input[1] + input[2]);
+		PlayerInfo player = getPlayer(input);
 		if (player == null) {
 			return null;
 		}
@@ -101,8 +108,16 @@ public class ServerInfo implements Runnable {
 		return updateLobby();
 	}
 
+	private PlayerInfo getPlayer(String[] input) {
+		return getPlayer(input[1] + input[2]);
+	}
+
+	private PlayerInfo getPlayer(String input) {
+		return players.get(input);
+	}
+
 	public void finishPlayer(String[] input) {
-		PlayerInfo player = players.get(input[1] + input[2]);
+		PlayerInfo player = getPlayer(input);
 		if (player == null) {
 			return;
 		}
@@ -205,7 +220,10 @@ public class ServerInfo implements Runnable {
 	}
 
 	private void leave(String nameid) {
+		PlayerInfo player = getPlayer(nameid);
+		chat.remove(player);
 		players.remove(nameid);
+		addChat(player.getName() + " left the game.");
 	}
 
 	public String getTrackLength() {
@@ -213,7 +231,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void inTheRace(String[] input) {
-		players.get(input[1] + input[2]).setIn(true);
+		getPlayer(input).setIn(true);
 		amountInTheRace++;
 	}
 
@@ -296,7 +314,7 @@ public class ServerInfo implements Runnable {
 
 			// Legg de inn i strengen
 			for (int i = 0; i < sortedByTime.size(); i++) {
-				result += "#" + (i+1) + ". place: " + sortedByTime.get(i).getRaceInfo(allFinished);
+				result += "#" + (i + 1) + ". place: " + sortedByTime.get(i).getRaceInfo(allFinished);
 			}
 		}
 
@@ -304,7 +322,8 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void setPointsMoney(String[] input) {
-		PlayerInfo player = players.get(input[1] + input[2]);
+		PlayerInfo player = getPlayer(input);
+		;
 		if (player == null) {
 			return;
 		}
@@ -313,7 +332,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	public String getPointsMoney(String[] input) {
-		PlayerInfo player = players.get(input[1] + input[2]);
+		PlayerInfo player = getPlayer(input);
 
 		String res = null;
 		try {
@@ -359,8 +378,10 @@ public class ServerInfo implements Runnable {
 	public void checkPings() {
 		for (Entry<String, Long> entry : ping.entrySet()) {
 
-			if (!validPing(entry.getValue()))
+			if (!validPing(entry.getValue())) {
+				addChat(getPlayer(entry.getKey()).getName() + " has too high ping!");
 				leave(entry.getKey());
+			}
 		}
 	}
 
@@ -392,6 +413,33 @@ public class ServerInfo implements Runnable {
 
 	public void setRunning(boolean running) {
 		this.running = running;
+	}
+
+	private void addChat(String str) {
+		for (Queue<String> q : chat.values()) {
+			q.offer(str);
+		}
+	}
+
+	public void addChat(String[] input) {
+		if (input.length <= 2)
+			return;
+
+		String str = input[1] + ": ";
+		for (int i = 2; i < input.length; i++) {
+			str += input[i];
+			if (i + 1 < input.length)
+				str += "#";
+		}
+
+		for (Queue<String> q : chat.values()) {
+			q.offer(str);
+		}
+
+	}
+
+	public String getChat(String[] input) {
+		return chat.get(getPlayer(input)).poll();
 	}
 
 }

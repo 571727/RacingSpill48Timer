@@ -29,12 +29,14 @@ public class Car implements Cloneable {
 	private double spdinc;
 	private double distance;
 	private double topSpeed;
+	private double resistance;
 	private int gear;
 	private int totalGear;
 	private int totalRPM;
 	private int rpm;
 	private String carStyle;
 	private RaceAudio audio;
+	private int idleSpeed;
 
 	public Car(String cartype) {
 
@@ -51,6 +53,8 @@ public class Car implements Cloneable {
 		nosStrength = 0;
 		nosStrengthStandard = 0;
 		topSpeed = 250;
+		resistance = 1.0;
+		idleSpeed = 1000;
 
 		// Kanskje Lada der kj�relyden er hardbass.
 
@@ -99,6 +103,10 @@ public class Car implements Cloneable {
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
+	public void updateVolume() {
+		audio.updateVolume();
+	}
+
 	public boolean isHasTurbo() {
 		return hasTurbo;
 	}
@@ -126,6 +134,19 @@ public class Car implements Cloneable {
 	public void updateSpeed() {
 		if (engineOn) {
 			changed = false;
+
+			if (gas) {
+				if (rpm < totalRPM - 60)
+					rpm += hp * 1.5 * resistance;
+				else
+					rpm = totalRPM - 100;
+			} else {
+				if (rpm > idleSpeed)
+					rpm -= hp * 1.15 * resistance;
+				else
+					rpm = idleSpeed;
+			}
+
 			if (!clutch && gear > 0 && idle && !gas) {
 				// FIXME
 				engineOn = false;
@@ -178,9 +199,10 @@ public class Car implements Cloneable {
 		}
 
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
-		int engineOnFactor = 1000 * (engineOn ? 1 : 0);
+		int engineOnFactor = idleSpeed * (engineOn ? 1 : 0);
 		double gearFactor = speedLinear / (gearMax() + 1);
-		rpm = (int) ((totalRPM - engineOnFactor) * gearFactor + engineOnFactor);
+		if (resistance == 0)
+			rpm = (int) ((totalRPM - engineOnFactor) * gearFactor + engineOnFactor);
 		// delt p� 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
 		distance += speedActual / 24;
 	}
@@ -255,6 +277,7 @@ public class Car implements Cloneable {
 	public void clutchOn() {
 		if (!clutch) {
 			clutch = true;
+			resistance = 1.0;
 			if (gas) {
 				audio.turboSurge();
 				audio.motorDcc();
@@ -265,6 +288,8 @@ public class Car implements Cloneable {
 	public void clutchOff() {
 		if (clutch) {
 			clutch = false;
+			if (gear > 0)
+				resistance = 0.0;
 			if (gas) {
 				audio.motorAcc();
 			}
@@ -281,6 +306,8 @@ public class Car implements Cloneable {
 	public void shiftDown() {
 		if (gear > 0 && clutch) {
 			gear--;
+			if (gear == 0)
+				resistance = 1.0;
 			audio.gearSound();
 		}
 	}
@@ -307,6 +334,7 @@ public class Car implements Cloneable {
 		distance = 0;
 		gear = 0;
 		rpm = 0;
+		resistance = 1.0;
 		audio.stopAll();
 		updateSpeedInc();
 	}
@@ -507,5 +535,13 @@ public class Car implements Cloneable {
 
 	public void setIdle(boolean idle) {
 		this.idle = idle;
+	}
+
+	public double getResistance() {
+		return resistance;
+	}
+
+	public void setResistance(double resistance) {
+		this.resistance = resistance;
 	}
 }

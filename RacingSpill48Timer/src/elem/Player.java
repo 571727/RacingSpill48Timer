@@ -47,7 +47,6 @@ public class Player{
 		client = new EchoClient(ip);
 		upgrades = new Upgrades();
 		// Request stats about lobby and update lobby
-		joinServer();
 	}
 
 	public String getPointsAndMoney() {
@@ -129,6 +128,14 @@ public class Player{
 		client.sendRequest("NEWRACES");
 	}
 
+	public void addChat(String text) {
+		client.sendRequest("ADDCHAT#" + name + "#" + text);
+	}
+	
+	public String getChat() {
+		return client.sendRequest("GETCHAT#" + name + "#" + id);
+	}
+	
 	public int getHost() {
 		return host;
 	}
@@ -196,6 +203,15 @@ public class Player{
 	public void outOfTheRace() {
 		inTheRace = false;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 
 
 

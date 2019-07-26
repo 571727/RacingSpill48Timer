@@ -27,11 +27,13 @@ public class BgMusicListener {
 		media = new MediaAudio("/music/music" + findRandomSong());
 
 		media.play();
-		//		FIXME media.getMediaPlayer().setOnEndOfMedia(() -> playAndChooseNextRandomly());
+		// FIXME media.getMediaPlayer().setOnEndOfMedia(() ->
+		// playAndChooseNextRandomly());
 	}
 
 	public void updateVolume() {
-		media.setVolume();
+		if (media != null)
+			media.setVolume();
 	}
 
 	private int findRandomSong() {

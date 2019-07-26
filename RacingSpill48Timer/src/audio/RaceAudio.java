@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.newdawn.easyogg.OggClip;
 
+import handlers.GameHandler;
+
 public class RaceAudio {
 
 	private Random r = new Random();
@@ -22,23 +24,37 @@ public class RaceAudio {
 		// Maybe use action for something later, cause it's awesome
 		gear = new MediaAudio[4];
 		turbo = new MediaAudio[2];
-		
-		for(int i = 0; i < gear.length; i++) {
-			gear[i] = new MediaAudio("/sfx/gear" + (i+1));
+
+		for (int i = 0; i < gear.length; i++) {
+			gear[i] = new MediaAudio("/sfx/gear" + (i + 1));
 		}
-		
-		for(int i = 0; i < turbo.length; i++) {
-			turbo[i] = new MediaAudio("/sfx/turbosurge" + (i+1));
+
+		for (int i = 0; i < turbo.length; i++) {
+			turbo[i] = new MediaAudio("/sfx/turbosurge" + (i + 1));
 		}
-		
+
 		try {
 			idle = new OggClip(new FileInputStream("res/sfx/motorIdle" + carname + ".ogg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		motor= new MediaAudio("/sfx/motorAcc" + carname);
+		motor = new MediaAudio("/sfx/motorAcc" + carname);
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
+	}
+
+	public void updateVolume() {
+		float gain = (float) (GameHandler.volume * 3.5f);
+		if(gain > 1)
+			gain = 1;
+		idle.setGain(gain);
+		motor.setVolume();
+		for (MediaAudio t : turbo) {
+			t.setVolume();
+		}
+		redline.setVolume();
+		nos.setVolume();
+
 	}
 
 	public void motorIdle() {
@@ -58,11 +74,11 @@ public class RaceAudio {
 	public boolean isPlayingIdle() {
 		return !(idle.isPaused() || idle.stopped());
 	}
-	
-	//FIXME baser lyd p� turtall
-	
+
+	// FIXME baser lyd p� turtall
+
 	public void motorAcc() {
-		if (idle != null &&  isPlayingIdle()) {
+		if (idle != null && isPlayingIdle()) {
 			stopIdle();
 		}
 		if (redline != null && redline.isPlaying()) {
@@ -85,12 +101,12 @@ public class RaceAudio {
 			motor.stop();
 		}
 	}
-	
+
 	public void redline() {
 		if (motor != null && motor.isPlaying()) {
 			motor.stop();
 		}
-		
+
 		redline.play();
 	}
 
@@ -102,7 +118,7 @@ public class RaceAudio {
 
 		int nextSfx = 0;
 		nextSfx = r.nextInt(2);
-		
+
 		turbo[nextSfx].play();
 
 //		if (turbo != null && turbo.isPlaying())
@@ -112,26 +128,26 @@ public class RaceAudio {
 	public void gearSound() {
 		int nextSfx = 0;
 		nextSfx = r.nextInt(4);
-		
+
 		gear[nextSfx].play();
 	}
-	
+
 	private boolean isMediaArrayPlaying(MediaAudio[] arr) {
-		for(MediaAudio ma : arr) {
-			if(ma.isPlaying())
+		for (MediaAudio ma : arr) {
+			if (ma.isPlaying())
 				return true;
 		}
 		return false;
 	}
-	
+
 	private void stopMediaArray(MediaAudio[] arr) {
-		for(MediaAudio ma : arr) {
+		for (MediaAudio ma : arr) {
 			ma.stop();
 		}
 	}
 
 	public void stopAll() {
-		if (idle != null && isPlayingIdle() ) {
+		if (idle != null && isPlayingIdle()) {
 			stopIdle();
 		}
 		if (motor != null && motor.isPlaying()) {
@@ -147,11 +163,10 @@ public class RaceAudio {
 			redline.stop();
 		}
 	}
-	
+
 	private void stopIdle() {
 		thread = new Thread(idlestopper);
 		thread.start();
 	}
-
 
 }

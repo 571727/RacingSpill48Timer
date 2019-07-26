@@ -34,7 +34,7 @@ public class ServerHandler {
 
 	public void createNew(EchoServer newServer) {
 		if(currentServer != null && currentServer.isRunning())
-			join();
+			close();
 
 		currentServer = newServer;
 		
@@ -46,7 +46,7 @@ public class ServerHandler {
 	/**
 	 * close tha program yo
 	 */
-	public void join() {
+	public void close() {
 		try {
 			if (thread.isAlive()) {
 				
