@@ -67,7 +67,7 @@ public class PlayerInfo {
 		if (allFinished == false)
 			return name + "#" + finished + "#" + timeLapsedInRace + "#";
 		else
-			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded;
+			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#" + carName.toLowerCase();
 	}
 
 	public void addPointsAndMoney(int amountPlayers, int place) {

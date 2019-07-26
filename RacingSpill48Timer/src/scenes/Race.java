@@ -363,7 +363,7 @@ public class Race extends Scene implements Runnable {
 
 					if (!prevFinished) {
 						if (Long.valueOf(outputs[i + 1]) != -1)
-							finishVisual.addFinish("supra", 4);
+							finishVisual.addFinish(outputs[5], 1);
 						finishedPlayers[playerIndex] = true;
 					}
 
