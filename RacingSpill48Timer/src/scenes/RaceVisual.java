@@ -13,19 +13,20 @@ import adt.Visual;
 import adt.VisualElement;
 import elem.Animation;
 import elem.Player;
+import startup.Main;
 
-public class RaceVisual extends Visual{
+public class RaceVisual extends Visual {
 
 	private Race race;
 	private Player player;
-	
+
 	private BufferedImage carImage;
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage fastness;
 	private Animation background;
 	private Animation nitros;
-	
+
 	private AffineTransform identity = new AffineTransform();
 	private boolean startCountDown;
 	private boolean running;
@@ -52,14 +53,13 @@ public class RaceVisual extends Visual{
 	private int yDistance;
 	private float blurSpeed;
 	private int blurShake;
-	
-	
+
 	public RaceVisual(Player player, Race race) {
 		super();
 		visualElements = new ArrayList<VisualElement>();
-		this.race = race;		
+		this.race = race;
 		this.player = player;
-		
+
 		widthTachometer = (int) (Race.WIDTH / 5f);
 		heightTachometer = (int) (widthTachometer / 311f * 225f);
 		xTachometer = Race.WIDTH - (widthTachometer + (Race.WIDTH / 24));
@@ -77,14 +77,13 @@ public class RaceVisual extends Visual{
 		xDistance = 100;
 		yDistance = 100;
 
-
 		blurShake = 3;
 		blurSpeed = 220;
 
 		y = 0;
 		startTime = 0;
 		startCountDown = false;
-		
+
 	}
 
 	@Override
@@ -127,8 +126,13 @@ public class RaceVisual extends Visual{
 
 			g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
-			shakeImage(g2d, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(), blurSpeed / 2,
+			AffineTransform trans = new AffineTransform();
+			shakeAndScaleImage(trans, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(), blurSpeed / 2,
 					blurSpeed * 1.5f, blurShake * 2);
+			if (player.getCar().isIdle())
+				rotateIdle(trans, (player.getCar().getRpm() / player.getCar().getTotalRPM() + 1), blurShake * 2);
+
+			g2d.drawImage(carImage, trans, this);
 
 			if (player.getCar().isNOSON()) {
 				blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
@@ -140,9 +144,9 @@ public class RaceVisual extends Visual{
 						100f, blurShake);
 
 			g2d.setFont(font);
-			
+
 			// DEBUG
-//			drawDebug(g, 300);
+			drawDebug(g2d, 300);
 
 			// Prerace stuff
 			drawRaceHUD(g2d);
@@ -150,8 +154,8 @@ public class RaceVisual extends Visual{
 			drawTachometer(g2d);
 
 			drawInfoHUD(g2d);
-			
-			for(int i = 0; i < visualElements.size(); i++) {
+
+			for (int i = 0; i < visualElements.size(); i++) {
 				visualElements.get(i).render(g);
 			}
 		} finally {
@@ -163,41 +167,61 @@ public class RaceVisual extends Visual{
 		Toolkit.getDefaultToolkit().sync();
 	}
 
-	private void blur(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
-			float fromValue, float tillAdditionalValue, int shake) {
-		float alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
+	private void rotateIdle(AffineTransform trans, double comparedValue, double shake) {
 
-		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+		double finetuneShake = 16.0;
+
+		double ranShake = r.nextInt((int) (shake * comparedValue)) / finetuneShake;
+		double rad = Math.toRadians(ranShake - (shake / (2 * finetuneShake)));
+		trans.rotate(rad, width / 2, height - (height / 8));
+
+		// TODO overgang fra risting til annet
+	}
+
+	private void shakeAndScaleImage(AffineTransform trans, BufferedImage img, int x, int y, int width, int height,
+			double comparedValue, double fromValue, double tillAdditionalValue, double shake) {
+
+		double alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
+		trans.setTransform(identity);
+
+		double imgW = img.getWidth();
+		double imgH = img.getHeight();
+
+		double xShake = shake(shake, alpha);
+		double yShake = shake(shake, alpha);
+
+		width = (int) (width + 2 * shake) + (int) xShake;
+		height = (int) (height + 2 * shake) + (int) yShake;
+
+		trans.scale(width / imgW, height / imgH);
+		trans.translate((-shake + x) / imgW, (-shake + y) / imgH);
+	}
+
+	private double shake(double amount) {
+		return r.nextInt((int) amount * 2) - amount;
+	}
+
+	private double shake(double shake, double alpha) {
+		return shake(shake) * alpha;
+	}
+
+	private void blur(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
+			double fromValue, double tillAdditionalValue, int shake) {
+		double alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
+
+		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
 		g2d.setComposite(ac);
 
-		float xShake = shake(shake, alpha);
-		float yShake = shake(shake, alpha);
+		double xShake = shake(shake, alpha);
+		double yShake = shake(shake, alpha);
 
 		g2d.drawImage(img, -shake + x, -shake + y, (width + 2 * shake) + (int) xShake,
 				(height + 2 * shake) + (int) yShake, null);
 		g2d.setComposite(ac.derive(1f));
 	}
 
-	private void shakeImage(Graphics2D g2d, BufferedImage img, int x, int y, int width, int height, float comparedValue,
-			float fromValue, float tillAdditionalValue, int shake) {
-		float alpha = alpha(comparedValue, fromValue, tillAdditionalValue, shake);
-		float xShake = shake(shake, alpha);
-		float yShake = shake(shake, alpha);
-
-		g2d.drawImage(img, -shake + x, -shake + y, (width + 2 * shake) + (int) xShake,
-				(height + 2 * shake) + (int) yShake, null);
-	}
-
-	private float shake(int amount) {
-		return r.nextInt(amount * 2) - amount;
-	}
-
-	private float shake(int amount, float alpha) {
-		return shake(amount) * alpha;
-	}
-
-	private float alpha(float comparedValue, float fromValue, float tillAdditionalValue, int shake) {
-		float alpha = (comparedValue - fromValue) / tillAdditionalValue;
+	private double alpha(double comparedValue, double fromValue, double tillAdditionalValue, double shake) {
+		double alpha = (comparedValue - fromValue) / tillAdditionalValue;
 
 		if (alpha > 1f)
 			alpha = 1f;
@@ -217,14 +241,14 @@ public class RaceVisual extends Visual{
 		g.drawString("SpeedActual: " + String.valueOf(player.getCar().getSpeedActual()), 100, 100 + h);
 		g.drawString("Tachometer rotation: " + String.valueOf(player.getCar().getTachometer()), 100, 175 + h);
 		g.drawString("SpeedLinear: " + String.valueOf(player.getCar().getSpeedLinear()), 100, 125 + h);
-		g.drawString("Gear: " + String.valueOf(player.getCar().getGear()), 100, 150 + h);
+		g.drawString("Engine On: " + String.valueOf(player.getCar().isEngineOn()), 100, 150 + h);
 		g.drawString("Clutch: " + String.valueOf(player.getCar().isClutch()), 100, 200 + h);
 
 		g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), 100, 250 + h);
 		g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), 100, 300 + h);
 		g.drawString("Distance covered: " + String.valueOf(player.getCar().getDistance()), 100, 350 + h);
 		g.drawString(String.valueOf(System.currentTimeMillis() - startTime), 100, 375 + h);
-
+		g.drawString("RPM: " + player.getCar().getRpm(), xSpeed - 400, ySpeed);
 	}
 
 	private void drawRaceHUD(Graphics2D g) {
@@ -324,7 +348,7 @@ public class RaceVisual extends Visual{
 
 	@Override
 	public void setRace(Race race) {
-		this.race = race;		
+		this.race = race;
 	}
 
 	@Override
@@ -332,7 +356,6 @@ public class RaceVisual extends Visual{
 		this.player = player;
 	}
 
-	
 	/**
 	 * TODO Does not matter here
 	 */
@@ -340,7 +363,6 @@ public class RaceVisual extends Visual{
 	public boolean hasAnimationsRunning() {
 		return false;
 	}
-
 
 	public BufferedImage getCarImage() {
 		return carImage;
@@ -374,7 +396,6 @@ public class RaceVisual extends Visual{
 		this.fastness = fastness;
 	}
 
-
 	public void setBackground(Animation background) {
 		this.background = background;
 	}
@@ -386,6 +407,5 @@ public class RaceVisual extends Visual{
 	public void setNitros(Animation nitros) {
 		this.nitros = nitros;
 	}
-
 
 }

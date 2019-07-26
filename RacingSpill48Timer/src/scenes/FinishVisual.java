@@ -31,7 +31,7 @@ public class FinishVisual extends Visual {
 
 		resCarWidth = (int) (Race.WIDTH * 1.16f / 2);
 		resCarHeight = (int) (Race.HEIGHT * 0.726f / 2);
-		resCarMovement = Race.WIDTH / 8f;
+		resCarMovement = Race.WIDTH / 7f;
 
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
 

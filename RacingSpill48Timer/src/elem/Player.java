@@ -22,6 +22,7 @@ public class Player{
 	private String ip;
 	private EchoClient client;
 	private Car car;
+	private Upgrades upgrades;
 	private String carName;
 	private Random r;
 	private int points;
@@ -44,7 +45,7 @@ public class Player{
 		id = r.nextInt(999);
 		inflation = new int[8];
 		client = new EchoClient(ip);
-		
+		upgrades = new Upgrades();
 		// Request stats about lobby and update lobby
 		joinServer();
 	}
@@ -100,7 +101,6 @@ public class Player{
 	}
 	
 	public int getStatusRaceLights() {
-		//FIXME numberformatexception
 		return Integer.valueOf(client.sendRequest("RACELIGHTS"));
 	}
 	

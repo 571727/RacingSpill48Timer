@@ -36,6 +36,10 @@ public class RaceKeyHandler implements KeyListener{
 			//LShift
 			car.shiftDown();
 		}
+		if(e.getKeyCode() == 84) {
+			//T
+			car.setEngineOn(!car.isEngineOn());
+		}
 	}
 
 	@Override

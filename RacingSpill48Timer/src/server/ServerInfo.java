@@ -1,6 +1,10 @@
 package server;
 
+import java.text.Collator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -35,6 +39,8 @@ public class ServerInfo implements Runnable {
 	private boolean allFinished;
 	private Random r;
 	private int amountInTheRace;
+	private String raceLobbyString;
+	private boolean raceLobbyStringFinalized;
 
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
@@ -175,6 +181,7 @@ public class ServerInfo implements Runnable {
 				length = randomizeConfiguration();
 				raceStartedTime = System.currentTimeMillis();
 				regulatingWaitTime = waitTime * 3;
+				raceLobbyStringFinalized = false;
 			} else {
 				stopRace();
 			}
@@ -247,19 +254,50 @@ public class ServerInfo implements Runnable {
 			}
 
 			allFinished = false;
+			raceLobbyString = updateRaceLobby(true);
+			raceLobbyStringFinalized = true;
+		} else if (!raceLobbyStringFinalized) {
+			raceLobbyString = updateRaceLobby(false);
 		}
 
-		return updateRaceLobby();
+		return raceLobbyString;
 	}
 
 	/**
 	 * @return name#ready#car#...
 	 */
-	public String updateRaceLobby() {
+	public String updateRaceLobby(boolean allFinished) {
 		String result = "";
 
-		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
-			result += "#" + entry.getValue().getRaceInfo();
+		if (!allFinished) {
+			// Hent spillere i hvilken som helst rekkefølge og sett de inn i returnstrengen
+			for (Entry<String, PlayerInfo> entry : players.entrySet()) {
+				result += "#" + entry.getValue().getRaceInfo(allFinished);
+			}
+		} else {
+
+			LinkedList<PlayerInfo> sortedByTime = new LinkedList<PlayerInfo>();
+
+			// Sorter alle spillere etter alle har fullført racet
+			sortedByTime.addAll(players.values());
+			Collections.sort(sortedByTime, new Comparator<PlayerInfo>() {
+				@Override
+				public int compare(PlayerInfo o1, PlayerInfo o2) {
+
+					int result = 0;
+					if (o1.getTime() < o2.getTime())
+						result = -1;
+					else if (o1.getTime() > o2.getTime())
+						result = 1;
+
+					return result;
+				}
+			});
+
+			// Legg de inn i strengen
+			for (int i = 0; i < sortedByTime.size(); i++) {
+				result += "#" + (i+1) + ". place: " + sortedByTime.get(i).getRaceInfo(allFinished);
+			}
 		}
 
 		return result;

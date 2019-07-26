@@ -12,6 +12,8 @@ public class Car implements Cloneable {
 	private boolean hasNOS;
 	private boolean gearTooHigh;
 	private boolean NOSON;
+	private boolean engineOn;
+	private boolean changed;
 	private long nosTimeLeft;
 	private long nosTimeToGive;
 	private int nosTimeToGiveStandard;
@@ -30,6 +32,7 @@ public class Car implements Cloneable {
 	private int gear;
 	private int totalGear;
 	private int totalRPM;
+	private int rpm;
 	private String carStyle;
 	private RaceAudio audio;
 
@@ -38,7 +41,7 @@ public class Car implements Cloneable {
 		hasTurbo = false;
 		hasNOS = false;
 		gearTooHigh = false;
-		
+
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosTimeToGive = 3000;
@@ -91,10 +94,8 @@ public class Car implements Cloneable {
 		}
 		setCarStyle(cartype.toLowerCase());
 		audio = new RaceAudio(carStyle);
-		
-		double w = (totalWeight - weightloss);
-		double weightcalc = ( 0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
-		spdinc = (hp / weightcalc) / 100f;
+
+		updateSpeedInc();
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
@@ -123,11 +124,17 @@ public class Car implements Cloneable {
 	}
 
 	public void updateSpeed() {
-		if (!brake) {
+		if (engineOn) {
+			changed = false;
+			if (!clutch && gear > 0 && idle && !gas) {
+				// FIXME
+				engineOn = false;
+				checkIdle();
 
-			if (gas && !clutch && gearCheck()) {
+			} else if (gas && !clutch && gearCheck()) {
+
 				if (speedLinear < ((gear - 1) * (500 / totalGear) - 35)) {
-					speedLinear += spdinc / 4 * 3;
+					speedLinear += spdinc / 6;
 					gearTooHigh = true;
 				} else {
 					speedLinear += spdinc;
@@ -148,30 +155,43 @@ public class Car implements Cloneable {
 				else
 					speedLinear = 0;
 
-				if (speedActual < 2 && !idle) {
-					idle = true;
-					audio.motorIdle();
-				}
+				checkIdle();
 			}
 
 		} else {
+			if (!changed) {
+				changed = true;
+				if (audio.isPlayingIdle())
+					audio.stopAll();
+				resetBooleans();
+			}
+		}
+		if (brake) {
 
 			if (speedLinear > 0)
 				speedLinear -= spdinc;
 			else
 				speedLinear = 0;
 
-			if (speedActual < 2 && !idle) {
-				idle = true;
-				audio.motorIdle();
-			}
+			checkIdle();
 
 		}
 
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
-
+		int engineOnFactor = 1000 * (engineOn ? 1 : 0);
+		double gearFactor = speedLinear / (gearMax() + 1);
+		rpm = (int) ((totalRPM - engineOnFactor) * gearFactor + engineOnFactor);
 		// delt p� 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
 		distance += speedActual / 24;
+	}
+
+	private void checkIdle() {
+		if (speedActual < 2 && !idle) {
+			if (engineOn) {
+				idle = true;
+				audio.motorIdle();
+			}
+		}
 	}
 
 	public double getSpeedLinear() {
@@ -190,8 +210,12 @@ public class Car implements Cloneable {
 		this.speedActual = speedActual;
 	}
 
+	private float gearMax() {
+		return gear * (500 / totalGear);
+	}
+
 	private boolean gearCheck() {
-		if (speedLinear < gear * (500 / totalGear)) {
+		if (speedLinear < gearMax()) {
 
 			return true;
 		} else {
@@ -201,7 +225,7 @@ public class Car implements Cloneable {
 	}
 
 	public void acc() {
-		if (!gas) {
+		if (!gas && engineOn) {
 			gas = true;
 			audio.motorAcc();
 		}
@@ -209,7 +233,7 @@ public class Car implements Cloneable {
 	}
 
 	public void dcc() {
-		if (gas) {
+		if (gas && engineOn) {
 			gas = false;
 			audio.turboSurge();
 			audio.motorDcc();
@@ -270,11 +294,10 @@ public class Car implements Cloneable {
 	}
 
 	public void reset() {
-		idle = false;
-		gas = false;
 		brake = false;
 		clutch = false;
-		NOSON = false;
+		resetBooleans();
+		engineOn = false;
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosTimeToGive = nosTimeToGiveStandard;
@@ -283,7 +306,21 @@ public class Car implements Cloneable {
 		speedActual = 0;
 		distance = 0;
 		gear = 0;
+		rpm = 0;
 		audio.stopAll();
+		updateSpeedInc();
+	}
+
+	private void resetBooleans() {
+		idle = false;
+		gas = false;
+		NOSON = false;
+	}
+
+	public void updateSpeedInc() {
+		double w = (totalWeight - weightloss);
+		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
+		spdinc = (hp / weightcalc) / 100f;
 	}
 
 	public String showStats() {
@@ -421,12 +458,7 @@ public class Car implements Cloneable {
 	 * @return radian that represents rpm from -180 to ca. 35 - 40 idk yet
 	 */
 	public double getTachometer() {
-		int gearRep = Integer.valueOf(gear);
-		if (gearRep == 0) {
-			gearRep++;
-		}
-		return (2.1 / gearRep) * speedLinear - 180;
-
+		return rpm * 0.03 - 203;
 	}
 
 	public boolean isGearTooHigh() {
@@ -451,5 +483,29 @@ public class Car implements Cloneable {
 
 	public void setNOSON(boolean nOSON) {
 		NOSON = nOSON;
+	}
+
+	public int getRpm() {
+		return rpm;
+	}
+
+	public void setRpm(int rpm) {
+		this.rpm = rpm;
+	}
+
+	public boolean isEngineOn() {
+		return engineOn;
+	}
+
+	public void setEngineOn(boolean engineOn) {
+		this.engineOn = engineOn;
+	}
+
+	public boolean isIdle() {
+		return idle;
+	}
+
+	public void setIdle(boolean idle) {
+		this.idle = idle;
 	}
 }

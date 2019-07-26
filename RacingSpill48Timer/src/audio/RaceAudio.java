@@ -55,10 +55,14 @@ public class RaceAudio {
 
 	}
 
+	public boolean isPlayingIdle() {
+		return !(idle.isPaused() || idle.stopped());
+	}
+	
 	//FIXME baser lyd p� turtall
 	
 	public void motorAcc() {
-		if (idle != null && !(idle.isPaused() || idle.stopped()) ) {
+		if (idle != null &&  isPlayingIdle()) {
 			stopIdle();
 		}
 		if (redline != null && redline.isPlaying()) {
@@ -127,7 +131,7 @@ public class RaceAudio {
 	}
 
 	public void stopAll() {
-		if (idle != null && !(idle.isPaused() || idle.stopped()) ) {
+		if (idle != null && isPlayingIdle() ) {
 			stopIdle();
 		}
 		if (motor != null && motor.isPlaying()) {

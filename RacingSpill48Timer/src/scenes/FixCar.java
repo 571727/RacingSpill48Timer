@@ -121,6 +121,8 @@ public class FixCar extends Scene {
 		buyPoints.setEnabled(true);
 		buyMoney.setEnabled(true);
 		
+		//TODO flytt dette inn i Upgrades og styr via metoder i Player.
+		
 		try {
 			upgradedCar = (Car) player.getCar().clone();
 		} catch (CloneNotSupportedException e1) {
