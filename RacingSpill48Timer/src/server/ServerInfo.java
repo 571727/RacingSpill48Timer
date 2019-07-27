@@ -193,7 +193,7 @@ public class ServerInfo implements Runnable {
 				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 					entry.getValue().newRace();
 				}
-				length = randomizeConfiguration();
+				length = randomizeLengthOfTrack();
 				raceStartedTime = System.currentTimeMillis();
 				regulatingWaitTime = waitTime * 3;
 				raceLobbyStringFinalized = false;
@@ -211,7 +211,7 @@ public class ServerInfo implements Runnable {
 	 * 
 	 * @return length of the track
 	 */
-	public int randomizeConfiguration() {
+	public int randomizeLengthOfTrack() {
 		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0) + 1);
 	}
 

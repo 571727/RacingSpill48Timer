@@ -37,6 +37,7 @@ public class Car implements Cloneable {
 	private String carStyle;
 	private RaceAudio audio;
 	private int idleSpeed;
+	private double gearsbalance;
 
 	public Car(String cartype) {
 
@@ -54,6 +55,7 @@ public class Car implements Cloneable {
 		nosStrengthStandard = 0;
 		topSpeed = 250;
 		resistance = 1.0;
+		gearsbalance = 1.0;
 		idleSpeed = 1000;
 
 		// Kanskje Lada der kj�relyden er hardbass.
@@ -348,7 +350,7 @@ public class Car implements Cloneable {
 	public void updateSpeedInc() {
 		double w = (totalWeight - weightloss);
 		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
-		spdinc = (hp / weightcalc) / 100f;
+		spdinc = (hp / weightcalc) / 100f * gearsbalance;
 	}
 
 	public String showStats() {
@@ -543,5 +545,13 @@ public class Car implements Cloneable {
 
 	public void setResistance(double resistance) {
 		this.resistance = resistance;
+	}
+
+	public double getGearsbalance() {
+		return gearsbalance;
+	}
+
+	public void setGearsbalance(double gearsbalance) {
+		this.gearsbalance = gearsbalance;
 	}
 }
