@@ -146,7 +146,7 @@ public class RaceVisual extends Visual {
 			g2d.setFont(font);
 
 			// DEBUG
-			drawDebug(g2d, 300);
+//			drawDebug(g2d, 300);
 
 			// Prerace stuff
 			drawRaceHUD(g2d);
