@@ -64,8 +64,9 @@ public class PlayerInfo {
 	 * @return name#ready#car#...
 	 */
 	public String getRaceInfo(boolean allFinished) {
+		System.out.println(carName);
 		if (allFinished == false)
-			return name + "#" + finished + "#" + timeLapsedInRace + "#";
+			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + carName.toLowerCase();
 		else
 			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#" + carName.toLowerCase();
 	}

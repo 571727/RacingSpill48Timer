@@ -289,11 +289,16 @@ public class ServerInfo implements Runnable {
 
 		if (!allFinished) {
 			// Hent spillere i hvilken som helst rekkefølge og sett de inn i returnstrengen
+			
+			result += 3;
+			
 			for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 				result += "#" + entry.getValue().getRaceInfo(allFinished);
 			}
 		} else {
 
+			result += 6;
+			
 			LinkedList<PlayerInfo> sortedByTime = new LinkedList<PlayerInfo>();
 
 			// Sorter alle spillere etter alle har fullført racet

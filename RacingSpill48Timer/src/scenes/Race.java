@@ -338,8 +338,10 @@ public class Race extends Scene implements Runnable {
 		int playerIndex = 0;
 		boolean finished = false;
 		for (int i = 1; i < outputs.length; i++) {
-			n++;
+			n = i % 5;
 
+			System.err.println("Outputstring: " + outputs[i]);
+			
 			switch (n) {
 
 			case 1:
@@ -348,6 +350,7 @@ public class Race extends Scene implements Runnable {
 			case 2:
 
 				// Controlling whether player has finished or not
+				
 				if (Integer.valueOf(outputs[i]) == 1) {
 					result += "Finished, ";
 					finished = true;
@@ -362,8 +365,10 @@ public class Race extends Scene implements Runnable {
 					}
 
 					if (!prevFinished) {
-						if (Long.valueOf(outputs[i + 1]) != -1)
-							finishVisual.addFinish(outputs[5], 1);
+						if (Long.valueOf(outputs[i + 1]) != -1) {
+							System.out.println("Finish car: " + outputs[i + 3] + ".");
+							finishVisual.addFinish(outputs[i + 3], 1);
+						}
 						finishedPlayers[playerIndex] = true;
 					}
 
@@ -375,6 +380,8 @@ public class Race extends Scene implements Runnable {
 
 				break;
 			case 3:
+				
+				
 				if (Long.valueOf(outputs[i]) == -1) {
 					result += "DNF";
 				} else if (finished || startTime == -1) {
@@ -388,8 +395,8 @@ public class Race extends Scene implements Runnable {
 					result += outputs[i];
 
 				result += "<br/>";
-				n = 0;
 				playerIndex++;
+				
 				break;
 			}
 
