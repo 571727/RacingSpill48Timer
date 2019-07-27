@@ -34,10 +34,16 @@ public class RaceAudio {
 		}
 
 		try {
-			idle = new OggClip(new FileInputStream("res/sfx/motorIdle" + carname + ".ogg"));
+			idle = new OggClip(new FileInputStream(SFX.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/../res/sfx/motorIdle" + carname + ".ogg"));
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			idle = new OggClip(new FileInputStream(SFX.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/sfx/motorIdle" + carname + ".ogg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		motor = new MediaAudio("/sfx/motorAcc" + carname);
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");

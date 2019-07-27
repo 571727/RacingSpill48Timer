@@ -196,7 +196,7 @@ public class RaceVisual extends Visual {
 
 		trans.translate((-shake + x) / imgW * 100, (-shake + y) / imgH * 100);
 		trans.scale(width / imgW, height / imgH);
-		System.out.println(trans.getTranslateX() + ", " + trans.getTranslateY());
+//		System.out.println(trans.getTranslateX() + ", " + trans.getTranslateY());
 	}
 
 	private double shake(double amount) {

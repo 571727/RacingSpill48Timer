@@ -19,14 +19,16 @@ public class SFX {
 
 		OggClip sfx = null;
 		try {
-			sfx = new OggClip(new FileInputStream("res/sfx/" + url + ".ogg"));
+			sfx = new OggClip(new FileInputStream(SFX.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/../res/sfx/" + url + ".ogg"));
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+			
 			float gain = (float) (GameHandler.volume * 3.5f);
 			if (gain > 1)
 				gain = 1;
 			sfx.setGain(gain);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 		sfx.play();
 	}
 }
