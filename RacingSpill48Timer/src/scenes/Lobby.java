@@ -240,11 +240,11 @@ public class Lobby extends Scene implements Runnable {
 			String actualChatText = "<html>Chat:";
 			String newText = player.getChat();
 			if (newText != null) {
-				
-				//Adding text to the chatwindow
+
+				// Adding text to the chatwindow
 				chatText += "<br/>" + newText;
-				
-				//Taunt
+
+				// Taunt
 				String[] tauntCheck = newText.split(player.getName() + ": ");
 				if (tauntCheck.length > 1 && tauntCheck[1].startsWith("14")) {
 					SFX.playOggSound("start_the_game_already");
@@ -368,8 +368,9 @@ public class Lobby extends Scene implements Runnable {
 			lastTime = now;
 			while (delta >= 1) {
 
-//				if (SceneHandler.instance.getWindows().isVisible())
-//					SceneHandler.instance.getWindows().requestFocus();
+				if (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class)
+						&& SceneHandler.instance.getWindows().isVisible())
+					SceneHandler.instance.getWindows().requestFocus();
 
 				player.pingServer();
 
