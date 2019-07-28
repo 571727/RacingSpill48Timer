@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.sound.sampled.LineEvent;
 
 import javafx.scene.media.AudioSpectrumListener;
+import javafx.scene.media.MediaPlayer;
 
 public class BgMusicListener {
 
@@ -27,6 +28,7 @@ public class BgMusicListener {
 		media = new MediaAudio("/music/music" + findRandomSong());
 
 		media.play();
+		media.getMediaPlayer();
 		// FIXME media.getMediaPlayer().setOnEndOfMedia(() ->
 		// playAndChooseNextRandomly());
 	}

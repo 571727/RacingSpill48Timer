@@ -44,6 +44,7 @@ public class ServerInfo implements Runnable {
 	private int amountInTheRace;
 	private String raceLobbyString;
 	private boolean raceLobbyStringFinalized;
+	private boolean leavingPlayerMutex;
 
 	public ServerInfo() {
 		players = new HashMap<String, PlayerInfo>();
@@ -220,10 +221,15 @@ public class ServerInfo implements Runnable {
 	}
 
 	private void leave(String nameid) {
+		System.out.println("Making " + nameid + " leave");
+
 		PlayerInfo player = getPlayer(nameid);
-		chat.remove(player);
-		players.remove(nameid);
-		addChat(player.getName() + " left the game.");
+		if (player != null) {
+			chat.remove(player);
+			players.remove(nameid);
+			ping.remove(nameid);
+			addChat(player.getName() + " left the game.");
+		}
 	}
 
 	public String getTrackLength() {
@@ -289,16 +295,16 @@ public class ServerInfo implements Runnable {
 
 		if (!allFinished) {
 			// Hent spillere i hvilken som helst rekkefølge og sett de inn i returnstrengen
-			
+
 			result += 3;
-			
+
 			for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 				result += "#" + entry.getValue().getRaceInfo(allFinished);
 			}
 		} else {
 
 			result += 6;
-			
+
 			LinkedList<PlayerInfo> sortedByTime = new LinkedList<PlayerInfo>();
 
 			// Sorter alle spillere etter alle har fullført racet
@@ -344,7 +350,7 @@ public class ServerInfo implements Runnable {
 			res = player.getPoints() + "#" + player.getMoney();
 		} catch (NullPointerException e) {
 			System.err.println("Player " + input[1] + input[2] + " timed out");
-			e.printStackTrace();
+			checkPings();
 		}
 		return res;
 	}
@@ -381,13 +387,20 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void checkPings() {
-		for (Entry<String, Long> entry : ping.entrySet()) {
+		if (!leavingPlayerMutex)
+			for (Entry<String, Long> entry : ping.entrySet()) {
 
-			if (!validPing(entry.getValue())) {
-				addChat(getPlayer(entry.getKey()).getName() + " has too high ping!");
-				leave(entry.getKey());
+				if (!validPing(entry.getValue())) {
+					leavingPlayerMutex = true;
+					PlayerInfo player = getPlayer(entry.getKey());
+					if (player == null)
+						return;
+
+					addChat(player.getName() + " has too high ping!");
+					leave(entry.getKey());
+					leavingPlayerMutex = false;
+				}
 			}
-		}
 	}
 
 	@Override
@@ -403,7 +416,7 @@ public class ServerInfo implements Runnable {
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
-				if (!Main.DEBUG)
+				if (!Main.DEBUG && !leavingPlayerMutex)
 					checkPings();
 				updateRaceStatus();
 				delta--;

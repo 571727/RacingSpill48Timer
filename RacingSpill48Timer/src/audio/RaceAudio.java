@@ -7,13 +7,14 @@ import java.util.Random;
 import org.newdawn.easyogg.OggClip;
 
 import handlers.GameHandler;
+import javafx.scene.media.MediaPlayer;
 
 public class RaceAudio {
 
 	private Random r = new Random();
 	private MediaAudio[] gear;
 	private OggClip idle;
-	private MediaAudio motor;
+	private WavAudio motor;
 	private MediaAudio[] turbo;
 	private MediaAudio redline;
 	private MediaAudio nos;
@@ -39,7 +40,7 @@ public class RaceAudio {
 			System.out.println(e.getMessage());
 		}
 		
-		motor = new MediaAudio("/sfx/motorAcc" + carname);
+		motor = new WavAudio("motorAcc" + carname);
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
 	}
@@ -86,8 +87,10 @@ public class RaceAudio {
 			redline.stop();
 		}
 
-		motor.play();
-
+//		motor.getMediaPlayer().setRate(6.0);
+		
+		motor.loop();
+//		motor.getMediaPlayer().setRate(0.1);
 		if (turbo != null && isMediaArrayPlaying(turbo)) {
 			stopMediaArray(turbo);
 		}

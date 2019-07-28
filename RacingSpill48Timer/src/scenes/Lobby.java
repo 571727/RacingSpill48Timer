@@ -379,18 +379,12 @@ public class Lobby extends Scene implements Runnable {
 				delta--;
 			}
 
-			while (deltar >= 1) {
-				frames++;
+			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1) {
 				race.lobbyTick();
 				race.visualRender();
 				deltar--;
 			}
 
-			if (System.currentTimeMillis() - timer > 1000) {
-				timer += 1000;
-				System.out.println("FPS: " + frames);
-				frames = 0;
-			}
 
 			try {
 				Thread.sleep(4);
