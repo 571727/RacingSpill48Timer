@@ -148,6 +148,7 @@ public class Car implements Cloneable {
 				else
 					rpm = idleSpeed;
 			}
+			audio.motorPitch(rpm, totalRPM);
 
 			if (!clutch && gear > 0 && idle && !gas) {
 				// FIXME
@@ -259,7 +260,8 @@ public class Car implements Cloneable {
 	public void dcc() {
 		if (gas && engineOn) {
 			gas = false;
-			audio.turboSurge();
+			if (hasTurbo)
+				audio.turboSurge();
 			audio.motorDcc();
 		}
 	}
@@ -281,7 +283,8 @@ public class Car implements Cloneable {
 			clutch = true;
 			resistance = 1.0;
 			if (gas) {
-				audio.turboSurge();
+				if (hasTurbo)
+					audio.turboSurge();
 				audio.motorDcc();
 			}
 		}

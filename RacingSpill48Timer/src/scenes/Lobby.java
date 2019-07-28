@@ -244,7 +244,6 @@ public class Lobby extends Scene implements Runnable {
 				// Adding text to the chatwindow
 				chatText += "<br/>" + newText;
 
-				// Taunt FIXME only yourself can hear the message
 				String[] tauntCheck = newText.split(": ");
 				if (tauntCheck.length > 1 && tauntCheck[1].startsWith("14")) {
 					SFX.playOggSound("start_the_game_already");

@@ -340,8 +340,6 @@ public class Race extends Scene implements Runnable {
 		for (int i = 1; i < outputs.length; i++) {
 			n = i % 5;
 
-			System.err.println("Outputstring: " + outputs[i]);
-			
 			switch (n) {
 
 			case 1:
