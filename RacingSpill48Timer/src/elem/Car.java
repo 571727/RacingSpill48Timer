@@ -38,6 +38,7 @@ public class Car implements Cloneable {
 	private RaceAudio audio;
 	private int idleSpeed;
 	private double gearsbalance;
+	private boolean upgradedGears;
 
 	public Car(String cartype) {
 
@@ -149,6 +150,8 @@ public class Car implements Cloneable {
 					rpm = idleSpeed;
 			}
 			audio.motorPitch(rpm, totalRPM);
+			audio.turbospoolPitch(rpm, totalRPM);
+			audio.straightcutgearsPitch(speedLinear, topSpeed);
 
 			if (!clutch && gear > 0 && idle && !gas) {
 				// FIXME
@@ -252,7 +255,7 @@ public class Car implements Cloneable {
 	public void acc() {
 		if (!gas && engineOn) {
 			gas = true;
-			audio.motorAcc();
+			audio.motorAcc(hasTurbo);
 		}
 
 	}
@@ -296,7 +299,7 @@ public class Car implements Cloneable {
 			if (gear > 0)
 				resistance = 0.0;
 			if (gas) {
-				audio.motorAcc();
+				audio.motorAcc(hasTurbo);
 			}
 		}
 	}
@@ -532,6 +535,8 @@ public class Car implements Cloneable {
 
 	public void setEngineOn(boolean engineOn) {
 		this.engineOn = engineOn;
+
+		audio.openLines(hasTurbo, upgradedGears);
 	}
 
 	public boolean isIdle() {
@@ -556,5 +561,13 @@ public class Car implements Cloneable {
 
 	public void setGearsbalance(double gearsbalance) {
 		this.gearsbalance = gearsbalance;
+	}
+
+	public boolean isUpgradedGears() {
+		return upgradedGears;
+	}
+
+	public void setUpgradedGears(boolean upgradedGears) {
+		this.upgradedGears = upgradedGears;
 	}
 }

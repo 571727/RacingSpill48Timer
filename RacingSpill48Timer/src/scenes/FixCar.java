@@ -189,6 +189,7 @@ public class FixCar extends Scene {
 			upgradedCar.setWeightloss(upgradedCar.getWeightloss() + 50);
 			upgradedCar.setTopSpeed(topspeedPrev + topspeedInc);
 			upgradedCar.setGearsbalance(upgradedCar.getGearsbalance() * (1 - (topspeedInc / topspeedPrev)));
+			upgradedCar.setUpgradedGears(true);
 			break;
 		case "Beefier block":
 

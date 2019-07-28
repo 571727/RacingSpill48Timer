@@ -83,7 +83,6 @@ public class Race extends Scene implements Runnable {
 
 		try {
 
-
 			fastness = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/fastness.png"));
 
 			tachopointer = ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/tacho.png"));
@@ -126,9 +125,9 @@ public class Race extends Scene implements Runnable {
 		}
 		racingWindow.setVisible(true);
 
-		//FIXME her allokeres det for 100 spillere når det ikke trengs
+		// FIXME her allokeres det for 100 spillere når det ikke trengs
 		finishedPlayers = new boolean[100];
-		for(int i = 0; i < finishedPlayers.length; i++) {
+		for (int i = 0; i < finishedPlayers.length; i++) {
 			finishedPlayers[i] = false;
 		}
 
@@ -249,8 +248,13 @@ public class Race extends Scene implements Runnable {
 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 20.0;
+		// TODO lagre fps i en textfil. Og gj�re slik at man kan endre verdien i
+		// options.
+		double[] fpsSteps = { 144, 120, 60, 30, 20, 16 };
+		int fps = 0;
+		int tolerance = 5;
 		double nst = 1000000000 / amountOfTicks;
-		double nsr = 1000000000 / (amountOfTicks * 3.0);
+		double nsr = 1000000000 / fpsSteps[fps];
 		double nsp = 1000000000 / (amountOfTicks / 8.0);
 		double deltat = 0;
 		double deltar = 0;
@@ -266,12 +270,12 @@ public class Race extends Scene implements Runnable {
 			deltar += (now - lastTime) / nsr;
 			deltap += (now - lastTime) / nsp;
 			lastTime = now;
-
+			// Ping
 			while (deltap >= 1) {
 				deltap--;
 				player.pingServer();
 			}
-
+			// Tick
 			while (deltat >= 1) {
 				deltat--;
 
@@ -282,7 +286,7 @@ public class Race extends Scene implements Runnable {
 
 				tick();
 			}
-
+			// Render
 			while (deltar >= 1) {
 				deltar--;
 				frames++;
@@ -297,6 +301,13 @@ public class Race extends Scene implements Runnable {
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS RACEEE: " + frames);
+				if ((frames >= fpsSteps[fps] - tolerance && frames < fpsSteps[fps] + tolerance) == false
+						&& fps < fpsSteps.length - 1 && racingWindow.isFocused()) {
+					fps++;
+					nsr = 1000000000 / fpsSteps[fps];
+				}
+				// Check if frames are ok.
+
 				frames = 0;
 			}
 
@@ -318,11 +329,12 @@ public class Race extends Scene implements Runnable {
 		for (int i = 0; i < Main.CARTYPES.length; i++) {
 			if (Main.CARTYPES[i].toLowerCase().equals(car))
 				try {
-					return ImageIO.read(RaceVisual.class
-							.getResourceAsStream("/pics/" + Main.CARTYPES[i].toLowerCase() + ".png"));
+					return ImageIO.read(
+							RaceVisual.class.getResourceAsStream("/pics/" + Main.CARTYPES[i].toLowerCase() + ".png"));
 				} catch (IOException e) {
 					e.printStackTrace();
-				};
+				}
+			;
 		}
 		return null;
 	}
@@ -348,7 +360,7 @@ public class Race extends Scene implements Runnable {
 			case 2:
 
 				// Controlling whether player has finished or not
-				
+
 				if (Integer.valueOf(outputs[i]) == 1) {
 					result += "Finished, ";
 					finished = true;
@@ -359,7 +371,7 @@ public class Race extends Scene implements Runnable {
 						prevFinished = finishedPlayers[playerIndex];
 					} catch (IndexOutOfBoundsException e) {
 						prevFinished = false;
-						finishedPlayers[playerIndex] =  true;
+						finishedPlayers[playerIndex] = true;
 					}
 
 					if (!prevFinished) {
@@ -378,8 +390,7 @@ public class Race extends Scene implements Runnable {
 
 				break;
 			case 3:
-				
-				
+
 				if (Long.valueOf(outputs[i]) == -1) {
 					result += "DNF";
 				} else if (finished || startTime == -1) {
@@ -394,7 +405,7 @@ public class Race extends Scene implements Runnable {
 
 				result += "<br/>";
 				playerIndex++;
-				
+
 				break;
 			}
 
