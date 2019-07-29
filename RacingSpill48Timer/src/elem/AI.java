@@ -46,11 +46,11 @@ public class AI extends PlayerInfo {
 	}
 
 	public void upgradeCar() {
-
+		//TODO implement upgrading via Car class and make AI upgrade in a smart / dumb way.
 	}
 
 	public long calculateRace(int length) {
-
+		//TODO balance
 		long time = -1;
 		
 		// DNF?
