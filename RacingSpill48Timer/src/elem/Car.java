@@ -285,6 +285,7 @@ public class Car implements Cloneable {
 		if (!clutch) {
 			clutch = true;
 			resistance = 1.0;
+			audio.clutch();
 			if (gas) {
 				if (hasTurbo)
 					audio.turboSurge();
@@ -304,20 +305,19 @@ public class Car implements Cloneable {
 		}
 	}
 
-	public void shiftUp() {
-		if (gear < totalGear && clutch) {
-			gear++;
+	public void shift(int gear) {
+		if (gear <= totalGear && clutch) {
+			this.gear = gear;
 			audio.gearSound();
 		}
 	}
+	
+	public void shiftUp() {
+		shift(gear++);
+	}
 
 	public void shiftDown() {
-		if (gear > 0 && clutch) {
-			gear--;
-			if (gear == 0)
-				resistance = 1.0;
-			audio.gearSound();
-		}
+		shift(gear--);
 	}
 
 	public void nos() {
@@ -570,4 +570,6 @@ public class Car implements Cloneable {
 	public void setUpgradedGears(boolean upgradedGears) {
 		this.upgradedGears = upgradedGears;
 	}
+
+	
 }

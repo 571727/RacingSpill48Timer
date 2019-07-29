@@ -23,6 +23,7 @@ public class RaceAudio implements AudioCueListener {
 	private MediaAudio[] turbo;
 	private MediaAudio redline;
 	private MediaAudio nos;
+	private MediaAudio clutch;
 	private Runnable idlestopper = () -> idle.stop();
 	private Thread thread;
 	private int motorAccInstance;
@@ -39,6 +40,7 @@ public class RaceAudio implements AudioCueListener {
 		// Maybe use action for something later, cause it's awesome
 		gear = new MediaAudio[4];
 		turbo = new MediaAudio[2];
+		
 
 		for (int i = 0; i < gear.length; i++) {
 			gear[i] = new MediaAudio("/sfx/gear" + (i + 1));
@@ -84,6 +86,7 @@ public class RaceAudio implements AudioCueListener {
 
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
+		clutch = new MediaAudio("/sfx/clutch");
 	}
 
 	public void updateVolume() {
@@ -342,6 +345,10 @@ public class RaceAudio implements AudioCueListener {
 		thread = new Thread(idlestopper);
 		thread.start();
 	}
+	
+	public void clutch() {
+		clutch.play();
+	}
 
 	@Override
 	public void audioCueOpened(long now, int threadPriority, int bufferSize, AudioCue source) {
@@ -360,5 +367,7 @@ public class RaceAudio implements AudioCueListener {
 		// TODO Auto-generated method stub
 
 	}
+
+
 
 }

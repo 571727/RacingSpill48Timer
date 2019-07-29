@@ -27,6 +27,8 @@ import startup.Main;
 public class ServerInfo implements Runnable {
 
 	private HashMap<String, PlayerInfo> players;
+	//TODO
+	private HashMap<String, PlayerInfo> lostPlayers;
 	private HashMap<String, Long> ping;
 	private HashMap<PlayerInfo, Queue<String>> chat;
 	private int started;
