@@ -58,7 +58,20 @@ public class MainMenu extends Scene {
 		if (car == null)
 			return;
 
-		serverHandler.createNew();
+		String amountOfAI = amountOfAISelection();
+		if (amountOfAI == null)
+			return;
+
+		String diff;
+		if (Integer.valueOf(amountOfAI) != 0) {
+			diff = difficultySelection();
+			if (diff == null)
+				return;
+		} else {
+			diff = "0";
+		}
+
+		serverHandler.createNew(Integer.valueOf(amountOfAI), Integer.valueOf(diff));
 
 		SceneHandler.instance.changeScene(1);
 		thread = new Thread(lobby);
@@ -66,6 +79,23 @@ public class MainMenu extends Scene {
 		lobby.createNewLobby(name, 1, car, serverHandler, thread);
 
 		thread.start();
+	}
+
+	private String difficultySelection() {
+		String str = (String) JOptionPane.showInputDialog(null, "Choose difficulty, bro", "Carznstuff",
+				JOptionPane.PLAIN_MESSAGE, null, Main.DIFFICULTY_TYPES, Main.DIFFICULTY_TYPES[0]);
+		
+		for(int i = 0; i < Main.DIFFICULTY_TYPES.length; i++) {
+			if(Main.DIFFICULTY_TYPES[i].equals(str))
+				str = String.valueOf(i * 100 / Main.DIFFICULTY_TYPES.length);
+		}
+		
+		return str;
+	}
+
+	private String amountOfAISelection() {
+		return (String) JOptionPane.showInputDialog(null, "How many AI?", "Carznstuff",
+				JOptionPane.PLAIN_MESSAGE, null, Main.AMOUNT_OF_AI, Main.AMOUNT_OF_AI[0]);
 	}
 
 	private void join() {
@@ -105,7 +135,7 @@ public class MainMenu extends Scene {
 	private String carSelection() {
 
 		return (String) JOptionPane.showInputDialog(null, "Choose your car, mate", "Carznstuff",
-				JOptionPane.PLAIN_MESSAGE, null, Main.CARTYPES, "Supra");
+				JOptionPane.PLAIN_MESSAGE, null, Main.CAR_TYPES, "Supra");
 	}
 
 	private String username() {

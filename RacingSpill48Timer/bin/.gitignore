@@ -1,6 +1,10 @@
-/sfx/
+/adt/
 /audio/
+/client/
+/connection_standard/
 /elem/
-/scenes/
 /handlers/
+/scenes/
 /server/
+/startup/
+/window/

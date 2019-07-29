@@ -25,8 +25,8 @@ public class ServerHandler {
 		createNew(currentServer);
 	}
 
-	public void createNew() {
-		info = new ServerInfo();
+	public void createNew(int amountOfAI, int diff) {
+		info = new ServerInfo(amountOfAI, diff);
 		createNew(new EchoServer(info));
 		infoThread = new Thread(info);
 		infoThread.start();

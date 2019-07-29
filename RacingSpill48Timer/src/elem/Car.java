@@ -39,12 +39,14 @@ public class Car implements Cloneable {
 	private int idleSpeed;
 	private double gearsbalance;
 	private boolean upgradedGears;
+	private boolean audioActivated;
 
-	public Car(String cartype) {
+	public Car(String cartype, boolean audioActivated) {
 
 		hasTurbo = false;
 		hasNOS = false;
 		gearTooHigh = false;
+		this.audioActivated = audioActivated;
 
 		speedLinear = 0f;
 		nosTimeLeft = 0;
@@ -100,7 +102,8 @@ public class Car implements Cloneable {
 			break;
 		}
 		setCarStyle(cartype.toLowerCase());
-		audio = new RaceAudio(carStyle);
+		if (audioActivated)
+			audio = new RaceAudio(carStyle);
 
 		updateSpeedInc();
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
@@ -160,13 +163,7 @@ public class Car implements Cloneable {
 
 			} else if (gas && !clutch && gearCheck()) {
 
-				if (speedLinear < ((gear - 1) * (500 / totalGear) - 35)) {
-					speedLinear += spdinc / 6;
-					gearTooHigh = true;
-				} else {
-					speedLinear += spdinc;
-					gearTooHigh = false;
-				}
+				accelerateCar();
 				idle = false;
 
 				if (nosTimeLeft > System.currentTimeMillis()) {
@@ -177,10 +174,7 @@ public class Car implements Cloneable {
 				}
 			} else {
 
-				if (speedLinear > 0)
-					speedLinear -= 0.5f;
-				else
-					speedLinear = 0;
+				decelerateCar();
 
 				checkIdle();
 			}
@@ -204,13 +198,40 @@ public class Car implements Cloneable {
 
 		}
 
+		calculateActualSpeed();
+		calculateDistance();
+
+	}
+
+	public void decelerateCar() {
+		if (speedLinear > 0)
+			speedLinear -= 0.5f;
+		else
+			speedLinear = 0;
+	}
+
+	public void calculateActualSpeed() {
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
 		int engineOnFactor = idleSpeed * (engineOn ? 1 : 0);
 		double gearFactor = speedLinear / (gearMax() + 1);
 		if (resistance == 0)
 			rpm = (int) ((totalRPM - engineOnFactor) * gearFactor + engineOnFactor);
+
+	}
+
+	public void calculateDistance() {
 		// delt p� 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
 		distance += speedActual / 24;
+	}
+
+	public void accelerateCar() {
+		if (speedLinear < ((gear - 1) * (500 / totalGear) - 35)) {
+			speedLinear += spdinc / 6;
+			gearTooHigh = true;
+		} else {
+			speedLinear += spdinc;
+			gearTooHigh = false;
+		}
 	}
 
 	private void checkIdle() {
@@ -243,13 +264,20 @@ public class Car implements Cloneable {
 	}
 
 	private boolean gearCheck() {
-		if (speedLinear < gearMax()) {
-
+		if (isGearCorrect()) {
 			return true;
 		} else {
 			audio.redline();
 			return false;
 		}
+	}
+
+	public boolean isGearCorrect() {
+		return speedLinear < gearMax();
+	}
+
+	public boolean isTopGear() {
+		return gear == totalGear;
 	}
 
 	public void acc() {
@@ -308,10 +336,19 @@ public class Car implements Cloneable {
 	public void shift(int gear) {
 		if (gear <= totalGear && clutch) {
 			this.gear = gear;
-			audio.gearSound();
+			if (audioActivated)
+				audio.gearSound();
 		}
 	}
-	
+
+	public boolean isAudioActivated() {
+		return audioActivated;
+	}
+
+	public void setAudioActivated(boolean audioActivated) {
+		this.audioActivated = audioActivated;
+	}
+
 	public void shiftUp() {
 		shift(gear++);
 	}
@@ -343,7 +380,8 @@ public class Car implements Cloneable {
 		gear = 0;
 		rpm = 0;
 		resistance = 1.0;
-		audio.stopAll();
+		if (audioActivated)
+			audio.stopAll();
 		updateSpeedInc();
 	}
 
@@ -571,5 +609,4 @@ public class Car implements Cloneable {
 		this.upgradedGears = upgradedGears;
 	}
 
-	
 }

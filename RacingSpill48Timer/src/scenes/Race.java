@@ -35,6 +35,7 @@ public class Race extends Scene implements Runnable {
 	 * Generated value
 	 */
 	private static final long serialVersionUID = 7286654650311664681L;
+	public static final int TICK_STD = 20;
 	private Player player;
 	private Lobby lobby;
 	private JFrame racingWindow;
@@ -247,8 +248,8 @@ public class Race extends Scene implements Runnable {
 		joinThread();
 
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 20.0;
-		// TODO lagre fps i en textfil. Og gjøre slik at man kan endre verdien i
+		double amountOfTicks = TICK_STD;
+		// TODO lagre fps i en textfil. Og gjï¿½re slik at man kan endre verdien i
 		// options.
 		double[] fpsSteps = { 144, 120, 60, 30, 20, 16 };
 		int fps = 0;
@@ -326,11 +327,11 @@ public class Race extends Scene implements Runnable {
 	}
 
 	private BufferedImage findCarImage(String car) {
-		for (int i = 0; i < Main.CARTYPES.length; i++) {
-			if (Main.CARTYPES[i].toLowerCase().equals(car))
+		for (int i = 0; i < Main.CAR_TYPES.length; i++) {
+			if (Main.CAR_TYPES[i].toLowerCase().equals(car))
 				try {
 					return ImageIO.read(
-							RaceVisual.class.getResourceAsStream("/pics/" + Main.CARTYPES[i].toLowerCase() + ".png"));
+							RaceVisual.class.getResourceAsStream("/pics/" + Main.CAR_TYPES[i].toLowerCase() + ".png"));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -382,6 +383,11 @@ public class Race extends Scene implements Runnable {
 						finishedPlayers[playerIndex] = true;
 					}
 
+				} else if (Integer.valueOf(outputs[i]) == 2) {
+					//AI
+					result += "Finished, ";
+					finished = true;
+					
 				} else {
 					result += "Not finished, ";
 					everyoneDone = false;
@@ -400,7 +406,7 @@ public class Race extends Scene implements Runnable {
 				}
 				break;
 			case 4:
-				if (Integer.valueOf(outputs[i - 2]) == 1)
+				if (Integer.valueOf(outputs[i - 2]) > 0)
 					result += outputs[i];
 
 				result += "<br/>";

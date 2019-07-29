@@ -2,18 +2,18 @@ package server;
 
 public class PlayerInfo {
 
-	private int ready;
-	private int host;
 	protected String name;
+	protected int ready;
+	protected long timeLapsedInRace;
+	protected int pointsAdded;
+	protected int moneyAdded;
+	private int host;
 	private String id;
-	private long timeLapsedInRace;
 	private int finished;
 	private int points;
 	private int money;
-	private int pointsAdded;
-	private int moneyAdded;
 
-	private String carName;
+	protected String carName;
 	private boolean inTheRace;
 
 	public PlayerInfo(String name, String id, String host, String carName) {
@@ -73,10 +73,10 @@ public class PlayerInfo {
 
 	public void addPointsAndMoney(int amountPlayers, int place) {
 		if (!(amountPlayers == -1 || place == -1)) {
-			points += (amountPlayers + 1) / (place + 1);
-			money += 100f * place;
-			pointsAdded = (amountPlayers + 1) / (place + 1);
+			pointsAdded = amountPlayers - place;
 			moneyAdded = (int) (100f * place);
+			points += pointsAdded;
+			money += moneyAdded;
 		}
 	}
 

@@ -1,6 +1,6 @@
 package server;
 
-import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import elem.AI;
 import startup.Main;
 
 /**
@@ -27,7 +28,8 @@ import startup.Main;
 public class ServerInfo implements Runnable {
 
 	private HashMap<String, PlayerInfo> players;
-	//TODO
+	private ArrayList<AI> ai;
+	// TODO
 	private HashMap<String, PlayerInfo> lostPlayers;
 	private HashMap<String, Long> ping;
 	private HashMap<PlayerInfo, Queue<String>> chat;
@@ -47,14 +49,27 @@ public class ServerInfo implements Runnable {
 	private String raceLobbyString;
 	private boolean raceLobbyStringFinalized;
 	private boolean leavingPlayerMutex;
+	private Thread finishAI_thread;
 
-	public ServerInfo() {
+	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
 		ping = new HashMap<String, Long>();
 		chat = new HashMap<PlayerInfo, Queue<String>>();
+		ai = new ArrayList<AI>();
+
+		for (int i = 0; i < amountOfAI; i++) {
+			AI ai = new AI(i, diff);
+			this.ai.add(ai);
+			players.put(ai.getName() + i, ai);
+		}
+
 		r = new Random();
 		races = -1;
 		setRunning(true);
+	}
+
+	private int generateID() {
+		return r.nextInt(1000);
 	}
 
 	public int getStarted() {
@@ -117,6 +132,12 @@ public class ServerInfo implements Runnable {
 
 	private PlayerInfo getPlayer(String input) {
 		return players.get(input);
+	}
+
+	private void finishAI(AI player, long time) {
+		player.setFinished(1);
+		amountFinished++;
+		player.setTime(time);
 	}
 
 	public void finishPlayer(String[] input) {
@@ -196,10 +217,21 @@ public class ServerInfo implements Runnable {
 				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 					entry.getValue().newRace();
 				}
+
 				length = randomizeLengthOfTrack();
 				raceStartedTime = System.currentTimeMillis();
 				regulatingWaitTime = waitTime * 3;
 				raceLobbyStringFinalized = false;
+
+				amountInTheRace += ai.size();
+
+				finishAI_thread = new Thread(() -> {
+					for (AI ai : this.ai) {
+						finishAI(ai, ai.calculateRace(length));
+					}
+				});
+				finishAI_thread.start();
+
 			} else {
 				stopRace();
 			}
@@ -269,7 +301,7 @@ public class ServerInfo implements Runnable {
 						if (otherEntry.getKey() != entry.getKey()) {
 
 							long otherTime = otherEntry.getValue().getTime();
-							if (thisTime > otherTime) {
+							if (thisTime > otherTime && otherTime != -1) {
 								place++;
 							}
 						}
@@ -316,18 +348,35 @@ public class ServerInfo implements Runnable {
 				public int compare(PlayerInfo o1, PlayerInfo o2) {
 
 					int result = 0;
-					if (o1.getTime() < o2.getTime())
-						result = -1;
-					else if (o1.getTime() > o2.getTime())
-						result = 1;
 
+					if (o1.getTime() < o2.getTime()) {
+						if (o1.getTime() != -1)
+							result = -1;
+						else
+							result = 1;
+
+					} else if (o1.getTime() > o2.getTime()) {
+						if (o2.getTime() != -1)
+							result = 1;
+						else
+							result = -1;
+					}
 					return result;
 				}
 			});
 
 			// Legg de inn i strengen
 			for (int i = 0; i < sortedByTime.size(); i++) {
-				result += "#" + (i + 1) + ". place: " + sortedByTime.get(i).getRaceInfo(allFinished);
+				
+				String str = null;
+				if(sortedByTime.get(i).getClass().equals(AI.class)) {
+					AI p = (AI) sortedByTime.get(i);
+					str = p.getRaceInfo(allFinished);
+				} else {
+					str = sortedByTime.get(i).getRaceInfo(allFinished);
+				}
+				
+				result += "#" + (i + 1) + ": " + str;
 			}
 		}
 
@@ -391,10 +440,10 @@ public class ServerInfo implements Runnable {
 	public void checkPings() {
 		if (!leavingPlayerMutex)
 			for (Entry<String, Long> entry : ping.entrySet()) {
+				PlayerInfo player = getPlayer(entry.getKey());
 
-				if (!validPing(entry.getValue())) {
+				if (!ai.contains(player) && !validPing(entry.getValue())) {
 					leavingPlayerMutex = true;
-					PlayerInfo player = getPlayer(entry.getKey());
 					if (player == null)
 						return;
 

@@ -39,7 +39,7 @@ public class Player{
 		this.ip = ip;
 		this.host = host;
 		ready = 0;
-		this.car = new Car(car);
+		this.car = new Car(car, true);
 		carName = car;
 		r = new Random();
 		id = r.nextInt(999);
