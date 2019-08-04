@@ -18,13 +18,11 @@ public class RaceAudio implements AudioCueListener {
 
 	private Random r = new Random();
 	private MediaAudio[] gear;
-	private OggClip idle;
 	private AudioCue motorAcc;
 	private MediaAudio[] turbo;
 	private MediaAudio redline;
 	private MediaAudio nos;
 	private MediaAudio clutch;
-	private Runnable idlestopper = () -> idle.stop();
 	private Thread thread;
 	private int motorAccInstance;
 	private AudioCue motorDcc;
@@ -48,14 +46,6 @@ public class RaceAudio implements AudioCueListener {
 
 		for (int i = 0; i < turbo.length; i++) {
 			turbo[i] = new MediaAudio("/sfx/turbosurge" + (i + 1));
-		}
-
-		try {
-			idle = new OggClip(
-					new FileInputStream(RaceAudio.class.getProtectionDomain().getCodeSource().getLocation().getPath()
-							+ "/../res/sfx/motorIdle" + carname + ".ogg"));
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
 		}
 
 		URL acc = this.getClass().getResource("/sfx/motorAcc" + carname + ".wav");
@@ -96,7 +86,6 @@ public class RaceAudio implements AudioCueListener {
 			gain = 1;
 			wavgain = 1;
 		}
-		idle.setGain(gain);
 		motorAcc.setVolume(motorAccInstance, wavgain);
 		motorDcc.setVolume(motorDccInstance, wavgain);
 
@@ -109,18 +98,7 @@ public class RaceAudio implements AudioCueListener {
 	}
 
 	public void motorIdle() {
-
-		try {
-			stopMotorAcc();
-			stopMotorDcc();
-			idle.loop();
-		} catch (Exception e) {
-
-		}
-	}
-
-	public boolean isPlayingIdle() {
-		return !(idle.isPaused() || idle.stopped());
+		motorSound();
 	}
 
 	public void motorPitch(double rpm, double totalRPM) {
@@ -231,20 +209,20 @@ public class RaceAudio implements AudioCueListener {
 			}
 		}
 
-		if (idle != null && isPlayingIdle()) {
-			stopIdle();
-		}
 		if (redline != null && redline.isPlaying()) {
 			redline.stop();
 		}
+		motorSound();
+	}
+
+	private void motorSound() {
 		if (!motorAcc.getIsPlaying(motorAccInstance)) {
 			motorAcc.setFramePosition(motorAccInstance, 0);
 			motorAcc.setLooping(motorAccInstance, -1);
 			motorAcc.start(motorAccInstance);
 		}
-
 	}
-
+	
 	public void motorDcc() {
 		stopMotorAcc();
 		stopTurbospool();
@@ -280,7 +258,7 @@ public class RaceAudio implements AudioCueListener {
 	public void gearSound() {
 		int nextSfx = 0;
 		nextSfx = r.nextInt(4);
-
+		gear[nextSfx].stop();
 		gear[nextSfx].play();
 	}
 
@@ -316,9 +294,6 @@ public class RaceAudio implements AudioCueListener {
 	}
 
 	public void stopAll() {
-		if (idle != null && isPlayingIdle()) {
-			stopIdle();
-		}
 		stopStraightcutgears();
 		stopMotorAcc();
 		if (turbo != null && isMediaArrayPlaying(turbo)) {
@@ -341,10 +316,6 @@ public class RaceAudio implements AudioCueListener {
 			turbospool.close();
 	}
 
-	private void stopIdle() {
-		thread = new Thread(idlestopper);
-		thread.start();
-	}
 	
 	public void clutch() {
 		clutch.play();

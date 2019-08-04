@@ -468,7 +468,7 @@ public class ServerInfo implements Runnable {
 			lastTime = now;
 			while (delta >= 1) {
 				if (!Main.DEBUG && !leavingPlayerMutex)
-					checkPings();
+//					checkPings();
 				updateRaceStatus();
 				delta--;
 			}

@@ -182,8 +182,6 @@ public class Car implements Cloneable {
 		} else {
 			if (!changed) {
 				changed = true;
-				if (audio.isPlayingIdle())
-					audio.stopAll();
 				resetBooleans();
 			}
 		}
