@@ -96,6 +96,7 @@ public class Player{
 	 * LEAVE#name+id 
 	 */
 	public void leaveServer() {
+		System.out.println("Leaving server...");
 		client.sendRequest("LEAVE#" + name  + "#" +  id);
 	}
 	

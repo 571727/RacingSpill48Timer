@@ -19,11 +19,12 @@ public class MediaAudio {
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
 		loopPlayer = new AudioClip(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);
-		setVolume();
+		setVolume(1);
 	}
 
-	public void setVolume() {
-		mediaPlayer.setVolume(GameHandler.volume);
+	public void setVolume(double factor) {
+		double newVol = GameHandler.volume * factor;
+		mediaPlayer.setVolume(newVol);
 	}
 
 	public void play() {

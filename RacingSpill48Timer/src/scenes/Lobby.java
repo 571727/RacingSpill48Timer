@@ -281,7 +281,7 @@ public class Lobby extends Scene implements Runnable {
 		fixCar.setEnabled(false);
 		ready.setEnabled(false);
 		clearChat();
-		label.setText("And the winner is: " + player.getWinner());
+		label.setText("<html>" + player.getWinner() + "</html>");
 		player.leaveServer();
 	}
 

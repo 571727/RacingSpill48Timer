@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import elem.AI;
@@ -31,7 +32,7 @@ public class ServerInfo implements Runnable {
 	private ArrayList<AI> ai;
 	// TODO
 	private HashMap<String, PlayerInfo> lostPlayers;
-	private HashMap<String, Long> ping;
+	private ConcurrentHashMap <String, Long> ping;
 	private HashMap<PlayerInfo, Queue<String>> chat;
 	private int started;
 	private int amountFinished;
@@ -53,7 +54,7 @@ public class ServerInfo implements Runnable {
 
 	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
-		ping = new HashMap<String, Long>();
+		ping = new ConcurrentHashMap<String, Long>();
 		chat = new HashMap<PlayerInfo, Queue<String>>();
 		ai = new ArrayList<AI>();
 
@@ -157,6 +158,12 @@ public class ServerInfo implements Runnable {
 		}
 
 		this.allFinished = amountFinished == players.size();
+		
+		isRaceOver();
+	}
+
+	private void isRaceOver() {
+		running = allFinished && races <= 0;
 	}
 
 	private void updateRaceStatus() {
@@ -408,7 +415,7 @@ public class ServerInfo implements Runnable {
 
 	public void newRaces() {
 		if (!Main.DEBUG)
-			races = 9;
+			races = 1;
 		else
 			races = 2;
 	}
@@ -418,15 +425,28 @@ public class ServerInfo implements Runnable {
 	}
 
 	public String getPlayerWithMostPoints() {
-		PlayerInfo winner = null;
+		ArrayList<PlayerInfo> winners = new ArrayList<PlayerInfo>();
 
 		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
-			if (winner == null || entry.getValue().getPoints() > winner.getPoints()) {
-				winner = entry.getValue();
+			PlayerInfo other = entry.getValue();
+			if (winners.size() == 0 || other.getPoints() == winners.get(0).getPoints()) {
+				winners.add(other);
+			} else if(other.getPoints() > winners.get(0).getPoints()) {
+				winners.clear();
+				winners.add(other);
 			}
 		}
-
-		return winner.getName() + ", " + winner.getCarName();
+		String res;
+		if(winners.size() == 1) {
+			res = "And the winner is: " + winners.get(0).getName() + ", " + winners.get(0).getCarName();
+		} else {
+			res = "And the winners are: ";
+			for(PlayerInfo player : winners) {
+				res += "<br/>" + player.getName() + ", " + player.getCarName();
+			}
+		}
+		System.out.println(res);
+		return res;
 	}
 
 	public void ping(String[] input) {
@@ -462,13 +482,13 @@ public class ServerInfo implements Runnable {
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 
-		while (races != 0 && isRunning()) {
+		while (isRunning()) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
 				if (!Main.DEBUG && !leavingPlayerMutex)
-//					checkPings();
+					checkPings();
 				updateRaceStatus();
 				delta--;
 			}

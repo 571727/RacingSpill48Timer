@@ -11,48 +11,49 @@ public class BgMusicListener {
 
 	private Random r = new Random();
 	private int lastPlayed;
-	private MediaAudio media;
-	private int songs;
+	private MediaAudio[] music;
+	private int playingIndex;
+	private int amount;
 
-	public BgMusicListener(int songs) {
+	public BgMusicListener(int amount) {
 		// Maybe use action for something later, cause it's awesome
 		lastPlayed = -1;
-		this.songs = songs;
-		if (songs != 0)
-			playAndChooseNextRandomly();
+		playingIndex = -1;
+
+		music = new MediaAudio[amount];
+
+		for (int i = 0; i < amount; i++) {
+			music[i] = new MediaAudio("/music/music" + i);
+		}
+
+		this.amount = amount;
+		if (amount != 0)
+			playNext();
 	}
 
-	public void playAndChooseNextRandomly() {
-		if (media != null && media.isPlaying())
-			media.stop();
-		media = new MediaAudio("/music/music" + findRandomSong());
+	public void playNext() {
 
-		media.play();
-		media.getMediaPlayer();
-		// FIXME media.getMediaPlayer().setOnEndOfMedia(() ->
-		// playAndChooseNextRandomly());
+		if (playingIndex > -1 && music[playingIndex] != null && music[playingIndex].isPlaying())
+			music[playingIndex].stop();
+
+		playingIndex = (playingIndex + 1) % amount;
+		music[playingIndex].play();
+		music[playingIndex].getMediaPlayer();
+		updateVolume();
+
+		music[playingIndex].getMediaPlayer().setOnEndOfMedia(() -> playNext());
 	}
 
 	public void updateVolume() {
-		if (media != null)
-			media.setVolume();
-	}
-
-	private int findRandomSong() {
-		int nextSong = 0;
-
-		do {
-			nextSong = r.nextInt(songs);
-		} while (nextSong == lastPlayed);
-		lastPlayed = nextSong;
-		return nextSong;
+		if (music[playingIndex] != null)
+			music[playingIndex].setVolume(1.8);
 	}
 
 	public void playOrStop() {
-		if (media != null && media.isPlaying())
-			media.stop();
+		if (music[playingIndex] != null && music[playingIndex].isPlaying())
+			music[playingIndex].stop();
 		else
-			playAndChooseNextRandomly();
+			playNext();
 	}
 
 }

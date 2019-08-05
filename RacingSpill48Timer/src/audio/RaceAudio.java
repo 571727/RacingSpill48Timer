@@ -90,10 +90,10 @@ public class RaceAudio implements AudioCueListener {
 		motorDcc.setVolume(motorDccInstance, wavgain);
 
 		for (MediaAudio t : turbo) {
-			t.setVolume();
+			t.setVolume(1);
 		}
-		redline.setVolume();
-		nos.setVolume();
+		redline.setVolume(1);
+		nos.setVolume(1);
 
 	}
 

@@ -99,7 +99,7 @@ public class Options extends Scene {
 		});
 		goBack.addActionListener(
 				(ActionEvent e) -> SceneHandler.instance.changeScene(SceneHandler.instance.getLastScene()));
-		nextSong.addActionListener((ActionEvent e) -> GameHandler.music.playAndChooseNextRandomly());
+		nextSong.addActionListener((ActionEvent e) -> GameHandler.music.playNext());
 		stopMusic.addActionListener((ActionEvent e) -> GameHandler.music.playOrStop());
 
 		add(goBack);
