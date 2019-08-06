@@ -1,7 +1,5 @@
 package client;
 
-import javax.swing.JOptionPane;
-
 import connection_standard.Config;
 
 public class EchoClient {
@@ -23,9 +21,9 @@ public class EchoClient {
 		
 		
 //		System.out.println("TCP client started: " + ip + " #");
-		//Connect først og si at du er med.
+		//Connect fï¿½rst og si at du er med.
 		
-		//Kjør ut og inn her.
+		//Kjï¿½r ut og inn her.
 
 		if (text != null) {
 			

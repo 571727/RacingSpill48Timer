@@ -50,6 +50,9 @@ public class Lobby extends Scene implements Runnable {
 	private JTextField chatInput;
 	private JLabel chatOutput;
 	private JScrollPane chatScrollPane;
+	private int currentLength;
+	private String currentPlace;
+	private boolean placeChecked;
 
 	public Lobby(Race race, FixCar fixCarScene) {
 
@@ -151,6 +154,7 @@ public class Lobby extends Scene implements Runnable {
 			}
 		});
 
+		
 		// Add to JPanel
 		add(scrollPane);
 		add(goBack, BorderLayout.SOUTH);
@@ -255,6 +259,14 @@ public class Lobby extends Scene implements Runnable {
 			actualChatText += chatText;
 			actualChatText += "</html>";
 			chatOutput.setText(actualChatText);
+			
+			// Check with the server what the location and length is
+			if(!placeChecked) {
+				placeChecked = true;
+				currentLength = player.getTrackLength();
+				currentPlace = player.getCurrentPlace();
+			}
+			
 
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -331,17 +343,21 @@ public class Lobby extends Scene implements Runnable {
 
 	private void raceStarted() {
 		if (!started) {
+			
 			started = true;
 			SceneHandler.instance.changeScene(3);
+			
 			race.setPlayer(player);
 			race.setLobby(this);
 			race.setLobbyThread(lobbyThread);
-			race.setCurrentLength();
+			race.setCurrentLength(currentLength);
+			race.setCurrentPlace(currentPlace);
+			
 			player.setReady(0);
 			player.updateLobbyFromServer();
 			player.getCar().updateVolume();
+			
 			thread = new Thread(race);
-			System.err.println("starting next thread");
 			thread.start();
 		}
 	}
@@ -430,5 +446,13 @@ public class Lobby extends Scene implements Runnable {
 
 	public void setFixCarScene(FixCar fixCarScene) {
 		this.fixCarScene = fixCarScene;
+	}
+
+	public boolean isPlaceChecked() {
+		return placeChecked;
+	}
+
+	public void setPlaceChecked(boolean placeChecked) {
+		this.placeChecked = placeChecked;
 	}
 }

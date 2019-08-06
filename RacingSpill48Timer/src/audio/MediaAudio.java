@@ -1,7 +1,6 @@
 package audio;
 
 import handlers.GameHandler;
-import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -10,14 +9,12 @@ import javafx.util.Duration;
 public class MediaAudio {
 	private Media hit;
 	private MediaPlayer mediaPlayer;
-	private AudioClip loopPlayer;
 
 	public MediaAudio(String file) {
 		System.out.println("Finding file:");
 		System.out.println("\"" + file  +"\"");
 		System.out.println(MediaAudio.class.getResource(file + ".mp3").toString());
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
-		loopPlayer = new AudioClip(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);
 		setVolume(1);
 	}

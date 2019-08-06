@@ -1,6 +1,5 @@
 package audio;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
@@ -8,11 +7,10 @@ import java.util.Random;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import audio.audiocue.*;
-import org.newdawn.easyogg.OggClip;
-
+import audio.audiocue.AudioCue;
+import audio.audiocue.AudioCueInstanceEvent;
+import audio.audiocue.AudioCueListener;
 import handlers.GameHandler;
-import javafx.scene.media.MediaPlayer;
 
 public class RaceAudio implements AudioCueListener {
 
@@ -23,7 +21,6 @@ public class RaceAudio implements AudioCueListener {
 	private MediaAudio redline;
 	private MediaAudio nos;
 	private MediaAudio clutch;
-	private Thread thread;
 	private int motorAccInstance;
 	private AudioCue motorDcc;
 	private int motorDccInstance;

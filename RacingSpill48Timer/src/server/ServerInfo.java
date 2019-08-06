@@ -53,6 +53,8 @@ public class ServerInfo implements Runnable {
 	private Thread finishAI_thread;
 	private String res;
 	private ArrayList<PlayerInfo> winners;
+	private String[] places;
+	private String currentPlace;
 
 	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
@@ -66,9 +68,17 @@ public class ServerInfo implements Runnable {
 			players.put(ai.getName() + i, ai);
 		}
 
+		places = new String[4];
+		places[0] = "Japan";
+		places[1] = "America";
+		places[2] = "Britain";
+		places[3] = "Germany";
+		
 		r = new Random();
 		races = -1;
 		setRunning(true);
+		
+		prepareNextRace();
 	}
 
 	private int generateID() {
@@ -164,7 +174,14 @@ public class ServerInfo implements Runnable {
 		if(isRaceOver()) {
 			updateRace();
 			setPlayerWithMostPoints();
+		} else if (allFinished) {
+			prepareNextRace();
 		}
+	}
+
+	private void prepareNextRace() {
+		length = randomizeLengthOfTrack();
+		currentPlace = places[r.nextInt(places.length)];
 	}
 
 	private boolean isRaceOver() {
@@ -213,7 +230,6 @@ public class ServerInfo implements Runnable {
 	private void stopRace() {
 		amountInTheRace = 0;
 		amountFinished = 0;
-		length = 0;
 		started = 0;
 	}
 
@@ -230,7 +246,6 @@ public class ServerInfo implements Runnable {
 					entry.getValue().newRace();
 				}
 
-				length = randomizeLengthOfTrack();
 				raceStartedTime = System.currentTimeMillis();
 				regulatingWaitTime = waitTime * 3;
 				raceLobbyStringFinalized = false;
@@ -326,6 +341,7 @@ public class ServerInfo implements Runnable {
 			allFinished = false;
 			raceLobbyString = updateRaceLobby(true);
 			raceLobbyStringFinalized = true;
+			
 		} else if (!raceLobbyStringFinalized) {
 			raceLobbyString = updateRaceLobby(false);
 		}
@@ -420,7 +436,7 @@ public class ServerInfo implements Runnable {
 
 	public void newRaces() {
 		if (!Main.DEBUG)
-			races = 1;
+			races = 9;
 		else
 			races = 2;
 	}
@@ -536,6 +552,14 @@ public class ServerInfo implements Runnable {
 
 	public String getChat(String[] input) {
 		return chat.get(getPlayer(input)).poll();
+	}
+
+	public String getCurrentPlace() {
+		return currentPlace;
+	}
+
+	public void setCurrentPlace(String currentPlace) {
+		this.currentPlace = currentPlace;
 	}
 
 }

@@ -20,6 +20,8 @@ import elem.VisualButton;
 import elem.VisualString;
 import handlers.RaceKeyHandler;
 import handlers.SceneHandler;
+import scenes.visual.FinishVisual;
+import scenes.visual.RaceVisual;
 import startup.Main;
 import window.Windows;
 
@@ -40,11 +42,9 @@ public class Race extends Scene implements Runnable {
 	private Lobby lobby;
 	private JFrame racingWindow;
 	private VisualString results;
-	private Visual currentVisual;
 	private RaceVisual raceVisual;
 	private FinishVisual finishVisual;
 	private RaceKeyHandler keys;
-	private String[] places;
 	private String currentPlace;
 	private Thread lobbyThread;
 	private int currentLength;
@@ -70,14 +70,6 @@ public class Race extends Scene implements Runnable {
 	public static int HEIGHT;
 
 	public Race() {
-
-		places = new String[4];
-		places[0] = "Japan";
-		places[1] = "America";
-		places[2] = "Britain";
-		places[3] = "Germany";
-
-		currentPlace = places[0];
 
 		background = new Animation("road", 6);
 		nitros = new Animation("nitros", 4);
@@ -429,6 +421,7 @@ public class Race extends Scene implements Runnable {
 			goBackVisual.setEnabled(true);
 			racingWindow.addKeyListener(goBackVisual);
 			racingWindow.requestFocus();
+			lobby.setPlaceChecked(false);
 
 		} else
 			goBackVisual.setEnabled(false);
@@ -539,8 +532,8 @@ public class Race extends Scene implements Runnable {
 		return currentLength;
 	}
 
-	public void setCurrentLength() {
-		currentLength = player.getTrackLength();
+	public void setCurrentLength(int currentLength) {
+		this.currentLength = currentLength;
 	}
 
 	public boolean isCheating() {

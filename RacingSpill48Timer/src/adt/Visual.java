@@ -3,7 +3,6 @@ package adt;
 import java.awt.Canvas;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.Random;

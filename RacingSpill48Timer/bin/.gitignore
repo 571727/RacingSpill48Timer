@@ -1,9 +1,10 @@
+/music/
 /scenes/
 /server/
 /startup/
 /window/
-/audio/
 /elem/
-/sfx/
-/music/
 /handlers/
+/adt/
+/client/
+/audio/

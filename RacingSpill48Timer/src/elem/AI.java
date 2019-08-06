@@ -16,7 +16,7 @@ public class AI extends PlayerInfo {
 	 * @param id
 	 * @param diff
 	 */
-	
+
 	public AI(int id, int diff) {
 		this(randomOfStringArray(Main.AI_NAMES), String.valueOf(id), "0", randomCar());
 		this.diff = diff;
@@ -34,7 +34,7 @@ public class AI extends PlayerInfo {
 
 		return car.getCarStyle();
 	}
-	
+
 	private static String randomOfStringArray(String[] arr) {
 		return arr[r.nextInt(arr.length)];
 	}
@@ -46,13 +46,14 @@ public class AI extends PlayerInfo {
 	}
 
 	public void upgradeCar() {
-		//TODO implement upgrading via Car class and make AI upgrade in a smart / dumb way.
+		// TODO implement upgrading via Car class and make AI upgrade in a smart / dumb
+		// way.
 	}
 
 	public long calculateRace(int length) {
-		//TODO balance
+		// TODO balance
 		long time = -1;
-		
+
 		// DNF?
 		if (shouldIEngageGear(40 - (2 * diff))) {
 			return time;
@@ -61,7 +62,7 @@ public class AI extends PlayerInfo {
 			shiftUp(false);
 		}
 
-		//Race
+		// Race
 		while (car.getDistance() < length) {
 
 			if (car.isGearCorrect() || car.isTopGear()) {
@@ -75,14 +76,16 @@ public class AI extends PlayerInfo {
 			car.calculateDistance();
 			time++;
 		}
-		
-		//convert time to right timetype
-		long ranTime = r.nextInt(1000 / Race.TICK_STD * 2) - 1000 / Race.TICK_STD;
-		time = 1000 / Race.TICK_STD * time;
-		time += ranTime;
-		
+
+		// convert time to right timetype
+
+		long tickTime = 1000 / Race.TICK_STD;
+		long fineTime = (long) (tickTime / (car.getDistance() - length + 1));
+		time = tickTime * time;
+		time += fineTime;
+
 		car.reset();
-		
+
 		return time;
 	}
 
@@ -114,13 +117,14 @@ public class AI extends PlayerInfo {
 		int ranval = r.nextInt(100);
 		return ranval + diff - finetune >= 50;
 	}
-	
+
 	/**
 	 * @return name#ready#car#...
 	 */
 	@Override
 	public String getRaceInfo(boolean allFinished) {
-		return name + "#" + 2 + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#" + carName.toLowerCase();
+		return name + "#" + 2 + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#"
+				+ carName.toLowerCase();
 	}
 
 }

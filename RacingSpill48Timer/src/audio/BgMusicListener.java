@@ -1,23 +1,13 @@
 package audio;
 
-import java.util.Random;
-
-import javax.sound.sampled.LineEvent;
-
-import javafx.scene.media.AudioSpectrumListener;
-import javafx.scene.media.MediaPlayer;
-
 public class BgMusicListener {
 
-	private Random r = new Random();
-	private int lastPlayed;
 	private MediaAudio[] music;
 	private int playingIndex;
 	private int amount;
 
 	public BgMusicListener(int amount) {
 		// Maybe use action for something later, cause it's awesome
-		lastPlayed = -1;
 		playingIndex = -1;
 
 		music = new MediaAudio[amount];

@@ -4,8 +4,6 @@ import java.util.Random;
 
 import client.EchoClient;
 import connection_standard.Config;
-import handlers.SceneHandler;
-import scenes.Lobby;
 
 /**
  * holds and handles its client. Controls lobby for now.
@@ -25,9 +23,7 @@ public class Player{
 	private Upgrades upgrades;
 	private String carName;
 	private Random r;
-	private int points;
-	private int money;
-	private int[] inflation;
+	private Bank bank;
 	private boolean inTheRace;
 
 	public Player(String name, int host, String car) {
@@ -43,18 +39,19 @@ public class Player{
 		carName = car;
 		r = new Random();
 		id = r.nextInt(999);
-		inflation = new int[8];
 		client = new EchoClient(ip);
 		upgrades = new Upgrades();
+		bank = new Bank();
+		
 		// Request stats about lobby and update lobby
 	}
 
 	public String getPointsAndMoney() {
 		String result = client.sendRequest("GETPOINTSMONEY#" + name + "#" + id);
 		String[] output = result.split("#");
-		points = Integer.valueOf(output[0]);
-		money = Integer.valueOf(output[1]);
-		return "<html>" + name + ": <br/>" + "Points: " + points + ".<br/>" + "Money: " + money + ".";
+		bank.setPoints(Integer.valueOf(output[0]));
+		bank.setMoney(Integer.valueOf(output[1]));
+		return "<html>" + name + ": <br/>" + "Points: " + bank.getPoints() + ".<br/>" + "Money: " + bank.getMoney() + ".";
 	}
 	
 	public void setPointsAndMoney(int newPoints, int newMoney) {
@@ -91,6 +88,11 @@ public class Player{
 	public int getTrackLength() {
 		return Integer.valueOf(client.sendRequest("GETLENGTH"));
 	}
+	
+	public String getCurrentPlace() {
+		return client.sendRequest("GETPLACE");
+	}
+
 	
 	/**
 	 * LEAVE#name+id 
@@ -170,27 +172,19 @@ public class Player{
 	}
 
 	public int getPoints() {
-		return points;
+		return bank.getPoints();
 	}
 
 	public void setPoints(int points) {
-		this.points = points;
+		bank.setPoints(points);
 	}
 
 	public int getMoney() {
-		return money;
+		return bank.getMoney();
 	}
 
 	public void setMoney(int money) {
-		this.money = money;
-	}
-
-	public int[] getInflation() {
-		return inflation;
-	}
-
-	public void setInflation(int[] inflation) {
-		this.inflation = inflation;
+		bank.setMoney(money);
 	}
 
 	public boolean isHost() {
@@ -213,6 +207,23 @@ public class Player{
 		this.name = name;
 	}
 
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
+
+	public Upgrades getUpgrades() {
+		return upgrades;
+	}
+
+	public void setUpgrades(Upgrades upgrades) {
+		this.upgrades = upgrades;
+	}
+
+	
 
 
 
