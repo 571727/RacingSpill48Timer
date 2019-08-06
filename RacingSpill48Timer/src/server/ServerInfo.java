@@ -51,6 +51,8 @@ public class ServerInfo implements Runnable {
 	private boolean raceLobbyStringFinalized;
 	private boolean leavingPlayerMutex;
 	private Thread finishAI_thread;
+	private String res;
+	private ArrayList<PlayerInfo> winners;
 
 	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
@@ -159,11 +161,14 @@ public class ServerInfo implements Runnable {
 
 		this.allFinished = amountFinished == players.size();
 		
-		isRaceOver();
+		if(isRaceOver()) {
+			updateRace();
+			setPlayerWithMostPoints();
+		}
 	}
 
-	private void isRaceOver() {
-		running = allFinished && races <= 0;
+	private boolean isRaceOver() {
+		return running = allFinished && races <= 0;
 	}
 
 	private void updateRaceStatus() {
@@ -424,8 +429,8 @@ public class ServerInfo implements Runnable {
 		return String.valueOf(races);
 	}
 
-	public String getPlayerWithMostPoints() {
-		ArrayList<PlayerInfo> winners = new ArrayList<PlayerInfo>();
+	private void setPlayerWithMostPoints() {
+		winners = new ArrayList<PlayerInfo>();
 
 		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 			PlayerInfo other = entry.getValue();
@@ -436,7 +441,7 @@ public class ServerInfo implements Runnable {
 				winners.add(other);
 			}
 		}
-		String res;
+
 		if(winners.size() == 1) {
 			res = "And the winner is: " + winners.get(0).getName() + ", " + winners.get(0).getCarName();
 		} else {
@@ -445,7 +450,9 @@ public class ServerInfo implements Runnable {
 				res += "<br/>" + player.getName() + ", " + player.getCarName();
 			}
 		}
-		System.out.println(res);
+	}
+	
+	public String getPlayerWithMostPoints() {
 		return res;
 	}
 
