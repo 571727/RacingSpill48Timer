@@ -17,12 +17,12 @@ public class FixCarHandler {
 	private Upgrades upgrades;
 	private String[] upgradeNames;
 	private int currentUpgrade;
-	
+
 	public FixCarHandler() {
 		upgrades = new Upgrades();
 		upgradeNames = upgrades.getUpgradeNames();
 	}
-	
+
 	public String getUpgradeName(int i) {
 		return upgradeNames[i];
 	}
@@ -31,25 +31,36 @@ public class FixCarHandler {
 		currentUpgrade = i;
 		return null;
 	}
-	
+
 	public String selectUpgrade(String upgradeName, Car car, Bank bank) {
-		for(int i = 0; i < upgradeNames.length; i++) {
-			if(upgradeName.equals(getUpgradeName(i)))
+		for (int i = 0; i < upgradeNames.length; i++) {
+			if (upgradeName.equals(getUpgradeName(i)))
 				currentUpgrade = i;
 		}
-		
-		String upgradeText = "<html>UPGRADED " + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$" + upgrades.getCostMoney(currentUpgrade, bank) + " or "
-		+ upgrades.getCostPoints(currentUpgrade, bank) + " points </html>";
-		
+
+		String upgradeText = "<html>UPGRADED " + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$"
+				+ upgrades.getCostMoney(currentUpgrade, bank) + " or " + upgrades.getCostPoints(currentUpgrade, bank)
+				+ " points </html>";
+
 		return upgradeText;
 	}
 
-	public void buyMoney(Car car, Bank bank) {
-		
+	public void buyWithMoney(Player player) {
+		int amount = upgrades.getCostMoney(currentUpgrade, player.getBank());
+		if (player.getBank().canAffordMoney(amount)) {
+			upgrades.upgrade(currentUpgrade, player.getCar());
+			player.getBank().buyWithMoney(amount, currentUpgrade);
+			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
+		}
 	}
 
-	public void buyPoints(Car car, Bank bank) {
-		
+	public void buyWithPoints(Player player) {
+		int amount = upgrades.getCostPoints(currentUpgrade, player.getBank());
+		if (player.getBank().canAffordPoints(amount)) {
+			upgrades.upgrade(currentUpgrade, player.getCar());
+			player.getBank().buyWithPoints(amount, currentUpgrade);
+			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
+		}
 	}
 
 	public String[] getUpgradeNames() {

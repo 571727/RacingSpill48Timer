@@ -6,10 +6,11 @@ public class Bank {
 	private int[] inflation;
 
 	public Bank() {
-		setInflation(new int[8]);
+		//FIXME
+		inflation = new int[8];
 	}
 	
-	public boolean buyMoney(int amount, int i) {
+	public boolean buyWithMoney(int amount, int i) {
 		boolean res = false;
 		
 		if(amount <= money) {
@@ -25,7 +26,7 @@ public class Bank {
 		money += amount;
 	}
 	
-	public boolean buyPoints(int amount, int i) {
+	public boolean buyWithPoints(int amount, int i) {
 		boolean res = false;
 		
 		if(amount <= points) {
@@ -35,6 +36,14 @@ public class Bank {
 		}
 		
 		return res;
+	}
+	
+	public boolean canAffordMoney(int cost) {
+		return cost <= money;
+	}
+	
+	public boolean canAffordPoints(int cost) {
+		return cost <= points;
 	}
 	
 	public void addPoints(int amount) {
@@ -57,11 +66,8 @@ public class Bank {
 		this.money = money;
 	}
 
-	public int[] getInflation() {
-		return inflation;
+	public int getInflation(int i ) {
+		return inflation[i];
 	}
 
-	public void setInflation(int[] inflation) {
-		this.inflation = inflation;
-	}
 }

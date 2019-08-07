@@ -28,6 +28,7 @@ public class Lobby extends Scene implements Runnable {
 
 	private static final long serialVersionUID = -5861049279182231248L;
 	private JLabel label;
+	private JLabel placeAndLength;
 	private JButton ready;
 	private JButton fixCar;
 	private JButton start;
@@ -60,6 +61,7 @@ public class Lobby extends Scene implements Runnable {
 		this.race = race;
 		this.fixCarScene = fixCarScene;
 		label = new JLabel("If you can read this, something wrong happend!!!", SwingConstants.CENTER);
+		placeAndLength = new JLabel();
 		ready = new JButton("Ready?");
 		fixCar = new JButton("Upgrade or fix my car");
 		start = new JButton("Start race");
@@ -162,6 +164,7 @@ public class Lobby extends Scene implements Runnable {
 		add(ready, BorderLayout.SOUTH);
 		add(fixCar, BorderLayout.SOUTH);
 		add(start, BorderLayout.SOUTH);
+		add(placeAndLength);
 		add(ipLabel);
 		add(chatInput);
 		add(chatScrollPane);
@@ -265,6 +268,7 @@ public class Lobby extends Scene implements Runnable {
 				placeChecked = true;
 				currentLength = player.getTrackLength();
 				currentPlace = player.getCurrentPlace();
+				placeAndLength.setText(currentPlace + ", " + currentLength + "m");
 			}
 			
 
