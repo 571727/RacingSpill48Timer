@@ -95,7 +95,12 @@ public class Lobby extends Scene implements Runnable {
 		ipLabel.setText(ipLabelText);
 
 		// ActionListeners
-		ready.addActionListener((ActionEvent e) -> player.setReady((player.getReady() + 1) % 2));
+		ready.addActionListener((ActionEvent e) -> {
+			player.setReady((player.getReady() + 1) % 2);
+			// Disable fix car button
+			fixCar.setEnabled(player.getReady() == 0);
+			options.setEnabled(player.getReady() == 0);
+		});
 		fixCar.addActionListener((ActionEvent e) -> {
 			SceneHandler.instance.changeScene(2);
 			fixCarScene.init(player);
@@ -156,7 +161,6 @@ public class Lobby extends Scene implements Runnable {
 			}
 		});
 
-		
 		// Add to JPanel
 		add(scrollPane);
 		add(goBack, BorderLayout.SOUTH);
@@ -237,12 +241,6 @@ public class Lobby extends Scene implements Runnable {
 			else
 				start.setEnabled(false);
 
-			// Disable fix car button
-			if (player.getReady() == 1)
-				fixCar.setEnabled(false);
-			else
-				fixCar.setEnabled(true);
-
 			// Update chat
 			String actualChatText = "<html>Chat:";
 			String newText = player.getChat();
@@ -262,15 +260,14 @@ public class Lobby extends Scene implements Runnable {
 			actualChatText += chatText;
 			actualChatText += "</html>";
 			chatOutput.setText(actualChatText);
-			
+
 			// Check with the server what the location and length is
-			if(!placeChecked) {
+			if (!placeChecked) {
 				placeChecked = true;
 				currentLength = player.getTrackLength();
 				currentPlace = player.getCurrentPlace();
 				placeAndLength.setText(currentPlace + ", " + currentLength + "m");
 			}
-			
 
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -347,20 +344,23 @@ public class Lobby extends Scene implements Runnable {
 
 	private void raceStarted() {
 		if (!started) {
-			
+
 			started = true;
 			SceneHandler.instance.changeScene(3);
-			
+
 			race.setPlayer(player);
 			race.setLobby(this);
 			race.setLobbyThread(lobbyThread);
 			race.setCurrentLength(currentLength);
 			race.setCurrentPlace(currentPlace);
-			
+
 			player.setReady(0);
 			player.updateLobbyFromServer();
 			player.getCar().updateVolume();
 			
+			fixCar.setEnabled(true);
+			options.setEnabled(true);
+
 			thread = new Thread(race);
 			thread.start();
 		}
@@ -406,7 +406,6 @@ public class Lobby extends Scene implements Runnable {
 				race.visualRender();
 				deltar--;
 			}
-
 
 			try {
 				Thread.sleep(4);

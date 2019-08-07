@@ -32,7 +32,7 @@ public class Upgrades {
 		// Turbo
 		upgradeValues[3] = (Car car) -> {
 			car.setHasTurbo(true);
-			car.setHp(car.getHp() + (100f / 1f));
+			car.setHp(car.getHp() + (150f));
 			car.setWeightloss(car.getWeightloss() - 15);
 		};
 		// NOS
@@ -43,15 +43,15 @@ public class Upgrades {
 			}
 			car.setNosStrengthStandard(car.getNosStrengthStandard() + 0.5);
 		};
-		// Pistons
+		// Pistons FIXME THIS IS NOT PISTONS BUT A BLOCK YA IDIOT
 		upgradeValues[5] = (Car car) -> {
-			car.setHp(car.getHp() + 200f);
-			car.setWeightloss(car.getWeightloss() - 15);
+			car.setWeightloss(car.getWeightloss() + 50);
+			car.setHp(car.getHp() + 75f);
 		};
 		// Gears
 		upgradeValues[6] = (Car car) -> {
 			double topspeedPrev = car.getTopSpeed();
-			double topspeedInc = 75.0;
+			double topspeedInc = 90.0;
 
 			car.setWeightloss(car.getWeightloss() + 50);
 			car.setTopSpeed(topspeedPrev + topspeedInc);
@@ -60,8 +60,8 @@ public class Upgrades {
 		};
 		// Block
 		upgradeValues[7] = (Car car) -> {
-			car.setWeightloss(car.getWeightloss() + 50);
-			car.setHp(car.getHp() + 75f);
+			car.setHp(car.getHp() + 200f);
+			car.setWeightloss(car.getWeightloss() - 15);
 		};
 
 		//TODO maybe add aero and wind resistance????

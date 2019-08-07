@@ -244,11 +244,11 @@ public class Race extends Scene implements Runnable {
 		// TODO lagre fps i en textfil. Og gj�re slik at man kan endre verdien i
 		// options.
 		double[] fpsSteps = { 144, 120, 60, 30, 20, 16 };
-		int fps = 0;
+		int fps = 3;
 		int tolerance = 5;
 		double nst = 1000000000 / amountOfTicks;
 		double nsr = 1000000000 / fpsSteps[fps];
-		double nsp = 1000000000 / (amountOfTicks / 8.0);
+		double nsp = 1000000000 / (amountOfTicks / 20.0);
 		double deltat = 0;
 		double deltar = 0;
 		double deltap = 0;
@@ -267,6 +267,7 @@ public class Race extends Scene implements Runnable {
 			while (deltap >= 1) {
 				deltap--;
 				player.pingServer();
+				System.out.println("ping");
 			}
 			// Tick
 			while (deltat >= 1) {
@@ -437,7 +438,7 @@ public class Race extends Scene implements Runnable {
 	private void finishRace(boolean cheated) {
 		System.out.println("Finished");
 
-		player.finishRace();
+		player.finishRace(System.currentTimeMillis() - startTime);
 		player.getCar().reset();
 		finished = true;
 

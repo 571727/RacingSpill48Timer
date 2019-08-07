@@ -71,13 +71,15 @@ public class PlayerInfo {
 			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#" + carName.toLowerCase();
 	}
 
-	public void addPointsAndMoney(int amountPlayers, int place) {
+	public void addPointsAndMoney(int amountPlayers, int place, float races, float totalRaces) {
 		if (!(amountPlayers == -1 || place == -1)) {
-			pointsAdded = amountPlayers - place;
-			moneyAdded = (int) (100f * place);
-			points += pointsAdded;
-			money += moneyAdded;
+			pointsAdded = amountPlayers - place + (place == 0 ? 1 : 0);
+			moneyAdded = (int) (100f * place * ((Math.abs(totalRaces - races) + 1) / 2));
+		} else {
+			moneyAdded = (int) (50f * ((Math.abs(totalRaces - races) + 1) / 2));
 		}
+		points += pointsAdded;
+		money += moneyAdded;
 	}
 
 	public int getFinished() {

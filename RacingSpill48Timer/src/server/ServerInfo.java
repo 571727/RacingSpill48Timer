@@ -32,7 +32,7 @@ public class ServerInfo implements Runnable {
 	private ArrayList<AI> ai;
 	// TODO
 	private HashMap<String, PlayerInfo> lostPlayers;
-	private ConcurrentHashMap <String, Long> ping;
+	private ConcurrentHashMap<String, Long> ping;
 	private HashMap<PlayerInfo, Queue<String>> chat;
 	private int started;
 	private int amountFinished;
@@ -55,6 +55,7 @@ public class ServerInfo implements Runnable {
 	private ArrayList<PlayerInfo> winners;
 	private String[] places;
 	private String currentPlace;
+	private int totalRaces;
 
 	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
@@ -73,11 +74,11 @@ public class ServerInfo implements Runnable {
 		places[1] = "America";
 		places[2] = "Britain";
 		places[3] = "Germany";
-		
+
 		r = new Random();
 		races = -1;
 		setRunning(true);
-		
+
 		prepareNextRace();
 	}
 
@@ -162,7 +163,7 @@ public class ServerInfo implements Runnable {
 		amountFinished++;
 
 		if (greenLights) {
-			player.setTime(System.currentTimeMillis() - raceStartedTime);
+			player.setTime(Long.valueOf(input[3]));
 		} else {
 			player.setTime(-1);
 			if (player.isIn() == false)
@@ -170,8 +171,8 @@ public class ServerInfo implements Runnable {
 		}
 
 		this.allFinished = amountFinished == players.size();
-		
-		if(isRaceOver()) {
+
+		if (isRaceOver()) {
 			updateRace();
 			setPlayerWithMostPoints();
 		} else if (allFinished) {
@@ -185,7 +186,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	private boolean isRaceOver() {
-		return running = allFinished && races <= 0;
+		return allFinished && races <= 0;
 	}
 
 	private void updateRaceStatus() {
@@ -319,7 +320,7 @@ public class ServerInfo implements Runnable {
 
 				if (thisTime == -1) {
 
-					player.addPointsAndMoney(-1, -1);
+					player.addPointsAndMoney(-1, -1, races, totalRaces);
 
 				} else {
 
@@ -334,14 +335,14 @@ public class ServerInfo implements Runnable {
 						}
 					}
 
-					player.addPointsAndMoney(players.size(), place);
+					player.addPointsAndMoney(players.size(), place, races, totalRaces);
 				}
 			}
 
 			allFinished = false;
 			raceLobbyString = updateRaceLobby(true);
 			raceLobbyStringFinalized = true;
-			
+
 		} else if (!raceLobbyStringFinalized) {
 			raceLobbyString = updateRaceLobby(false);
 		}
@@ -395,15 +396,15 @@ public class ServerInfo implements Runnable {
 
 			// Legg de inn i strengen
 			for (int i = 0; i < sortedByTime.size(); i++) {
-				
+
 				String str = null;
-				if(sortedByTime.get(i).getClass().equals(AI.class)) {
+				if (sortedByTime.get(i).getClass().equals(AI.class)) {
 					AI p = (AI) sortedByTime.get(i);
 					str = p.getRaceInfo(allFinished);
 				} else {
 					str = sortedByTime.get(i).getRaceInfo(allFinished);
 				}
-				
+
 				result += "#" + (i + 1) + ": " + str;
 			}
 		}
@@ -435,10 +436,8 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void newRaces() {
-		if (!Main.DEBUG)
-			races = 9;
-		else
-			races = 2;
+		totalRaces = 9;
+		races = totalRaces;
 	}
 
 	public String getRacesLeft() {
@@ -452,22 +451,22 @@ public class ServerInfo implements Runnable {
 			PlayerInfo other = entry.getValue();
 			if (winners.size() == 0 || other.getPoints() == winners.get(0).getPoints()) {
 				winners.add(other);
-			} else if(other.getPoints() > winners.get(0).getPoints()) {
+			} else if (other.getPoints() > winners.get(0).getPoints()) {
 				winners.clear();
 				winners.add(other);
 			}
 		}
 
-		if(winners.size() == 1) {
+		if (winners.size() == 1) {
 			res = "And the winner is: " + winners.get(0).getName() + ", " + winners.get(0).getCarName();
 		} else {
 			res = "And the winners are: ";
-			for(PlayerInfo player : winners) {
+			for (PlayerInfo player : winners) {
 				res += "<br/>" + player.getName() + ", " + player.getCarName();
 			}
 		}
 	}
-	
+
 	public String getPlayerWithMostPoints() {
 		return res;
 	}
@@ -505,7 +504,7 @@ public class ServerInfo implements Runnable {
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 
-		while (isRunning()) {
+		while (!isRaceOver()) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
@@ -517,6 +516,7 @@ public class ServerInfo implements Runnable {
 			}
 
 		}
+		System.err.println("ENDING SERVER THREAD");
 	}
 
 	public boolean isRunning() {

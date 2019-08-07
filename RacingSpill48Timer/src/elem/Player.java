@@ -106,8 +106,8 @@ public class Player{
 		return Integer.valueOf(client.sendRequest("RACELIGHTS"));
 	}
 	
-	public void finishRace() {
-		client.sendRequest("F#" + name + "#" + id);
+	public void finishRace(long time) {
+		client.sendRequest("F#" + name + "#" + id + "#" + time);
 	}
 
 	public String updateRaceLobby() {
