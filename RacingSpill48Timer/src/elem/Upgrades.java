@@ -1,11 +1,20 @@
 package elem;
 
 public class Upgrades {
+	
+	private String[] upgradeNames = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo", "More NOS",
+			"Lighter pistons", "Grippier tyres and gears", "Beefier block" };
+	private UpgradePrice[] upgradePrices;
+	
+	public Upgrades() {
+		upgradePrices = new UpgradePrice[upgradeNames.length];
+		for(UpgradePrice up : upgradePrices) {
+			up = new UpgradePrice(1, 50);
+		}
+	}
+	
 
 	public boolean upgradeCylinders(Car car, Bank bank, boolean points) {
-		currentTypeCart = 0;
-		cost(50, 1);
-
 		upgradedCar.setHp(upgradedCar.getHp() + 75f);
 
 	}
@@ -74,6 +83,26 @@ public class Upgrades {
 
 	public boolean upgradeAero(Car car, Bank bank, boolean points) {
 
+	}
+
+	public int getCostMoney(int i, Bank bank) {
+		return (int) (upgradePrices[i].getMoney() * 0.75f * (bank.getInflation()[i] + 1f));
+	}
+
+	public int getCostPoints(int i, Bank bank) {
+		return (int) (upgradePrices[i].getPoints() * (bank.getInflation()[i] + 1f));;
+	}
+	
+	public String getUpgradedStats(int i, Car car) {
+		return null;
+	}
+
+	public String[] getUpgradeNames() {
+		return upgradeNames;
+	}
+
+	public void setUpgradeNames(String[] upgradeNames) {
+		this.upgradeNames = upgradeNames;
 	}
 
 }

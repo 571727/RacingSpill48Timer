@@ -1,10 +1,10 @@
-/music/
+/adt/
+/audio/
+/client/
+/connection_standard/
+/elem/
+/handlers/
 /scenes/
 /server/
 /startup/
 /window/
-/elem/
-/handlers/
-/adt/
-/client/
-/audio/

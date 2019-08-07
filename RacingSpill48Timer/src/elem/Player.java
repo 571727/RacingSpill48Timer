@@ -4,6 +4,7 @@ import java.util.Random;
 
 import client.EchoClient;
 import connection_standard.Config;
+import handlers.FixCarHandler;
 
 /**
  * holds and handles its client. Controls lobby for now.
@@ -20,7 +21,7 @@ public class Player{
 	private String ip;
 	private EchoClient client;
 	private Car car;
-	private Upgrades upgrades;
+	private FixCarHandler fixCarHandler;
 	private String carName;
 	private Random r;
 	private Bank bank;
@@ -40,7 +41,6 @@ public class Player{
 		r = new Random();
 		id = r.nextInt(999);
 		client = new EchoClient(ip);
-		upgrades = new Upgrades();
 		bank = new Bank();
 		
 		// Request stats about lobby and update lobby
@@ -215,16 +215,12 @@ public class Player{
 		this.bank = bank;
 	}
 
-	public Upgrades getUpgrades() {
-		return upgrades;
+	public FixCarHandler getFixCarHandler() {
+		return fixCarHandler;
 	}
 
-	public void setUpgrades(Upgrades upgrades) {
-		this.upgrades = upgrades;
+	public void setFixCarHandler(FixCarHandler fixCarHandler) {
+		this.fixCarHandler = fixCarHandler;
 	}
-
-	
-
-
 
 }

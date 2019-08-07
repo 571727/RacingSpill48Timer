@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import adt.Scene;
 import elem.Car;
 import elem.Player;
+import handlers.FixCarHandler;
 import handlers.SceneHandler;
 
 public class FixCar extends Scene {
@@ -21,29 +22,24 @@ public class FixCar extends Scene {
 	private JLabel cashStats;
 
 	private JButton[] upgrades;
-	private String[] upgradeTexts;
 	private JButton buyMoney;
 	private JButton buyPoints;
 	private JScrollPane currentStatsPane;
 	private JScrollPane cartStatsPane;
 	private JScrollPane cashStatsPane;
 
+	private FixCarHandler fixCarHandler;
 	private Player player;
-	private Car upgradedCar;
-	private int currentCostMoney;
-	private int currentCostPoints;
-	private int currentTypeCart;
 
 	public FixCar() {
 
 		goBackLobby = new JButton("Go back to the lobby");
 		goBackLobby.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(1));
-
-		upgradeTexts = initButtonTexts();
-		upgrades = new JButton[upgradeTexts.length];
+		fixCarHandler = new FixCarHandler();
+		upgrades = new JButton[fixCarHandler.getUpgradeNames().length];
 
 		for (int i = 0; i < upgrades.length; i++) {
-			upgrades[i] = new JButton(upgradeTexts[i]);
+			upgrades[i] = new JButton(fixCarHandler.getUpgradeName(i));
 			upgrades[i].addActionListener((ActionEvent e) -> showUpgrades(e));
 			add(upgrades[i]);
 		}
@@ -61,36 +57,24 @@ public class FixCar extends Scene {
 		buyMoney = new JButton("Purchase with money");
 		buyPoints = new JButton("Purchase with points");
 		buyMoney.addActionListener((ActionEvent e) -> {
-			if (currentCostMoney <= player.getMoney()) {
-				player.setPointsAndMoney(player.getPoints(), player.getMoney() - currentCostMoney);
-				player.setCar(upgradedCar);
+			fixCarHandler.buyMoney(player.getCar(), player.getBank());
 
-				int[] temp = player.getInflation();
-				temp[currentTypeCart]++;
-				player.setInflation(temp);
+			player.getCar().reset();
+			updateText();
 
-				init(player);
-				player.getCar().reset();
-			}
 		});
-		buyPoints.addActionListener((ActionEvent e) -> {
-			if (currentCostPoints <= player.getPoints()) {
-				player.setPointsAndMoney(player.getPoints() - currentCostPoints, player.getMoney());
-				player.setCar(upgradedCar);
+		buyPoints.addActionListener((
 
-				int[] temp = player.getInflation();
-				temp[currentTypeCart]++;
-				player.setInflation(temp);
+				ActionEvent e) -> {
+					fixCarHandler.buyPoints(player.getCar(), player.getBank());
 
-				init(player);
-				player.getCar().reset();
-			}
+					player.getCar().reset();
+					updateText();
 		});
 
 		add(currentStatsPane);
 		add(cartStatsPane);
 		add(cashStatsPane);
-
 		add(goBackLobby);
 		add(buyMoney);
 		add(buyPoints);
@@ -98,38 +82,30 @@ public class FixCar extends Scene {
 
 	public void init(Player player) {
 		this.player = player;
-		currentCostMoney = 0;
-		currentCostPoints = 0;
+		player.setFixCarHandler(fixCarHandler);
+	}
+
+	private void updateText() {
 		currentStats.setText(player.getCar().showStats());
 		cashStats.setText(player.getPointsAndMoney());
 		cartStats.setText("");
-		upgradedCar = null;
-		
 		buyPoints.setEnabled(false);
 		buyMoney.setEnabled(false);
-	}
 
-	private String[] initButtonTexts() {
-		String[] temp = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo", "More NOS",
-				"Lighter pistons", "Grippier tyres and gears", "Beefier block" };
-		return temp;
 	}
 
 	private void showUpgrades(ActionEvent e) {
 		JButton source = (JButton) e.getSource();
-		
+
 		buyPoints.setEnabled(true);
 		buyMoney.setEnabled(true);
-		
-		//TODO flytt dette inn i Upgrades og styr via metoder i Player.
-		
-		try {
-			upgradedCar = (Car) player.getCar().clone();
-		} catch (CloneNotSupportedException e1) {
-			e1.printStackTrace();
-		}
 
-		switch (source.getText()) {
+
+		String upgradedCarText = fixCarHandler.selectUpgrade(source.getText());
+		
+		cartStats.setText(upgradedCarText);
+		
+		switch () {
 		case "Upgrade cylinders":
 
 			currentTypeCart = 0;
@@ -174,7 +150,7 @@ public class FixCar extends Scene {
 
 			currentTypeCart = 5;
 			cost(100, 1);
-			
+
 			upgradedCar.setWeightloss(upgradedCar.getWeightloss() + 50);
 			upgradedCar.setHp(upgradedCar.getHp() + 75f);
 			break;
@@ -182,10 +158,10 @@ public class FixCar extends Scene {
 
 			currentTypeCart = 6;
 			cost(100, 1);
-			
+
 			double topspeedPrev = upgradedCar.getTopSpeed();
 			double topspeedInc = 75.0;
-			
+
 			upgradedCar.setWeightloss(upgradedCar.getWeightloss() + 50);
 			upgradedCar.setTopSpeed(topspeedPrev + topspeedInc);
 			upgradedCar.setGearsbalance(upgradedCar.getGearsbalance() * (1 - (topspeedInc / topspeedPrev)));
@@ -210,8 +186,7 @@ public class FixCar extends Scene {
 	}
 
 	private void showCost() {
-		cartStats.setText("<html>UPGRADED " + upgradedCar.showStats() + "<br/><br/>$" + currentCostMoney + " or "
-				+ currentCostPoints + " points </html>");
+		
 	}
 
 }
