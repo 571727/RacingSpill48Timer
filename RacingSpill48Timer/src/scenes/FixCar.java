@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import adt.Scene;
+import audio.SFX;
 import elem.Car;
 import elem.Player;
 import handlers.FixCarHandler;
@@ -34,7 +35,6 @@ public class FixCar extends Scene {
 	public FixCar() {
 
 		goBackLobby = new JButton("Go back to the lobby");
-		goBackLobby.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(1));
 		fixCarHandler = new FixCarHandler();
 		upgrades = new JButton[fixCarHandler.getUpgradeNames().length];
 
@@ -56,6 +56,12 @@ public class FixCar extends Scene {
 
 		buyMoney = new JButton("Purchase with money");
 		buyPoints = new JButton("Purchase with points");
+
+		goBackLobby.addActionListener((ActionEvent e) -> {
+			SFX.playMP3Sound("close_store");
+			SceneHandler.instance.changeScene(1);
+		});
+
 		buyMoney.addActionListener((ActionEvent e) -> {
 			fixCarHandler.buyWithMoney(player);
 
@@ -83,6 +89,7 @@ public class FixCar extends Scene {
 	public void init(Player player) {
 		this.player = player;
 		player.setFixCarHandler(fixCarHandler);
+		player.setPricesAccordingToServer();
 		updateText();
 	}
 

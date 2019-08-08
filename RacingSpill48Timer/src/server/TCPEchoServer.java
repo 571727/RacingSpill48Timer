@@ -131,6 +131,8 @@ public class TCPEchoServer {
 			return info.getChat(input);
 		case "GETPLACE":
 			return info.getCurrentPlace();
+		case "GETPRICES":
+			return info.getPrices();
 		}
 
 		return null;

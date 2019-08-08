@@ -1,10 +1,8 @@
-/adt/
-/audio/
-/client/
-/connection_standard/
-/elem/
-/handlers/
 /scenes/
 /server/
 /startup/
 /window/
+/audio/
+/sfx/
+/elem/
+/handlers/

@@ -54,6 +54,7 @@ public class Lobby extends Scene implements Runnable {
 	private int currentLength;
 	private String currentPlace;
 	private boolean placeChecked;
+	private boolean fixCarChecked;
 
 	public Lobby(Race race, FixCar fixCarScene) {
 
@@ -63,7 +64,7 @@ public class Lobby extends Scene implements Runnable {
 		label = new JLabel("If you can read this, something wrong happend!!!", SwingConstants.CENTER);
 		placeAndLength = new JLabel();
 		ready = new JButton("Ready?");
-		fixCar = new JButton("Upgrade or fix my car");
+		fixCar = new JButton("Store");
 		start = new JButton("Start race");
 		goBack = new JButton("Go back to main menu");
 		options = new JButton("Options");
@@ -98,12 +99,18 @@ public class Lobby extends Scene implements Runnable {
 		ready.addActionListener((ActionEvent e) -> {
 			player.setReady((player.getReady() + 1) % 2);
 			// Disable fix car button
+			if (player.getReady() == 1)
+				SFX.playMP3Sound("ready");
 			fixCar.setEnabled(player.getReady() == 0);
 			options.setEnabled(player.getReady() == 0);
 		});
 		fixCar.addActionListener((ActionEvent e) -> {
+			SFX.playMP3Sound("open_store");
 			SceneHandler.instance.changeScene(2);
-			fixCarScene.init(player);
+			if (!fixCarChecked) {
+				fixCarScene.init(player);
+				fixCarChecked = true;
+			}
 		});
 		goBack.addActionListener((ActionEvent e) -> {
 			if (server != null) {
@@ -296,6 +303,7 @@ public class Lobby extends Scene implements Runnable {
 		clearChat();
 		label.setText("<html>" + player.getWinner() + "</html>");
 		player.leaveServer();
+		fixCarChecked = false;
 	}
 
 	/**
@@ -357,7 +365,7 @@ public class Lobby extends Scene implements Runnable {
 			player.setReady(0);
 			player.updateLobbyFromServer();
 			player.getCar().updateVolume();
-			
+
 			fixCar.setEnabled(true);
 			options.setEnabled(true);
 

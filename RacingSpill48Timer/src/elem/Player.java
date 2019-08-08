@@ -1,5 +1,6 @@
 package elem;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import client.EchoClient;
@@ -12,7 +13,7 @@ import handlers.FixCarHandler;
  * @author jonah
  *
  */
-public class Player{
+public class Player {
 
 	private String name;
 	private int host;
@@ -42,7 +43,7 @@ public class Player{
 		id = r.nextInt(999);
 		client = new EchoClient(ip);
 		bank = new Bank();
-		
+
 		// Request stats about lobby and update lobby
 	}
 
@@ -51,13 +52,14 @@ public class Player{
 		String[] output = result.split("#");
 		bank.setPoints(Integer.valueOf(output[0]));
 		bank.setMoney(Integer.valueOf(output[1]));
-		return "<html>" + name + ": <br/>" + "Points: " + bank.getPoints() + ".<br/>" + "Money: " + bank.getMoney() + ".";
+		return "<html>" + name + ": <br/>" + "Points: " + bank.getPoints() + ".<br/>" + "Money: " + bank.getMoney()
+				+ ".";
 	}
-	
+
 	public void setPointsAndMoney(int newPoints, int newMoney) {
 		client.sendRequest("SETPOINTSMONEY#" + name + "#" + id + "#" + newPoints + "#" + newMoney);
 	}
-	
+
 	/**
 	 * JOIN#name+id#host-boolean
 	 */
@@ -69,43 +71,42 @@ public class Player{
 	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
 	 */
 	public String updateLobbyFromServer() {
-		return client.sendRequest("UPDATELOBBY#" + name  + "#" +  id + "#" + ready );
+		return client.sendRequest("UPDATELOBBY#" + name + "#" + id + "#" + ready);
 	}
-	
+
 	public void inTheRace() {
 		inTheRace = true;
-		client.sendRequest("IN#" + name  + "#" +  id);
+		client.sendRequest("IN#" + name + "#" + id);
 	}
-	
-	public void startRace(){
+
+	public void startRace() {
 		client.sendRequest("STARTRACE#" + host + "#" + 1);
 	}
-	
-	public void stopRace(){
+
+	public void stopRace() {
 		client.sendRequest("STARTRACE#" + host + "#" + 0);
 	}
-	
+
 	public int getTrackLength() {
 		return Integer.valueOf(client.sendRequest("GETLENGTH"));
 	}
-	
+
 	public String getCurrentPlace() {
 		return client.sendRequest("GETPLACE");
 	}
 
-	
 	/**
-	 * LEAVE#name+id 
+	 * LEAVE#name+id
 	 */
 	public void leaveServer() {
 		System.out.println("Leaving server...");
-		client.sendRequest("LEAVE#" + name  + "#" +  id);
+		client.sendRequest("LEAVE#" + name + "#" + id);
 	}
-	
+
 	public int getStatusRaceLights() {
 		return Integer.valueOf(client.sendRequest("RACELIGHTS"));
 	}
-	
+
 	public void finishRace(long time) {
 		client.sendRequest("F#" + name + "#" + id + "#" + time);
 	}
@@ -113,20 +114,20 @@ public class Player{
 	public String updateRaceLobby() {
 		return client.sendRequest("UPDATERACE");
 	}
-	
+
 	public void pingServer() {
 //		System.out.println("PING");
 		client.sendRequest("PING#" + name + "#" + id);
 	}
-	
+
 	public String getRacesLeft() {
 		return client.sendRequest("GETRACESLEFT");
 	}
-	
+
 	public String getWinner() {
 		return client.sendRequest("WINNER");
 	}
-	
+
 	public void createNewRaces() {
 		client.sendRequest("NEWRACES");
 	}
@@ -134,11 +135,18 @@ public class Player{
 	public void addChat(String text) {
 		client.sendRequest("ADDCHAT#" + name + "#" + text);
 	}
-	
+
 	public String getChat() {
 		return client.sendRequest("GETCHAT#" + name + "#" + id);
 	}
-	
+
+	public void setPricesAccordingToServer() {
+		String[] s = client.sendRequest("GETPRICES").split("#");
+		fixCarHandler.setPrices(Arrays.asList(s).stream().mapToInt(Integer::parseInt)
+				.toArray());
+
+	}
+
 	public int getHost() {
 		return host;
 	}

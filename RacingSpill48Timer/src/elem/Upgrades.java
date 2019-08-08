@@ -4,7 +4,7 @@ import adt.UpgradeAction;
 
 public class Upgrades {
 
-	private String[] upgradeNames = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo",
+	private static String[] upgradeNames = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo",
 			"More NOS", "Lighter pistons", "Grippier tyres and gears", "Beefier block" };
 	private UpgradePrice[] upgradePrices;
 	private UpgradeAction[] upgradeValues;
@@ -12,10 +12,6 @@ public class Upgrades {
 	public Upgrades() {
 		upgradePrices = new UpgradePrice[upgradeNames.length];
 		upgradeValues = new UpgradeAction[upgradeNames.length];
-
-		for (int i = 0; i < upgradePrices.length; i++) {
-			upgradePrices[i] = new UpgradePrice(1, 50);
-		}
 
 		// Cylinders
 		upgradeValues[0] = (Car car) -> {
@@ -90,12 +86,28 @@ public class Upgrades {
 		upgradeValues[i].upgrade(car);
 	}
 
-	public String[] getUpgradeNames() {
+	public static String[] getUpgradeNames() {
 		return upgradeNames;
 	}
 
 	public void setUpgradeNames(String[] upgradeNames) {
 		this.upgradeNames = upgradeNames;
+	}
+
+	public UpgradePrice[] getUpgradePrices() {
+		return upgradePrices;
+	}
+
+	public void setUpgradePrices(UpgradePrice[] upgradePrices) {
+		this.upgradePrices = upgradePrices;
+	}
+
+	public UpgradeAction[] getUpgradeValues() {
+		return upgradeValues;
+	}
+
+	public void setUpgradeValues(UpgradeAction[] upgradeValues) {
+		this.upgradeValues = upgradeValues;
 	}
 
 }

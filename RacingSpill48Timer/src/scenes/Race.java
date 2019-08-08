@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 
 import adt.Scene;
 import adt.Visual;
+import audio.RaceAudio;
 import audio.SFX;
 import elem.Animation;
 import elem.Player;
@@ -91,6 +92,8 @@ public class Race extends Scene implements Runnable {
 	}
 
 	public void initWindow() {
+
+		RaceAudio.startGame();
 
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 		keys = new RaceKeyHandler(player.getCar());
@@ -377,10 +380,10 @@ public class Race extends Scene implements Runnable {
 					}
 
 				} else if (Integer.valueOf(outputs[i]) == 2) {
-					//AI
+					// AI
 					result += "Finished, ";
 					finished = true;
-					
+
 				} else {
 					result += "Not finished, ";
 					everyoneDone = false;

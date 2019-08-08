@@ -21,6 +21,7 @@ public class RaceAudio implements AudioCueListener {
 	private MediaAudio redline;
 	private MediaAudio nos;
 	private MediaAudio clutch;
+	private static MediaAudio startGame;
 	private int motorAccInstance;
 	private AudioCue motorDcc;
 	private int motorDccInstance;
@@ -74,6 +75,7 @@ public class RaceAudio implements AudioCueListener {
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
 		clutch = new MediaAudio("/sfx/clutch");
+		startGame = new MediaAudio("/sfx/start_game");
 	}
 
 	public void updateVolume() {
@@ -336,6 +338,9 @@ public class RaceAudio implements AudioCueListener {
 
 	}
 
-
+	public static void startGame() {
+		startGame.stop();
+		startGame.play();
+	}
 
 }

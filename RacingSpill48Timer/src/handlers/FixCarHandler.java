@@ -3,6 +3,7 @@ package handlers;
 import elem.Bank;
 import elem.Car;
 import elem.Player;
+import elem.UpgradePrice;
 import elem.Upgrades;
 
 /**
@@ -69,5 +70,12 @@ public class FixCarHandler {
 
 	public void setUpgradeNames(String[] upgradeNames) {
 		this.upgradeNames = upgradeNames;
+	}
+
+	public void setPrices(int[] prices) {
+		UpgradePrice[] upgradePrices = upgrades.getUpgradePrices();
+		for(int i = 0; i < upgradePrices.length; i++) {
+			upgradePrices[i] = new UpgradePrice(1, prices[i]);
+		}
 	}
 }

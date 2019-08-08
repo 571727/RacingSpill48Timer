@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import elem.AI;
+import elem.Upgrades;
 import startup.Main;
 
 /**
@@ -56,6 +57,7 @@ public class ServerInfo implements Runnable {
 	private String[] places;
 	private String currentPlace;
 	private int totalRaces;
+	private int[] upgradePrices;
 
 	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
@@ -78,6 +80,12 @@ public class ServerInfo implements Runnable {
 		r = new Random();
 		races = -1;
 		setRunning(true);
+
+		upgradePrices = new int[Upgrades.getUpgradeNames().length];
+
+		for (int i = 0; i < upgradePrices.length; i++) {
+			upgradePrices[i] = 40 + r.nextInt(40);
+		}
 
 		prepareNextRace();
 	}
@@ -152,6 +160,16 @@ public class ServerInfo implements Runnable {
 		player.setFinished(1);
 		amountFinished++;
 		player.setTime(time);
+	}
+	
+	public String getPrices() {
+		String res = String.valueOf(upgradePrices[0]);
+		
+		for(int i = 0; i < upgradePrices.length; i++) {
+			res += "#" + upgradePrices[i];
+		}
+		
+		return res;
 	}
 
 	public void finishPlayer(String[] input) {
