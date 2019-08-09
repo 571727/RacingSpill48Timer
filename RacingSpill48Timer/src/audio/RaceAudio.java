@@ -277,8 +277,8 @@ public class RaceAudio implements AudioCueListener {
 
 	public void openLines(boolean turbo, boolean gears) {
 		try {
-			motorAcc.open(2056);
-			motorDcc.open(2056);
+			motorAcc.open(8p056);
+			motorDcc.open(8056);
 			if (turbo)
 				turbospool.open(2056);
 			if (gears) {

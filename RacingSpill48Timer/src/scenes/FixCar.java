@@ -90,16 +90,14 @@ public class FixCar extends Scene {
 		this.player = player;
 		player.setFixCarHandler(fixCarHandler);
 		player.setPricesAccordingToServer();
-		updateText();
 	}
 
-	private void updateText() {
+	public void updateText() {
 		currentStats.setText(player.getCar().showStats());
 		cashStats.setText(player.getPointsAndMoney());
 		cartStats.setText("");
 		buyPoints.setEnabled(false);
 		buyMoney.setEnabled(false);
-
 	}
 
 	private void showUpgrades(ActionEvent e) {

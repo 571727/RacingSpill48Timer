@@ -111,6 +111,7 @@ public class Lobby extends Scene implements Runnable {
 				fixCarScene.init(player);
 				fixCarChecked = true;
 			}
+			fixCarScene.updateText();
 		});
 		goBack.addActionListener((ActionEvent e) -> {
 			if (server != null) {
