@@ -21,7 +21,6 @@ public class RaceAudio implements AudioCueListener {
 	private MediaAudio redline;
 	private MediaAudio nos;
 	private MediaAudio clutch;
-	private static MediaAudio startGame;
 	private int motorAccInstance;
 	private AudioCue motorDcc;
 	private int motorDccInstance;
@@ -75,7 +74,6 @@ public class RaceAudio implements AudioCueListener {
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
 		clutch = new MediaAudio("/sfx/clutch");
-		startGame = new MediaAudio("/sfx/start_game");
 	}
 
 	public void updateVolume() {
@@ -100,9 +98,8 @@ public class RaceAudio implements AudioCueListener {
 		motorSound();
 	}
 
-	public void motorPitch(double rpm, double totalRPM) {
+	public void motorPitch(double rpm, double totalRPM, double maxValue) {
 		double value;
-		double maxValue = 2;
 		rpm = maxValue * rpm;
 
 		if (rpm > totalRPM * maxValue)
@@ -277,8 +274,8 @@ public class RaceAudio implements AudioCueListener {
 
 	public void openLines(boolean turbo, boolean gears) {
 		try {
-			motorAcc.open(8p056);
-			motorDcc.open(8056);
+			motorAcc.open(2056);
+			motorDcc.open(2056);
 			if (turbo)
 				turbospool.open(2056);
 			if (gears) {
@@ -336,11 +333,6 @@ public class RaceAudio implements AudioCueListener {
 	public void instanceEventOccurred(AudioCueInstanceEvent event) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public static void startGame() {
-		startGame.stop();
-		startGame.play();
 	}
 
 }

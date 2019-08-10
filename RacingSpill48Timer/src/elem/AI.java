@@ -9,7 +9,6 @@ import startup.Main;
 public class AI extends PlayerInfo {
 
 	private static Random r = new Random();
-	private static Car car;
 	private int diff;
 
 	/**
@@ -17,25 +16,25 @@ public class AI extends PlayerInfo {
 	 * @param diff
 	 */
 
-	public AI(int id, int diff) {
-		this(randomOfStringArray(Main.AI_NAMES), String.valueOf(id), "0", randomCar());
+	public AI(String name, int id, int diff) {
+		this(name, String.valueOf(id), "0");
+		randomCar();
 		this.diff = diff;
 		car.setAudioActivated(false);
 		ready = 1;
-	}
-
-	private AI(String name, String id, String host, String carName) {
-		super(name, id, host, carName);
 
 	}
 
-	private static String randomCar() {
+	private AI(String name, String id, String host) {
+		super(name, id, host);
+
+	}
+
+	private void randomCar() {
 		car = new Car(randomOfStringArray(Main.CAR_TYPES), false);
-
-		return car.getCarStyle();
 	}
 
-	private static String randomOfStringArray(String[] arr) {
+	private String randomOfStringArray(String[] arr) {
 		return arr[r.nextInt(arr.length)];
 	}
 
@@ -124,7 +123,7 @@ public class AI extends PlayerInfo {
 	@Override
 	public String getRaceInfo(boolean allFinished) {
 		return name + "#" + 2 + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#"
-				+ carName.toLowerCase();
+				+ car.getCarName();
 	}
 
 }

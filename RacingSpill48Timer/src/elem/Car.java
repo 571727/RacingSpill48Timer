@@ -26,6 +26,7 @@ public class Car implements Cloneable {
 	private double hp;
 	private double weightloss;
 	private double totalWeight;
+	private double currentWeight;
 	private double spdinc;
 	private double distance;
 	private double topSpeed;
@@ -34,12 +35,23 @@ public class Car implements Cloneable {
 	private int totalGear;
 	private int totalRPM;
 	private int rpm;
-	private String carStyle;
+	private String carName;
 	private RaceAudio audio;
 	private int idleSpeed;
 	private double gearsbalance;
 	private boolean upgradedGears;
 	private boolean audioActivated;
+	private double maxValuePitch;
+	private int highestSpeedAchived;
+
+	/**
+	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
+	 * nosStrengthStandard + "#" + totalGear + "#" + topSpeed + "#" +
+	 * highestSpeedAchived;
+	 */
+	public Car(String[] cloneToServerString, int fromIndex) {
+		updateServerClone(cloneToServerString, fromIndex);
+	}
 
 	public Car(String cartype, boolean audioActivated) {
 
@@ -62,6 +74,8 @@ public class Car implements Cloneable {
 		idleSpeed = 1000;
 
 		// Kanskje Lada der kj�relyden er hardbass.
+
+		maxValuePitch = 2;
 
 		switch (cartype) {
 		case "M3":
@@ -93,6 +107,7 @@ public class Car implements Cloneable {
 			totalWeight = 950;
 			totalRPM = 5500;
 			totalGear = 5;
+			maxValuePitch = 4;
 			break;
 		case "Corolla":
 			hp = 120;
@@ -101,12 +116,22 @@ public class Car implements Cloneable {
 			totalGear = 5;
 			break;
 		}
-		setCarStyle(cartype.toLowerCase());
+		setCarName(cartype.toLowerCase());
 		if (audioActivated)
-			audio = new RaceAudio(carStyle);
+			audio = new RaceAudio(carName);
 
 		updateSpeedInc();
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
+	}
+
+	public void updateServerClone(String[] values, int fromIndex) {
+		carName = values[fromIndex + 0];
+		setHp(Double.valueOf(values[fromIndex + 1]));
+		setCurrentWeight(Double.valueOf(values[fromIndex + 2]));
+		setNosStrengthStandard(Double.valueOf(values[fromIndex + 3]));
+		setTotalGear(Integer.valueOf(values[fromIndex + 4]));
+		setTopSpeed(Double.valueOf(values[fromIndex + 5]));
+		setHighestSpeedAchived(Integer.valueOf(values[fromIndex + 6]));
 	}
 
 	public void updateVolume() {
@@ -152,15 +177,12 @@ public class Car implements Cloneable {
 				else
 					rpm = idleSpeed;
 			}
-			audio.motorPitch(rpm, totalRPM);
+			audio.motorPitch(rpm, totalRPM, maxValuePitch);
 			audio.turbospoolPitch(rpm, totalRPM);
 			audio.straightcutgearsPitch(speedLinear, topSpeed);
 
 			if (!clutch && gear > 0 && idle && !gas) {
-				// FIXME
-				engineOn = false;
-				checkIdle();
-
+				setEngineOn(false);
 			} else if (gas && !clutch && gearCheck()) {
 
 				accelerateCar();
@@ -214,7 +236,8 @@ public class Car implements Cloneable {
 		double gearFactor = speedLinear / (gearMax() + 1);
 		if (resistance == 0)
 			rpm = (int) ((totalRPM - engineOnFactor) * gearFactor + engineOnFactor);
-
+		if (speedActual > highestSpeedAchived)
+			highestSpeedAchived = (int) speedActual;
 	}
 
 	public void calculateDistance() {
@@ -237,6 +260,9 @@ public class Car implements Cloneable {
 			if (engineOn) {
 				idle = true;
 				audio.motorIdle();
+			} else {
+				rpm = 0;
+				audio.stopAll();
 			}
 		}
 	}
@@ -396,10 +422,15 @@ public class Car implements Cloneable {
 	}
 
 	public String showStats() {
-		return "<html>" + carStyle.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
+		return "<html>" + carName.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
 				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
 				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed;
 
+	}
+
+	public String cloneToServerString() {
+		return carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" + nosStrengthStandard + "#" + totalGear + "#"
+				+ topSpeed + "#" + highestSpeedAchived;
 	}
 
 	public Object clone() throws CloneNotSupportedException {
@@ -494,12 +525,12 @@ public class Car implements Cloneable {
 		this.totalRPM = totalRPM;
 	}
 
-	public String getCarStyle() {
-		return carStyle;
+	public String getCarName() {
+		return carName;
 	}
 
-	public void setCarStyle(String carStyle) {
-		this.carStyle = carStyle;
+	public void setCarName(String carName) {
+		this.carName = carName;
 	}
 
 	public double getDistance() {
@@ -516,6 +547,8 @@ public class Car implements Cloneable {
 
 	public void setNosStrengthStandard(double nosStrengthStandard) {
 		this.nosStrengthStandard = nosStrengthStandard;
+		if(nosStrengthStandard > 0)
+			setHasNOS(true);
 	}
 
 	public int getNosAmountLeftStandard() {
@@ -571,8 +604,12 @@ public class Car implements Cloneable {
 
 	public void setEngineOn(boolean engineOn) {
 		this.engineOn = engineOn;
-
-		audio.openLines(hasTurbo, upgradedGears);
+		if (engineOn) {
+			audio.openLines(hasTurbo, upgradedGears);
+		} else {
+			checkIdle();
+			rpm = 0;
+		}
 	}
 
 	public boolean isIdle() {
@@ -605,6 +642,22 @@ public class Car implements Cloneable {
 
 	public void setUpgradedGears(boolean upgradedGears) {
 		this.upgradedGears = upgradedGears;
+	}
+
+	public double getCurrentWeight() {
+		return currentWeight;
+	}
+
+	public void setCurrentWeight(double currentWeight) {
+		this.currentWeight = currentWeight;
+	}
+
+	public int getHighestSpeedAchived() {
+		return highestSpeedAchived;
+	}
+
+	public void setHighestSpeedAchived(int highestSpeedAchived) {
+		this.highestSpeedAchived = highestSpeedAchived;
 	}
 
 }

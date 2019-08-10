@@ -123,7 +123,7 @@ public class TCPEchoServer {
 		case "GETRACESLEFT":
 			return info.getRacesLeft();
 		case "WINNER":
-			return info.getPlayerWithMostPoints();
+			return info.getPlayerWithMostPoints(input);
 		case "ADDCHAT":
 			info.addChat(input);
 			break;
@@ -133,6 +133,9 @@ public class TCPEchoServer {
 			return info.getCurrentPlace();
 		case "GETPRICES":
 			return info.getPrices();
+		case "UPDATECARCLONE":
+			info.updateCarForPlayer(input);
+			break;
 		}
 
 		return null;

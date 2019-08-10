@@ -64,17 +64,11 @@ public class FixCar extends Scene {
 
 		buyMoney.addActionListener((ActionEvent e) -> {
 			fixCarHandler.buyWithMoney(player);
-
-			player.getCar().reset();
 			updateText();
 
 		});
-		buyPoints.addActionListener((
-
-				ActionEvent e) -> {
+		buyPoints.addActionListener((ActionEvent e) -> {
 			fixCarHandler.buyWithPoints(player);
-
-			player.getCar().reset();
 			updateText();
 		});
 

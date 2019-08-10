@@ -10,6 +10,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 
 import adt.Scene;
+import audio.ButtonAudio;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 
@@ -79,8 +80,8 @@ public class Options extends Scene {
 					try {
 						result = Integer.valueOf(res);
 					} catch (Exception ex) {
-						
-						if(ex.getMessage().equals("null"))
+
+						if (ex.getMessage().equals("null"))
 							return;
 						res = null;
 						JOptionPane.showMessageDialog(null, "Not correctly done, sir");
@@ -97,8 +98,10 @@ public class Options extends Scene {
 			}
 
 		});
-		goBack.addActionListener(
-				(ActionEvent e) -> SceneHandler.instance.changeScene(SceneHandler.instance.getLastScene()));
+		goBack.addActionListener((ActionEvent e) -> {
+			SceneHandler.instance.changeScene(SceneHandler.instance.getLastScene());
+			GameHandler.ba.playRegularBtn();
+		});
 		nextSong.addActionListener((ActionEvent e) -> GameHandler.music.playNext());
 		stopMusic.addActionListener((ActionEvent e) -> GameHandler.music.playOrStop());
 

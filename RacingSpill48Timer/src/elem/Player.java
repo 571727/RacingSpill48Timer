@@ -64,7 +64,11 @@ public class Player {
 	 * JOIN#name+id#host-boolean
 	 */
 	public String joinServer() {
-		return client.sendRequest("JOIN#" + name + "#" + id + "#" + host + "#" + carName);
+		return client.sendRequest("JOIN#" + name + "#" + id + "#" + host);
+	}
+	
+	public void updateCarCloneToServer() {
+		client.sendRequest("UPDATECARCLONE#"+ name + "#" + id + "#" + car.cloneToServerString());
 	}
 
 	/**
@@ -125,7 +129,7 @@ public class Player {
 	}
 
 	public String getWinner() {
-		return client.sendRequest("WINNER");
+		return client.sendRequest("WINNER#" + name + "#" + id);
 	}
 
 	public void createNewRaces() {

@@ -1,11 +1,13 @@
 package handlers;
 
 import audio.BgMusicListener;
+import audio.ButtonAudio;
 import scenes.Options;
 
 public class GameHandler {
 
 	public static BgMusicListener music;
+	public static ButtonAudio ba;
 	public static double volume;
 
 	public GameHandler(int numScenes) {
@@ -17,7 +19,7 @@ public class GameHandler {
 		
 		
 		music = new BgMusicListener(0);
-		
+		ba = new ButtonAudio();
 		// Loop som kj�rer viss kode basert p� scene, hvis i det hele tatt-
 
 	}

@@ -1,5 +1,7 @@
 package server;
 
+import elem.Car;
+
 public class PlayerInfo {
 
 	protected String name;
@@ -13,14 +15,14 @@ public class PlayerInfo {
 	private int points;
 	private int money;
 
-	protected String carName;
+	protected Car car;
 	private boolean inTheRace;
 
-	public PlayerInfo(String name, String id, String host, String carName) {
+	public PlayerInfo(String name, String id, String host) {
 		this.name = name;
 		this.id = id;
 		this.host = Integer.valueOf(host);
-		this.carName = carName;
+		this.car = null;
 	}
 
 	/**
@@ -36,7 +38,18 @@ public class PlayerInfo {
 	 * @return name#ready#host#points
 	 */
 	public String getLobbyInfo() {
-		return name + "#" + ready + "#" + host + "#" + carName + "#" + points;
+		if (car != null)
+			return name + "#" + ready + "#" + host + "#" + points;
+		else
+			return "Joining...";
+	}
+
+	public String getCarInfo() {
+		String res = "";
+		if (car != null)
+			res = car.getCarName().toUpperCase() + ", HP: " + car.getHp() + ", KG: " + car.getCurrentWeight() + ", TS: "
+					+ car.getTopSpeed() + ", NOS: " + car.isHasNOS();
+		return res;
 	}
 
 	public void newRace() {
@@ -64,20 +77,25 @@ public class PlayerInfo {
 	 * @return name#ready#car#...
 	 */
 	public String getRaceInfo(boolean allFinished) {
-		System.out.println(carName);
 		if (allFinished == false)
-			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + carName.toLowerCase();
+			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + car.getCarName();
 		else
-			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded + "#" + carName.toLowerCase();
+			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded
+					+ "#" + car.getCarName();
 	}
 
 	public void addPointsAndMoney(int amountPlayers, int place, float races, float totalRaces) {
+
+		float inflation = (Math.abs(totalRaces - races) + 1);
+		int winnerExtraPoint = (place == 0 ? 1 : 0);
+
 		if (!(amountPlayers == -1 || place == -1)) {
-			pointsAdded = amountPlayers - place + (place == 0 ? 1 : 0);
-			moneyAdded = (int) (100f * place * ((Math.abs(totalRaces - races) + 1) / 2));
+			pointsAdded = 2 * (amountPlayers - (place + 1)) + winnerExtraPoint;
+			moneyAdded = (int) (100f * place * inflation);
 		} else {
-			moneyAdded = (int) (50f * ((Math.abs(totalRaces - races) + 1) / 2));
+			moneyAdded = (int) (50f * inflation);
 		}
+
 		points += pointsAdded;
 		money += moneyAdded;
 	}
@@ -115,11 +133,7 @@ public class PlayerInfo {
 	}
 
 	public String getCarName() {
-		return carName;
-	}
-
-	public void setCarName(String carName) {
-		this.carName = carName;
+		return car.getCarName();
 	}
 
 	public long getTime() {
@@ -156,6 +170,14 @@ public class PlayerInfo {
 
 	public boolean isIn() {
 		return inTheRace;
+	}
+
+	public Car getCar() {
+		return car;
+	}
+
+	public void setCar(Car car) {
+		this.car = car;
 	}
 
 }

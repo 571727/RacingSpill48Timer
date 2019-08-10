@@ -6,19 +6,19 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
-import adt.Action;
 import adt.VisualElement;
-import scenes.Race;
 
 public class VisualString implements VisualElement {
 
 	private int x, y, w, h;
 	private Color bc, tc;
 	private String[] strings;
+	private ArrayList<Color> tcs;
 	private float alpha;
 	private Font font;
-	
+
 	public VisualString(int x, int y, int w, int h, Color bc, Color tc, Font font) {
 		this.x = x;
 		this.y = y;
@@ -28,6 +28,7 @@ public class VisualString implements VisualElement {
 		this.tc = tc;
 		this.font = font;
 		alpha = 0.8f;
+		tcs = new ArrayList<Color>();
 	}
 
 	@Override
@@ -36,20 +37,19 @@ public class VisualString implements VisualElement {
 
 	@Override
 	public void render(Graphics g) {
-		// FIXME not run after everybodydone
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(bc);
-		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-		g2d.setComposite(ac);
+		if (bc != null) {
+			g2d.setColor(bc);
+			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+			g2d.setComposite(ac);
 
-		g2d.fillRect(x, y, w, h);
-		g2d.setComposite(ac.derive(1f));
-		g2d.setColor(tc);
+			g2d.fillRect(x, y, w, h);
+			g2d.setComposite(ac.derive(1f));
+		}
 		g2d.setFont(font);
-		int i = 1;
-		for (String s : strings) {
-			g2d.drawString(s, x + font.getSize(), y + i * (font.getSize()));
-			i++;
+		for (int i = 0; i < strings.length; i++) {
+			g2d.setColor(tcs.get(i));
+			g2d.drawString(strings[i], x + font.getSize(), y + (i+1) * (font.getSize()));
 		}
 	}
 
@@ -69,8 +69,7 @@ public class VisualString implements VisualElement {
 
 	@Override
 	public boolean isWithin(int x, int y) {
-		return (x >= this.x && x <= this.x + w)
-				&& (y >= this.y && y <= this.y + h);
+		return (x >= this.x && x <= this.x + w) && (y >= this.y && y <= this.y + h);
 	}
 
 	@Override
@@ -82,7 +81,27 @@ public class VisualString implements VisualElement {
 		return strings;
 	}
 
-	public void setText(String string, String split) {
+	public void setText(String string, String split, String resultColors) {
 		this.strings = string.split(split);
+		String[] colors = resultColors.split(split);
+		for (String c : colors) {
+			switch (c) {
+			case "won":
+				tcs.add(new Color(5, 200, 13));
+				break;
+			case "ai":
+				tcs.add(new Color(25, 29, 144));
+				break;
+			case "dnf":
+				tcs.add(new Color(200, 21, 21));
+				break;
+			case "nf":
+				tcs.add(Color.darkGray);
+				break;
+			default:
+				tcs.add(tc);
+				break;
+			}
+		}
 	}
 }

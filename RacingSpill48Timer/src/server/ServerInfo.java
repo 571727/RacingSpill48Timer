@@ -12,16 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import elem.AI;
+import elem.Car;
 import elem.Upgrades;
 import startup.Main;
 
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
  * when racing.
- * 
- * På siste race så blir det ikke startet fordi rett etter at alle har komt inn
- * så sier serveren at det racet er "ferdig". Det er riktig, men det mistolkes
- * som en fullstedig ferdig game på siste race.
  * 
  * @author jonah
  *
@@ -43,7 +40,7 @@ public class ServerInfo implements Runnable {
 	private long raceStartedTime;
 	private final long waitTime = 1000;
 	private long regulatingWaitTime = -1;
-	private boolean running = true;
+	private boolean running;
 	private boolean greenLights;
 	private boolean allFinished;
 	private Random r;
@@ -52,7 +49,6 @@ public class ServerInfo implements Runnable {
 	private boolean raceLobbyStringFinalized;
 	private boolean leavingPlayerMutex;
 	private Thread finishAI_thread;
-	private String res;
 	private ArrayList<PlayerInfo> winners;
 	private String[] places;
 	private String currentPlace;
@@ -64,12 +60,7 @@ public class ServerInfo implements Runnable {
 		ping = new ConcurrentHashMap<String, Long>();
 		chat = new HashMap<PlayerInfo, Queue<String>>();
 		ai = new ArrayList<AI>();
-
-		for (int i = 0; i < amountOfAI; i++) {
-			AI ai = new AI(i, diff);
-			this.ai.add(ai);
-			players.put(ai.getName() + i, ai);
-		}
+		running = true;
 
 		places = new String[4];
 		places[0] = "Japan";
@@ -80,6 +71,19 @@ public class ServerInfo implements Runnable {
 		r = new Random();
 		races = -1;
 		setRunning(true);
+
+		ArrayList<String> names = new ArrayList<String>();
+		for (String name : Main.AI_NAMES) {
+			names.add(name);
+		}
+
+		for (int i = 0; i < amountOfAI; i++) {
+			int nameIndex = r.nextInt(names.size());
+			AI ai = new AI(names.get(nameIndex), i, diff);
+			names.remove(nameIndex);
+			this.ai.add(ai);
+			players.put(ai.getName() + (-i), ai);
+		}
 
 		upgradePrices = new int[Upgrades.getUpgradeNames().length];
 
@@ -108,7 +112,7 @@ public class ServerInfo implements Runnable {
 
 	public String joinLobby(String[] input) {
 
-		PlayerInfo newPlayer = new PlayerInfo(input[1], input[2], input[3], input[4]);
+		PlayerInfo newPlayer = new PlayerInfo(input[1], input[2], input[3]);
 
 		addChat(newPlayer.getName() + " joined the game.");
 
@@ -119,6 +123,15 @@ public class ServerInfo implements Runnable {
 		return updateLobby();
 	}
 
+	public void updateCarForPlayer(String[] input) {
+		PlayerInfo player = getPlayer(input);
+		if (player.getCar() != null) {
+			player.getCar().updateServerClone(input, 3);
+		} else {
+			player.setCar(new Car(input, 3));
+		}
+	}
+
 	/**
 	 * @return name#ready#car#...
 	 */
@@ -126,7 +139,7 @@ public class ServerInfo implements Runnable {
 		String result = "";
 
 		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
-			result += "#" + entry.getValue().getLobbyInfo() + "#" + started;
+			result += "#" + entry.getValue().getLobbyInfo() + "#" + started + "#" + entry.getValue().getCarInfo();
 		}
 
 		return result;
@@ -161,14 +174,14 @@ public class ServerInfo implements Runnable {
 		amountFinished++;
 		player.setTime(time);
 	}
-	
+
 	public String getPrices() {
 		String res = String.valueOf(upgradePrices[0]);
-		
-		for(int i = 0; i < upgradePrices.length; i++) {
+
+		for (int i = 0; i < upgradePrices.length; i++) {
 			res += "#" + upgradePrices[i];
 		}
-		
+
 		return res;
 	}
 
@@ -205,6 +218,11 @@ public class ServerInfo implements Runnable {
 
 	private boolean isRaceOver() {
 		return allFinished && races <= 0;
+	}
+
+	public void setRaceOver() {
+		allFinished = true;
+		races = -1;
 	}
 
 	private void updateRaceStatus() {
@@ -284,16 +302,6 @@ public class ServerInfo implements Runnable {
 			started = Integer.valueOf(input[2]);
 			raceLights = 0;
 		}
-	}
-
-	/**
-	 * Creates a new racetrack somewhere in the world and with some length of some
-	 * type.
-	 * 
-	 * @return length of the track
-	 */
-	public int randomizeLengthOfTrack() {
-		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0) + 1);
 	}
 
 	public void leave(String[] input) {
@@ -453,6 +461,16 @@ public class ServerInfo implements Runnable {
 		return res;
 	}
 
+	/**
+	 * Creates a new racetrack somewhere in the world and with some length of some
+	 * type.
+	 * 
+	 * @return length of the track
+	 */
+	public int randomizeLengthOfTrack() {
+		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0) + 1);
+	}
+
 	public void newRaces() {
 		totalRaces = 9;
 		races = totalRaces;
@@ -475,18 +493,59 @@ public class ServerInfo implements Runnable {
 			}
 		}
 
-		if (winners.size() == 1) {
-			res = "And the winner is: " + winners.get(0).getName() + ", " + winners.get(0).getCarName();
-		} else {
-			res = "And the winners are: ";
-			for (PlayerInfo player : winners) {
-				res += "<br/>" + player.getName() + ", " + player.getCarName();
-			}
-		}
 	}
 
-	public String getPlayerWithMostPoints() {
-		return res;
+	public String getPlayerWithMostPoints(String[] input) {
+
+		PlayerInfo asker = getPlayer(input);
+		String winnerText = null;
+
+		if (asker.getPoints() == winners.get(0).getPoints())
+			winnerText = youWinningText(asker);
+		else if (winners.size() == 1)
+			winnerText = otherWinningText(asker);
+		else
+			winnerText = othersWinningText(asker);
+
+		return winnerText;
+	}
+
+	private String youWinningText(PlayerInfo asker) {
+		String winnerText = "";
+		winnerText += "You won";
+
+		// Are you the only winner?
+		if (winners.size() > 1) {
+			winnerText += " along with: ";
+			for (PlayerInfo player : winners) {
+				winnerText += "#" + player.getName() + " who drove a " + player.getCarName();
+			}
+		} else {
+			winnerText += "!!!";
+		}
+		winnerText += "#You have " + asker.getPoints() + " points!";
+		return winnerText;
+	}
+
+	private String otherWinningText(PlayerInfo asker) {
+		String winnerText = "";
+		winnerText = winners.get(0).getName() + " won!!!##" + "He drove a " + winners.get(0).getCarName() + "!#"
+				+ winners.get(0).getName() + " has " + winners.get(0).getPoints() + " points!#";
+
+		winnerText += "You drove a " + asker.getCarName() + " and you only have " + asker.getPoints() + " points!";
+		return winnerText;
+	}
+
+	private String othersWinningText(PlayerInfo asker) {
+		String winnerText = "";
+		winnerText = "The winners are: ";
+
+		for (PlayerInfo player : winners) {
+			winnerText += "#" + player.getName() + " who drove a " + player.getCarName();
+		}
+
+		winnerText += "!#" + "They won with " + winners.get(0).getPoints() + " points!";
+		return winnerText;
 	}
 
 	public void ping(String[] input) {

@@ -52,6 +52,8 @@ public class FixCarHandler {
 			upgrades.upgrade(currentUpgrade, player.getCar());
 			player.getBank().buyWithMoney(amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
+			player.updateCarCloneToServer();
+			player.getCar().reset();
 		}
 	}
 
@@ -61,6 +63,8 @@ public class FixCarHandler {
 			upgrades.upgrade(currentUpgrade, player.getCar());
 			player.getBank().buyWithPoints(amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
+			player.updateCarCloneToServer();
+			player.getCar().reset();
 		}
 	}
 

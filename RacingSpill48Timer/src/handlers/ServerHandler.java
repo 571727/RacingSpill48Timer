@@ -50,10 +50,11 @@ public class ServerHandler {
 		try {
 			if (thread.isAlive()) {
 				
-				info.setRunning(false);
+				info.setRaceOver();
 				infoThread.join();
 				currentServer.setRunning(false);
 				thread.join();
+				info = null;
 				
 			}
 		} catch (Exception e) {

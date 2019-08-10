@@ -36,7 +36,7 @@ public class VisualButton implements VisualElement {
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		System.out.println("VISUAL BUTTON " + arg0);
+//		System.out.println("VISUAL BUTTON " + arg0);
 		if (arg0.getKeyCode() == 10)
 			action.doStuff();
 	}

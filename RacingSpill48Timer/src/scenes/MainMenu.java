@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import adt.Scene;
+import audio.ButtonAudio;
+import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
 import startup.Main;
@@ -34,9 +36,18 @@ public class MainMenu extends Scene {
 		title.setPreferredSize(new Dimension(550, 20));
 
 		// Eventlisteners
-		options.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(4));
-		host.addActionListener((ActionEvent e) -> host());
-		join.addActionListener((ActionEvent e) -> join());
+		options.addActionListener((ActionEvent e) -> {
+			SceneHandler.instance.changeScene(4);
+			GameHandler.ba.playRegularBtn();
+		});
+		host.addActionListener((ActionEvent e) -> {
+			host();
+			GameHandler.ba.playRegularBtn();
+		});
+		join.addActionListener((ActionEvent e) -> {
+			join();
+			GameHandler.ba.playRegularBtn();
+		});
 
 		// Add to jpanel
 		add(title);
@@ -71,6 +82,8 @@ public class MainMenu extends Scene {
 			diff = "0";
 		}
 
+		Main.AI_NAMES_TAKEN = new boolean[Main.AI_NAMES.length];
+		
 		serverHandler.createNew(Integer.valueOf(amountOfAI), Integer.valueOf(diff));
 
 		SceneHandler.instance.changeScene(1);
@@ -84,18 +97,18 @@ public class MainMenu extends Scene {
 	private String difficultySelection() {
 		String str = (String) JOptionPane.showInputDialog(null, "Choose difficulty, bro", "Carznstuff",
 				JOptionPane.PLAIN_MESSAGE, null, Main.DIFFICULTY_TYPES, Main.DIFFICULTY_TYPES[0]);
-		
-		for(int i = 0; i < Main.DIFFICULTY_TYPES.length; i++) {
-			if(Main.DIFFICULTY_TYPES[i].equals(str))
+
+		for (int i = 0; i < Main.DIFFICULTY_TYPES.length; i++) {
+			if (Main.DIFFICULTY_TYPES[i].equals(str))
 				str = String.valueOf(i * 100 / Main.DIFFICULTY_TYPES.length);
 		}
-		
+
 		return str;
 	}
 
 	private String amountOfAISelection() {
-		return (String) JOptionPane.showInputDialog(null, "How many AI?", "Carznstuff",
-				JOptionPane.PLAIN_MESSAGE, null, Main.AMOUNT_OF_AI, Main.AMOUNT_OF_AI[0]);
+		return (String) JOptionPane.showInputDialog(null, "How many AI?", "Carznstuff", JOptionPane.PLAIN_MESSAGE, null,
+				Main.AMOUNT_OF_AI, Main.AMOUNT_OF_AI[0]);
 	}
 
 	private void join() {

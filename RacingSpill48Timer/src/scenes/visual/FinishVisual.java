@@ -37,7 +37,6 @@ public class FinishVisual extends Visual {
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
 
 		visualElements = new ArrayList<VisualElement>();
-
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class FinishVisual extends Visual {
 			Toolkit.getDefaultToolkit().sync();
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage() + "In visual");
+			System.err.println(e.getMessage() + "In FinishVisual");
 		}
 
 	}

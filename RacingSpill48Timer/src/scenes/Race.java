@@ -13,16 +13,17 @@ import javax.swing.JFrame;
 
 import adt.Scene;
 import adt.Visual;
-import audio.RaceAudio;
 import audio.SFX;
 import elem.Animation;
 import elem.Player;
 import elem.VisualButton;
 import elem.VisualString;
+import handlers.GameHandler;
 import handlers.RaceKeyHandler;
 import handlers.SceneHandler;
 import scenes.visual.FinishVisual;
 import scenes.visual.RaceVisual;
+import scenes.visual.WinVisual;
 import startup.Main;
 import window.Windows;
 
@@ -45,6 +46,7 @@ public class Race extends Scene implements Runnable {
 	private VisualString results;
 	private RaceVisual raceVisual;
 	private FinishVisual finishVisual;
+	private WinVisual winVisual;
 	private RaceKeyHandler keys;
 	private String currentPlace;
 	private Thread lobbyThread;
@@ -66,6 +68,7 @@ public class Race extends Scene implements Runnable {
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage resBackground;
+	private int races;
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -93,7 +96,7 @@ public class Race extends Scene implements Runnable {
 
 	public void initWindow() {
 
-		RaceAudio.startGame();
+		GameHandler.ba.startGame();
 
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 		keys = new RaceKeyHandler(player.getCar());
@@ -128,7 +131,7 @@ public class Race extends Scene implements Runnable {
 		}
 
 		raceVisual = new RaceVisual(player, this);
-		raceVisual.setCarImage(findCarImage(player.getCar().getCarStyle()));
+		raceVisual.setCarImage(findCarImage(player.getCar().getCarName()));
 		raceVisual.setBackground(background);
 		raceVisual.setFastness(fastness);
 		raceVisual.setNitros(nitros);
@@ -137,6 +140,9 @@ public class Race extends Scene implements Runnable {
 
 		finishVisual = new FinishVisual(player, this);
 		finishVisual.setBackground(resBackground);
+
+		winVisual = new WinVisual();
+		winVisual.setPlayer(player);
 
 		everyoneDone = false;
 		cheating = false;
@@ -297,7 +303,7 @@ public class Race extends Scene implements Runnable {
 			}
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-				System.out.println("FPS RACEEE: " + frames);
+				System.out.println("FPS RACE: " + frames);
 				if ((frames >= fpsSteps[fps] - tolerance && frames < fpsSteps[fps] + tolerance) == false
 						&& fps < fpsSteps.length - 1 && racingWindow.isFocused()) {
 					fps++;
@@ -343,23 +349,31 @@ public class Race extends Scene implements Runnable {
 		String[] outputs = outtext.split("#");
 
 		String result = "Tracklength: " + currentLength + " meters.<br/>Players: <br/>";
+		String resultColors = "<br/><br/>";
 		int n = 0;
+		int stageLength = 5;
 		int playerIndex = 0;
 		boolean finished = false;
+		String color = "";
 		for (int i = 1; i < outputs.length; i++) {
-			n = i % 5;
+			n = i % stageLength;
 
 			switch (n) {
 
 			case 1:
-				result += outputs[i] + ", ";
+				result += "     " + outputs[i] + ",<br/>";
 				break;
 			case 2:
 
 				// Controlling whether player has finished or not
 
+				if (i < stageLength)
+					color = "won";
+				else
+					color = "regular";
+
 				if (Integer.valueOf(outputs[i]) == 1) {
-					result += "Finished, ";
+//					result += "Finished, ";
 					finished = true;
 
 					// Controlling animation of players finishing after a race
@@ -381,13 +395,15 @@ public class Race extends Scene implements Runnable {
 
 				} else if (Integer.valueOf(outputs[i]) == 2) {
 					// AI
-					result += "Finished, ";
+//					result += "Finished, ";
 					finished = true;
+					color = "ai";
 
 				} else {
-					result += "Not finished, ";
+//					result += "Not finished, ";
 					everyoneDone = false;
 					finished = false;
+					color = "nf";
 				}
 
 				break;
@@ -395,6 +411,7 @@ public class Race extends Scene implements Runnable {
 
 				if (Long.valueOf(outputs[i]) == -1) {
 					result += "DNF";
+					color = "dnf";
 				} else if (finished || startTime == -1) {
 					result += "Time: " + (Float.valueOf(outputs[i]) / 1000) + " seconds";
 				} else {
@@ -408,6 +425,11 @@ public class Race extends Scene implements Runnable {
 				result += "<br/>";
 				playerIndex++;
 
+				resultColors += color;
+				resultColors += "<br/>";
+				resultColors += color;
+				resultColors += "<br/>";
+
 				break;
 			}
 
@@ -416,9 +438,12 @@ public class Race extends Scene implements Runnable {
 		if (currentVisual.hasAnimationsRunning())
 			everyoneDone = false;
 
-		// Show all players on screen
-		results.setText(result, "<br/>");
-		// Disable start game button
+		if (!lastRace()) {
+			// Show all players on screen
+			results.setText(result, "<br/>", resultColors);
+		} else {
+			winVisual.setEveryoneDone(everyoneDone);
+		}
 		if (everyoneDone) {
 			// Stop race aka make ready the next race
 			player.stopRace();
@@ -426,8 +451,8 @@ public class Race extends Scene implements Runnable {
 			racingWindow.addKeyListener(goBackVisual);
 			racingWindow.requestFocus();
 			lobby.setPlaceChecked(false);
-
 		} else
+			// Disable start game button
 			goBackVisual.setEnabled(false);
 	}
 
@@ -449,25 +474,38 @@ public class Race extends Scene implements Runnable {
 		keys = null;
 
 		try {
-			changeVisual(finishVisual);
-			results = new VisualString((int) (WIDTH - WIDTH / 4.4f), HEIGHT / 5, (int) (WIDTH / 4.5f), HEIGHT / 2,
-					Color.white, Color.black, new Font("Calibri", 0, Race.WIDTH / 160));
-
 			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
 					() -> {
 						closeWindow();
+						if (races == 0) {
+							lobby.endGame();
+						}
 					});
 
-			finishVisual.addVisualElement(goBackVisual);
-			finishVisual.addVisualElement(results);
+			if (!lastRace()) {
+				changeVisual(finishVisual);
+				results = new VisualString((int) (WIDTH - WIDTH / 3.6f), (int) (HEIGHT / 24), (int) (WIDTH / 3.8f),
+						(int) (HEIGHT / 1.5f), Color.white, Color.black, new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
+
+				finishVisual.addVisualElement(goBackVisual);
+				finishVisual.addVisualElement(results);
+			} else {
+				changeVisual(winVisual);
+				winVisual.addVisualElement(goBackVisual);
+			}
 
 			SceneHandler.instance.justRemove();
 			racingWindow.requestFocus();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// Legg til knapper og sånt
+	}
+
+	private boolean lastRace() {
+		return races == 0;
 	}
 
 	private void changeVisual(Visual newVisual) throws Exception {
@@ -550,6 +588,14 @@ public class Race extends Scene implements Runnable {
 
 	public void setLobbyThread(Thread lobbyThread) {
 		this.lobbyThread = lobbyThread;
+	}
+
+	public int getRaces() {
+		return races;
+	}
+
+	public void setRaces(int races) {
+		this.races = races;
 	}
 
 }

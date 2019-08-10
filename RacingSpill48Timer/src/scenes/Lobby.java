@@ -19,10 +19,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import adt.Scene;
+import audio.ButtonAudio;
 import audio.SFX;
 import elem.Player;
+import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
+import startup.Main;
 
 public class Lobby extends Scene implements Runnable {
 
@@ -100,7 +103,9 @@ public class Lobby extends Scene implements Runnable {
 			player.setReady((player.getReady() + 1) % 2);
 			// Disable fix car button
 			if (player.getReady() == 1)
-				SFX.playMP3Sound("ready");
+				GameHandler.ba.playReady();
+			else
+				GameHandler.ba.playRegularBtn();
 			fixCar.setEnabled(player.getReady() == 0);
 			options.setEnabled(player.getReady() == 0);
 		});
@@ -114,13 +119,8 @@ public class Lobby extends Scene implements Runnable {
 			fixCarScene.updateText();
 		});
 		goBack.addActionListener((ActionEvent e) -> {
-			if (server != null) {
-				server.close();
-				server = null;
-			}
-			clearChat();
-			player.leaveServer();
-			SceneHandler.instance.changeScene(0);
+			GameHandler.ba.playRegularBtn();
+			goBack();
 		});
 
 		start.addActionListener((ActionEvent e) -> {
@@ -130,7 +130,10 @@ public class Lobby extends Scene implements Runnable {
 			}
 		});
 
-		options.addActionListener((ActionEvent e) -> SceneHandler.instance.changeScene(4));
+		options.addActionListener((ActionEvent e) -> {
+			SceneHandler.instance.changeScene(4);
+			GameHandler.ba.playRegularBtn();
+		});
 
 		// Chatpart:
 		chatInput.setPreferredSize(new Dimension(200, 20));
@@ -182,6 +185,19 @@ public class Lobby extends Scene implements Runnable {
 		add(chatScrollPane);
 	}
 
+	private void goBack() {
+		player.getCar().reset();
+		clearChat();
+		player.leaveServer();
+		player = null;
+		fixCarChecked = false;
+		if (server != null) {
+			server.close();
+			server = null;
+		}
+		SceneHandler.instance.changeScene(0);
+	}
+
 	/**
 	 * 
 	 * @param string - outtext from server
@@ -195,7 +211,7 @@ public class Lobby extends Scene implements Runnable {
 			String[] outputs = string.split("#");
 
 			int racesLeft = Integer.valueOf(player.getRacesLeft());
-
+			race.setRaces(racesLeft);
 			String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
 			int n = 0;
 			for (int i = 1; i < outputs.length; i++) {
@@ -219,16 +235,16 @@ public class Lobby extends Scene implements Runnable {
 						result += "Host, ";
 					break;
 				case 4:
-					result += outputs[i] + ", ";
+					result += "Points: " + outputs[i];
 					break;
-
 				case 5:
-					result += "Points: " + outputs[i] + "<br/>";
-					break;
-				case 6:
 					if (Integer.valueOf(outputs[i]) == 1) {
 						raceStarted();
 					}
+					result += "<br/>";
+					break;
+				case 6:
+					result += outputs[i] + "<br/>";
 					n = 0;
 					break;
 				}
@@ -236,10 +252,6 @@ public class Lobby extends Scene implements Runnable {
 			}
 			result += "</html>";
 
-			if (racesLeft == 0 && race.isEveryoneDone()) {
-				endGame();
-				return;
-			}
 			// Show all players on screen
 			label.setText(result);
 
@@ -279,13 +291,13 @@ public class Lobby extends Scene implements Runnable {
 
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.err.println("server lost probably");
-
-			if (server != null) {
-				server.close();
-				server = null;
-			}
-			SceneHandler.instance.changeScene(0);
+//			System.err.println("server lost probably");
+//
+//			if (server != null) {
+//				server.close();
+//				server = null;
+//			}
+//			SceneHandler.instance.changeScene(0);
 		}
 
 	}
@@ -295,16 +307,10 @@ public class Lobby extends Scene implements Runnable {
 		chatText = "";
 	}
 
-	private void endGame() {
-		player.getCar().reset();
+	public void endGame() {
 		gameEnded = true;
-		start.setEnabled(false);
-		fixCar.setEnabled(false);
-		ready.setEnabled(false);
-		clearChat();
-		label.setText("<html>" + player.getWinner() + "</html>");
-		player.leaveServer();
 		fixCarChecked = false;
+		goBack();
 	}
 
 	/**
@@ -312,14 +318,8 @@ public class Lobby extends Scene implements Runnable {
 	 * @param host - int value (0,1) represents boolean
 	 */
 	public void createNewLobby(String name, int host, String car, ServerHandler server, Thread lobbyThread) {
-		this.lobbyThread = lobbyThread;
-		gameEnded = false;
-		player = new Player(name, host, car);
-		player.createNewRaces();
-		update(player.joinServer());
-		initButtonState();
 		this.server = server;
-		SceneHandler.instance.addClosingListener(player);
+		joinNewLobby(name, host, car, null, lobbyThread);
 	}
 
 	/**
@@ -330,8 +330,15 @@ public class Lobby extends Scene implements Runnable {
 	public void joinNewLobby(String name, int host, String car, String ip, Thread lobbyThread) {
 		this.lobbyThread = lobbyThread;
 		gameEnded = false;
-		player = new Player(name, host, car, ip);
+		if (ip != null)
+			player = new Player(name, host, car, ip);
+		else {
+			player = new Player(name, host, car);
+			if(host == 1)
+				player.createNewRaces();
+		}
 		update(player.joinServer());
+		player.updateCarCloneToServer();
 		initButtonState();
 		SceneHandler.instance.addClosingListener(player);
 	}
