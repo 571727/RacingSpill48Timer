@@ -468,7 +468,7 @@ public class ServerInfo implements Runnable {
 	 * @return length of the track
 	 */
 	public int randomizeLengthOfTrack() {
-		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0) + 1);
+		return 500 * (r.nextInt(12 * (int) ((double) races / (double) totalRaces) + 4) + 1);
 	}
 
 	public void newRaces(String[] input) {

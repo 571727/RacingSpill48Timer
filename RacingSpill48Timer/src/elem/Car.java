@@ -114,8 +114,8 @@ public class Car implements Cloneable {
 			totalGear = 4;
 			break;
 		case "Skoda Fabia":
-			hp = 101;
-			totalWeight = 950;
+			hp = 64;
+			totalWeight = 1090;
 			totalRPM = 5500;
 			totalGear = 5;
 			maxValuePitch = 4;

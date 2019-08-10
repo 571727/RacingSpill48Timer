@@ -5,7 +5,7 @@ import java.util.Random;
 
 import client.EchoClient;
 import connection_standard.Config;
-import handlers.FixCarHandler;
+import handlers.StoreHandler;
 
 /**
  * holds and handles its client. Controls lobby for now.
@@ -22,7 +22,7 @@ public class Player {
 	private String ip;
 	private EchoClient client;
 	private Car car;
-	private FixCarHandler fixCarHandler;
+	private StoreHandler fixCarHandler;
 	private Random r;
 	private Bank bank;
 	private boolean inTheRace;
@@ -227,11 +227,11 @@ public class Player {
 		this.bank = bank;
 	}
 
-	public FixCarHandler getFixCarHandler() {
+	public StoreHandler getFixCarHandler() {
 		return fixCarHandler;
 	}
 
-	public void setFixCarHandler(FixCarHandler fixCarHandler) {
+	public void setFixCarHandler(StoreHandler fixCarHandler) {
 		this.fixCarHandler = fixCarHandler;
 	}
 

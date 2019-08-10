@@ -14,12 +14,12 @@ import elem.Upgrades;
  *         FixCar scene should not deal with figuring out text, just printing.
  */
 
-public class FixCarHandler {
+public class StoreHandler {
 	private Upgrades upgrades;
 	private String[] upgradeNames;
 	private int currentUpgrade;
 
-	public FixCarHandler() {
+	public StoreHandler() {
 		upgrades = new Upgrades();
 		upgradeNames = upgrades.getUpgradeNames();
 	}

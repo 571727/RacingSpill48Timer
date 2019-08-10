@@ -2,6 +2,8 @@ package elem;
 
 import adt.UpgradeAction;
 
+//Dyrere for de som leder: 1st (+10%), 2nd (5%), 3rd (2%) osv.
+
 public class Upgrades {
 
 	public static String[] upgradeNames = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo",
@@ -16,17 +18,15 @@ public class Upgrades {
 		fuelUpgrades = 0;
 		// Cylinders
 		upgradeValues[0] = (Car car) -> {
-			car.setCurrentWeight();
-			car.setHp(car.getHp() + 75f);
-			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.003f));
-			car.upgradeRightShift(1.15);
+			car.setHp(car.getHp() + 35f);
+			car.upgradeRightShift(1.20);
 			return true;
 		};
 		// Weight
 		upgradeValues[1] = (Car car) -> {
 			car.setCurrentWeight();
 			if (car.getCurrentWeight() > 2) {
-				car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.15f));
+				car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.09f));
 				if (car.getCurrentWeight() <= 1) {
 					car.setWeightloss(0);
 					car.setTotalWeight(1);
@@ -43,15 +43,17 @@ public class Upgrades {
 			if(fuelUpgrades < 3) {
 				switch (fuelUpgrades) {
 				case 0:
-					car.setHp(car.getHp() + 10f);
+					car.setHp(car.getHp() + 2f);
 					break;
 				case 1:
-					car.setHp(car.getHp() + 98f);
+					car.setHp(car.getHp() + 28f);
 					break;
 				case 2:
-					car.setHp(car.getHp() + 296f);
+					car.setHp(car.getHp() + 206f);
 					break;
 				}
+				res = true;
+				fuelUpgrades++;
 			}
 			return res;
 		};
@@ -59,7 +61,7 @@ public class Upgrades {
 		upgradeValues[3] = (Car car) -> {
 			car.setCurrentWeight();
 			car.setHasTurbo(true);
-			car.setHp(car.getHp() + (150f));
+			car.setHp(car.getHp() + (100f));
 			car.setWeightloss(car.getWeightloss() - (car.getCurrentWeight() * 0.02f));
 			return true;
 		};
@@ -75,14 +77,14 @@ public class Upgrades {
 		// Pistons
 		upgradeValues[5] = (Car car) -> {
 			car.setCurrentWeight();
-			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.08f));
-			car.setHp(car.getHp() + 75f);
+			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.05f));
+			car.setHp(car.getHp() + 60f);
 			return true;
 		};
 		// Gears
 		upgradeValues[6] = (Car car) -> {
 			double topspeedPrev = car.getTopSpeed();
-			double topspeedInc = 110.0;
+			double topspeedInc = 72.0 * (fuelUpgrades + 1);
 			car.setCurrentWeight();
 			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.03f));
 			car.setTopSpeed(topspeedPrev + topspeedInc);
@@ -93,13 +95,13 @@ public class Upgrades {
 		// Block
 		upgradeValues[7] = (Car car) -> {
 			car.setCurrentWeight();
-			car.setHp(car.getHp() + 200f);
-			car.setWeightloss(car.getWeightloss() - (car.getCurrentWeight() * 0.12f));
+			car.setHp(car.getHp() + 170f);
+			car.setWeightloss(car.getWeightloss() - (car.getCurrentWeight() * 0.14f));
 			return true;
 		};
 		// Tires
 		upgradeValues[8] = (Car car) -> {
-			car.setGearBoostSTD(car.getGearBoostSTD() + 0.5);
+			car.setGearBoostSTD(car.getGearBoostSTD() + 0.4);
 			return true;
 		};
 

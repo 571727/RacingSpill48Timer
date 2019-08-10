@@ -11,10 +11,10 @@ import adt.Scene;
 import audio.SFX;
 import elem.Car;
 import elem.Player;
-import handlers.FixCarHandler;
+import handlers.StoreHandler;
 import handlers.SceneHandler;
 
-public class FixCar extends Scene {
+public class Store extends Scene {
 
 	private JButton goBackLobby;
 
@@ -29,13 +29,13 @@ public class FixCar extends Scene {
 	private JScrollPane cartStatsPane;
 	private JScrollPane cashStatsPane;
 
-	private FixCarHandler fixCarHandler;
+	private StoreHandler fixCarHandler;
 	private Player player;
 
-	public FixCar() {
+	public Store() {
 
 		goBackLobby = new JButton("Go back to the lobby");
-		fixCarHandler = new FixCarHandler();
+		fixCarHandler = new StoreHandler();
 		upgrades = new JButton[fixCarHandler.getUpgradeNames().length];
 
 		for (int i = 0; i < upgrades.length; i++) {

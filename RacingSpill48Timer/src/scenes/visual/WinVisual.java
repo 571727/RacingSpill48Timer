@@ -16,6 +16,8 @@ import elem.VisualString;
 import handlers.GameHandler;
 import scenes.Race;
 
+//Vis også tid osv more information
+
 public class WinVisual extends Visual {
 	private Player player;
 	private boolean everyoneDone;

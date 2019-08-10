@@ -5,7 +5,7 @@ import java.awt.Color;
 import adt.Scene;
 import elem.Player;
 import javafx.embed.swing.JFXPanel;
-import scenes.FixCar;
+import scenes.Store;
 import scenes.Lobby;
 import scenes.MainMenu;
 import scenes.Options;
@@ -38,10 +38,10 @@ public class SceneHandler {
 		windows = new Windows(1280, 800, Main.GAME_NAME, Color.BLACK);
 		scenes = new Scene[numScenes];
 
-		scenes[2] = new FixCar();
+		scenes[2] = new Store();
 		scenes[3] = new Race();
 		scenes[4] = options;
-		scenes[1] = new Lobby((Race) scenes[3], (FixCar) scenes[2]);
+		scenes[1] = new Lobby((Race) scenes[3], (Store) scenes[2]);
 		scenes[0] = new MainMenu((Lobby) scenes[1]);
 
 		JFXPanel fxPanel = new JFXPanel();

@@ -43,7 +43,7 @@ public class Lobby extends Scene implements Runnable {
 	private JScrollPane scrollPane;
 	private boolean everyoneReady;
 	private Race race;
-	private FixCar fixCarScene;
+	private Store fixCarScene;
 	private Thread thread;
 	private boolean gameEnded;
 	private Thread lobbyThread;
@@ -59,7 +59,7 @@ public class Lobby extends Scene implements Runnable {
 	private boolean placeChecked;
 	private boolean fixCarChecked;
 
-	public Lobby(Race race, FixCar fixCarScene) {
+	public Lobby(Race race, Store fixCarScene) {
 
 		// Init shit
 		this.race = race;
@@ -150,7 +150,7 @@ public class Lobby extends Scene implements Runnable {
 					if (e.getKeyCode() == 10) {
 						player.addChat(chatInput.getText());
 						chatInput.setText("");
-						SceneHandler.instance.getWindows().requestFocus();
+//						SceneHandler.instance.getWindows().requestFocus();
 					}
 			}
 
@@ -397,7 +397,7 @@ public class Lobby extends Scene implements Runnable {
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		while ((SceneHandler.instance.getCurrentScene().getClass().equals(Lobby.class)
-				|| SceneHandler.instance.getCurrentScene().getClass().equals(FixCar.class)
+				|| SceneHandler.instance.getCurrentScene().getClass().equals(Store.class)
 				|| SceneHandler.instance.getCurrentScene().getClass().equals(Options.class)
 				|| (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !started)) && !gameEnded) {
 			long now = System.nanoTime();
@@ -459,11 +459,11 @@ public class Lobby extends Scene implements Runnable {
 		this.race = race;
 	}
 
-	public FixCar getFixCarScene() {
+	public Store getFixCarScene() {
 		return fixCarScene;
 	}
 
-	public void setFixCarScene(FixCar fixCarScene) {
+	public void setFixCarScene(Store fixCarScene) {
 		this.fixCarScene = fixCarScene;
 	}
 
