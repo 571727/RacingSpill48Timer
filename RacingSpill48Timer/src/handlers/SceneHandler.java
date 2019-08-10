@@ -1,6 +1,5 @@
 package handlers;
 
-
 import java.awt.Color;
 
 import adt.Scene;
@@ -11,12 +10,13 @@ import scenes.Lobby;
 import scenes.MainMenu;
 import scenes.Options;
 import scenes.Race;
+import startup.Main;
 import window.Windows;
 
 public class SceneHandler {
 
 	public static SceneHandler instance;
-	
+
 	private Windows windows;
 	private Scene[] scenes;
 	private int lastScene;
@@ -25,7 +25,7 @@ public class SceneHandler {
 	private boolean specified;
 	public int HEIGHT;
 	public int WIDTH;
-	
+
 	public SceneHandler(int numScenes, Options options) {
 		// Make this class static
 		if (instance != null)
@@ -35,19 +35,19 @@ public class SceneHandler {
 			instance = this;
 
 		fullscreen = true;
-		windows = new Windows(1280, 800, "A Smooth Cruise", Color.BLACK);
+		windows = new Windows(1280, 800, Main.GAME_NAME, Color.BLACK);
 		scenes = new Scene[numScenes];
-		
+
 		scenes[2] = new FixCar();
 		scenes[3] = new Race();
 		scenes[4] = options;
 		scenes[1] = new Lobby((Race) scenes[3], (FixCar) scenes[2]);
 		scenes[0] = new MainMenu((Lobby) scenes[1]);
-		
+
 		JFXPanel fxPanel = new JFXPanel();
 		windows.add(fxPanel);
 	}
-	
+
 	public void addClosingListener(Player player) {
 		windows.closing(player);
 	}
@@ -60,24 +60,24 @@ public class SceneHandler {
 
 		windows.invalidate();
 		windows.validate();
-		
+
 		windows.repaint();
-		
+
 	}
-	
+
 	public void justRemove() {
 		windows.remove(scenes[currentScene]);
 
 		windows.invalidate();
 		windows.validate();
-		
+
 		windows.repaint();
 	}
 
 	public Scene getCurrentScene() {
 		return scenes[currentScene];
 	}
-	
+
 	public Windows getWindows() {
 		return windows;
 	}
@@ -85,7 +85,7 @@ public class SceneHandler {
 	public void setWindows(Windows windows) {
 		this.windows = windows;
 	}
-	
+
 	public void setFullScreen(boolean b) {
 		fullscreen = b;
 	}

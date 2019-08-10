@@ -4,5 +4,5 @@ import elem.Car;
 
 public interface UpgradeAction {
 
-	public void upgrade(Car car);
+	public boolean upgrade(Car car);
 }

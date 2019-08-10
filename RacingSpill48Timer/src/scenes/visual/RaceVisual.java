@@ -102,6 +102,12 @@ public class RaceVisual extends Visual {
 				width = Race.WIDTH + 16;
 				height = Race.HEIGHT + 9;
 			}
+			if(player.getCar().isGearBoostON()) {
+				y -= 5;
+				x -= 5;
+				width += 16;
+				height += 10;
+			}
 		} else {
 			y = -2;
 			x = -8;
@@ -131,13 +137,17 @@ public class RaceVisual extends Visual {
 			shakeAndScaleImage(trans, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(),
 					blurSpeed / 2, blurSpeed * 1.5f, blurShake * 2);
 			if (player.getCar().isIdle())
-				rotateIdle(trans, ((double)player.getCar().getRpm() / (double)player.getCar().getTotalRPM() + 1), blurShake / 16);
+				rotateIdle(trans, ((double) player.getCar().getRpm() / (double) player.getCar().getTotalRPM() + 1),
+						blurShake / 16);
 
 			g2d.drawImage(carImage, trans, this);
 
 			if (player.getCar().isNOSON()) {
 				blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
 						(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
+			} else if (player.getCar().isGearBoostON()) {
+				shakeAndScaleImage(trans, carImage, x, y, width, height, 1,
+						1, 1, blurShake * 2);
 			}
 
 			if (player.getCar().getSpeedActual() > blurSpeed)
@@ -153,7 +163,7 @@ public class RaceVisual extends Visual {
 			drawRaceHUD(g2d);
 
 			drawTachometer(g2d);
-
+			drawRightShift(g2d);
 			drawInfoHUD(g2d);
 
 			for (int i = 0; i < visualElements.size(); i++) {
@@ -222,7 +232,7 @@ public class RaceVisual extends Visual {
 				(height + 2 * (int) shake) + (int) yShake, null);
 		g2d.setComposite(ac.derive(1f));
 	}
-
+	
 	private double alpha(double comparedValue, double fromValue, double tillAdditionalValue, double shake) {
 		double alpha = (comparedValue - fromValue) / tillAdditionalValue;
 
@@ -290,13 +300,31 @@ public class RaceVisual extends Visual {
 
 		g.setColor(Color.white);
 		g.drawString(String.format("%.0f", player.getCar().getSpeedActual()), xSpeed, ySpeed);
+
 		if (player.getCar().getGear() > 0)
 			g.drawString(String.valueOf(player.getCar().getGear()), xGear, yGear);
 		else
 			g.drawString("N", xGear, yGear);
+
+	}
+	
+	private void drawRightShift(Graphics g) {
+		int rs = player.getCar().rightShift();
+		if (rs > 0) {
+
+			int size = (int) ((double) Race.WIDTH * 0.045);
+
+			if (rs == 2)
+				g.setColor(Color.YELLOW);
+			else if (rs == 1)
+				g.setColor(Color.BLUE);
+			g.fillOval((Race.WIDTH / 2) - (size / 2), (Race.HEIGHT / 2) - size, size, size);
+
+		}
 	}
 
 	private void drawInfoHUD(Graphics2D g) {
+		g.setColor(Color.WHITE);
 		g.drawString("Place: " + String.valueOf(race.getCurrentPlace()), xDistance, yDistance);
 		g.drawString("Distance: " + String.valueOf(race.getCurrentLength()), xDistance, yDistance + 50);
 		g.drawString("Distance covered: " + String.format("%.0f", player.getCar().getDistance()), xDistance,

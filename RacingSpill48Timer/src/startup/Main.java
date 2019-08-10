@@ -12,6 +12,7 @@ public class Main {
 	public static String[] DIFFICULTY_TYPES = {"Easy", "Normal", "Hard", "Godlike"};
 	public static String[] AMOUNT_OF_AI;
 	public static boolean[] AI_NAMES_TAKEN;
+	public static final String GAME_NAME = "Jhoffis' Road Racers"; 
 	
 
 	public static void main(String[] args) {

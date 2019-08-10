@@ -86,11 +86,11 @@ public class PlayerInfo {
 
 	public void addPointsAndMoney(int amountPlayers, int place, float races, float totalRaces) {
 
-		float inflation = (Math.abs(totalRaces - races) + 1);
+		float inflation = (Math.abs(totalRaces - races) + 1) / 2;
 		int winnerExtraPoint = (place == 0 ? 1 : 0);
 
 		if (!(amountPlayers == -1 || place == -1)) {
-			pointsAdded = 2 * (amountPlayers - (place + 1)) + winnerExtraPoint;
+			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
 			moneyAdded = (int) (100f * place * inflation);
 		} else {
 			moneyAdded = (int) (50f * inflation);

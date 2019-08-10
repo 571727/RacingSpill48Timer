@@ -6,8 +6,7 @@ public class Bank {
 	private int[] inflation;
 
 	public Bank() {
-		//FIXME
-		inflation = new int[8];
+		inflation = new int[Upgrades.upgradeNames.length];
 	}
 	
 	public boolean buyWithMoney(int amount, int i) {

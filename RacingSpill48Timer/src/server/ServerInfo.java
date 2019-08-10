@@ -472,7 +472,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void newRaces() {
-		totalRaces = 9;
+		totalRaces = 2;
 		races = totalRaces;
 	}
 
@@ -562,6 +562,7 @@ public class ServerInfo implements Runnable {
 				PlayerInfo player = getPlayer(entry.getKey());
 
 				if (!ai.contains(player) && !validPing(entry.getValue())) {
+					System.out.println("LEAVING BY PING");
 					leavingPlayerMutex = true;
 					if (player == null)
 						return;

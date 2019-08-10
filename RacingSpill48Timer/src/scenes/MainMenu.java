@@ -31,7 +31,7 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		title = new JLabel("A Smooth Cruise v.1.3.5.1");
+		title = new JLabel(Main.GAME_NAME + " v.1.5");
 
 		title.setPreferredSize(new Dimension(550, 20));
 
@@ -83,7 +83,7 @@ public class MainMenu extends Scene {
 		}
 
 		Main.AI_NAMES_TAKEN = new boolean[Main.AI_NAMES.length];
-		
+
 		serverHandler.createNew(Integer.valueOf(amountOfAI), Integer.valueOf(diff));
 
 		SceneHandler.instance.changeScene(1);

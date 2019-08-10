@@ -4,8 +4,8 @@ import adt.UpgradeAction;
 
 public class Upgrades {
 
-	private static String[] upgradeNames = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo",
-			"More NOS", "Lighter pistons", "Grippier tyres and gears", "Beefier block" };
+	public static String[] upgradeNames = { "Upgrade cylinders", "Weight reduction bro", "Better fuel", "Bigger turbo",
+			"More NOS", "Lighter pistons", "Transmission", "Beefier block", "Tires" };
 	private UpgradePrice[] upgradePrices;
 	private UpgradeAction[] upgradeValues;
 
@@ -15,21 +15,38 @@ public class Upgrades {
 
 		// Cylinders
 		upgradeValues[0] = (Car car) -> {
+			car.setCurrentWeight();
 			car.setHp(car.getHp() + 75f);
+			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.005f));
+			return true;
 		};
 		// Weight
 		upgradeValues[1] = (Car car) -> {
-			car.setWeightloss(car.getWeightloss() + (car.getTotalWeight() / 10f));
+			car.setCurrentWeight();
+			if (car.getCurrentWeight() > 2) {
+				car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.15f));
+				if (car.getCurrentWeight() <= 1) {
+					car.setWeightloss(0);
+					car.setTotalWeight(1);
+					car.setCurrentWeight();
+				}
+				return true;
+			} else {
+				return false;
+			}
 		};
 		// Fuel
 		upgradeValues[2] = (Car car) -> {
-			car.setHp(car.getHp() + 30f);
+			car.setHp(car.getHp() + 60f);
+			return true;
 		};
 		// Turbo
 		upgradeValues[3] = (Car car) -> {
+			car.setCurrentWeight();
 			car.setHasTurbo(true);
-			car.setHp(car.getHp() + (150f));
-			car.setWeightloss(car.getWeightloss() - 15);
+			car.setHp(car.getHp() + (175f));
+			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.02f));
+			return true;
 		};
 		// NOS
 		upgradeValues[4] = (Car car) -> {
@@ -38,29 +55,40 @@ public class Upgrades {
 				car.setNosAmountLeftStandard(1);
 			}
 			car.setNosStrengthStandard(car.getNosStrengthStandard() + 0.5);
+			return true;
 		};
-		// Pistons FIXME THIS IS NOT PISTONS BUT A BLOCK YA IDIOT
+		// Pistons
 		upgradeValues[5] = (Car car) -> {
-			car.setWeightloss(car.getWeightloss() + 50);
+			car.setCurrentWeight();
+			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.08f));
 			car.setHp(car.getHp() + 75f);
+			return true;
 		};
 		// Gears
 		upgradeValues[6] = (Car car) -> {
 			double topspeedPrev = car.getTopSpeed();
-			double topspeedInc = 90.0;
-
-			car.setWeightloss(car.getWeightloss() + 50);
+			double topspeedInc = 110.0;
+			car.setCurrentWeight();
+			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.03f));
 			car.setTopSpeed(topspeedPrev + topspeedInc);
 			car.setGearsbalance(car.getGearsbalance() * (1 - (topspeedInc / topspeedPrev)));
 			car.setUpgradedGears(true);
+			return true;
 		};
 		// Block
 		upgradeValues[7] = (Car car) -> {
+			car.setCurrentWeight();
 			car.setHp(car.getHp() + 200f);
-			car.setWeightloss(car.getWeightloss() - 15);
+			car.setWeightloss(car.getWeightloss() - (car.getCurrentWeight() * 0.12f));
+			return true;
+		};
+		// Tires
+		upgradeValues[8] = (Car car) -> {
+			car.setGearBoostSTD(car.getGearBoostSTD() + 0.5);
+			return true;
 		};
 
-		//TODO maybe add aero and wind resistance????
+		// TODO maybe add aero and wind resistance????
 	}
 
 	public int getCostMoney(int i, Bank bank) {
@@ -82,8 +110,8 @@ public class Upgrades {
 		return newCar.showStats();
 	}
 
-	public void upgrade(int i, Car car) {
-		upgradeValues[i].upgrade(car);
+	public boolean upgrade(int i, Car car) {
+		return upgradeValues[i].upgrade(car);
 	}
 
 	public static String[] getUpgradeNames() {

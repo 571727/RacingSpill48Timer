@@ -43,6 +43,10 @@ public class Car implements Cloneable {
 	private boolean audioActivated;
 	private double maxValuePitch;
 	private int highestSpeedAchived;
+	private long gearBoostTime;
+	private double gearBoost;
+	private boolean gearBoostON;
+	private double gearBoostSTD;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -72,6 +76,7 @@ public class Car implements Cloneable {
 		resistance = 1.0;
 		gearsbalance = 1.0;
 		idleSpeed = 1000;
+		gearBoostSTD = 1;
 
 		// Kanskje Lada der kj�relyden er hardbass.
 
@@ -116,11 +121,11 @@ public class Car implements Cloneable {
 			totalGear = 5;
 			break;
 		}
+//		hp = 1600;
 		setCarName(cartype.toLowerCase());
 		if (audioActivated)
 			audio = new RaceAudio(carName);
 
-		updateSpeedInc();
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
@@ -132,6 +137,7 @@ public class Car implements Cloneable {
 		setTotalGear(Integer.valueOf(values[fromIndex + 4]));
 		setTopSpeed(Double.valueOf(values[fromIndex + 5]));
 		setHighestSpeedAchived(Integer.valueOf(values[fromIndex + 6]));
+		setGearBoostSTD(Double.valueOf(values[fromIndex + 7]));
 	}
 
 	public void updateVolume() {
@@ -168,12 +174,12 @@ public class Car implements Cloneable {
 
 			if (gas) {
 				if (rpm < totalRPM - 60)
-					rpm += hp * 1.5 * resistance;
+					rpm += hp * ((double) totalRPM / 9000) * resistance;
 				else
 					rpm = totalRPM - 100;
 			} else {
 				if (rpm > idleSpeed)
-					rpm -= hp * 1.15 * resistance;
+					rpm -= hp * 0.5 * resistance;
 				else
 					rpm = idleSpeed;
 			}
@@ -193,6 +199,13 @@ public class Car implements Cloneable {
 					NOSON = true;
 				} else {
 					NOSON = false;
+				}
+
+				if (gearBoostTime > System.currentTimeMillis()) {
+					speedLinear += gearBoost;
+					gearBoostON = true;
+				} else {
+					gearBoostON = false;
 				}
 			} else {
 
@@ -220,7 +233,7 @@ public class Car implements Cloneable {
 
 		calculateActualSpeed();
 		calculateDistance();
-
+		updateSpeedInc();
 	}
 
 	public void decelerateCar() {
@@ -249,7 +262,23 @@ public class Car implements Cloneable {
 		if (speedLinear < ((gear - 1) * (500 / totalGear) - 35)) {
 			speedLinear += spdinc / 6;
 			gearTooHigh = true;
+
 		} else {
+			if (speedLinear < 5 && gearBoost == 0) {
+				int rs = rightShift();
+				if (rs == 2) {
+					// Best boost
+					gearBoostTime = System.currentTimeMillis() + 1000;
+					gearBoost = gearBoostSTD;
+				} else if (rs == 1) {
+					// Good boost
+					gearBoostTime = System.currentTimeMillis() + 1000;
+					gearBoost = gearBoostSTD / 2;
+				} else {
+					// No boost
+					gearBoostTime = 0;
+				}
+			}
 			speedLinear += spdinc;
 			gearTooHigh = false;
 		}
@@ -359,7 +388,11 @@ public class Car implements Cloneable {
 
 	public void shift(int gear) {
 		if (gear <= totalGear && clutch) {
+			if (this.gear == 1 && gear == 2) {
+
+			}
 			this.gear = gear;
+
 			if (audioActivated)
 				audio.gearSound();
 		}
@@ -403,6 +436,8 @@ public class Car implements Cloneable {
 		distance = 0;
 		gear = 0;
 		rpm = 0;
+		gearBoostTime = 0;
+		gearBoost = 0;
 		resistance = 1.0;
 		if (audioActivated)
 			audio.stopAll();
@@ -418,19 +453,36 @@ public class Car implements Cloneable {
 	public void updateSpeedInc() {
 		double w = (totalWeight - weightloss);
 		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
-		spdinc = (hp / weightcalc) / 100f * gearsbalance;
+		double rpmCalc = (double) rpm / (double) totalRPM;
+		spdinc = (hp * rpmCalc / weightcalc) / 100f * gearsbalance;
 	}
 
 	public String showStats() {
 		return "<html>" + carName.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
 				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed;
+				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + "<br/>Tiregrip: " + gearBoostSTD;
 
 	}
 
 	public String cloneToServerString() {
 		return carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" + nosStrengthStandard + "#" + totalGear + "#"
-				+ topSpeed + "#" + highestSpeedAchived;
+				+ topSpeed + "#" + highestSpeedAchived + "#" + gearBoostSTD;
+	}
+
+	public int rightShift() {
+		int res = 0;
+		if ((this.gear == 1 || this.gear == 0) && speedLinear < 2) {
+			double tr = totalRPM;
+			double top = 24;
+			double mid = 4;
+			double bot = 2.6;
+			if (rpm < tr - tr / top && rpm > tr - tr / mid) {
+				res = 2;
+			} else if (rpm < tr - tr / mid && rpm > tr - tr / bot) {
+				res = 1;
+			}
+		}
+		return res;
 	}
 
 	public Object clone() throws CloneNotSupportedException {
@@ -482,7 +534,8 @@ public class Car implements Cloneable {
 	}
 
 	public void setWeightloss(double weightloss) {
-		this.weightloss = weightloss;
+		this.weightloss = Math.round(weightloss);
+		setCurrentWeight();
 	}
 
 	public double getTotalWeight() {
@@ -547,7 +600,7 @@ public class Car implements Cloneable {
 
 	public void setNosStrengthStandard(double nosStrengthStandard) {
 		this.nosStrengthStandard = nosStrengthStandard;
-		if(nosStrengthStandard > 0)
+		if (nosStrengthStandard > 0)
 			setHasNOS(true);
 	}
 
@@ -563,7 +616,7 @@ public class Car implements Cloneable {
 	 * @return radian that represents rpm from -180 to ca. 35 - 40 idk yet
 	 */
 	public double getTachometer() {
-		return rpm * 0.03 - 203;
+		return 235 * ((double) (rpm + 1) / (double) totalRPM) - 203;
 	}
 
 	public boolean isGearTooHigh() {
@@ -652,12 +705,32 @@ public class Car implements Cloneable {
 		this.currentWeight = currentWeight;
 	}
 
+	public void setCurrentWeight() {
+		this.currentWeight = totalWeight - weightloss;
+	}
+
 	public int getHighestSpeedAchived() {
 		return highestSpeedAchived;
 	}
 
 	public void setHighestSpeedAchived(int highestSpeedAchived) {
 		this.highestSpeedAchived = highestSpeedAchived;
+	}
+
+	public boolean isGearBoostON() {
+		return gearBoostON;
+	}
+
+	public void setGearBoostON(boolean gearBoostON) {
+		this.gearBoostON = gearBoostON;
+	}
+
+	public double getGearBoostSTD() {
+		return gearBoostSTD;
+	}
+
+	public void setGearBoostSTD(double gearBoostSTD) {
+		this.gearBoostSTD = gearBoostSTD;
 	}
 
 }

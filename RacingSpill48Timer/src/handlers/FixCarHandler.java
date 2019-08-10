@@ -49,7 +49,8 @@ public class FixCarHandler {
 	public void buyWithMoney(Player player) {
 		int amount = upgrades.getCostMoney(currentUpgrade, player.getBank());
 		if (player.getBank().canAffordMoney(amount)) {
-			upgrades.upgrade(currentUpgrade, player.getCar());
+			if (!upgrades.upgrade(currentUpgrade, player.getCar()))
+				return;
 			player.getBank().buyWithMoney(amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
@@ -60,7 +61,8 @@ public class FixCarHandler {
 	public void buyWithPoints(Player player) {
 		int amount = upgrades.getCostPoints(currentUpgrade, player.getBank());
 		if (player.getBank().canAffordPoints(amount)) {
-			upgrades.upgrade(currentUpgrade, player.getCar());
+			if (!upgrades.upgrade(currentUpgrade, player.getCar()))
+				return;
 			player.getBank().buyWithPoints(amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
@@ -78,7 +80,7 @@ public class FixCarHandler {
 
 	public void setPrices(int[] prices) {
 		UpgradePrice[] upgradePrices = upgrades.getUpgradePrices();
-		for(int i = 0; i < upgradePrices.length; i++) {
+		for (int i = 0; i < upgradePrices.length; i++) {
 			upgradePrices[i] = new UpgradePrice(1, prices[i]);
 		}
 	}
