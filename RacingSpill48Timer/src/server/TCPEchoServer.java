@@ -118,7 +118,7 @@ public class TCPEchoServer {
 		case "GETPOINTSMONEY":
 			return info.getPointsMoney(input);
 		case "NEWRACES":
-			info.newRaces();
+			info.newRaces(input);
 			break;
 		case "GETRACESLEFT":
 			return info.getRacesLeft();

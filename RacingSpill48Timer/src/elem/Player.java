@@ -23,10 +23,11 @@ public class Player {
 	private EchoClient client;
 	private Car car;
 	private FixCarHandler fixCarHandler;
-	private String carName;
 	private Random r;
 	private Bank bank;
 	private boolean inTheRace;
+	private int moneyAchived;
+	private int pointsAchived;
 
 	public Player(String name, int host, String car) {
 		this(name, host, car, Config.SERVER);
@@ -38,7 +39,6 @@ public class Player {
 		this.host = host;
 		ready = 0;
 		this.car = new Car(car, true);
-		carName = car;
 		r = new Random();
 		id = r.nextInt(999);
 		client = new EchoClient(ip);
@@ -132,8 +132,8 @@ public class Player {
 		return client.sendRequest("WINNER#" + name + "#" + id);
 	}
 
-	public void createNewRaces() {
-		client.sendRequest("NEWRACES");
+	public void createNewRaces(int amount) {
+		client.sendRequest("NEWRACES#" + amount);
 	}
 
 	public void addChat(String text) {
@@ -233,6 +233,22 @@ public class Player {
 
 	public void setFixCarHandler(FixCarHandler fixCarHandler) {
 		this.fixCarHandler = fixCarHandler;
+	}
+
+	public int getMoneyAchived() {
+		return moneyAchived;
+	}
+
+	public void setMoneyAchived(int moneyAchived) {
+		this.moneyAchived = moneyAchived;
+	}
+
+	public int getPointsAchived() {
+		return pointsAchived;
+	}
+
+	public void setPointsAchived(int pointsAchived) {
+		this.pointsAchived = pointsAchived;
 	}
 
 }

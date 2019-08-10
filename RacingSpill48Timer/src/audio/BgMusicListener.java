@@ -5,6 +5,7 @@ public class BgMusicListener {
 	private MediaAudio[] music;
 	private int playingIndex;
 	private int amount;
+	private boolean stopped;
 
 	public BgMusicListener(int amount) {
 		// Maybe use action for something later, cause it's awesome
@@ -23,6 +24,9 @@ public class BgMusicListener {
 
 	public void playNext() {
 
+		if(stopped)
+			return;
+		
 		if (playingIndex > -1 && music[playingIndex] != null && music[playingIndex].isPlaying())
 			music[playingIndex].stop();
 
@@ -40,10 +44,20 @@ public class BgMusicListener {
 	}
 
 	public void playOrStop() {
-		if (playingIndex >= 0 && music[playingIndex] != null && music[playingIndex].isPlaying())
+		if (playingIndex >= 0 && music[playingIndex] != null && music[playingIndex].isPlaying()) {
 			music[playingIndex].stop();
-		else
+			stopped = true;
+		}
+		else {
 			playNext();
+			stopped = false;	
+		}
+	}
+
+	public void stop() {
+		if (playingIndex >= 0 && music[playingIndex] != null && music[playingIndex].isPlaying()) {
+			music[playingIndex].stop();
+		}
 	}
 
 }

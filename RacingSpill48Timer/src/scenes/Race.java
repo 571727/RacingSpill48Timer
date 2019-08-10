@@ -125,7 +125,7 @@ public class Race extends Scene implements Runnable {
 		racingWindow.setVisible(true);
 
 		// FIXME her allokeres det for 100 spillere når det ikke trengs
-		finishedPlayers = new boolean[100];
+		finishedPlayers = new boolean[20];
 		for (int i = 0; i < finishedPlayers.length; i++) {
 			finishedPlayers[i] = false;
 		}
@@ -202,6 +202,7 @@ public class Race extends Scene implements Runnable {
 					raceVisual.setBallColor(Color.GREEN);
 					running = true;
 					raceVisual.setRunning(true);
+					player.getCar().tryGearBoost();
 				} else {
 					SFX.playMP3Sound("redLight");
 					raceVisual.setBallColor(Color.RED);
@@ -443,6 +444,7 @@ public class Race extends Scene implements Runnable {
 			results.setText(result, "<br/>", resultColors);
 		} else {
 			winVisual.setEveryoneDone(everyoneDone);
+			winVisual.addVisualElement(goBackVisual);
 		}
 		if (everyoneDone) {
 			// Stop race aka make ready the next race
@@ -479,6 +481,7 @@ public class Race extends Scene implements Runnable {
 						closeWindow();
 						if (races == 0) {
 							lobby.endGame();
+							GameHandler.music.playNext();
 						}
 					});
 
@@ -491,7 +494,6 @@ public class Race extends Scene implements Runnable {
 				finishVisual.addVisualElement(results);
 			} else {
 				changeVisual(winVisual);
-				winVisual.addVisualElement(goBackVisual);
 			}
 
 			SceneHandler.instance.justRemove();

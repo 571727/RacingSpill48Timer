@@ -1,5 +1,6 @@
 package server;
 
+import elem.Bank;
 import elem.Car;
 
 public class PlayerInfo {
@@ -12,8 +13,7 @@ public class PlayerInfo {
 	private int host;
 	private String id;
 	private int finished;
-	private int points;
-	private int money;
+	private Bank bank;
 
 	protected Car car;
 	private boolean inTheRace;
@@ -23,6 +23,7 @@ public class PlayerInfo {
 		this.id = id;
 		this.host = Integer.valueOf(host);
 		this.car = null;
+		bank = new Bank();
 	}
 
 	/**
@@ -39,7 +40,7 @@ public class PlayerInfo {
 	 */
 	public String getLobbyInfo() {
 		if (car != null)
-			return name + "#" + ready + "#" + host + "#" + points;
+			return name + "#" + ready + "#" + host + "#" + bank.getPoints();
 		else
 			return "Joining...";
 	}
@@ -89,6 +90,8 @@ public class PlayerInfo {
 		float inflation = (Math.abs(totalRaces - races) + 1) / 2;
 		int winnerExtraPoint = (place == 0 ? 1 : 0);
 
+		pointsAdded = 0;
+		
 		if (!(amountPlayers == -1 || place == -1)) {
 			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
 			moneyAdded = (int) (100f * place * inflation);
@@ -96,8 +99,8 @@ public class PlayerInfo {
 			moneyAdded = (int) (50f * inflation);
 		}
 
-		points += pointsAdded;
-		money += moneyAdded;
+		bank.addPoints(pointsAdded);
+		bank.addMoney(moneyAdded);
 	}
 
 	public int getFinished() {
@@ -109,19 +112,19 @@ public class PlayerInfo {
 	}
 
 	public int getPoints() {
-		return points;
+		return bank.getPoints();
 	}
 
 	public void setPoints(int points) {
-		this.points = points;
+		bank.setPoints(points);
 	}
 
 	public int getMoney() {
-		return money;
+		return bank.getMoney();
 	}
 
 	public void setMoney(int money) {
-		this.money = money;
+		bank.setMoney(money);
 	}
 
 	public String getName() {
@@ -178,6 +181,14 @@ public class PlayerInfo {
 
 	public void setCar(Car car) {
 		this.car = car;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
 	}
 
 }

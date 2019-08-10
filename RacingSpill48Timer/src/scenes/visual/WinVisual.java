@@ -10,8 +10,10 @@ import java.util.ArrayList;
 
 import adt.Visual;
 import adt.VisualElement;
+import audio.SFX;
 import elem.Player;
 import elem.VisualString;
+import handlers.GameHandler;
 import scenes.Race;
 
 public class WinVisual extends Visual {
@@ -40,7 +42,7 @@ public class WinVisual extends Visual {
 
 		if (everyoneDone) {
 			if (stage == 0) {
-				theWinnerIntroAlpha += 0.02f;
+				theWinnerIntroAlpha += 0.01f;
 				if (theWinnerIntroAlpha >= 1) {
 					theWinnerIntroAlpha = 1;
 					stage++;
@@ -136,6 +138,8 @@ public class WinVisual extends Visual {
 
 	private void claimWinner() {
 		tc = Color.white;
+		GameHandler.music.stop();
+		SFX.playMP3Sound("winsound");
 		strings = player.getWinner().split("#");
 		alphas = new float[strings.length];
 		font = new Font("Calibri", 0, Race.WIDTH / 25);

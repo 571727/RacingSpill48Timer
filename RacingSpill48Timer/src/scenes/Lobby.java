@@ -317,9 +317,9 @@ public class Lobby extends Scene implements Runnable {
 	 * @param name - username
 	 * @param host - int value (0,1) represents boolean
 	 */
-	public void createNewLobby(String name, int host, String car, ServerHandler server, Thread lobbyThread) {
+	public void createNewLobby(String name, int host, String car, ServerHandler server, Thread lobbyThread, int amountOfRaces) {
 		this.server = server;
-		joinNewLobby(name, host, car, null, lobbyThread);
+		joinNewLobby(name, host, car, null, lobbyThread, amountOfRaces);
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class Lobby extends Scene implements Runnable {
 	 * @param host - int value (0,1) represents boolean
 	 * @param ip
 	 */
-	public void joinNewLobby(String name, int host, String car, String ip, Thread lobbyThread) {
+	public void joinNewLobby(String name, int host, String car, String ip, Thread lobbyThread, int amountOfRaces) {
 		this.lobbyThread = lobbyThread;
 		gameEnded = false;
 		if (ip != null)
@@ -335,7 +335,7 @@ public class Lobby extends Scene implements Runnable {
 		else {
 			player = new Player(name, host, car);
 			if(host == 1)
-				player.createNewRaces();
+				player.createNewRaces(amountOfRaces);
 		}
 		update(player.joinServer());
 		player.updateCarCloneToServer();

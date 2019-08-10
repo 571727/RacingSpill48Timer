@@ -8,16 +8,18 @@ public class Upgrades {
 			"More NOS", "Lighter pistons", "Transmission", "Beefier block", "Tires" };
 	private UpgradePrice[] upgradePrices;
 	private UpgradeAction[] upgradeValues;
+	private int fuelUpgrades;
 
 	public Upgrades() {
 		upgradePrices = new UpgradePrice[upgradeNames.length];
 		upgradeValues = new UpgradeAction[upgradeNames.length];
-
+		fuelUpgrades = 0;
 		// Cylinders
 		upgradeValues[0] = (Car car) -> {
 			car.setCurrentWeight();
 			car.setHp(car.getHp() + 75f);
-			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.005f));
+			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.003f));
+			car.upgradeRightShift(1.15);
 			return true;
 		};
 		// Weight
@@ -37,15 +39,28 @@ public class Upgrades {
 		};
 		// Fuel
 		upgradeValues[2] = (Car car) -> {
-			car.setHp(car.getHp() + 60f);
-			return true;
+			boolean res = false;
+			if(fuelUpgrades < 3) {
+				switch (fuelUpgrades) {
+				case 0:
+					car.setHp(car.getHp() + 10f);
+					break;
+				case 1:
+					car.setHp(car.getHp() + 98f);
+					break;
+				case 2:
+					car.setHp(car.getHp() + 296f);
+					break;
+				}
+			}
+			return res;
 		};
 		// Turbo
 		upgradeValues[3] = (Car car) -> {
 			car.setCurrentWeight();
 			car.setHasTurbo(true);
-			car.setHp(car.getHp() + (175f));
-			car.setWeightloss(car.getWeightloss() + (car.getCurrentWeight() * 0.02f));
+			car.setHp(car.getHp() + (150f));
+			car.setWeightloss(car.getWeightloss() - (car.getCurrentWeight() * 0.02f));
 			return true;
 		};
 		// NOS

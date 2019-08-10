@@ -47,6 +47,9 @@ public class Car implements Cloneable {
 	private double gearBoost;
 	private boolean gearBoostON;
 	private double gearBoostSTD;
+	private double top;
+	private double mid;
+	private double bot;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -77,6 +80,9 @@ public class Car implements Cloneable {
 		gearsbalance = 1.0;
 		idleSpeed = 1000;
 		gearBoostSTD = 1;
+		top = 24;
+		mid = 4;
+		bot = 2.6;
 
 		// Kanskje Lada der kj�relyden er hardbass.
 
@@ -264,21 +270,6 @@ public class Car implements Cloneable {
 			gearTooHigh = true;
 
 		} else {
-			if (speedLinear < 5 && gearBoost == 0) {
-				int rs = rightShift();
-				if (rs == 2) {
-					// Best boost
-					gearBoostTime = System.currentTimeMillis() + 1000;
-					gearBoost = gearBoostSTD;
-				} else if (rs == 1) {
-					// Good boost
-					gearBoostTime = System.currentTimeMillis() + 1000;
-					gearBoost = gearBoostSTD / 2;
-				} else {
-					// No boost
-					gearBoostTime = 0;
-				}
-			}
 			speedLinear += spdinc;
 			gearTooHigh = false;
 		}
@@ -293,6 +284,22 @@ public class Car implements Cloneable {
 				rpm = 0;
 				audio.stopAll();
 			}
+		}
+	}
+
+	public void tryGearBoost() {
+		int rs = rightShift();
+		if (rs == 2) {
+			// Best boost
+			gearBoostTime = System.currentTimeMillis() + 1000;
+			gearBoost = gearBoostSTD;
+		} else if (rs == 1) {
+			// Good boost
+			gearBoostTime = System.currentTimeMillis() + 1000;
+			gearBoost = gearBoostSTD / 2;
+		} else {
+			// No boost
+			gearBoostTime = 0;
 		}
 	}
 
@@ -460,7 +467,8 @@ public class Car implements Cloneable {
 	public String showStats() {
 		return "<html>" + carName.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
 				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + "<br/>Tiregrip: " + gearBoostSTD;
+				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + "<br/>Tiregrip: "
+				+ gearBoostSTD;
 
 	}
 
@@ -473,9 +481,7 @@ public class Car implements Cloneable {
 		int res = 0;
 		if ((this.gear == 1 || this.gear == 0) && speedLinear < 2) {
 			double tr = totalRPM;
-			double top = 24;
-			double mid = 4;
-			double bot = 2.6;
+
 			if (rpm < tr - tr / top && rpm > tr - tr / mid) {
 				res = 2;
 			} else if (rpm < tr - tr / mid && rpm > tr - tr / bot) {
@@ -483,6 +489,12 @@ public class Car implements Cloneable {
 			}
 		}
 		return res;
+	}
+
+	public void upgradeRightShift(double change) {
+		top = top * change;
+		mid = mid * (1 - Math.abs(1 - change));
+		bot = bot * (1 - Math.abs(1 - change));
 	}
 
 	public Object clone() throws CloneNotSupportedException {

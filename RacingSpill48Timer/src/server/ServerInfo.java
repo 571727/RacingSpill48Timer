@@ -471,8 +471,8 @@ public class ServerInfo implements Runnable {
 		return 500 * (r.nextInt(4) + 1) / (500 * (Main.DEBUG ? 1 : 0) + 1);
 	}
 
-	public void newRaces() {
-		totalRaces = 2;
+	public void newRaces(String[] input) {
+		totalRaces = Integer.parseInt(input[1]);
 		races = totalRaces;
 	}
 
@@ -507,6 +507,10 @@ public class ServerInfo implements Runnable {
 		else
 			winnerText = othersWinningText(asker);
 
+		winnerText += "#Highest speed you achived was " + asker.getCar().getHighestSpeedAchived() + "km/h!";
+		winnerText += "#You made $" + asker.getBank().getMoneyAchived() + " and " + asker.getBank().getPointsAchived()
+				+ " points in total!";
+
 		return winnerText;
 	}
 
@@ -524,6 +528,7 @@ public class ServerInfo implements Runnable {
 			winnerText += "!!!";
 		}
 		winnerText += "#You have " + asker.getPoints() + " points!";
+
 		return winnerText;
 	}
 

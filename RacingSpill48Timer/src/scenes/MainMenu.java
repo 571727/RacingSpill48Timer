@@ -31,7 +31,7 @@ public class MainMenu extends Scene {
 		host = new JButton("Host");
 		join = new JButton("Join");
 		this.lobby = lobby;
-		title = new JLabel(Main.GAME_NAME + " v.1.5");
+		title = new JLabel(Main.GAME_NAME + " v.1.5.2");
 
 		title.setPreferredSize(new Dimension(550, 20));
 
@@ -82,6 +82,10 @@ public class MainMenu extends Scene {
 			diff = "0";
 		}
 
+		String amountOfRaces = amountOfRacesSelection();
+		if (amountOfRaces == null)
+			return;
+
 		Main.AI_NAMES_TAKEN = new boolean[Main.AI_NAMES.length];
 
 		serverHandler.createNew(Integer.valueOf(amountOfAI), Integer.valueOf(diff));
@@ -89,13 +93,20 @@ public class MainMenu extends Scene {
 		SceneHandler.instance.changeScene(1);
 		thread = new Thread(lobby);
 
-		lobby.createNewLobby(name, 1, car, serverHandler, thread);
+		lobby.createNewLobby(name, 1, car, serverHandler, thread, Integer.valueOf(amountOfRaces));
 
 		thread.start();
 	}
 
+	private String amountOfRacesSelection() {
+		String str = (String) JOptionPane.showInputDialog(null, "Choose length, bro", Main.GAME_NAME,
+				JOptionPane.PLAIN_MESSAGE, null, Main.RACE_AMOUNT, Main.RACE_AMOUNT[0]);
+		
+		return str;
+	}
+
 	private String difficultySelection() {
-		String str = (String) JOptionPane.showInputDialog(null, "Choose difficulty, bro", "Carznstuff",
+		String str = (String) JOptionPane.showInputDialog(null, "Choose difficulty, bro", Main.GAME_NAME,
 				JOptionPane.PLAIN_MESSAGE, null, Main.DIFFICULTY_TYPES, Main.DIFFICULTY_TYPES[0]);
 
 		for (int i = 0; i < Main.DIFFICULTY_TYPES.length; i++) {
@@ -107,7 +118,7 @@ public class MainMenu extends Scene {
 	}
 
 	private String amountOfAISelection() {
-		return (String) JOptionPane.showInputDialog(null, "How many AI?", "Carznstuff", JOptionPane.PLAIN_MESSAGE, null,
+		return (String) JOptionPane.showInputDialog(null, "How many AI?", Main.GAME_NAME, JOptionPane.PLAIN_MESSAGE, null,
 				Main.AMOUNT_OF_AI, Main.AMOUNT_OF_AI[0]);
 	}
 
@@ -140,7 +151,7 @@ public class MainMenu extends Scene {
 		SceneHandler.instance.changeScene(1);
 		thread = new Thread(lobby);
 
-		lobby.joinNewLobby(name, 0, car, ip, thread);
+		lobby.joinNewLobby(name, 0, car, ip, thread, -1);
 
 		thread.start();
 	}
