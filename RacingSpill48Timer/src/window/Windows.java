@@ -1,12 +1,19 @@
 package window;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import elem.Player;
+import startup.Main;
 
 public class Windows extends JFrame {
 

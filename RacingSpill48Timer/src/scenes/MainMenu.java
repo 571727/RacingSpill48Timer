@@ -1,18 +1,22 @@
 package scenes;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import adt.Scene;
-import audio.ButtonAudio;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
 import startup.Main;
+import window.Windows;
 
 public class MainMenu extends Scene {
 
@@ -23,15 +27,19 @@ public class MainMenu extends Scene {
 	private Thread thread;
 	private ServerHandler serverHandler;
 	private Lobby lobby;
+	private JButton exit;
 
 	public MainMenu(Lobby lobby) {
+		super("mainMenu");
+
 		// Init variables
 		serverHandler = new ServerHandler();
-		options = new JButton("Options");
+		options = new JButton("Options and Controls");
 		host = new JButton("Host");
 		join = new JButton("Join");
+		exit = new JButton("Quit Game");
 		this.lobby = lobby;
-		title = new JLabel(Main.GAME_NAME + " v.1.5.2");
+		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v.1.6.0" + "</font></html>");
 
 		title.setPreferredSize(new Dimension(550, 20));
 
@@ -48,13 +56,31 @@ public class MainMenu extends Scene {
 			join();
 			GameHandler.ba.playRegularBtn();
 		});
+		exit.addActionListener((ActionEvent e) -> {
+			GameHandler.ba.playRegularBtn();
+			System.exit(0);
+		});
+
+		// Layout
+		int bw = 200;
+		int bh = 50;
+		double margin = 0.8 * bh;
+
+		setLayout(null);
+		title.setFont(new Font("TimesRoman", Font.ITALIC, 48));
+		title.setBounds(125, 50, Windows.WIDTH, 72);
+		
+		host.setBounds(Windows.WIDTH / 2 - bw / 2, (int) (4 * bh + 0 * margin), bw, bh);
+		join.setBounds(Windows.WIDTH / 2 - bw / 2, (int) (5 * bh + 1 *margin), bw, bh);
+		options.setBounds(Windows.WIDTH / 2 - bw / 2, (int) (6 * bh + 2 *margin), bw, bh);
+		exit.setBounds(Windows.WIDTH / 2 - bw / 2, (int) (7 * bh + 3 *margin), bw, bh);
 
 		// Add to jpanel
 		add(title);
-		add(options);
 		add(host);
 		add(join);
-
+		add(options);
+		add(exit);
 	}
 
 	private void host() {
@@ -101,7 +127,7 @@ public class MainMenu extends Scene {
 	private String amountOfRacesSelection() {
 		String str = (String) JOptionPane.showInputDialog(null, "Choose length, bro", Main.GAME_NAME,
 				JOptionPane.PLAIN_MESSAGE, null, Main.RACE_AMOUNT, Main.RACE_AMOUNT[0]);
-		
+
 		return str;
 	}
 
@@ -118,8 +144,8 @@ public class MainMenu extends Scene {
 	}
 
 	private String amountOfAISelection() {
-		return (String) JOptionPane.showInputDialog(null, "How many AI?", Main.GAME_NAME, JOptionPane.PLAIN_MESSAGE, null,
-				Main.AMOUNT_OF_AI, Main.AMOUNT_OF_AI[0]);
+		return (String) JOptionPane.showInputDialog(null, "How many AI?", Main.GAME_NAME, JOptionPane.PLAIN_MESSAGE,
+				null, Main.AMOUNT_OF_AI, Main.AMOUNT_OF_AI[0]);
 	}
 
 	private void join() {
@@ -177,6 +203,13 @@ public class MainMenu extends Scene {
 
 		} while (name.isEmpty() || name.contains("#") || name.length() > 12);
 		return name;
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.drawImage(backgroundImage, 0, 0, Windows.WIDTH, Windows.HEIGHT, null);
 	}
 
 }

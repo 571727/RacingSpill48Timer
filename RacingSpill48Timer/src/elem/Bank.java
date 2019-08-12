@@ -8,7 +8,7 @@ public class Bank {
 	private int pointsAchived;
 
 	public Bank() {
-		inflation = new int[Upgrades.upgradeNames.length];
+		inflation = new int[Upgrades.UPGRADE_NAMES.length];
 	}
 
 	public boolean buyWithMoney(int amount, int i) {

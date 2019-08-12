@@ -50,6 +50,9 @@ public class Car implements Cloneable {
 	private double top;
 	private double mid;
 	private double bot;
+	private Integer[] upgradeLVLs;
+	private double drag;
+	private double dragCapability;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -83,6 +86,8 @@ public class Car implements Cloneable {
 		top = 24;
 		mid = 4;
 		bot = 2.6;
+		drag = 1;
+		setUpgradeLVLs(new Integer[Upgrades.UPGRADE_NAMES.length]);
 
 		// Kanskje Lada der kj�relyden er hardbass.
 
@@ -94,24 +99,30 @@ public class Car implements Cloneable {
 			totalWeight = 1549;
 			totalGear = 6;
 			totalRPM = 8000;
+			dragCapability = 249;
 			break;
 		case "Supra":
 			hp = 220;
 			totalWeight = 1400;
 			totalGear = 5;
 			totalRPM = 7800;
+			dragCapability = 285;
 			break;
 		case "Mustang":
 			hp = 310;
 			totalWeight = 1607;
 			totalRPM = 7500;
 			totalGear = 5;
+			dragCapability = 250;
 			break;
 		case "Bentley":
-			hp = 650;
-			totalRPM = 2500;
-			totalWeight = 3048;
+			// Bentley Blower No.1
+			hp = 242;
+			totalRPM = 3200;
+			totalWeight = 1625;
 			totalGear = 4;
+			maxValuePitch = 3;
+			dragCapability = 222;
 			break;
 		case "Skoda Fabia":
 			hp = 64;
@@ -119,12 +130,14 @@ public class Car implements Cloneable {
 			totalRPM = 5500;
 			totalGear = 5;
 			maxValuePitch = 4;
+			dragCapability = 162;
 			break;
 		case "Corolla":
-			hp = 120;
-			totalWeight = 1100;
-			totalRPM = 6000;
+			hp = 118;
+			totalWeight = 998;
+			totalRPM = 8000;
 			totalGear = 5;
+			dragCapability = 201;
 			break;
 		}
 //		hp = 1600;
@@ -238,6 +251,7 @@ public class Car implements Cloneable {
 		}
 
 		calculateActualSpeed();
+		calculateDrag();
 		calculateDistance();
 		updateSpeedInc();
 	}
@@ -247,6 +261,13 @@ public class Car implements Cloneable {
 			speedLinear -= 0.5f;
 		else
 			speedLinear = 0;
+	}
+
+	private void calculateDrag() {
+		drag = -Math.pow(speedActual / dragCapability, 5) + 1;
+		if (drag < 0)
+			drag = 0;
+		
 	}
 
 	public void calculateActualSpeed() {
@@ -260,7 +281,6 @@ public class Car implements Cloneable {
 	}
 
 	public void calculateDistance() {
-		// delt p� 72 fordi denne oppdateres hvert 50 millisek (1/3,6 * 1/20)
 		distance += speedActual / 24;
 	}
 
@@ -446,6 +466,10 @@ public class Car implements Cloneable {
 		gearBoostTime = 0;
 		gearBoost = 0;
 		resistance = 1.0;
+		top = 24;
+		mid = 4;
+		bot = 2.6;
+		drag = 1;
 		if (audioActivated)
 			audio.stopAll();
 		updateSpeedInc();
@@ -459,9 +483,17 @@ public class Car implements Cloneable {
 
 	public void updateSpeedInc() {
 		double w = (totalWeight - weightloss);
-		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
+//		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
 		double rpmCalc = (double) rpm / (double) totalRPM;
-		spdinc = (hp * rpmCalc / weightcalc) / 100f * gearsbalance;
+		spdinc = 5 * (hp * rpmCalc / w * gearsbalance) * drag;
+	}
+
+	public String showStats(int prevLvl, int nextLvl) {
+		return "From LVL " + prevLvl + " to LVL " + nextLvl + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
+				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
+				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + "<br/>Tiregrip: "
+				+ gearBoostSTD;
+
 	}
 
 	public String showStats() {
@@ -497,8 +529,14 @@ public class Car implements Cloneable {
 		bot = bot * (1 - Math.abs(1 - change));
 	}
 
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public Car clone() throws CloneNotSupportedException {
+		Car newCar = (Car) super.clone();
+		Integer[] upgradeLVLs = new Integer[this.upgradeLVLs.length];
+		for (int i = 0; i < this.upgradeLVLs.length; i++) {
+			upgradeLVLs[i] = getUpgradeLVL(i);
+		}
+		newCar.setUpgradeLVLs(upgradeLVLs);
+		return newCar;
 	}
 
 	public boolean isGas() {
@@ -743,6 +781,26 @@ public class Car implements Cloneable {
 
 	public void setGearBoostSTD(double gearBoostSTD) {
 		this.gearBoostSTD = gearBoostSTD;
+	}
+
+	public Integer getUpgradeLVL(Integer LVL) {
+		if (upgradeLVLs[LVL] == null)
+			upgradeLVLs[LVL] = 0;
+		return upgradeLVLs[LVL];
+	}
+
+	public void setUpgradeLVLs(Integer[] upgradeLVLs) {
+		this.upgradeLVLs = upgradeLVLs;
+	}
+
+	public void iterateUpgradeLVL(Integer LVL) {
+		if (upgradeLVLs[LVL] == null)
+			upgradeLVLs[LVL] = 0;
+		upgradeLVLs[LVL]++;
+	}
+
+	public Integer[] getUpgradeLVLs() {
+		return upgradeLVLs;
 	}
 
 }

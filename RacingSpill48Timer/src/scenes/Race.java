@@ -39,7 +39,7 @@ public class Race extends Scene implements Runnable {
 	 * Generated value
 	 */
 	private static final long serialVersionUID = 7286654650311664681L;
-	public static final int TICK_STD = 20;
+	public static final int TICK_STD = 25;
 	private Player player;
 	private Lobby lobby;
 	private JFrame racingWindow;
@@ -183,6 +183,7 @@ public class Race extends Scene implements Runnable {
 	}
 
 	public void tick() {
+		visualTick();
 		player.getCar().updateSpeed();
 		checkDistanceLeft();
 
@@ -254,7 +255,7 @@ public class Race extends Scene implements Runnable {
 		// TODO lagre fps i en textfil. Og gj�re slik at man kan endre verdien i
 		// options.
 		double[] fpsSteps = { 144, 120, 60, 30, 20, 16 };
-		int fps = 3;
+		int fps = 2;
 		int tolerance = 5;
 		double nst = 1000000000 / amountOfTicks;
 		double nsr = 1000000000 / fpsSteps[fps];
@@ -286,30 +287,23 @@ public class Race extends Scene implements Runnable {
 				if (racingWindow.isVisible())
 					racingWindow.requestFocus();
 
-				visualTick();
+				if (player.isInTheRace() == false) {
+					player.inTheRace();
+				}
 
 				tick();
 			}
 			// Render
-			while (deltar >= 1) {
-				deltar--;
-				frames++;
-				if (currentVisual != null) {
-					Graphics g = null;
-					currentVisual.render(g);
-					if (player.isInTheRace() == false) {
-						player.inTheRace();
-					}
-				}
-			}
+			frames++;
+				currentVisual.render(null);
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS RACE: " + frames);
-				if ((frames >= fpsSteps[fps] - tolerance && frames < fpsSteps[fps] + tolerance) == false
-						&& fps < fpsSteps.length - 1 && racingWindow.isFocused()) {
-					fps++;
-					nsr = 1000000000 / fpsSteps[fps];
-				}
+//				if ((frames >= fpsSteps[fps] - tolerance && frames < fpsSteps[fps] + tolerance) == false
+//						&& fps < fpsSteps.length - 1 && racingWindow.isFocused()) {
+//					fps++;
+//					nsr = 1000000000 / fpsSteps[fps];
+//				}
 				// Check if frames are ok.
 
 				frames = 0;
@@ -416,7 +410,7 @@ public class Race extends Scene implements Runnable {
 				} else if (finished || startTime == -1) {
 					result += "Time: " + (Float.valueOf(outputs[i]) / 1000) + " seconds";
 				} else {
-					result += "Time: " + (System.currentTimeMillis() - startTime / 1000) + " seconds";
+					result += "Time: " + (Float.valueOf(System.currentTimeMillis() - startTime) / 1000) + " seconds";
 				}
 				break;
 			case 4:
@@ -488,7 +482,8 @@ public class Race extends Scene implements Runnable {
 			if (!lastRace()) {
 				changeVisual(finishVisual);
 				results = new VisualString((int) (WIDTH - WIDTH / 3.6f), (int) (HEIGHT / 24), (int) (WIDTH / 3.8f),
-						(int) (HEIGHT / 1.5f), Color.white, Color.black, new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
+						(int) (HEIGHT / 1.5f), Color.white, Color.black,
+						new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
 
 				finishVisual.addVisualElement(goBackVisual);
 				finishVisual.addVisualElement(results);

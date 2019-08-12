@@ -91,10 +91,13 @@ public class PlayerInfo {
 		int winnerExtraPoint = (place == 0 ? 1 : 0);
 
 		pointsAdded = 0;
-		
+
 		if (!(amountPlayers == -1 || place == -1)) {
 			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
-			moneyAdded = (int) (100f * place * inflation);
+			if (place > 0)
+				moneyAdded = (int) (100f * place * inflation);
+			else
+				moneyAdded = (int) (25f * inflation);
 		} else {
 			moneyAdded = (int) (50f * inflation);
 		}

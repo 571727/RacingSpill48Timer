@@ -2,6 +2,8 @@ package scenes;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -19,28 +21,26 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import adt.Scene;
-import audio.ButtonAudio;
 import audio.SFX;
 import elem.Player;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
-import startup.Main;
+import window.Windows;
 
 public class Lobby extends Scene implements Runnable {
 
 	private static final long serialVersionUID = -5861049279182231248L;
 	private JLabel label;
-	private JLabel placeAndLength;
 	private JButton ready;
-	private JButton fixCar;
+	private JButton store;
 	private JButton start;
 	private JButton goBack;
 	private JButton options;
 	private Player player;
 	private boolean running;
 	private ServerHandler server;
-	private JScrollPane scrollPane;
+	private JScrollPane lobbyInfoScrollPane;
 	private boolean everyoneReady;
 	private Race race;
 	private Store fixCarScene;
@@ -60,27 +60,26 @@ public class Lobby extends Scene implements Runnable {
 	private boolean fixCarChecked;
 
 	public Lobby(Race race, Store fixCarScene) {
-
+		super("lobby");
 		// Init shit
 		this.race = race;
 		this.fixCarScene = fixCarScene;
 		label = new JLabel("If you can read this, something wrong happend!!!", SwingConstants.CENTER);
-		placeAndLength = new JLabel();
 		ready = new JButton("Ready?");
-		fixCar = new JButton("Store");
+		store = new JButton("Store");
 		start = new JButton("Start race");
-		goBack = new JButton("Go back to main menu");
-		options = new JButton("Options");
-		scrollPane = new JScrollPane(label);
-		scrollPane.setPreferredSize(new Dimension(500, 300));
-		ipLabel = new JLabel("IPs: ");
+		goBack = new JButton("Go back to Main Menu");
+		options = new JButton("Options and Controls");
+		lobbyInfoScrollPane = new JScrollPane(label);
+		lobbyInfoScrollPane.setPreferredSize(new Dimension(500, 300));
+		ipLabel = new JLabel();
 
 		chatInput = new JTextField("Chat here...");
 		chatOutput = new JLabel();
 		chatScrollPane = new JScrollPane(chatOutput);
 		chatScrollPane.setPreferredSize(new Dimension(500, 300));
 
-		String ipLabelText = "<html> IPs: ";
+		String ipLabelText = "<html><font color='white'>IPs: ";
 		try {
 			Enumeration enumIP = NetworkInterface.getNetworkInterfaces();
 
@@ -95,7 +94,7 @@ public class Lobby extends Scene implements Runnable {
 		} catch (SocketException e1) {
 			e1.printStackTrace();
 		}
-		ipLabelText += "</html>";
+		ipLabelText += "</font></html>";
 		ipLabel.setText(ipLabelText);
 
 		// ActionListeners
@@ -106,17 +105,17 @@ public class Lobby extends Scene implements Runnable {
 				GameHandler.ba.playReady();
 			else
 				GameHandler.ba.playRegularBtn();
-			fixCar.setEnabled(player.getReady() == 0);
+			store.setEnabled(player.getReady() == 0);
 			options.setEnabled(player.getReady() == 0);
 		});
-		fixCar.addActionListener((ActionEvent e) -> {
+		store.addActionListener((ActionEvent e) -> {
 			SFX.playMP3Sound("open_store");
 			SceneHandler.instance.changeScene(2);
 			if (!fixCarChecked) {
 				fixCarScene.init(player);
 				fixCarChecked = true;
 			}
-			fixCarScene.updateText();
+			fixCarScene.updateText(currentPlace, currentLength);
 		});
 		goBack.addActionListener((ActionEvent e) -> {
 			GameHandler.ba.playRegularBtn();
@@ -172,15 +171,40 @@ public class Lobby extends Scene implements Runnable {
 			}
 		});
 
+		// Layout
+		setLayout(null);
+
+		int ipLabelSize = 250;
+		int bw = 200;
+		int bh = bw / 4;
+		int margin = (int) (0.4 * bh);
+		int marginW = (int) (1.5 * margin);
+		int paneSizeW = Windows.WIDTH / 5 * 2;
+		int paneSizeH = Windows.HEIGHT / 5 * 2;
+		int chatInputH = 24;
+		int btnX = (Windows.WIDTH - paneSizeW - marginW) / 2 - bw / 2 + paneSizeW + marginW;
+
+		ipLabel.setFont(new Font("TimesRoman", Font.ITALIC, 16));
+		ipLabel.setBounds(paneSizeW + 2 * marginW, margin, ipLabelSize, (int) (ipLabelSize * 0.5));
+
+		start.setBounds(btnX, 4 * bh + 0 * margin, bw, bh);
+		store.setBounds(btnX, 5 * bh + 1 * margin, bw, bh);
+		ready.setBounds(btnX, 6 * bh + 2 * margin, bw, bh);
+		options.setBounds(btnX, 7 * bh + 3 * margin, bw, bh);
+		goBack.setBounds(btnX, 8 * bh + 4 * margin, bw, bh);
+
+		lobbyInfoScrollPane.setBounds(marginW, margin, paneSizeW, paneSizeH);
+		chatScrollPane.setBounds(marginW, Windows.HEIGHT - paneSizeH - 5 * margin, paneSizeW, paneSizeH);
+		chatInput.setBounds(marginW, Windows.HEIGHT - 5 * margin + (chatInputH / 8), paneSizeW, chatInputH);
+
 		// Add to JPanel
-		add(scrollPane);
+		add(lobbyInfoScrollPane);
+		add(ipLabel);
 		add(goBack, BorderLayout.SOUTH);
 		add(options, BorderLayout.SOUTH);
 		add(ready, BorderLayout.SOUTH);
-		add(fixCar, BorderLayout.SOUTH);
+		add(store, BorderLayout.SOUTH);
 		add(start, BorderLayout.SOUTH);
-		add(placeAndLength);
-		add(ipLabel);
 		add(chatInput);
 		add(chatScrollPane);
 	}
@@ -212,7 +236,10 @@ public class Lobby extends Scene implements Runnable {
 
 			int racesLeft = Integer.valueOf(player.getRacesLeft());
 			race.setRaces(racesLeft);
-			String result = "<html> Races left: " + racesLeft + "<br/><br/>" + "Players: <br/>";
+			String result = "<html>Podium-position: " + (player.getPlacePodium() + 1) + "<br/>Next race: "
+					+ currentPlace + ", " + currentLength + "m" + "<br/>Races left: " + racesLeft + "<br/><br/>"
+					+ "Players: <br/>";
+			player.setPlacePodium(Integer.parseInt(outputs[0]));
 			int n = 0;
 			for (int i = 1; i < outputs.length; i++) {
 				n++;
@@ -286,7 +313,6 @@ public class Lobby extends Scene implements Runnable {
 				placeChecked = true;
 				currentLength = player.getTrackLength();
 				currentPlace = player.getCurrentPlace();
-				placeAndLength.setText(currentPlace + ", " + currentLength + "m");
 			}
 
 		} catch (Exception e) {
@@ -317,7 +343,8 @@ public class Lobby extends Scene implements Runnable {
 	 * @param name - username
 	 * @param host - int value (0,1) represents boolean
 	 */
-	public void createNewLobby(String name, int host, String car, ServerHandler server, Thread lobbyThread, int amountOfRaces) {
+	public void createNewLobby(String name, int host, String car, ServerHandler server, Thread lobbyThread,
+			int amountOfRaces) {
 		this.server = server;
 		joinNewLobby(name, host, car, null, lobbyThread, amountOfRaces);
 	}
@@ -334,7 +361,7 @@ public class Lobby extends Scene implements Runnable {
 			player = new Player(name, host, car, ip);
 		else {
 			player = new Player(name, host, car);
-			if(host == 1)
+			if (host == 1)
 				player.createNewRaces(amountOfRaces);
 		}
 		update(player.joinServer());
@@ -374,7 +401,7 @@ public class Lobby extends Scene implements Runnable {
 			player.updateLobbyFromServer();
 			player.getCar().updateVolume();
 
-			fixCar.setEnabled(true);
+			store.setEnabled(true);
 			options.setEnabled(true);
 
 			thread = new Thread(race);
@@ -473,5 +500,12 @@ public class Lobby extends Scene implements Runnable {
 
 	public void setPlaceChecked(boolean placeChecked) {
 		this.placeChecked = placeChecked;
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.drawImage(backgroundImage, 0, 0, Windows.WIDTH, Windows.HEIGHT, null);
 	}
 }

@@ -39,7 +39,7 @@ public class StoreHandler {
 				currentUpgrade = i;
 		}
 
-		String upgradeText = "<html>UPGRADED " + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$"
+		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$"
 				+ upgrades.getCostMoney(currentUpgrade, bank) + " or " + upgrades.getCostPoints(currentUpgrade, bank)
 				+ " points </html>";
 
@@ -47,11 +47,11 @@ public class StoreHandler {
 	}
 
 	public void buyWithMoney(Player player) {
-		int amount = upgrades.getCostMoney(currentUpgrade, player.getBank());
-		if (player.getBank().canAffordMoney(amount)) {
+		double amount = upgrades.getCostMoney(currentUpgrade, player.getBank()) * podiumInflation(player.getPlacePodium());
+		if (player.getBank().canAffordMoney((int) amount)) {
 			if (!upgrades.upgrade(currentUpgrade, player.getCar()))
 				return;
-			player.getBank().buyWithMoney(amount, currentUpgrade);
+			player.getBank().buyWithMoney((int) amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
@@ -83,5 +83,15 @@ public class StoreHandler {
 		for (int i = 0; i < upgradePrices.length; i++) {
 			upgradePrices[i] = new UpgradePrice(1, prices[i]);
 		}
+	}
+
+	public double podiumInflation(int podium) {
+		if (podium > 3)
+			return 1;
+		return 0.02 * (3 - podium) + 1;
+	}
+	
+	public boolean hasUpgrade(int i, Car car, int comparedLVL) {
+		return car.getUpgradeLVL(i) >= comparedLVL;
 	}
 }

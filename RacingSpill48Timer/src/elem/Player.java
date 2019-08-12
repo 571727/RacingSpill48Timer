@@ -28,6 +28,7 @@ public class Player {
 	private boolean inTheRace;
 	private int moneyAchived;
 	private int pointsAchived;
+	private int podium;
 
 	public Player(String name, int host, String car) {
 		this(name, host, car, Config.SERVER);
@@ -249,6 +250,14 @@ public class Player {
 
 	public void setPointsAchived(int pointsAchived) {
 		this.pointsAchived = pointsAchived;
+	}
+
+	public void setPlacePodium(int podium) {
+		this.podium = podium;
+	}
+
+	public int getPlacePodium() {
+		return podium;
 	}
 
 }

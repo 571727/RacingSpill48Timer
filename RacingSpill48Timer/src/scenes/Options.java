@@ -1,8 +1,11 @@
 package scenes;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -13,6 +16,7 @@ import adt.Scene;
 import audio.ButtonAudio;
 import handlers.GameHandler;
 import handlers.SceneHandler;
+import window.Windows;
 
 public class Options extends Scene {
 	private JButton goBack;
@@ -26,7 +30,8 @@ public class Options extends Scene {
 	private JSlider slider;
 
 	public Options(double volume) {
-
+		super("mainMenu");
+		
 		goBack = new JButton("Go back");
 		nextSong = new JButton("Play another song instead!");
 		stopMusic = new JButton("Turn off/on that music!!!");
@@ -34,13 +39,15 @@ public class Options extends Scene {
 		togglefullscreen = new JButton("Fullscreen: " + true);
 		specifyRes = new JButton("Specify resolution");
 		specifyResLabel = new JLabel("Specified resolution: " + false);
-		tutorial = new JLabel("<html>These are all the controls:<br/>" + "Throttle: W<br/>" + "Clutch: Space<br/>"
-				+ "Shift: UP-LShift, DOWN-LCtrl<br/>" + "NOS: E<br/>"
-				+ "Brakes: S <br/><br/>If you have trouble with the screen not rendering correctly when racing, please use windowed mode or specify your resolution manually! :-)</html>");
-		tutorial.setPreferredSize(new Dimension(500, 150));
+		tutorial = new JLabel("<html><font color='white'>********** C O N T R O L S **********<br/>" + "Throttle: W<br/>"
+				+ "Clutch: Space<br/>"
+				+ "Neutral: N<br/>1st:&ensp;U<br/>2nd: J<br/>3rd:&ensp;I<br/>4th:&ensp;L<br/>5th:&ensp;P (!)<br/>6th:&ensp;L (!)<br/>"
+				+ "NOS: E<br/>"
+				+ "Brakes: S <br/><br/>If game SLOW use WINDOWED<br/>(not fullscreen)<br/><br/>(!) = May not apply to chosen car</font></html>");
+		tutorial.setPreferredSize(new Dimension(500, 300));
 		volumeTitle.setPreferredSize(new Dimension(150, 20));
 
-		slider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) (volume * 200.0));
+		slider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) (volume * 100.0));
 		slider.setMinorTickSpacing(1);
 		slider.setMajorTickSpacing(10);
 		slider.setPaintTicks(true);
@@ -49,7 +56,7 @@ public class Options extends Scene {
 		slider.addChangeListener((ChangeEvent e) -> {
 			JSlider source = (JSlider) e.getSource();
 
-			GameHandler.volume = source.getValue() / 200.0;
+			GameHandler.volume = source.getValue() / 100.0;
 			GameHandler.music.updateVolume();
 		});
 		togglefullscreen.addActionListener((ActionEvent e) -> {
@@ -105,6 +112,7 @@ public class Options extends Scene {
 		nextSong.addActionListener((ActionEvent e) -> GameHandler.music.playNext());
 		stopMusic.addActionListener((ActionEvent e) -> GameHandler.music.playOrStop());
 
+		
 		add(goBack);
 		add(nextSong);
 		add(stopMusic);
@@ -114,5 +122,12 @@ public class Options extends Scene {
 		add(specifyResLabel);
 		add(specifyRes);
 		add(tutorial);
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.drawImage(backgroundImage, 0, 0, Windows.WIDTH, Windows.HEIGHT, null);
 	}
 }

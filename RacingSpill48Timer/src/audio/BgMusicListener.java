@@ -40,7 +40,7 @@ public class BgMusicListener {
 
 	public void updateVolume() {
 		if (playingIndex >= 0 && music[playingIndex] != null)
-			music[playingIndex].setVolume(1.8);
+			music[playingIndex].setVolume(0.4);
 	}
 
 	public void playOrStop() {

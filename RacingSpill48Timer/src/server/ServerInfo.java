@@ -85,7 +85,7 @@ public class ServerInfo implements Runnable {
 			players.put(ai.getName() + (-i), ai);
 		}
 
-		upgradePrices = new int[Upgrades.getUpgradeNames().length];
+		upgradePrices = new int[Upgrades.UPGRADE_NAMES.length];
 
 		for (int i = 0; i < upgradePrices.length; i++) {
 			upgradePrices[i] = 40 + r.nextInt(40);
@@ -120,7 +120,7 @@ public class ServerInfo implements Runnable {
 		ping.put(input[1] + input[2], System.currentTimeMillis());
 		chat.put(newPlayer, new ConcurrentLinkedQueue<String>());
 
-		return updateLobby();
+		return updateLobby(newPlayer);
 	}
 
 	public void updateCarForPlayer(String[] input) {
@@ -135,14 +135,29 @@ public class ServerInfo implements Runnable {
 	/**
 	 * @return name#ready#car#...
 	 */
-	public String updateLobby() {
-		String result = "";
+	public String updateLobby(PlayerInfo player) {
+		String result = getPlacePodium(player);
 
 		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
 			result += "#" + entry.getValue().getLobbyInfo() + "#" + started + "#" + entry.getValue().getCarInfo();
 		}
 
 		return result;
+	}
+
+	private String getPlacePodium(PlayerInfo player) {
+		int place = 0;
+		for (Entry<String, PlayerInfo> otherEntry : players.entrySet()) {
+
+			if (otherEntry.getValue() != player) {
+
+				int otherPoints = otherEntry.getValue().getPoints();
+				if (player.getPoints() > otherPoints) {
+					place++;
+				}
+			}
+		}
+		return String.valueOf(place);
 	}
 
 	/**
@@ -158,7 +173,7 @@ public class ServerInfo implements Runnable {
 		}
 		player.updateLobby(input);
 
-		return updateLobby();
+		return updateLobby(player);
 	}
 
 	private PlayerInfo getPlayer(String[] input) {
