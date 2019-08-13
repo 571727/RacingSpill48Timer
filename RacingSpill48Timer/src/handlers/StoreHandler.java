@@ -1,5 +1,6 @@
 package handlers;
 
+import audio.SFX;
 import elem.Bank;
 import elem.Car;
 import elem.Player;
@@ -39,6 +40,8 @@ public class StoreHandler {
 				currentUpgrade = i;
 		}
 
+		SFX.playMP3Sound("btn/" + upgradeNames[currentUpgrade]);
+
 		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$"
 				+ upgrades.getCostMoney(currentUpgrade, bank) + " or " + upgrades.getCostPoints(currentUpgrade, bank)
 				+ " points </html>";
@@ -47,26 +50,33 @@ public class StoreHandler {
 	}
 
 	public void buyWithMoney(Player player) {
-		double amount = upgrades.getCostMoney(currentUpgrade, player.getBank()) * podiumInflation(player.getPlacePodium());
-		if (player.getBank().canAffordMoney((int) amount)) {
-			if (!upgrades.upgrade(currentUpgrade, player.getCar()))
-				return;
+		double amount = upgrades.getCostMoney(currentUpgrade, player.getBank())
+				* podiumInflation(player.getPlacePodium());
+		if (player.getBank().canAffordMoney((int) amount) && upgrades.upgrade(currentUpgrade, player.getCar())) {
+
+			SFX.playMP3Sound("btn/" + "money");
+
 			player.getBank().buyWithMoney((int) amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
+		} else {
+			SFX.playMP3Sound("btn/" + "not_enough");
 		}
 	}
 
 	public void buyWithPoints(Player player) {
 		int amount = upgrades.getCostPoints(currentUpgrade, player.getBank());
-		if (player.getBank().canAffordPoints(amount)) {
-			if (!upgrades.upgrade(currentUpgrade, player.getCar()))
-				return;
+		if (player.getBank().canAffordPoints(amount) && upgrades.upgrade(currentUpgrade, player.getCar())) {
+
+			SFX.playMP3Sound("btn/" + "points");
+
 			player.getBank().buyWithPoints(amount, currentUpgrade);
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
+		} else {
+			SFX.playMP3Sound("btn/" + "not_enough");
 		}
 	}
 
@@ -90,7 +100,7 @@ public class StoreHandler {
 			return 1;
 		return 0.02 * (3 - podium) + 1;
 	}
-	
+
 	public boolean hasUpgrade(int i, Car car, int comparedLVL) {
 		return car.getUpgradeLVL(i) >= comparedLVL;
 	}

@@ -109,7 +109,7 @@ public class Lobby extends Scene implements Runnable {
 			options.setEnabled(player.getReady() == 0);
 		});
 		store.addActionListener((ActionEvent e) -> {
-			SFX.playMP3Sound("open_store");
+			SFX.playMP3Sound("btn/open_store");
 			SceneHandler.instance.changeScene(2);
 			if (!fixCarChecked) {
 				fixCarScene.init(player);
@@ -237,7 +237,7 @@ public class Lobby extends Scene implements Runnable {
 			int racesLeft = Integer.valueOf(player.getRacesLeft());
 			race.setRaces(racesLeft);
 			String result = "<html>Podium-position: " + (player.getPlacePodium() + 1) + "<br/>Next race: "
-					+ currentPlace + ", " + currentLength + "m" + "<br/>Races left: " + racesLeft + "<br/><br/>"
+					+ currentPlace + ", " + currentLength + " m" + "<br/>Races left: " + racesLeft + "<br/><br/>"
 					+ "Players: <br/>";
 			player.setPlacePodium(Integer.parseInt(outputs[0]));
 			int n = 0;

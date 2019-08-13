@@ -4,6 +4,7 @@ public class UpgradePrice {
 
 	private int points;
 	private int money;
+	private int sale;
 
 	public UpgradePrice(int points, int money) {
 		this.points = points;
@@ -19,10 +20,14 @@ public class UpgradePrice {
 	}
 
 	public int getMoney() {
-		return money;
+		return money * (100 + sale) / 100;
 	}
 
 	public void setMoney(int money) {
 		this.money = money;
+	}
+
+	public void addSale(int i) {
+		sale += i;
 	}
 }

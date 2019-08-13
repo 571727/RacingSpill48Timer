@@ -49,7 +49,7 @@ public class PlayerInfo {
 		String res = "";
 		if (car != null)
 			res = car.getCarName().toUpperCase() + ", " + car.getHp() + " HP, " + car.getCurrentWeight() + " kg, TS: "
-					+ car.getTopSpeed() + ", NOS: " + car.isHasNOS() + ", TG: " + car.getGearBoostSTD();
+					+ car.getTopSpeed() + " km/h, NOS: " + car.isHasNOS() + ", TG: " + car.getGearBoostSTD();
 		return res;
 	}
 

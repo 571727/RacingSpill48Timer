@@ -39,7 +39,7 @@ public class Options extends Scene {
 		togglefullscreen = new JButton("Fullscreen: " + true);
 		specifyRes = new JButton("Specify resolution");
 		specifyResLabel = new JLabel("Specified resolution: " + false);
-		tutorial = new JLabel("<html><font color='white'>********** C O N T R O L S **********<br/>" + "Throttle: W<br/>"
+		tutorial = new JLabel("<html><font color='white'>********** C O N T R O L S **********<br/>"+ "Turn engine over / off: T<br/>" + "Throttle: W<br/>"
 				+ "Clutch: Space<br/>"
 				+ "Neutral: N<br/>1st:&ensp;U<br/>2nd: J<br/>3rd:&ensp;I<br/>4th:&ensp;L<br/>5th:&ensp;P (!)<br/>6th:&ensp;L (!)<br/>"
 				+ "NOS: E<br/>"

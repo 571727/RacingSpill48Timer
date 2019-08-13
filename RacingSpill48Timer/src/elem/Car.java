@@ -48,11 +48,9 @@ public class Car implements Cloneable {
 	private boolean gearBoostON;
 	private double gearBoostSTD;
 	private double top;
-	private double mid;
 	private double bot;
 	private Integer[] upgradeLVLs;
 	private double drag;
-	private double dragCapability;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -84,8 +82,7 @@ public class Car implements Cloneable {
 		idleSpeed = 1000;
 		gearBoostSTD = 1;
 		top = 24;
-		mid = 4;
-		bot = 2.6;
+		bot = 4;
 		drag = 1;
 		setUpgradeLVLs(new Integer[Upgrades.UPGRADE_NAMES.length]);
 
@@ -99,21 +96,21 @@ public class Car implements Cloneable {
 			totalWeight = 1549;
 			totalGear = 6;
 			totalRPM = 8000;
-			dragCapability = 249;
+			topSpeed = 249;
 			break;
 		case "Supra":
 			hp = 220;
 			totalWeight = 1400;
 			totalGear = 5;
 			totalRPM = 7800;
-			dragCapability = 285;
+			topSpeed = 285;
 			break;
 		case "Mustang":
 			hp = 310;
 			totalWeight = 1607;
 			totalRPM = 7500;
 			totalGear = 5;
-			dragCapability = 250;
+			topSpeed = 250;
 			break;
 		case "Bentley":
 			// Bentley Blower No.1
@@ -122,7 +119,7 @@ public class Car implements Cloneable {
 			totalWeight = 1625;
 			totalGear = 4;
 			maxValuePitch = 3;
-			dragCapability = 222;
+			topSpeed = 222;
 			break;
 		case "Skoda Fabia":
 			hp = 64;
@@ -130,14 +127,14 @@ public class Car implements Cloneable {
 			totalRPM = 5500;
 			totalGear = 5;
 			maxValuePitch = 4;
-			dragCapability = 162;
+			topSpeed = 162;
 			break;
 		case "Corolla":
 			hp = 118;
 			totalWeight = 998;
 			totalRPM = 8000;
 			totalGear = 5;
-			dragCapability = 201;
+			topSpeed = 201;
 			break;
 		}
 //		hp = 1600;
@@ -264,10 +261,10 @@ public class Car implements Cloneable {
 	}
 
 	private void calculateDrag() {
-		drag = -Math.pow(speedActual / dragCapability, 5) + 1;
+		drag = -Math.pow(speedActual / topSpeed, 5) + 1;
 		if (drag < 0)
 			drag = 0;
-		
+
 	}
 
 	public void calculateActualSpeed() {
@@ -467,8 +464,7 @@ public class Car implements Cloneable {
 		gearBoost = 0;
 		resistance = 1.0;
 		top = 24;
-		mid = 4;
-		bot = 2.6;
+		bot = 4;
 		drag = 1;
 		if (audioActivated)
 			audio.stopAll();
@@ -491,7 +487,7 @@ public class Car implements Cloneable {
 	public String showStats(int prevLvl, int nextLvl) {
 		return "From LVL " + prevLvl + " to LVL " + nextLvl + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
 				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + "<br/>Tiregrip: "
+				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + " km/h<br/>Tiregrip: "
 				+ gearBoostSTD;
 
 	}
@@ -499,7 +495,7 @@ public class Car implements Cloneable {
 	public String showStats() {
 		return "<html>" + carName.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
 				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + "<br/>Tiregrip: "
+				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + " km/h<br/>Tiregrip: "
 				+ gearBoostSTD;
 
 	}
@@ -514,10 +510,8 @@ public class Car implements Cloneable {
 		if ((this.gear == 1 || this.gear == 0) && speedLinear < 2) {
 			double tr = totalRPM;
 
-			if (rpm < tr - tr / top && rpm > tr - tr / mid) {
+			if (top == -1 && rpm > totalRPM / 2 || (rpm < tr - tr / top && rpm > tr - tr / bot)) {
 				res = 2;
-			} else if (rpm < tr - tr / mid && rpm > tr - tr / bot) {
-				res = 1;
 			}
 		}
 		return res;
@@ -525,8 +519,11 @@ public class Car implements Cloneable {
 
 	public void upgradeRightShift(double change) {
 		top = top * change;
-		mid = mid * (1 - Math.abs(1 - change));
 		bot = bot * (1 - Math.abs(1 - change));
+	}
+	
+	public void guarenteeRightShift() {
+		top = -1;
 	}
 
 	public Car clone() throws CloneNotSupportedException {
