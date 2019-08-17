@@ -163,39 +163,9 @@ public class Store extends Scene {
 		buyPoints.setEnabled(false);
 		buyMoney.setEnabled(false);
 
-		information0.setText("<html><font color='white'>Information: <br/><br/>" + Upgrades.UPGRADE_NAMES[0] + ": <br/>"
-				+ "+ 35 HP, + 20 % TG area, + 5 % TS <br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(0, player.getCar(), 5) ? "'green'" : "'white'")
-				+ ">LVL 5: Guaranteed TG shift at high RPM</font><br/><br/>" + Upgrades.UPGRADE_NAMES[1] + ": <br/>"
-				+ "- 9 % weight <br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(1, player.getCar(), 5) ? "'green'" : "'white'") + ">LVL 5: Upgrading \""
-				+ Upgrades.UPGRADE_NAMES[7] + "\" no longer increases weight</font><br/><br/>"
-				+ Upgrades.UPGRADE_NAMES[2] + ": <br/>" + "1st: + 2 HP, 2nd: + 28 HP, 3rd: + 206 HP<br/>"
-				+ "<font color=" + (storeHandler.hasUpgrade(2, player.getCar(), 3) ? "'green'" : "'white'")
-				+ ">For every upgrade; upgrading \"" + Upgrades.UPGRADE_NAMES[6]
-				+ "\" increases TS more</font><br/><br/>" + Upgrades.UPGRADE_NAMES[3] + ": <br/>"
-				+ "+ 100 HP, + 2 % weight<br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(3, player.getCar(), 5) ? "'green'" : "'white'") + ">LVL 5: - 15 % \""
-				+ Upgrades.UPGRADE_NAMES[7] + "\" and \"" + Upgrades.UPGRADE_NAMES[5] + "\" cost, <br/>"
-				+ "upgrading \"" + Upgrades.UPGRADE_NAMES[6] + "\" increases TS - 33 %</font> </font></html>");
+		information0.setText(storeHandler.getInformation(player.getCar(), 0, 4));
 
-		information1.setText("<html><font color ='white'>" + Upgrades.UPGRADE_NAMES[4] + ": <br/>"
-				+ "+ 0.5 NOS strength<br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(4, player.getCar(), 5) ? "'green'" : "'white'") + ">LVL 5: \""
-				+ Upgrades.UPGRADE_NAMES[8] + "\" - 50 % cost<br/><br/>" + Upgrades.UPGRADE_NAMES[5] + ": <br/>"
-				+ "+ 60 HP, - 5 % weight <br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(5, player.getCar(), 5) ? "'green'" : "'white'")
-				+ ">LVL 5: + 100 % HP from \"" + Upgrades.UPGRADE_NAMES[2]
-				+ "\" even if already upgraded</font><br/><br/>" + Upgrades.UPGRADE_NAMES[6] + ": <br/>"
-				+ "+ 72 (TS * \"" + Upgrades.UPGRADE_NAMES[2] + "\"), - 3 % weight <br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(6, player.getCar(), 5) ? "'green'" : "'white'") + ">LVL 5: \""
-				+ Upgrades.UPGRADE_NAMES[4] + "\" now contains two bottles</font><br/><br/>" + Upgrades.UPGRADE_NAMES[7]
-				+ ": <br/>" + "+ 170 HP, + 14 % weight<br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(7, player.getCar(), 5) ? "'green'" : "'white'") + ">LVL 5: Upgrading \""
-				+ Upgrades.UPGRADE_NAMES[7] + "\" gives + 75 % more HP</font><br/><br/>" + Upgrades.UPGRADE_NAMES[8]
-				+ ": <br/>" + "+ 0.4 TG <br/>" + "<font color="
-				+ (storeHandler.hasUpgrade(8, player.getCar(), 5) ? "'green'" : "'white'")
-				+ ">LVL 5: + 100 % more NOS strength</font></font></html>");
+		information1.setText(storeHandler.getInformation(player.getCar(), 4, 9));
 
 		double di = storeHandler.podiumInflation(player.getPlacePodium());
 		playerInformation.setText("<html><font color =" + (di == 1 ? "'white'>+ 0" : "'red'>+ " + (int) (di * 300 / 53))

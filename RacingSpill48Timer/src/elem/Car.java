@@ -70,8 +70,8 @@ public class Car implements Cloneable {
 
 		speedLinear = 0f;
 		nosTimeLeft = 0;
-		nosTimeToGive = 3000;
-		nosTimeToGiveStandard = 3000;
+		nosTimeToGiveStandard = 1500;
+		nosTimeToGive = nosTimeToGiveStandard;
 		nosAmountLeft = 0;
 		nosAmountLeftStandard = 0;
 		nosStrength = 0;
@@ -141,7 +141,6 @@ public class Car implements Cloneable {
 		setCarName(cartype.toLowerCase());
 		if (audioActivated)
 			audio = new RaceAudio(carName);
-
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
@@ -463,8 +462,6 @@ public class Car implements Cloneable {
 		gearBoostTime = 0;
 		gearBoost = 0;
 		resistance = 1.0;
-		top = 24;
-		bot = 4;
 		drag = 1;
 		if (audioActivated)
 			audio.stopAll();

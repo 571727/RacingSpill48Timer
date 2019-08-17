@@ -101,7 +101,16 @@ public class StoreHandler {
 		return 0.02 * (3 - podium) + 1;
 	}
 
-	public boolean hasUpgrade(int i, Car car, int comparedLVL) {
-		return car.getUpgradeLVL(i) >= comparedLVL;
+	public String getInformation(Car car, int fromWith, int toWithout) {
+		String res = "<html><font color='white'>";
+
+		if (fromWith == 0)
+			res += "Information: <br/><br/>";
+		
+		for (int i = fromWith; i < toWithout; i++) {
+			res += upgrades.getInformation(i, car);
+		}
+		return res;
 	}
+
 }

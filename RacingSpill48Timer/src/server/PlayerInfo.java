@@ -133,6 +133,10 @@ public class PlayerInfo {
 	public String getName() {
 		return name;
 	}
+	
+	public String getNameID() {
+		return name + id;
+	}
 
 	public void setName(String name) {
 		this.name = name;

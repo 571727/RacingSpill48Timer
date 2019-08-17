@@ -1,14 +1,18 @@
 package elem;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 public class UpgradePrice {
 
 	private int points;
 	private int money;
-	private int sale;
+	private HashMap<Integer, Double> sale;
 
 	public UpgradePrice(int points, int money) {
 		this.points = points;
 		this.money = money;
+		sale = new HashMap<Integer, Double>();
 	}
 
 	public int getPoints() {
@@ -20,14 +24,20 @@ public class UpgradePrice {
 	}
 
 	public int getMoney() {
-		return money * (100 + sale) / 100;
+		double money = (double) this.money;
+		
+		for (Entry<Integer, Double> entry : sale.entrySet()) {
+			money = money * entry.getValue();
+		}
+		
+		return (int) money;
 	}
 
 	public void setMoney(int money) {
 		this.money = money;
 	}
 
-	public void addSale(int i) {
-		sale += i;
+	public void addSale(double value, int key) {
+		sale.put(key, value);
 	}
 }
