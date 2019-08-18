@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import adt.GameMode;
 import elem.AI;
 import elem.Car;
 import elem.Upgrades;
@@ -19,6 +20,16 @@ import startup.Main;
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
  * when racing.
+ * 
+ * TODO Things to do from here:
+ * - Bytt til "Registry"
+ * - Shifting delay
+ * - Minigame while ready
+ * - Tier upgrades
+ * - High Gear bonus: sequential shifting
+ * - LWJGL drawing of game
+ * - Finish gamemodes
+ * 
  * 
  * @author jonah
  *
@@ -54,6 +65,8 @@ public class ServerInfo implements Runnable {
 	private String currentPlace;
 	private int totalRaces;
 	private int[] upgradePrices;
+	
+	private GameMode gm;
 
 	public ServerInfo(int amountOfAI, int diff) {
 		players = new HashMap<String, PlayerInfo>();
@@ -217,28 +230,14 @@ public class ServerInfo implements Runnable {
 
 		this.allFinished = amountFinished == players.size();
 
-		if (isRaceOver()) {
+		if (gm.controlGameAfterFinishedPlayer(player, allFinished)) {
 			updateRace();
-			setPlayerWithMostPoints();
 		} else if (allFinished) {
 			determinePositioningFinishedRace();
-			prepareNextRace();
 		}
 	}
 
-	private void prepareNextRace() {
-		length = randomizeLengthOfTrack();
-		currentPlace = places[r.nextInt(places.length)];
-	}
 
-	private boolean isRaceOver() {
-		return allFinished && races <= 0;
-	}
-
-	public void setRaceOver() {
-		allFinished = true;
-		races = -1;
-	}
 
 	private void updateRaceStatus() {
 
@@ -279,11 +278,6 @@ public class ServerInfo implements Runnable {
 		return String.valueOf(raceLights);
 	}
 
-	private void stopRace() {
-		amountInTheRace = 0;
-		amountFinished = 0;
-		started = 0;
-	}
 
 	/**
 	 * input[2] -> 1 = race started. 0 = race ready to start
@@ -292,27 +286,9 @@ public class ServerInfo implements Runnable {
 		// host?
 		if (Integer.valueOf(input[1]) == 1) {
 			if (Integer.valueOf(input[2]) == 1) {
-				races--;
-
-				for (Entry<String, PlayerInfo> entry : players.entrySet()) {
-					entry.getValue().newRace();
-				}
-
-				raceStartedTime = System.currentTimeMillis();
-				regulatingWaitTime = waitTime * 3;
-				raceLobbyStringFinalized = false;
-
-				amountInTheRace += ai.size();
-
-				finishAI_thread = new Thread(() -> {
-					for (AI ai : this.ai) {
-						finishAI(ai, ai.calculateRace(length));
-					}
-				});
-				finishAI_thread.start();
-
+				gm.startNewRace();
 			} else {
-				stopRace();
+				gm.stopRace();
 			}
 			started = Integer.valueOf(input[2]);
 			raceLights = 0;
@@ -343,7 +319,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	public String getTrackLength() {
-		return String.valueOf(length);
+		
 	}
 
 	public void inTheRace(String[] input) {
@@ -494,87 +470,32 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void newRaces(String[] input) {
-		totalRaces = Integer.parseInt(input[1]);
-		races = totalRaces;
-
-		prepareNextRace();
+		
 	}
 
 	public String getRacesLeft() {
-		return String.valueOf(races);
+		
 	}
 
 	private void setPlayerWithMostPoints() {
-		winners = new ArrayList<PlayerInfo>();
-
-		for (Entry<String, PlayerInfo> entry : players.entrySet()) {
-			PlayerInfo other = entry.getValue();
-			if (winners.size() == 0 || other.getPoints() == winners.get(0).getPoints()) {
-				winners.add(other);
-			} else if (other.getPoints() > winners.get(0).getPoints()) {
-				winners.clear();
-				winners.add(other);
-			}
-		}
-
+		
 	}
 
 	public String getPlayerWithMostPoints(String[] input) {
 
-		PlayerInfo asker = getPlayer(input);
-		String winnerText = null;
-
-		if (asker.getPoints() == winners.get(0).getPoints())
-			winnerText = youWinningText(asker);
-		else if (winners.size() == 1)
-			winnerText = otherWinningText(asker);
-		else
-			winnerText = othersWinningText(asker);
-
-		winnerText += "#Highest speed you achived was " + asker.getCar().getHighestSpeedAchived() + "km/h!";
-		winnerText += "#You made $" + asker.getBank().getMoneyAchived() + " and " + asker.getBank().getPointsAchived()
-				+ " points in total!";
-
-		return winnerText;
+		
 	}
 
 	private String youWinningText(PlayerInfo asker) {
-		String winnerText = "";
-		winnerText += "You won";
-
-		// Are you the only winner?
-		if (winners.size() > 1) {
-			winnerText += " along with: ";
-			for (PlayerInfo player : winners) {
-				winnerText += "#" + player.getName() + " who drove a " + player.getCarName();
-			}
-		} else {
-			winnerText += "!!!";
-		}
-		winnerText += "#You have " + asker.getPoints() + " points!";
-
-		return winnerText;
+		
 	}
 
 	private String otherWinningText(PlayerInfo asker) {
-		String winnerText = "";
-		winnerText = winners.get(0).getName() + " won!!!##" + "He drove a " + winners.get(0).getCarName() + "!#"
-				+ winners.get(0).getName() + " has " + winners.get(0).getPoints() + " points!#";
-
-		winnerText += "You drove a " + asker.getCarName() + " and you only have " + asker.getPoints() + " points!";
-		return winnerText;
+		
 	}
 
 	private String othersWinningText(PlayerInfo asker) {
-		String winnerText = "";
-		winnerText = "The winners are: ";
-
-		for (PlayerInfo player : winners) {
-			winnerText += "#" + player.getName() + " who drove a " + player.getCarName();
-		}
-
-		winnerText += "!#" + "They won with " + winners.get(0).getPoints() + " points!";
-		return winnerText;
+		
 	}
 
 	public void ping(String[] input) {

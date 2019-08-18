@@ -1,7 +1,11 @@
+/adt/
+/audio/
+/client/
+/connection_standard/
+/elem/
+/game_modes/
 /handlers/
 /scenes/
 /server/
 /startup/
 /window/
-/elem/
-/adt/
