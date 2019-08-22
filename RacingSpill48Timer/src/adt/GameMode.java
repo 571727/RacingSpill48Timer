@@ -121,7 +121,7 @@ public interface GameMode {
 
 	public void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player);
 
-	public String getRaceGoal();
+	public int getRaceGoal();
 
 	public String getCurrentPlace();
 

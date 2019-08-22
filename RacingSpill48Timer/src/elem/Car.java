@@ -145,17 +145,6 @@ public class Car implements Cloneable {
 //		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
 	}
 
-	public void updateServerClone(String[] values, int fromIndex) {
-		carName = values[fromIndex + 0];
-		setHp(Double.valueOf(values[fromIndex + 1]));
-		setCurrentWeight(Double.valueOf(values[fromIndex + 2]));
-		setNosStrengthStandard(Double.valueOf(values[fromIndex + 3]));
-		setTotalGear(Integer.valueOf(values[fromIndex + 4]));
-		setTopSpeed(Double.valueOf(values[fromIndex + 5]));
-		setHighestSpeedAchived(Integer.valueOf(values[fromIndex + 6]));
-		setGearBoostSTD(Double.valueOf(values[fromIndex + 7]));
-	}
-
 	public void updateVolume() {
 		audio.updateVolume();
 	}
@@ -479,7 +468,7 @@ public class Car implements Cloneable {
 		double w = (totalWeight - weightloss);
 //		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
 		double rpmCalc = (double) rpm / (double) totalRPM;
-		spdinc = 5 * (hp * rpmCalc / w * gearsbalance) * drag;
+		spdinc = 6 * (hp * rpmCalc / w * gearsbalance) * drag;
 	}
 
 	public String showStats(int prevLvl, int nextLvl) {
@@ -501,6 +490,17 @@ public class Car implements Cloneable {
 	public String cloneToServerString() {
 		return carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" + nosStrengthStandard + "#" + totalGear + "#"
 				+ topSpeed + "#" + highestSpeedAchived + "#" + gearBoostSTD;
+	}
+	
+	public void updateServerClone(String[] values, int fromIndex) {
+		carName = values[fromIndex + 0];
+		setHp(Double.valueOf(values[fromIndex + 1]));
+		setCurrentWeight(Double.valueOf(values[fromIndex + 2]));
+		setNosStrengthStandard(Double.valueOf(values[fromIndex + 3]));
+		setTotalGear(Integer.valueOf(values[fromIndex + 4]));
+		setTopSpeed(Double.valueOf(values[fromIndex + 5]));
+		setHighestSpeedAchived(Integer.valueOf(values[fromIndex + 6]));
+		setGearBoostSTD(Double.valueOf(values[fromIndex + 7]));
 	}
 
 	public int rightShift() {

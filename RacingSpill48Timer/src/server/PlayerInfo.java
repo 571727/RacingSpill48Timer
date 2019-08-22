@@ -86,9 +86,9 @@ public class PlayerInfo {
 					+ "#" + car.getCarName();
 	}
 
-	public void addPointsAndMoney(int amountPlayers, int place, float races, float totalRaces) {
+	public void addPointsAndMoney(int amountPlayers, int place, int racesDone) {
 
-		float inflation = (Math.abs(totalRaces - races) + 1) / 2;
+		float inflation = ((float) racesDone + 1f) / 2f;
 		int winnerExtraPoint = (place == 0 ? 1 : 0);
 
 		pointsAdded = 0;
@@ -212,7 +212,7 @@ public class PlayerInfo {
 	}
 
 	public void setDisconnectID(long id2) {
-		discID = id2;		
+		discID = id2;
 	}
 
 }

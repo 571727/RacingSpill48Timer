@@ -278,7 +278,18 @@ public class GolfLike implements GameMode {
 
 	@Override
 	public void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player) {
+		player.addPointsAndMoney(amountOfPlayers, place, Math.abs(totalRaces - races));
 		allFinished = false;
+	}
+
+	@Override
+	public int getRaceGoal() {
+		return length;
+	}
+
+	@Override
+	public String getCurrentPlace() {
+		return currentPlace;
 	}
 
 }

@@ -54,6 +54,7 @@ public class ServerInfo implements Runnable {
 		players = new HashMap<Byte, PlayerInfo>();
 		ping = new ConcurrentHashMap<Byte, Long>();
 		chat = new HashMap<PlayerInfo, Queue<String>>();
+		lostPlayers = new HashMap<Long, PlayerInfo>();
 		ai = new ArrayList<AI>();
 		running = true;
 
@@ -73,7 +74,7 @@ public class ServerInfo implements Runnable {
 
 		for (int i = 0; i < amountOfAI; i++) {
 			int nameIndex = r.nextInt(names.size());
-			AI ai = new AI(names.get(nameIndex), i, diff);
+			AI ai = new AI(names.get(nameIndex), (byte) i, diff);
 			names.remove(nameIndex);
 			this.ai.add(ai);
 			players.put(generateID(), ai);
@@ -108,7 +109,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	private long generateDisconnectID(PlayerInfo player) {
-		long id = r.nextLong();
+		long id = Math.abs(r.nextLong());
 		player.setDisconnectID(id);
 		return id;
 	}
@@ -130,8 +131,10 @@ public class ServerInfo implements Runnable {
 		PlayerInfo newPlayer = null;
 		boolean jump = false;
 
+		//Have key?
 		if (lostPlayers.containsKey(Long.valueOf(input[3]))) {
 			newPlayer = lostPlayers.remove(Long.valueOf(input[3]));
+			jump = true;
 		}
 
 		// Joined, but is still in? Perhaps lost connection and connected before server
@@ -160,10 +163,11 @@ public class ServerInfo implements Runnable {
 
 	public void updateCarForPlayer(String[] input) {
 		PlayerInfo player = getPlayer(input);
+		int from = 2;
 		if (player.getCar() != null) {
-			player.getCar().updateServerClone(input, 3);
+			player.getCar().updateServerClone(input, from);
 		} else {
-			player.setCar(new Car(input, 3));
+			player.setCar(new Car(input, from));
 		}
 	}
 
@@ -238,7 +242,7 @@ public class ServerInfo implements Runnable {
 		player.setFinished(1);
 
 		if (greenLights) {
-			player.setTime(Long.valueOf(input[3]));
+			player.setTime(Long.valueOf(input[2]));
 		} else {
 			player.setTime(-1);
 			if (player.isIn() == false)
@@ -287,19 +291,20 @@ public class ServerInfo implements Runnable {
 		return String.valueOf(raceLights);
 	}
 
-	/**
-	 * input[2] -> 1 = race started. 0 = race ready to start
-	 */
 	public void startRace(String[] input) {
-		// host?
-		if (Integer.valueOf(input[1]) == 1) {
-			if (Integer.valueOf(input[2]) == 1) {
+		int values = Integer.parseInt(input[1]);
+		
+		// host? first number
+		if (values >= 10) {
+			// second number -> 1 = race started. 0 = race ready to start
+			values = values % 10;
+			if (values == 1) {
 				gm.startNewRace();
 				raceLobbyStringFinalized = false;
 			} else {
 				gm.stopRace();
 			}
-			gm.setStarted(Integer.valueOf(input[2]));
+			gm.setStarted(values);
 			raceLights = 0;
 		}
 	}
@@ -321,15 +326,15 @@ public class ServerInfo implements Runnable {
 	private void leave(PlayerInfo player) {
 		if (player != null) {
 			chat.remove(player);
-			players.remove(player.getNameID());
-			ping.remove(player.getNameID());
+			players.remove(player.getID());
+			ping.remove(player.getID());
 			addChat(player.getName() + " left the game.");
 			lostPlayers.put(player.getDisconnectID(), player);
 		}
 	}
 
 	public String getTrackLength() {
-		return gm.getRaceGoal();
+		return String.valueOf(gm.getRaceGoal());
 	}
 
 	public void inTheRace(String[] input) {
@@ -451,8 +456,8 @@ public class ServerInfo implements Runnable {
 		if (player == null) {
 			return;
 		}
-		player.setPoints(Integer.valueOf(input[3]));
-		player.setMoney(Integer.valueOf(input[4]));
+		player.setPoints(Integer.valueOf(input[2]));
+		player.setMoney(Integer.valueOf(input[3]));
 	}
 
 	public String getPointsMoney(String[] input) {
@@ -462,7 +467,7 @@ public class ServerInfo implements Runnable {
 		try {
 			res = player.getPoints() + "#" + player.getMoney();
 		} catch (NullPointerException e) {
-			System.err.println("Player " + input[1] + input[2] + " timed out");
+			System.err.println("Player " + input[1] + " timed out");
 			checkPings();
 		}
 		return res;
@@ -486,28 +491,13 @@ public class ServerInfo implements Runnable {
 		return gm.getEndGoalText();
 	}
 
-	private void setPlayerWithMostPoints() {
-
-	}
 
 	public String getPlayerWithMostPoints(String[] input) {
-
-	}
-
-	private String youWinningText(PlayerInfo asker) {
-
-	}
-
-	private String otherWinningText(PlayerInfo asker) {
-
-	}
-
-	private String othersWinningText(PlayerInfo asker) {
-
+		return gm.getDeterminedWinnerText(getPlayer(input));
 	}
 
 	public void ping(String[] input) {
-		ping.put(Byte.valueOf(input[2]), System.currentTimeMillis());
+		ping.put(Byte.valueOf(input[1]), System.currentTimeMillis());
 	}
 
 	public boolean validPing(long ping) {
