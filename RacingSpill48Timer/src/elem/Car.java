@@ -1,6 +1,7 @@
 package elem;
 
 import audio.RaceAudio;
+import startup.Main;
 
 public class Car implements Cloneable {
 
@@ -180,7 +181,7 @@ public class Car implements Cloneable {
 	}
 
 	public void setTopSpeed(double topSpeed) {
-		this.topSpeed = topSpeed;
+		this.topSpeed = Math.round(topSpeed);
 	}
 
 	public void updateSpeed() {
@@ -518,7 +519,7 @@ public class Car implements Cloneable {
 		top = top * change;
 		bot = bot * (1 - Math.abs(1 - change));
 	}
-	
+
 	public void guarenteeRightShift() {
 		top = -1;
 	}

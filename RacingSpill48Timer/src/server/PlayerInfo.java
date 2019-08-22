@@ -6,22 +6,23 @@ import elem.Car;
 public class PlayerInfo {
 
 	protected String name;
-	protected int ready;
+	protected byte ready;
 	protected long timeLapsedInRace;
 	protected int pointsAdded;
 	protected int moneyAdded;
-	private int host;
-	private String id;
-	private int finished;
+	private byte host;
+	private byte id;
+	private byte finished;
 	private Bank bank;
 
 	protected Car car;
 	private boolean inTheRace;
+	private Long discID;
 
-	public PlayerInfo(String name, String id, String host) {
+	public PlayerInfo(String name, byte id, String host) {
 		this.name = name;
 		this.id = id;
-		this.host = Integer.valueOf(host);
+		this.host = Byte.valueOf(host);
 		this.car = null;
 		bank = new Bank();
 	}
@@ -31,8 +32,8 @@ public class PlayerInfo {
 	 * 
 	 * @param input
 	 */
-	public void updateLobby(String[] input) {
-		ready = Integer.parseInt(input[3]);
+	public void updateLobby(byte ready) {
+		setReady(ready);
 	}
 
 	/**
@@ -65,9 +66,9 @@ public class PlayerInfo {
 	 * @param input
 	 * 
 	 */
-	public void updateRaceResults(String[] input) {
-		finished = Integer.valueOf(input[3]);
-		timeLapsedInRace = Long.valueOf(input[4]);
+	public void updateRaceResults(byte finished, long time) {
+		setFinished(finished);
+		timeLapsedInRace = time;
 	}
 
 //	public String getRaceResults() {
@@ -110,8 +111,8 @@ public class PlayerInfo {
 		return finished;
 	}
 
-	public void setFinished(int finished) {
-		this.finished = finished;
+	public void setFinished(int i) {
+		this.finished = (byte) i;
 	}
 
 	public int getPoints() {
@@ -133,7 +134,7 @@ public class PlayerInfo {
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getNameID() {
 		return name + id;
 	}
@@ -170,7 +171,7 @@ public class PlayerInfo {
 		this.moneyAdded = moneyAdded;
 	}
 
-	public String getID() {
+	public byte getID() {
 		return id;
 	}
 
@@ -196,6 +197,22 @@ public class PlayerInfo {
 
 	public void setBank(Bank bank) {
 		this.bank = bank;
+	}
+
+	public byte getReady() {
+		return ready;
+	}
+
+	public void setReady(byte ready) {
+		this.ready = ready;
+	}
+
+	public Long getDisconnectID() {
+		return discID;
+	}
+
+	public void setDisconnectID(long id2) {
+		discID = id2;		
 	}
 
 }

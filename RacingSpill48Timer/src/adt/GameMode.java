@@ -1,9 +1,21 @@
 package adt;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
+import elem.AI;
 import server.PlayerInfo;
 
 public interface GameMode {
 
+	public void init (HashMap<Byte, PlayerInfo> players, ArrayList<AI> ai, String[] places, Random r);
+	
+	/**
+	 * Name to identify which gamemode to host and init
+	 */
+	public String getName();
+	
 	/**
 	 * Based on the gamemode rules - where does the asker stand?
 	 */
@@ -92,6 +104,26 @@ public interface GameMode {
 	 * Multiple other players have won. How are their stats compared to yours?
 	 */
 	public String otherMultiWinnerText(PlayerInfo asker);
+
+	public int getStarted();
+
+	public void setStarted(int started);
+
+	public boolean getAllFinished();
+
+	public boolean everyoneInRace();
+
+	public boolean waitTimeRaceLights();
+
+	public void resetWaitTimeRaceLights();
+
+	public void playerInTheRace();
+
+	public void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player);
+
+	public String getRaceGoal();
+
+	public String getCurrentPlace();
 
 
 }

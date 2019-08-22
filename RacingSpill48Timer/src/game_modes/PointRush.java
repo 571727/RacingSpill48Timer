@@ -90,4 +90,28 @@ public class PointRush implements GameMode{
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean controlGameAfterFinishedPlayer(PlayerInfo player) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void prepareNextRace() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getNextRaceInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
