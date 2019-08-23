@@ -1,8 +1,5 @@
 package game_modes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.Map.Entry;
 
 import adt.GameMode;

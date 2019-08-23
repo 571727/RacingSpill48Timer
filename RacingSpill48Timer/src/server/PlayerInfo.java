@@ -95,7 +95,7 @@ public class PlayerInfo {
 
 	public void addPointsAndMoney(int amountPlayers, int place, int racesDone) {
 
-		float inflation = ((float) racesDone + 1f) / 2f;
+		float inflation = (racesDone + 1f) / 2f;
 		int winnerExtraPoint = (place == 0 ? 1 : 0);
 
 		pointsAdded = 0;

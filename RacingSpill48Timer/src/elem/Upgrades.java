@@ -1,7 +1,5 @@
 package elem;
 
-import adt.UpgradeAction;
-
 //Dyrere for de som leder: 1st (+10%), 2nd (5%), 3rd (2%) osv.
 
 public class Upgrades {
@@ -187,7 +185,7 @@ public class Upgrades {
 	public String getUpgradedStats(int i, Car car) {
 		Car newCar = null;
 		try {
-			newCar = (Car) car.clone();
+			newCar = car.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}

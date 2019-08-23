@@ -1,7 +1,6 @@
 package elem;
 
 import audio.RaceAudio;
-import startup.Main;
 
 public class Car implements Cloneable {
 
@@ -523,6 +522,7 @@ public class Car implements Cloneable {
 		top = -1;
 	}
 
+	@Override
 	public Car clone() throws CloneNotSupportedException {
 		Car newCar = (Car) super.clone();
 		Integer[] upgradeLVLs = new Integer[this.upgradeLVLs.length];

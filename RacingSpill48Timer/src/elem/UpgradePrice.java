@@ -24,7 +24,7 @@ public class UpgradePrice {
 	}
 
 	public int getMoney() {
-		double money = (double) this.money;
+		double money = this.money;
 		
 		for (Entry<Integer, Double> entry : sale.entrySet()) {
 			money = money * entry.getValue();
