@@ -379,7 +379,6 @@ public class Car implements Cloneable {
 		if (!clutch) {
 			clutch = true;
 			resistance = 1.0;
-			audio.clutch();
 			if (gas) {
 				if (hasTurbo)
 					audio.turboSurge();
@@ -705,8 +704,9 @@ public class Car implements Cloneable {
 		if (engineOn) {
 			audio.openLines(hasTurbo, upgradedGears);
 		} else {
-			checkIdle();
 			rpm = 0;
+			audio.stopMotor();
+			checkIdle();
 		}
 	}
 

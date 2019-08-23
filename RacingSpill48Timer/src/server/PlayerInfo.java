@@ -79,11 +79,18 @@ public class PlayerInfo {
 	 * @return name#ready#car#...
 	 */
 	public String getRaceInfo(boolean allFinished) {
+		String carName = null;
+		if(car != null) {
+			carName = car.getCarName();
+		} else {
+			carName = "NO_NAME";
+		}
+		
 		if (allFinished == false)
-			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + car.getCarName();
+			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + carName;
 		else
 			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded
-					+ "#" + car.getCarName();
+					+ "#" + carName;
 	}
 
 	public void addPointsAndMoney(int amountPlayers, int place, int racesDone) {

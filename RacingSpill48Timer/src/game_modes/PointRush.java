@@ -1,117 +1,96 @@
 package game_modes;
 
+import java.util.Map.Entry;
+
 import adt.GameMode;
+import elem.AI;
 import server.PlayerInfo;
 
-public class PointRush implements GameMode{
+public class PointRush extends GameMode {
+
+	private int currentRace;
+	private int pointGoal;
 
 	@Override
-	public String getPodiumPosition(PlayerInfo asker) {
-		return null;
-	}
-
-	@Override
-	public void controlGameAfterFinishedPlayer(PlayerInfo player) {
-		
+	public String getName() {
+		return "PointRush";
 	}
 
 	@Override
 	public boolean isGameEnded() {
-		return false;
-	}
+		boolean res = false;
 
-	@Override
-	public void endGame() {
-		
-	}
+		if (allFinished) {
+			for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
+				if (entry.getValue().getPoints() >= pointGoal) {
+					res = true;
+					break;
+				}
+			}
+		}
 
-	@Override
-	public void stopRace() {
-		
+		return res;
 	}
 
 	@Override
 	public void startNewRace() {
-		// TODO Auto-generated method stub
-		
-	}
+		currentRace++;
 
+		for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
+			entry.getValue().newRace();
+		}
+
+		raceStartedTime = System.currentTimeMillis();
+		regulatingWaitTime = waitTime * 3;
+		
+
+		amountInTheRace += ai.size();
+
+		finishAI_thread = new Thread(() -> {
+			for (AI ai : this.ai) {
+				finishAI(ai, ai.calculateRace(length));
+			}
+		});
+		finishAI_thread.start();
+	}
+	
 	@Override
 	public int getRandomRaceType() {
-		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public int getRandomRaceGoal() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void newEndGoal(int gameLength) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getEndGoalText() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void determineWinner() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getDeterminedWinnerText(PlayerInfo asker) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String youWinnerText(PlayerInfo asker) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String otherSingleWinnerText(PlayerInfo asker) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String otherMultiWinnerText(PlayerInfo asker) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean controlGameAfterFinishedPlayer(PlayerInfo player) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void prepareNextRace() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public String getNextRaceInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return currentPlace + "#" + String.valueOf(length);
 	}
+
+	@Override
+	public int getRandomRaceGoal() {
+		return 500 * (r.nextInt(currentRace + 1) + 1);
+	}
+
+	@Override
+	public void newEndGoal(int gameLength) {
+		pointGoal = gameLength;
+		currentRace = 0;
+
+		prepareNextRace();
+	}
+
+	@Override
+	public String getEndGoalText() {
+		return "Points needed to win: " + String.valueOf(pointGoal);
+	}
+
+	@Override
+	public void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player) {
+		player.addPointsAndMoney(amountOfPlayers, place, currentRace);
+	}
+
+	@Override
+	public int getRaceGoal() {
+		return length;
+	}
+
 
 }

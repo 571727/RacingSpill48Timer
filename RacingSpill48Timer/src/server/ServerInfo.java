@@ -132,8 +132,8 @@ public class ServerInfo implements Runnable {
 		boolean jump = false;
 
 		//Have key?
-		if (lostPlayers.containsKey(Long.valueOf(input[3]))) {
-			newPlayer = lostPlayers.remove(Long.valueOf(input[3]));
+		if (lostPlayers.containsKey(Long.valueOf(input[4]))) {
+			newPlayer = lostPlayers.remove(Long.valueOf(input[4]));
 			jump = true;
 		}
 
@@ -141,7 +141,7 @@ public class ServerInfo implements Runnable {
 		// noticed?
 		if (!jump) {
 			for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
-				if (entry.getValue().getDisconnectID() == Long.valueOf(input[3])) {
+				if (entry.getValue().getDisconnectID() == Long.valueOf(input[4])) {
 					newPlayer = entry.getValue();
 					jump = true;
 				}
@@ -149,7 +149,7 @@ public class ServerInfo implements Runnable {
 		}
 
 		if (!jump) {
-			newPlayer = new PlayerInfo(input[1], generateID(), input[2]);
+			newPlayer = new PlayerInfo(input[2], generateID(), input[3]);
 
 			players.put(newPlayer.getID(), newPlayer);
 			ping.put(newPlayer.getID(), System.currentTimeMillis());
@@ -178,8 +178,8 @@ public class ServerInfo implements Runnable {
 		String result = getPlacePodium(player);
 
 		for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
-			result += "#" + entry.getValue().getLobbyInfo() + "#" + gm.getStarted() + "#"
-					+ entry.getValue().getCarInfo();
+			result += "#" + entry.getValue().getLobbyInfo() + "#" + getPing(player) +"#" + gm.getStarted() + "#"
+					+ entry.getValue().getCarInfo() ;
 		}
 
 		return result;
@@ -249,11 +249,21 @@ public class ServerInfo implements Runnable {
 				inTheRace(input);
 		}
 
-		if (gm.controlGameAfterFinishedPlayer(player)) {
-			updateRace();
-		} else if (gm.getAllFinished()) {
+		gm.anotherPlayerFinished();
+		if (gm.getAllFinished()) {
 			determinePositioningFinishedRace();
 		}
+		
+		if (gm.controlGameAfterFinishedPlayer(player)) {
+			updateRaceLobbyString();
+			endGame();
+		} else {
+			raceLobbyString = updateRaceLobby(true);
+			raceLobbyStringFinalized = true;
+		}
+		
+		gm.noneFinished();
+		
 	}
 
 	private void updateRaceStatus() {
@@ -291,8 +301,8 @@ public class ServerInfo implements Runnable {
 		return String.valueOf(raceLights);
 	}
 
-	public void startRace(String[] input) {
-		int values = Integer.parseInt(input[1]);
+	public void startStopRace(String[] input) {
+		int values = Integer.parseInt(input[2]);
 		
 		// host? first number
 		if (values >= 10) {
@@ -347,7 +357,7 @@ public class ServerInfo implements Runnable {
 	 * 
 	 * F�rste gang f�r alle 10 andre gang f�r ingen poeng?
 	 */
-	public String updateRace() {
+	public String updateRaceLobbyString() {
 
 		// If racing, finished and is first time telling that it has finished
 		if (!raceLobbyStringFinalized) {
@@ -384,8 +394,6 @@ public class ServerInfo implements Runnable {
 			}
 		}
 
-		raceLobbyString = updateRaceLobby(true);
-		raceLobbyStringFinalized = true;
 	}
 
 	/**
@@ -484,10 +492,10 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void newRaces(String[] input) {
-		gm.newEndGoal(Integer.parseInt(input[1]));
+		gm.newEndGoal(Integer.parseInt(input[2]));
 	}
 
-	public String getRacesLeft() {
+	public String getEndGoal() {
 		return gm.getEndGoalText();
 	}
 
@@ -521,6 +529,10 @@ public class ServerInfo implements Runnable {
 				}
 			}
 	}
+	
+	public long getPing(PlayerInfo player) {
+		return System.currentTimeMillis() - ping.get(player.getID());
+	}
 
 	@Override
 	public void run() {
@@ -530,13 +542,13 @@ public class ServerInfo implements Runnable {
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 
-		while (!gm.isGameEnded()) {
+		while (!gm.isGameExplicitlyEnded()) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
-				if (!Main.DEBUG && !leavingPlayerMutex)
-					checkPings();
+//				if (!Main.DEBUG && !leavingPlayerMutex)
+//					checkPings();
 				updateRaceStatus();
 				delta--;
 			}
@@ -560,11 +572,11 @@ public class ServerInfo implements Runnable {
 	}
 
 	public void addChat(String[] input) {
-		if (input.length <= 2)
+		if (input.length <= 3)
 			return;
 
-		String str = input[1] + ": ";
-		for (int i = 2; i < input.length; i++) {
+		String str = input[2] + ": ";
+		for (int i = 3; i < input.length; i++) {
 			str += input[i];
 			if (i + 1 < input.length)
 				str += "#";
@@ -582,6 +594,10 @@ public class ServerInfo implements Runnable {
 
 	public String getCurrentPlace() {
 		return gm.getCurrentPlace();
+	}
+
+	public String isGameOver() {
+		return gm.isGameExplicitlyEnded() ? "1" : "0";
 	}
 
 }

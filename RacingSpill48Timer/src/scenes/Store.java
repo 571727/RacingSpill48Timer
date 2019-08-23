@@ -1,6 +1,5 @@
 package scenes;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -12,12 +11,10 @@ import javax.swing.JScrollPane;
 
 import adt.Scene;
 import audio.SFX;
-import elem.Car;
 import elem.Player;
-import elem.Upgrades;
+import handlers.SceneHandler;
 import handlers.StoreHandler;
 import window.Windows;
-import handlers.SceneHandler;
 
 public class Store extends Scene {
 
@@ -96,8 +93,9 @@ public class Store extends Scene {
 		int bh = bw / 4;
 		int margin = (int) (0.4 * bh);
 		int marginW = (int) (1.5 * margin);
-		int infH2 = Windows.HEIGHT * 3 / 6 - 3;
-		int infH1 = infH2 - 18;
+		int infH2 = Windows.HEIGHT * 3 / 6 + 12;
+		int infH1 = infH2 + 18;
+		int infWInf = (int) (Windows.WIDTH * 0.4);
 		int infW = (int) (Windows.WIDTH * 0.36);
 		int infY2 = Windows.HEIGHT - infH2 - 2 * margin;
 		int infY1 = infY2;
@@ -107,8 +105,8 @@ public class Store extends Scene {
 
 		information0.setFont(font);
 		information1.setFont(font);
-		information0.setBounds(margin, infY1, infW, infH1);
-		information1.setBounds(infW, infY2, infW, infH2);
+		information0.setBounds(margin, infY1, infWInf, infH1);
+		information1.setBounds(infW, infY2, infWInf, infH2);
 
 		double from = 3;
 		double buyW = bw * 0.9;
