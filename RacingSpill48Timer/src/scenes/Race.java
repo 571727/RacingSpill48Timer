@@ -2,9 +2,9 @@ package scenes;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -59,7 +59,7 @@ public class Race extends Scene implements Runnable {
 	private int raceLights;
 	private boolean finished;
 	private boolean[] finishedPlayers;
-	VisualButton goBackVisual;
+	private VisualButton goBackVisual;
 	private boolean doneWithRace;
 
 	private Animation background;
@@ -68,7 +68,6 @@ public class Race extends Scene implements Runnable {
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage resBackground;
-	private int races;
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -97,15 +96,15 @@ public class Race extends Scene implements Runnable {
 	public void initWindow() {
 
 		GameHandler.ba.startGame();
-
-		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-		keys = new RaceKeyHandler(player.getCar());
+		doneWithRace = false;
 
 		racingWindow = SceneHandler.instance.getWindows();
-		doneWithRace = false;
+		GraphicsDevice device = racingWindow.getGraphicsConfiguration().getDevice();
+		keys = new RaceKeyHandler(player.getCar());
 
 		racingWindow.setVisible(false);
 		racingWindow.dispose();
+
 		if (SceneHandler.instance.isFullScreen()) {
 			if (!SceneHandler.instance.isSpecified()) {
 				WIDTH = device.getDisplayMode().getWidth();
@@ -114,7 +113,7 @@ public class Race extends Scene implements Runnable {
 				WIDTH = SceneHandler.instance.WIDTH;
 				HEIGHT = SceneHandler.instance.HEIGHT;
 			}
-			racingWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			racingWindow.setExtendedState(Frame.MAXIMIZED_BOTH);
 			racingWindow.setUndecorated(true);
 		} else {
 			WIDTH = SceneHandler.instance.WIDTH;
@@ -236,6 +235,11 @@ public class Race extends Scene implements Runnable {
 	public void visualTick() {
 		if (currentVisual != null) {
 			currentVisual.tick();
+
+			if (winVisual.isOver()) {
+				winVisual.addVisualElement(goBackVisual);
+				racingWindow.addKeyListener(goBackVisual);
+			}
 		}
 	}
 
@@ -295,7 +299,7 @@ public class Race extends Scene implements Runnable {
 			}
 			// Render
 			frames++;
-				currentVisual.render(null);
+			currentVisual.render(null);
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS RACE: " + frames);
@@ -433,23 +437,26 @@ public class Race extends Scene implements Runnable {
 		if (currentVisual.hasAnimationsRunning())
 			everyoneDone = false;
 
-		if (!lastRace()) {
-			// Show all players on screen
+		if (results.getStrings() == null) {
 			results.setText(result, "<br/>", resultColors);
-		} else {
-			winVisual.setEveryoneDone(everyoneDone);
-			winVisual.addVisualElement(goBackVisual);
 		}
+
 		if (everyoneDone) {
 			// Stop race aka make ready the next race
 			player.stopRace();
+
 			goBackVisual.setEnabled(true);
-			racingWindow.addKeyListener(goBackVisual);
 			racingWindow.requestFocus();
 			lobby.setPlaceChecked(false);
-		} else
+			if (player.isGameOver())
+				winVisual.setEveryoneDone(everyoneDone);
+
+		} else {
 			// Disable start game button
+			results.setText(result, "<br/>", resultColors);
 			goBackVisual.setEnabled(false);
+
+		}
 	}
 
 	public void checkDistanceLeft() {
@@ -473,20 +480,21 @@ public class Race extends Scene implements Runnable {
 			goBackVisual = new VisualButton("goBack", 1, WIDTH - 100, HEIGHT - 100, 2, WIDTH - 100, HEIGHT - 120, 5,
 					() -> {
 						closeWindow();
-						if (races == 0) {
+						if (player.isGameOver()) {
 							lobby.endGame();
 							GameHandler.music.playNext();
 						}
 					});
 
-			if (!lastRace()) {
+			if (!player.isGameOver()) {
 				changeVisual(finishVisual);
-				results = new VisualString((int) (WIDTH - WIDTH / 3.6f), (int) (HEIGHT / 24), (int) (WIDTH / 3.8f),
+				results = new VisualString((int) (WIDTH - WIDTH / 3.6f), HEIGHT / 24, (int) (WIDTH / 3.8f),
 						(int) (HEIGHT / 1.5f), Color.white, Color.black,
 						new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
 
 				finishVisual.addVisualElement(goBackVisual);
 				finishVisual.addVisualElement(results);
+				racingWindow.addKeyListener(goBackVisual);
 			} else {
 				changeVisual(winVisual);
 			}
@@ -499,10 +507,6 @@ public class Race extends Scene implements Runnable {
 		}
 
 		// Legg til knapper og sånt
-	}
-
-	private boolean lastRace() {
-		return races == 0;
 	}
 
 	private void changeVisual(Visual newVisual) throws Exception {
@@ -536,7 +540,7 @@ public class Race extends Scene implements Runnable {
 			racingWindow.setVisible(false);
 			racingWindow.dispose();
 			racingWindow.setUndecorated(false);
-			racingWindow.setExtendedState(JFrame.NORMAL);
+			racingWindow.setExtendedState(Frame.NORMAL);
 			racingWindow.setBounds(50, 50, Windows.WIDTH, Windows.HEIGHT);
 			racingWindow.setLocationRelativeTo(null);
 			racingWindow.setVisible(true);
@@ -585,14 +589,6 @@ public class Race extends Scene implements Runnable {
 
 	public void setLobbyThread(Thread lobbyThread) {
 		this.lobbyThread = lobbyThread;
-	}
-
-	public int getRaces() {
-		return races;
-	}
-
-	public void setRaces(int races) {
-		this.races = races;
 	}
 
 }

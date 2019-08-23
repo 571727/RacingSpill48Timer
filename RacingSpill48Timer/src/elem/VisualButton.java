@@ -2,9 +2,6 @@ package elem;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-
 import adt.Action;
 import adt.VisualElement;
 

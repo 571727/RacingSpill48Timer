@@ -20,7 +20,6 @@ public class RaceAudio implements AudioCueListener {
 	private MediaAudio[] turbo;
 	private MediaAudio redline;
 	private MediaAudio nos;
-	private MediaAudio clutch;
 	private int motorAccInstance;
 	private AudioCue motorDcc;
 	private int motorDccInstance;
@@ -35,7 +34,6 @@ public class RaceAudio implements AudioCueListener {
 		// Maybe use action for something later, cause it's awesome
 		gear = new MediaAudio[4];
 		turbo = new MediaAudio[2];
-		
 
 		for (int i = 0; i < gear.length; i++) {
 			gear[i] = new MediaAudio("/sfx/gear" + (i + 1));
@@ -73,7 +71,6 @@ public class RaceAudio implements AudioCueListener {
 
 		redline = new MediaAudio("/sfx/redline");
 		nos = new MediaAudio("/sfx/nos");
-		clutch = new MediaAudio("/sfx/clutch");
 	}
 
 	public void updateVolume() {
@@ -89,6 +86,11 @@ public class RaceAudio implements AudioCueListener {
 		for (MediaAudio t : turbo) {
 			t.setVolume(1);
 		}
+
+		for (MediaAudio g : gear) {
+			g.setVolume(1);
+		}
+
 		redline.setVolume(1);
 		nos.setVolume(1);
 
@@ -168,7 +170,7 @@ public class RaceAudio implements AudioCueListener {
 
 		value = -0.05 * Math.pow(2, value) + 0.8 * value;
 		turbospool.setSpeed(turbospoolInstance, value);
-		turbospool.setVolume(turbospoolInstance, (value / maxValue) * turbospooling);
+		turbospool.setVolume(turbospoolInstance, (value / maxValue) * turbospooling * GameHandler.volume);
 	}
 
 	public void straightcutgears() {
@@ -218,7 +220,7 @@ public class RaceAudio implements AudioCueListener {
 			motorAcc.start(motorAccInstance);
 		}
 	}
-	
+
 	public void motorDcc() {
 		stopMotorAcc();
 		stopTurbospool();
@@ -290,8 +292,10 @@ public class RaceAudio implements AudioCueListener {
 	}
 
 	public void stopAll() {
+
 		stopStraightcutgears();
 		stopMotorAcc();
+
 		if (turbo != null && isMediaArrayPlaying(turbo)) {
 			stopMediaArray(turbo);
 		}
@@ -301,7 +305,7 @@ public class RaceAudio implements AudioCueListener {
 		if (redline != null && redline.isPlaying()) {
 			redline.stop();
 		}
-		
+
 		if (motorAcc.isRunning())
 			motorAcc.close();
 		if (motorDcc.isRunning())
@@ -310,11 +314,7 @@ public class RaceAudio implements AudioCueListener {
 			straightcutgears.close();
 		if (turbospool.isRunning())
 			turbospool.close();
-	}
 
-	
-	public void clutch() {
-		clutch.play();
 	}
 
 	@Override
@@ -333,6 +333,11 @@ public class RaceAudio implements AudioCueListener {
 	public void instanceEventOccurred(AudioCueInstanceEvent event) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void stopMotor() {
+		stopMotorAcc();
+		stopMotorDcc();
 	}
 
 }

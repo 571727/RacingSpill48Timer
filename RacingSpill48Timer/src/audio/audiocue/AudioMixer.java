@@ -282,6 +282,7 @@ public class AudioMixer
 		}
 		
 		// Sound Thread
+		@Override
 		public void run()
 		{
 			while(running)

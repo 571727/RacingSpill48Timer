@@ -234,11 +234,10 @@ public class Lobby extends Scene implements Runnable {
 			everyoneReady = true;
 			String[] outputs = string.split("#");
 
-			int racesLeft = Integer.valueOf(player.getRacesLeft());
-			race.setRaces(racesLeft);
+			String endgoal = player.getEndGoal();
+
 			String result = "<html>Podium-position: " + (player.getPlacePodium() + 1) + "<br/>Next race: "
-					+ currentPlace + ", " + currentLength + " m" + "<br/>Races left: " + racesLeft + "<br/><br/>"
-					+ "Players: <br/>";
+					+ currentPlace + ", " + currentLength + " m" + "<br/>" + endgoal + "<br/><br/>" + "Players: <br/>";
 			player.setPlacePodium(Integer.parseInt(outputs[0]));
 			int n = 0;
 			for (int i = 1; i < outputs.length; i++) {
@@ -265,12 +264,15 @@ public class Lobby extends Scene implements Runnable {
 					result += "Points: " + outputs[i];
 					break;
 				case 5:
+					result +=" -- PING: " + outputs[i] + " ms"; 
+					break;
+				case 6:
 					if (Integer.valueOf(outputs[i]) == 1) {
 						raceStarted();
 					}
 					result += "<br/>";
 					break;
-				case 6:
+				case 7:
 					result += outputs[i] + "<br/>";
 					n = 0;
 					break;
@@ -301,7 +303,7 @@ public class Lobby extends Scene implements Runnable {
 				 */
 				String[] tauntCheck = newText.split(": ");
 				if (tauntCheck.length > 1 && tauntCheck[1].startsWith("14")) {
-					SFX.playMP3Sound("start_the_game_already");
+					SFX.playMP3SoundWithRandomPitch("start_the_game_already");
 				}
 			}
 			actualChatText += chatText;
@@ -364,7 +366,7 @@ public class Lobby extends Scene implements Runnable {
 			if (host == 1)
 				player.createNewRaces(amountOfRaces);
 		}
-		update(player.joinServer());
+		player.joinServer();
 		player.updateCarCloneToServer();
 		initButtonState();
 		SceneHandler.instance.addClosingListener(player);
@@ -437,10 +439,12 @@ public class Lobby extends Scene implements Runnable {
 						&& SceneHandler.instance.getWindows().isVisible())
 					SceneHandler.instance.getWindows().requestFocus();
 
-				player.pingServer();
+				if (player != null) {
+					player.pingServer();
 
-				if (!gameEnded && !started)
-					update(player.updateLobbyFromServer());
+					if (!gameEnded && !started)
+						update(player.updateLobbyFromServer());
+				}
 				delta--;
 			}
 

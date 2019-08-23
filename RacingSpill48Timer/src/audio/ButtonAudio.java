@@ -14,16 +14,19 @@ public class ButtonAudio {
 
 	public void playRegularBtn() {
 		regularBtn.stop();
+		regularBtn.setVolume(1);
 		regularBtn.play();
 	}
 
 	public void startGame() {
 		startGame.stop();
+		startGame.setVolume(1);
 		startGame.play();
 	}
 
 	public void playReady() {
 		ready.stop();
+		ready.setVolume(1);
 		ready.play();		
 	}
 }

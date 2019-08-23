@@ -35,6 +35,7 @@ public class MediaAudio {
 	public void loop() {
 		mediaPlayer.play();
 		mediaPlayer.setOnEndOfMedia(new Runnable() {
+			@Override
 			public void run() {
 				mediaPlayer.seek(Duration.ZERO);
 			}

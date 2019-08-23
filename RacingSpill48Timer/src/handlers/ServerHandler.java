@@ -25,8 +25,8 @@ public class ServerHandler {
 		createNew(currentServer);
 	}
 
-	public void createNew(int amountOfAI, int diff) {
-		info = new ServerInfo(amountOfAI, diff);
+	public void createNew(int amountOfAI, int diff, String gamemode) {
+		info = new ServerInfo(amountOfAI, diff, gamemode);
 		createNew(new EchoServer(info));
 		infoThread = new Thread(info);
 		infoThread.start();
@@ -50,7 +50,7 @@ public class ServerHandler {
 		try {
 			if (thread.isAlive()) {
 				
-				info.setRaceOver();
+				info.endGame();
 				infoThread.join();
 				currentServer.setRunning(false);
 				thread.join();

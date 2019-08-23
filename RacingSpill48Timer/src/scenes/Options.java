@@ -3,17 +3,14 @@ package scenes;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 
 import adt.Scene;
-import audio.ButtonAudio;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import window.Windows;
@@ -47,7 +44,7 @@ public class Options extends Scene {
 		tutorial.setPreferredSize(new Dimension(500, 300));
 		volumeTitle.setPreferredSize(new Dimension(150, 20));
 
-		slider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) (volume * 100.0));
+		slider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, (int) (volume * 100.0));
 		slider.setMinorTickSpacing(1);
 		slider.setMajorTickSpacing(10);
 		slider.setPaintTicks(true);

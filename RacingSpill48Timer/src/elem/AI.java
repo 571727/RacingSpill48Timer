@@ -16,8 +16,8 @@ public class AI extends PlayerInfo {
 	 * @param diff
 	 */
 
-	public AI(String name, int id, int diff) {
-		this(name, String.valueOf(id), "0");
+	public AI(String name, byte id, int diff) {
+		this(name, id, "0");
 		randomCar();
 		this.diff = diff;
 		car.setAudioActivated(false);
@@ -25,7 +25,7 @@ public class AI extends PlayerInfo {
 
 	}
 
-	private AI(String name, String id, String host) {
+	private AI(String name, byte id, String host) {
 		super(name, id, host);
 
 	}

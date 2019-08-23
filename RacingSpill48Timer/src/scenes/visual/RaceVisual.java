@@ -14,7 +14,6 @@ import adt.VisualElement;
 import elem.Animation;
 import elem.Player;
 import scenes.Race;
-import startup.Main;
 
 public class RaceVisual extends Visual {
 
@@ -73,7 +72,7 @@ public class RaceVisual extends Visual {
 		// var 1.7 og 1.2
 		xGear = (int) (xTachometer + widthTachometer / 1.7);
 		yGear = (int) (yTachometer + heightTachometer / 1.15);
-		xSpeed = (int) (xTachometer + widthTachometer / 10);
+		xSpeed = xTachometer + widthTachometer / 10;
 		ySpeed = (int) (yTachometer + heightTachometer / 1.2);
 		xDistance = 100;
 		yDistance = 100;
@@ -312,7 +311,7 @@ public class RaceVisual extends Visual {
 		int rs = player.getCar().rightShift();
 		if (rs > 0) {
 
-			int size = (int) ((double) Race.WIDTH * 0.045);
+			int size = (int) (Race.WIDTH * 0.045);
 
 			if (rs == 2)
 				g.setColor(Color.YELLOW);

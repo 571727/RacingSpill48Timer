@@ -1,12 +1,10 @@
 package scenes;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -89,7 +87,12 @@ public class MainMenu extends Scene {
 		String name = username();
 		if (name == null)
 			return;
-
+		
+		
+		String gamemode = gameMode();
+		if (gamemode == null)
+			return;
+		
 		// Register your car
 		String car = carSelection();
 		if (car == null)
@@ -114,7 +117,7 @@ public class MainMenu extends Scene {
 
 		Main.AI_NAMES_TAKEN = new boolean[Main.AI_NAMES.length];
 
-		serverHandler.createNew(Integer.valueOf(amountOfAI), Integer.valueOf(diff));
+		serverHandler.createNew(Integer.valueOf(amountOfAI), Integer.valueOf(diff), gamemode);
 
 		SceneHandler.instance.changeScene(1);
 		thread = new Thread(lobby);
@@ -122,6 +125,20 @@ public class MainMenu extends Scene {
 		lobby.createNewLobby(name, 1, car, serverHandler, thread, Integer.valueOf(amountOfRaces));
 
 		thread.start();
+	}
+
+	private String gameMode() {
+		
+		//FIXME
+		String[] arr = new String[Main.GAME_MODES.length];
+		for(int i = 0; i < arr.length; i++) {
+			arr[i] = Main.GAME_MODES[i].getName();
+		}
+		
+		String str = (String) JOptionPane.showInputDialog(null, "Choose gamemode, bro", Main.GAME_NAME,
+				JOptionPane.PLAIN_MESSAGE, null, arr, arr[0]);
+
+		return str;
 	}
 
 	private String amountOfRacesSelection() {

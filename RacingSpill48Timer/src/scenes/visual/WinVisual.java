@@ -12,7 +12,6 @@ import adt.Visual;
 import adt.VisualElement;
 import audio.SFX;
 import elem.Player;
-import elem.VisualString;
 import handlers.GameHandler;
 import scenes.Race;
 
@@ -21,6 +20,7 @@ import scenes.Race;
 public class WinVisual extends Visual {
 	private Player player;
 	private boolean everyoneDone;
+	private boolean over = false;
 	private String[] strings;
 	private String theWinnerIntro;
 	private int stage;
@@ -64,6 +64,8 @@ public class WinVisual extends Visual {
 				} else {
 					alphaIncIndex++;
 				}
+			} else {
+				over = true;
 			}
 		}
 	}
@@ -112,7 +114,7 @@ public class WinVisual extends Visual {
 			Toolkit.getDefaultToolkit().sync();
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage() + "In visual");
+			System.err.println(e.getMessage() + "In win- visual");
 		}
 	}
 
@@ -145,6 +147,10 @@ public class WinVisual extends Visual {
 		strings = player.getWinner().split("#");
 		alphas = new float[strings.length];
 		font = new Font("Calibri", 0, Race.WIDTH / 25);
+	}
+
+	public boolean isOver() {
+		return over;
 	}
 
 }

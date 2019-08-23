@@ -85,60 +85,77 @@ public class TCPEchoServer {
 	public String understandRequest(String request) {
 		String[] input = request.split("#");
 
+		String res = null;
+
 		switch (input[0]) {
 		case "F":
 			info.finishPlayer(input);
 			break;
-		case "PING":
-			info.ping(input);
-			break;
-		case "IN":
+		case "I":
 			info.inTheRace(input);
 			break;
-		case "JOIN":
-			return join(input);
-		case "LEAVE":
-			return leave(input);
-		case "CLOSE":
-			return join(input);
-		case "UPDATELOBBY":
-			return updateLobby(input);
-		case "UPDATERACE":
-			return info.updateRace();
-		case "RACELIGHTS":
-			return info.getRaceLightsStatus();
-		case "STARTRACE":
-			info.startRace(input);
+		case "J":
+			res = join(input);
 			break;
-		case "GETLENGTH":
-			return info.getTrackLength();
-		case "SETPOINTSMONEY":
+		case "L":
+			res = leave(input);
+			break;
+		case "C":
+			res = join(input);
+			break;
+		case "UL":
+			res = updateLobby(input);
+			break;
+		case "UR":
+			res = info.updateRaceLobbyString();
+			break;
+		case "RL":
+			res = info.getRaceLightsStatus();
+			break;
+		case "SR":
+			info.startStopRace(input);
+			break;
+		case "GL":
+			res = info.getTrackLength();
+			break;
+		case "SPM":
 			info.setPointsMoney(input);
 			break;
-		case "GETPOINTSMONEY":
-			return info.getPointsMoney(input);
-		case "NEWRACES":
+		case "GPM":
+			res = info.getPointsMoney(input);
+			break;
+		case "NEW":
 			info.newRaces(input);
 			break;
-		case "GETRACESLEFT":
-			return info.getRacesLeft();
-		case "WINNER":
-			return info.getPlayerWithMostPoints(input);
-		case "ADDCHAT":
+		case "GEG":
+			res = info.getEndGoal();
+			break;
+		case "W":
+			res = info.getPlayerWithMostPoints(input);
+			break;
+		case "ADC":
 			info.addChat(input);
 			break;
-		case "GETCHAT":
-			return info.getChat(input);
-		case "GETPLACE":
-			return info.getCurrentPlace();
-		case "GETPRICES":
-			return info.getPrices();
-		case "UPDATECARCLONE":
+		case "GC":
+			res = info.getChat(input);
+			break;
+		case "GP":
+			res = info.getCurrentPlace();
+			break;
+		case "GPR":
+			res = info.getPrices();
+			break;
+		case "CAR":
 			info.updateCarForPlayer(input);
+			break;
+		case "GO":
+			res = info.isGameOver();
 			break;
 		}
 
-		return null;
+		info.ping(input);
+
+		return res;
 	}
 
 	private String join(String[] input) {
