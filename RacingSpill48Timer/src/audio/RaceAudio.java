@@ -15,11 +15,11 @@ import handlers.GameHandler;
 public class RaceAudio implements AudioCueListener {
 
 	private Random r = new Random();
-	private MediaAudio[] gear;
+	private WavAudio[] gear;
 	private AudioCue motorAcc;
-	private MediaAudio[] turbo;
-	private MediaAudio redline;
-	private MediaAudio nos;
+	private WavAudio[] turbo;
+	private WavAudio redline;
+	private WavAudio nos;
 	private int motorAccInstance;
 	private AudioCue motorDcc;
 	private int motorDccInstance;
@@ -32,15 +32,15 @@ public class RaceAudio implements AudioCueListener {
 
 	public RaceAudio(String carname) {
 		// Maybe use action for something later, cause it's awesome
-		gear = new MediaAudio[4];
-		turbo = new MediaAudio[2];
+		gear = new WavAudio[4];
+		turbo = new WavAudio[2];
 
 		for (int i = 0; i < gear.length; i++) {
-			gear[i] = new MediaAudio("/sfx/gear" + (i + 1));
+			gear[i] = new WavAudio("/sfx/gear" + (i + 1));
 		}
 
 		for (int i = 0; i < turbo.length; i++) {
-			turbo[i] = new MediaAudio("/sfx/turbosurge" + (i + 1));
+			turbo[i] = new WavAudio("/sfx/turbosurge" + (i + 1));
 		}
 
 		URL acc = this.getClass().getResource("/sfx/motorAcc" + carname + ".wav");
@@ -69,8 +69,8 @@ public class RaceAudio implements AudioCueListener {
 		turbospoolInstance = turbospool.obtainInstance();
 		straightcutgearsInstance = straightcutgears.obtainInstance();
 
-		redline = new MediaAudio("/sfx/redline");
-		nos = new MediaAudio("/sfx/nos");
+		redline = new WavAudio("/sfx/redline");
+		nos = new WavAudio("/sfx/nos");
 	}
 
 	public void updateVolume() {
@@ -83,11 +83,11 @@ public class RaceAudio implements AudioCueListener {
 		motorAcc.setVolume(motorAccInstance, wavgain);
 		motorDcc.setVolume(motorDccInstance, wavgain);
 
-		for (MediaAudio t : turbo) {
+		for (WavAudio t : turbo) {
 			t.setVolume(1);
 		}
 
-		for (MediaAudio g : gear) {
+		for (WavAudio g : gear) {
 			g.setVolume(1);
 		}
 
@@ -260,16 +260,16 @@ public class RaceAudio implements AudioCueListener {
 		gear[nextSfx].play();
 	}
 
-	private boolean isMediaArrayPlaying(MediaAudio[] arr) {
-		for (MediaAudio ma : arr) {
+	private boolean isMediaArrayPlaying(WavAudio[] arr) {
+		for (WavAudio ma : arr) {
 			if (ma.isPlaying())
 				return true;
 		}
 		return false;
 	}
 
-	private void stopMediaArray(MediaAudio[] arr) {
-		for (MediaAudio ma : arr) {
+	private void stopMediaArray(WavAudio[] arr) {
+		for (WavAudio ma : arr) {
 			ma.stop();
 		}
 	}

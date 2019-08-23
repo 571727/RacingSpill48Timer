@@ -2,7 +2,7 @@ package audio;
 
 public class BgMusicListener {
 
-	private MediaAudio[] music;
+	private WavAudio[] music;
 	private int playingIndex;
 	private int amount;
 	private boolean stopped;
@@ -11,10 +11,10 @@ public class BgMusicListener {
 		// Maybe use action for something later, cause it's awesome
 		playingIndex = -1;
 
-		music = new MediaAudio[amount];
+		music = new WavAudio[amount];
 
 		for (int i = 0; i < amount; i++) {
-			music[i] = new MediaAudio("/music/music" + i);
+			music[i] = new WavAudio("/music/music" + i);
 		}
 
 		this.amount = amount;
@@ -32,10 +32,10 @@ public class BgMusicListener {
 
 		playingIndex = (playingIndex + 1) % amount;
 		music[playingIndex].play();
-		music[playingIndex].getMediaPlayer();
 		updateVolume();
 
-		music[playingIndex].getMediaPlayer().setOnEndOfMedia(() -> playNext());
+//		music[playingIndex].getMediaPlayer();
+//		music[playingIndex].getMediaPlayer().setOnEndOfMedia(() -> playNext());
 	}
 
 	public void updateVolume() {

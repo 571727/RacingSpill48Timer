@@ -2,14 +2,14 @@ package audio;
 
 public class ButtonAudio {
 
-	private MediaAudio startGame;
-	private MediaAudio regularBtn;
-	private MediaAudio ready;
+	private WavAudio startGame;
+	private WavAudio regularBtn;
+	private WavAudio ready;
 
 	public ButtonAudio() {
-		ready = new MediaAudio("/sfx/btn/ready");
-		startGame = new MediaAudio("/sfx/btn/start_game");
-		regularBtn = new MediaAudio("/sfx/btn/rbtn");
+		ready = new WavAudio("/sfx/btn/ready");
+		startGame = new WavAudio("/sfx/btn/start_game");
+		regularBtn = new WavAudio("/sfx/btn/rbtn");
 	}
 
 	public void playRegularBtn() {
