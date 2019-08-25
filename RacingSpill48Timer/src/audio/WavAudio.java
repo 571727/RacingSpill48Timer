@@ -3,14 +3,16 @@ package audio;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import adt.Audio;
 import audio.audiocue.AudioCue;
 import audio.audiocue.AudioCueInstanceEvent;
 import audio.audiocue.AudioCueListener;
 import handlers.GameHandler;
 
-public class WavAudio implements AudioCueListener {
+public class WavAudio implements AudioCueListener, Audio {
 	private AudioCue mediaPlayer;
 	private int ins;
 
@@ -19,8 +21,7 @@ public class WavAudio implements AudioCueListener {
 		String type = "wav";
 		System.out.println("Finding file:");
 		System.out.println("\"" + file + "\"");
-		System.out.println(WavAudio.class.getResource(file + "." + type).toString());
-		URL url = this.getClass().getResource("/sfx/" + file + "." + type);
+		URL url = this.getClass().getResource(file + "." + type);
 		try {
 			mediaPlayer = AudioCue.makeStereoCue(url, 3);
 		} catch (UnsupportedAudioFileException | IOException e1) {
@@ -57,8 +58,15 @@ public class WavAudio implements AudioCueListener {
 	public boolean isPlaying() {
 		return mediaPlayer.isRunning();
 	}
+	
+	public void setRate(double rate) {
+		mediaPlayer.setSpeed(ins, rate);
+	}
 
-
+	public void setFramePosition(int i) {
+		mediaPlayer.setFramePosition(ins, i);		
+	}
+	
 	@Override
 	public void audioCueOpened(long now, int threadPriority, int bufferSize, AudioCue source) {
 		// TODO Auto-generated method stub
@@ -77,7 +85,15 @@ public class WavAudio implements AudioCueListener {
 		
 	}
 
-	public void setRate(double rate) {
-		mediaPlayer.setSpeed(ins, rate);
+	public void open(int i) throws IllegalStateException, LineUnavailableException {
+		mediaPlayer.open(i);
 	}
+
+	public void close() {
+		mediaPlayer.close();
+	}
+
+	
+
+	
 }

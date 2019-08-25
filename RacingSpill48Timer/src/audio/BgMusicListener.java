@@ -2,7 +2,7 @@ package audio;
 
 public class BgMusicListener {
 
-	private WavAudio[] music;
+	private MP3Audio[] music;
 	private int playingIndex;
 	private int amount;
 	private boolean stopped;
@@ -11,10 +11,10 @@ public class BgMusicListener {
 		// Maybe use action for something later, cause it's awesome
 		playingIndex = -1;
 
-		music = new WavAudio[amount];
+		music = new MP3Audio[amount];
 
 		for (int i = 0; i < amount; i++) {
-			music[i] = new WavAudio("/music/music" + i);
+			music[i] = new MP3Audio("/music/music" + i);
 		}
 
 		this.amount = amount;

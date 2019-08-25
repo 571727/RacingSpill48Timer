@@ -4,7 +4,7 @@ import java.util.Random;
 
 
 public class SFX {
-	private static WavAudio sfx;
+	private static MP3Audio sfx;
 
 	public static void playMP3Sound(String url) {
 		playMP3(url, 1);
@@ -15,7 +15,7 @@ public class SFX {
 	}
 	
 	private static void playMP3(String url, double rate) {
-		sfx = new WavAudio("/sfx/" + url);
+		sfx = new MP3Audio("/sfx/" + url);
 		sfx.setVolume(1);
 		sfx.setRate(rate);
 		sfx.play();

@@ -1,3 +1,5 @@
+/native/
+/test/
 /adt/
 /audio/
 /client/
@@ -5,10 +7,9 @@
 /elem/
 /game_modes/
 /handlers/
-/music/
-/pics/
+/java/
 /scenes/
 /server/
 /sfx/
-/startup/
 /window/
+/startup/
