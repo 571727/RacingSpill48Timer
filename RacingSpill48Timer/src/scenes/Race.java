@@ -281,7 +281,7 @@ public class Race extends Scene implements Runnable {
 			// Ping
 			while (deltap >= 1) {
 				deltap--;
-				player.pingServer();
+				//FIXME NOT PINGING WHEN WINDOW NOT FOCUSED
 				System.out.println("ping");
 			}
 			// Tick
@@ -294,7 +294,7 @@ public class Race extends Scene implements Runnable {
 				if (player.isInTheRace() == false) {
 					player.inTheRace();
 				}
-
+				player.pingServer();
 				tick();
 			}
 			// Render

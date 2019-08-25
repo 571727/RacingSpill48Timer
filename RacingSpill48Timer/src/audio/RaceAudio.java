@@ -16,13 +16,17 @@ public class RaceAudio implements AudioCueListener {
 
 	private Random r = new Random();
 	private MP3Audio[] gear;
+	private AudioCue motorAcc;
 	private MP3Audio[] turbo;
 	private MP3Audio redline;
 	private MP3Audio nos;
-	private WavAudio motorAcc;
-	private WavAudio motorDcc;
-	private WavAudio turbospool;
-	private WavAudio straightcutgears;
+	private int motorAccInstance;
+	private AudioCue motorDcc;
+	private int motorDccInstance;
+	private AudioCue turbospool;
+	private int turbospoolInstance;
+	private AudioCue straightcutgears;
+	private int straightcutgearsInstance;
 	private float wavgain;
 	private double turbospooling;
 
@@ -39,11 +43,32 @@ public class RaceAudio implements AudioCueListener {
 			turbo[i] = new MP3Audio("/sfx/turbosurge" + (i + 1));
 		}
 
-		motorAcc = new WavAudio("/sfx/motorAcc" + carname);
-		motorDcc = new WavAudio("/sfx/motorDcc" + carname);
-		turbospool = new WavAudio("/sfx/turbospool");
-		straightcutgears = new WavAudio("/sfx/straightcutgears");
-		
+		URL acc = this.getClass().getResource("/sfx/motorAcc" + carname + ".wav");
+		URL dcc = this.getClass().getResource("/sfx/motorDcc" + carname + ".wav");
+		URL ts = this.getClass().getResource("/sfx/turbospool.wav");
+		URL scg = this.getClass().getResource("/sfx/straightcutgears.wav");
+		try {
+			motorAcc = AudioCue.makeStereoCue(acc, 3);
+			motorDcc = AudioCue.makeStereoCue(dcc, 3);
+			turbospool = AudioCue.makeStereoCue(ts, 3);
+			straightcutgears = AudioCue.makeStereoCue(scg, 3);
+		} catch (UnsupportedAudioFileException | IOException e1) {
+			e1.printStackTrace();
+		}
+		motorAcc.setName("motorAcc");
+		motorDcc.setName("motorDcc");
+		turbospool.setName("turbospool");
+		straightcutgears.setName("straightcutgears");
+		motorAcc.addAudioCueListener(this);
+		motorDcc.addAudioCueListener(this);
+		turbospool.addAudioCueListener(this);
+		straightcutgears.addAudioCueListener(this);
+
+		motorAccInstance = motorAcc.obtainInstance();
+		motorDccInstance = motorDcc.obtainInstance();
+		turbospoolInstance = turbospool.obtainInstance();
+		straightcutgearsInstance = straightcutgears.obtainInstance();
+
 		redline = new MP3Audio("/sfx/redline");
 		nos = new MP3Audio("/sfx/nos");
 	}
@@ -55,8 +80,8 @@ public class RaceAudio implements AudioCueListener {
 			gain = 1;
 			wavgain = 1;
 		}
-		motorAcc.setVolume(wavgain);
-		motorDcc.setVolume(wavgain);
+		motorAcc.setVolume(motorAccInstance, wavgain);
+		motorDcc.setVolume(motorDccInstance, wavgain);
 
 		for (MP3Audio t : turbo) {
 			t.setVolume(1);
@@ -87,41 +112,42 @@ public class RaceAudio implements AudioCueListener {
 			value = rpm / totalRPM;
 
 		value = -0.05 * Math.pow(2, value) + 0.8 * value;
-		motorAcc.setRate(value);
-		motorDcc.setRate(value);
+		motorAcc.setSpeed(motorAccInstance, value);
+		motorDcc.setSpeed(motorDccInstance, value);
 	}
 
 	private void stopMotorAcc() {
-		if (motorAcc != null && motorAcc.isPlaying()) {
-			motorAcc.stop();
+		if (motorAcc != null && motorAcc.getIsPlaying(motorAccInstance)) {
+			motorAcc.stop(motorAccInstance);
 		}
 		stopTurbospool();
 	}
 
 	private void stopTurbospool() {
 		turbospooling = 0;
-		if (turbospool != null && turbospool.isPlaying()) {
-			turbospool.stop();
+		if (turbospool != null && turbospool.getIsPlaying(turbospoolInstance)) {
+			turbospool.stop(turbospoolInstance);
 		}
 	}
 
 	private void stopStraightcutgears() {
-		if (straightcutgears != null && straightcutgears.isPlaying()) {
-			straightcutgears.stop();
-			straightcutgears.setVolume(0);
+		if (straightcutgears != null && straightcutgears.getIsPlaying(straightcutgearsInstance)) {
+			straightcutgears.stop(straightcutgearsInstance);
+			straightcutgears.setVolume(straightcutgearsInstance, 0);
 		}
 	}
 
 	private void stopMotorDcc() {
-		if (motorDcc != null && motorDcc.isPlaying()) {
-			motorDcc.stop();
+		if (motorDcc != null && motorDcc.getIsPlaying(motorDccInstance)) {
+			motorDcc.stop(motorDccInstance);
 		}
 	}
 
 	public void turbospool() {
-		if (!turbospool.isPlaying()) {
-			turbospool.setFramePosition(0);
-			turbospool.loop();
+		if (!turbospool.getIsPlaying(turbospoolInstance)) {
+			turbospool.setFramePosition(turbospoolInstance, 0);
+			turbospool.setLooping(turbospoolInstance, -1);
+			turbospool.start(turbospoolInstance);
 		}
 	}
 
@@ -143,14 +169,15 @@ public class RaceAudio implements AudioCueListener {
 		}
 
 		value = -0.05 * Math.pow(2, value) + 0.8 * value;
-		turbospool.setRate(value);
-		turbospool.setVolume((value / maxValue) * turbospooling);
+		turbospool.setSpeed(turbospoolInstance, value);
+		turbospool.setVolume(turbospoolInstance, (value / maxValue) * turbospooling * GameHandler.volume);
 	}
 
 	public void straightcutgears() {
-		if (!straightcutgears.isPlaying()) {
-			straightcutgears.setFramePosition(0);
-			straightcutgears.loop();
+		if (!straightcutgears.getIsPlaying(straightcutgearsInstance)) {
+			straightcutgears.setFramePosition(straightcutgearsInstance, 0);
+			straightcutgears.setLooping(straightcutgearsInstance, -1);
+			straightcutgears.start(straightcutgearsInstance);
 		}
 	}
 
@@ -167,8 +194,8 @@ public class RaceAudio implements AudioCueListener {
 			value = speed / topSpeed;
 
 		value = -0.05 * Math.pow(2, value) + 4 * value;
-		straightcutgears.setRate(value);
-		straightcutgears.setVolume(value * wavgain);
+		straightcutgears.setSpeed(straightcutgearsInstance, value);
+		straightcutgears.setVolume(straightcutgearsInstance, value * wavgain);
 	}
 
 	public void motorAcc(boolean turboInstalled) {
@@ -187,18 +214,20 @@ public class RaceAudio implements AudioCueListener {
 	}
 
 	private void motorSound() {
-		if (!motorAcc.isPlaying()) {
-			motorAcc.setFramePosition(0);
-			motorAcc.loop();
+		if (!motorAcc.getIsPlaying(motorAccInstance)) {
+			motorAcc.setFramePosition(motorAccInstance, 0);
+			motorAcc.setLooping(motorAccInstance, -1);
+			motorAcc.start(motorAccInstance);
 		}
 	}
 
 	public void motorDcc() {
 		stopMotorAcc();
 		stopTurbospool();
-		if (!motorDcc.isPlaying()) {
-			motorDcc.setFramePosition(0);
-			motorDcc.loop();
+		if (!motorDcc.getIsPlaying(motorDccInstance)) {
+			motorDcc.setFramePosition(motorDccInstance, 0);
+			motorDcc.setLooping(motorDccInstance, -1);
+			motorDcc.start(motorDccInstance);
 		}
 
 	}
@@ -252,7 +281,7 @@ public class RaceAudio implements AudioCueListener {
 			if (turbo)
 				turbospool.open(2056);
 			if (gears) {
-				straightcutgears.setVolume(0);
+				straightcutgears.setVolume(straightcutgearsInstance, 0);
 				straightcutgears.open(2056);
 				straightcutgears();
 			}
@@ -277,13 +306,13 @@ public class RaceAudio implements AudioCueListener {
 			redline.stop();
 		}
 
-		if (motorAcc.isPlaying())
+		if (motorAcc.isRunning())
 			motorAcc.close();
-		if (motorDcc.isPlaying())
+		if (motorDcc.isRunning())
 			motorDcc.close();
-		if (straightcutgears.isPlaying())
+		if (straightcutgears.isRunning())
 			straightcutgears.close();
-		if (turbospool.isPlaying())
+		if (turbospool.isRunning())
 			turbospool.close();
 
 	}

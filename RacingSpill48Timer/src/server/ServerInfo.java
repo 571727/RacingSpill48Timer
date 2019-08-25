@@ -108,10 +108,13 @@ public class ServerInfo implements Runnable {
 		return nextID++;
 	}
 
+	int z = 0;
+
 	private long generateDisconnectID(PlayerInfo player) {
 		long id = Math.abs(r.nextLong());
-		player.setDisconnectID(id);
-		return id;
+		z++;
+		player.setDisconnectID(z);
+		return z;
 	}
 
 	public int getStarted() {
@@ -124,16 +127,23 @@ public class ServerInfo implements Runnable {
 
 	/**
 	 * input 1 = name input 2 = id input 3 = host boolean input 4 = carname
+	 * 
 	 */
 
 	public String joinLobby(String[] input) {
 
 		PlayerInfo newPlayer = null;
 		boolean jump = false;
+		int copyCar = 0;
 
-		//Have key?
+		// Have key?
 		if (lostPlayers.containsKey(Long.valueOf(input[4]))) {
 			newPlayer = lostPlayers.remove(Long.valueOf(input[4]));
+
+			players.put(newPlayer.getID(), newPlayer);
+			ping.put(newPlayer.getID(), System.currentTimeMillis());
+			chat.put(newPlayer, new ConcurrentLinkedQueue<String>());
+			copyCar = 1;
 			jump = true;
 		}
 
@@ -143,6 +153,7 @@ public class ServerInfo implements Runnable {
 			for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
 				if (entry.getValue().getDisconnectID() == Long.valueOf(input[4])) {
 					newPlayer = entry.getValue();
+					copyCar = 1;
 					jump = true;
 				}
 			}
@@ -158,7 +169,8 @@ public class ServerInfo implements Runnable {
 
 		addChat(newPlayer.getName() + " joined the game.");
 
-		return newPlayer.getID() + "#" + generateDisconnectID(newPlayer);
+		return newPlayer.getID() + "#" + generateDisconnectID(newPlayer) + "#" + copyCar
+				+ ((copyCar == 1) ? "#" + newPlayer.getName() + "#" + newPlayer.getCar().cloneToServerString() : "");
 	}
 
 	public void updateCarForPlayer(String[] input) {
@@ -178,8 +190,8 @@ public class ServerInfo implements Runnable {
 		String result = getPlacePodium(player);
 
 		for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
-			result += "#" + entry.getValue().getLobbyInfo() + "#" + getPing(player) +"#" + gm.getStarted() + "#"
-					+ entry.getValue().getCarInfo() ;
+			result += "#" + entry.getValue().getLobbyInfo() + "#" + getPing(entry.getValue()) + "#" + gm.getStarted()
+					+ "#" + entry.getValue().getCarInfo();
 		}
 
 		return result;
@@ -253,7 +265,7 @@ public class ServerInfo implements Runnable {
 		if (gm.getAllFinished()) {
 			determinePositioningFinishedRace();
 		}
-		
+
 		if (gm.controlGameAfterFinishedPlayer(player)) {
 			updateRaceLobbyString();
 			endGame();
@@ -261,9 +273,9 @@ public class ServerInfo implements Runnable {
 			raceLobbyString = updateRaceLobby(true);
 			raceLobbyStringFinalized = true;
 		}
-		
+
 		gm.noneFinished();
-		
+
 	}
 
 	private void updateRaceStatus() {
@@ -303,7 +315,7 @@ public class ServerInfo implements Runnable {
 
 	public void startStopRace(String[] input) {
 		int values = Integer.parseInt(input[2]);
-		
+
 		// host? first number
 		if (values >= 10) {
 			// second number -> 1 = race started. 0 = race ready to start
@@ -499,7 +511,6 @@ public class ServerInfo implements Runnable {
 		return gm.getEndGoalText();
 	}
 
-
 	public String getPlayerWithMostPoints(String[] input) {
 		return gm.getDeterminedWinnerText(getPlayer(input));
 	}
@@ -509,27 +520,26 @@ public class ServerInfo implements Runnable {
 	}
 
 	public boolean validPing(long ping) {
-		return ping > System.currentTimeMillis() - 20000;
+		return ping > System.currentTimeMillis() - 10000;
 	}
 
 	public void checkPings() {
-		if (!leavingPlayerMutex)
-			for (Entry<Byte, Long> entry : ping.entrySet()) {
-				PlayerInfo player = getPlayer(entry.getKey());
+		for (Entry<Byte, Long> entry : ping.entrySet()) {
+			PlayerInfo player = getPlayer(entry.getKey());
 
-				if (!ai.contains(player) && !validPing(entry.getValue())) {
-					System.out.println("LEAVING BY PING");
-					leavingPlayerMutex = true;
-					if (player == null)
-						return;
+			if (!ai.contains(player) && !validPing(entry.getValue())) {
+				System.out.println("LEAVING BY PING");
+				leavingPlayerMutex = true;
+				if (player == null)
+					return;
 
-					addChat(player.getName() + " has too high ping!");
-					leave(entry.getKey());
-					leavingPlayerMutex = false;
-				}
+				addChat(player.getName() + " has too high ping!");
+				leave(entry.getKey());
+				leavingPlayerMutex = false;
 			}
+		}
 	}
-	
+
 	public long getPing(PlayerInfo player) {
 		return System.currentTimeMillis() - ping.get(player.getID());
 	}
@@ -547,8 +557,8 @@ public class ServerInfo implements Runnable {
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
-//				if (!Main.DEBUG && !leavingPlayerMutex)
-//					checkPings();
+				if (!Main.DEBUG && !leavingPlayerMutex)
+					checkPings();
 				updateRaceStatus();
 				delta--;
 			}

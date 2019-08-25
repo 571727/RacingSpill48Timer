@@ -85,8 +85,12 @@ public class WavAudio implements AudioCueListener, Audio {
 		
 	}
 
-	public void open(int i) throws IllegalStateException, LineUnavailableException {
-		mediaPlayer.open(i);
+	public void open(int i) {
+		try {
+			mediaPlayer.open(i);
+		} catch (IllegalStateException | LineUnavailableException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void close() {

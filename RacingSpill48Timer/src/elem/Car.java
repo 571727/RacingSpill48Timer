@@ -748,10 +748,14 @@ public class Car implements Cloneable {
 
 	public void setCurrentWeight(double currentWeight) {
 		this.currentWeight = currentWeight;
+		weightloss = 0;
+		totalWeight = currentWeight;
 	}
 
 	public void setCurrentWeight() {
 		this.currentWeight = totalWeight - weightloss;
+		weightloss = 0;
+		totalWeight = currentWeight;
 	}
 
 	public int getHighestSpeedAchived() {

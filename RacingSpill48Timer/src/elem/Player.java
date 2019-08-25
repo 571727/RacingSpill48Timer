@@ -5,6 +5,7 @@ import java.util.Random;
 
 import client.EchoClient;
 import connection_standard.Config;
+import handlers.ClientThreadHandler;
 import handlers.StoreHandler;
 import startup.Main;
 
@@ -26,6 +27,7 @@ public class Player {
 	private StoreHandler fixCarHandler;
 	private Random r;
 	private Bank bank;
+	private ClientThreadHandler cth;
 	private boolean inTheRace;
 	private int moneyAchived;
 	private int pointsAchived;
@@ -44,7 +46,7 @@ public class Player {
 		r = new Random();
 		client = new EchoClient(ip);
 		bank = new Bank();
-
+		cth = new ClientThreadHandler();
 		// Request stats about lobby and update lobby
 	}
 
@@ -65,9 +67,16 @@ public class Player {
 	 * JOIN#name+id#host-boolean
 	 */
 	public void joinServer() {
-		String[] ids = client.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID).split("#");
+		String[] ids = client
+				.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID)
+				.split("#");
 		this.id = Byte.valueOf(ids[0]);
 		Main.newDisconnectedID(Long.valueOf(ids[1]));
+		
+		if (Integer.valueOf(ids[2]) == 1) {
+			name = ids[3];
+			car.updateServerClone(ids, 4);
+		}
 	}
 
 	/**
@@ -98,7 +107,7 @@ public class Player {
 	}
 
 	public void stopRace() {
-		client.sendRequest("SR#" + id + "#"+ host + 0);
+		client.sendRequest("SR#" + id + "#" + host + 0);
 	}
 
 	public int getTrackLength() {
@@ -150,7 +159,7 @@ public class Player {
 	public void updateCarCloneToServer() {
 		client.sendRequest("CAR#" + id + "#" + car.cloneToServerString());
 	}
-	
+
 	public boolean isGameOver() {
 		return client.sendRequest("GO#" + id).equals("1");
 	}
@@ -262,6 +271,5 @@ public class Player {
 	public int getPlacePodium() {
 		return podium;
 	}
-
 
 }
