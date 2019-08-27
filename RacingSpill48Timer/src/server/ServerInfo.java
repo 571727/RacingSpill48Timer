@@ -223,9 +223,16 @@ public class ServerInfo implements Runnable {
 		if (player == null) {
 			return null;
 		}
-		player.updateLobby(Byte.valueOf(input[2]));
 
 		return updateLobby(player);
+	}
+	
+	public void updateReady(String[] input) {
+		PlayerInfo player = getPlayer(input);
+		if (player == null) {
+			return;
+		}
+		player.setReady(Byte.valueOf(input[2]));
 	}
 
 	private PlayerInfo getPlayer(String[] input) {

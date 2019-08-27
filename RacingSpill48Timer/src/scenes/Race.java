@@ -98,6 +98,8 @@ public class Race extends Scene implements Runnable {
 		GameHandler.ba.startGame();
 		doneWithRace = false;
 
+		player.startUpdateRaceLights();
+
 		racingWindow = SceneHandler.instance.getWindows();
 		GraphicsDevice device = racingWindow.getGraphicsConfiguration().getDevice();
 		keys = new RaceKeyHandler(player.getCar());
@@ -188,7 +190,7 @@ public class Race extends Scene implements Runnable {
 
 		// Controls countdown and cheating and such shait.
 		if (raceVisual != null && !running) {
-			int raceLights = player.getStatusRaceLights();
+			int raceLights = player.updateRaceLights();
 
 			if (raceLights != this.raceLights) {
 
@@ -218,6 +220,7 @@ public class Race extends Scene implements Runnable {
 				player.getCar().reset();
 			}
 		} else if (raceLights == 4 && waitTime < System.currentTimeMillis()) {
+			player.stopUpdateRaceLights();
 			raceLights = 0;
 			raceVisual.setBallCount(raceLights);
 			startTime = System.currentTimeMillis();
@@ -281,7 +284,7 @@ public class Race extends Scene implements Runnable {
 			// Ping
 			while (deltap >= 1) {
 				deltap--;
-				//FIXME NOT PINGING WHEN WINDOW NOT FOCUSED
+				// FIXME NOT PINGING WHEN WINDOW NOT FOCUSED
 				System.out.println("ping");
 			}
 			// Tick
@@ -294,7 +297,6 @@ public class Race extends Scene implements Runnable {
 				if (player.isInTheRace() == false) {
 					player.inTheRace();
 				}
-				player.pingServer();
 				tick();
 			}
 			// Render
@@ -444,10 +446,10 @@ public class Race extends Scene implements Runnable {
 		if (everyoneDone) {
 			// Stop race aka make ready the next race
 			player.stopRace();
-
 			goBackVisual.setEnabled(true);
 			racingWindow.requestFocus();
 			lobby.setPlaceChecked(false);
+			player.stopUpdateRaceLobby();
 			if (player.isGameOver())
 				winVisual.setEveryoneDone(everyoneDone);
 
@@ -469,10 +471,12 @@ public class Race extends Scene implements Runnable {
 	private void finishRace(boolean cheated) {
 		System.out.println("Finished");
 
+		player.startUpdateRaceLobby();
+
 		player.finishRace(System.currentTimeMillis() - startTime);
 		player.getCar().reset();
 		finished = true;
-
+		
 		racingWindow.removeKeyListener(keys);
 		keys = null;
 

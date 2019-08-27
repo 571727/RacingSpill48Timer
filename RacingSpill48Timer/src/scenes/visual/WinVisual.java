@@ -137,6 +137,8 @@ public class WinVisual extends Visual {
 		this.everyoneDone = everyoneDone;
 		if (everyoneDone == true) {
 			claimWinner();
+			player.stopAllClientHandlerOperations();
+			player.endClientHandler();
 		}
 	}
 

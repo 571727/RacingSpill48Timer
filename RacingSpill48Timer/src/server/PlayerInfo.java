@@ -28,15 +28,6 @@ public class PlayerInfo {
 	}
 
 	/**
-	 * fra og med input[3]
-	 * 
-	 * @param input
-	 */
-	public void updateLobby(byte ready) {
-		setReady(ready);
-	}
-
-	/**
 	 * @return name#ready#host#points
 	 */
 	public String getLobbyInfo() {

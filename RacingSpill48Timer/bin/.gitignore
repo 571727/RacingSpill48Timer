@@ -1,15 +1,4 @@
-/native/
-/test/
-/adt/
-/audio/
-/client/
-/connection_standard/
-/elem/
-/game_modes/
 /handlers/
-/java/
+/elem/
 /scenes/
 /server/
-/sfx/
-/window/
-/startup/

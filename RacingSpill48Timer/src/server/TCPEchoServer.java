@@ -85,6 +85,8 @@ public class TCPEchoServer {
 	public String understandRequest(String request) {
 		String[] input = request.split("#");
 
+		System.out.println("PING: " + request);
+		
 		String res = null;
 
 		switch (input[0]) {
@@ -147,6 +149,9 @@ public class TCPEchoServer {
 			break;
 		case "CAR":
 			info.updateCarForPlayer(input);
+			break;
+		case "RE":
+			info.updateReady(input);
 			break;
 		case "GO":
 			res = info.isGameOver();

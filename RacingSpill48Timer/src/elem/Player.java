@@ -46,7 +46,7 @@ public class Player {
 		r = new Random();
 		client = new EchoClient(ip);
 		bank = new Bank();
-		cth = new ClientThreadHandler();
+		cth = new ClientThreadHandler(client, -1);
 		// Request stats about lobby and update lobby
 	}
 
@@ -54,9 +54,6 @@ public class Player {
 		client.sendRequest("F#" + id + "#" + time);
 	}
 
-	public void pingServer() {
-		client.sendRequest("#" + id);
-	}
 
 	public void inTheRace() {
 		inTheRace = true;
@@ -77,6 +74,9 @@ public class Player {
 			name = ids[3];
 			car.updateServerClone(ids, 4);
 		}
+		
+		cth.setID(id);
+		
 	}
 
 	/**
@@ -90,17 +90,75 @@ public class Player {
 	/**
 	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
 	 */
-	public String updateLobbyFromServer() {
-		return client.sendRequest("UL#" + id + "#" + ready);
+	
+	public void stopAllClientHandlerOperations() {
+		cth.stopAll();
+	}
+
+	public void endClientHandler() {
+		cth.end();
+	}
+
+	public void startClientHandler() {
+		try {
+			cth.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void startPing() {
+		cth.startPing();
+	}
+	
+	public void stopPing() {
+		cth.stopPing();
+	}
+	
+	public String updateLobby() {
+		return cth.getLobbyString();
 	}
 
 	public String updateRaceLobby() {
-		return client.sendRequest("UR#" + id);
+		return cth.getRaceLobbyString();
 	}
 
-	public int getStatusRaceLights() {
-		return Integer.valueOf(client.sendRequest("RL#" + id));
+	public int updateRaceLights() {
+		return cth.getRaceLights();
 	}
+	
+	
+	public void startUpdateLobby() {
+		cth.startLobby();
+	}
+
+	public void startUpdateRaceLobby() {
+		cth.startRaceLobby();
+	}
+
+	public void startUpdateRaceLights() {
+		cth.startRaceLights();
+	}
+	
+	
+	public void stopUpdateLobby() {
+		cth.stopLobby();
+	}
+
+	public void stopUpdateRaceLobby() {
+		cth.stopRaceLobby();
+	}
+
+	public void stopUpdateRaceLights() {
+		cth.stopRaceLights();
+	}
+	
+	
+	public void updateReady() {
+		client.sendRequest("RE#" + id + "#" + ready);
+	}
+
+
 
 	public void startRace() {
 		client.sendRequest("SR#" + id + "#" + host + 1);

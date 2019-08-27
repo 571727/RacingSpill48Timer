@@ -107,6 +107,7 @@ public class Lobby extends Scene implements Runnable {
 				GameHandler.ba.playRegularBtn();
 			store.setEnabled(player.getReady() == 0);
 			options.setEnabled(player.getReady() == 0);
+			player.updateReady();
 		});
 		store.addActionListener((ActionEvent e) -> {
 			SFX.playMP3Sound("btn/open_store");
@@ -212,6 +213,8 @@ public class Lobby extends Scene implements Runnable {
 	private void goBack() {
 		player.getCar().reset();
 		clearChat();
+		player.stopAllClientHandlerOperations();
+		player.endClientHandler();
 		player.leaveServer();
 		player = null;
 		fixCarChecked = false;
@@ -318,14 +321,7 @@ public class Lobby extends Scene implements Runnable {
 			}
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-//			System.err.println("server lost probably");
-//
-//			if (server != null) {
-//				server.close();
-//				server = null;
-//			}
-//			SceneHandler.instance.changeScene(0);
+			e.printStackTrace();
 		}
 
 	}
@@ -368,6 +364,8 @@ public class Lobby extends Scene implements Runnable {
 		}
 		player.joinServer();
 		player.updateCarCloneToServer();
+		player.startClientHandler();
+		player.startPing();
 		initButtonState();
 		SceneHandler.instance.addClosingListener(player);
 	}
@@ -400,7 +398,6 @@ public class Lobby extends Scene implements Runnable {
 			race.setCurrentPlace(currentPlace);
 
 			player.setReady(0);
-			player.updateLobbyFromServer();
 			player.getCar().updateVolume();
 
 			store.setEnabled(true);
@@ -417,6 +414,9 @@ public class Lobby extends Scene implements Runnable {
 	@Override
 	public void run() {
 		started = false;
+		
+		player.startUpdateLobby();
+		
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
@@ -439,12 +439,9 @@ public class Lobby extends Scene implements Runnable {
 						&& SceneHandler.instance.getWindows().isVisible())
 					SceneHandler.instance.getWindows().requestFocus();
 
-				if (player != null) {
-					player.pingServer();
 
 					if (!gameEnded && !started)
-						update(player.updateLobbyFromServer());
-				}
+						update(player.updateLobby());
 				delta--;
 			}
 
@@ -461,6 +458,8 @@ public class Lobby extends Scene implements Runnable {
 			}
 		}
 
+		player.stopUpdateLobby();
+		
 	}
 
 	/*
