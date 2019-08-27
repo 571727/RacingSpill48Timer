@@ -40,11 +40,11 @@ public class FinishVisual extends Visual {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(double tickFactor) {
 
 		for (PlacedAnimation ma : finishedPlayers) {
 			if (ma != null) {
-				ma.moveX((int) resCarMovement);
+				ma.moveX((int) (resCarMovement * tickFactor));
 				ma.incrementCurrentFrame();
 				if (ma.getX() > Race.WIDTH)
 					finishedPlayers.remove(ma);
@@ -52,7 +52,7 @@ public class FinishVisual extends Visual {
 		}
 
 		for (int i = 0; i < visualElements.size(); i++) {
-			visualElements.get(i).tick();
+			visualElements.get(i).tick(tickFactor);
 		}
 
 	}

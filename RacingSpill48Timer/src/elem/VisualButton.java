@@ -19,9 +19,9 @@ public class VisualButton implements VisualElement {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(double tickFactor) {
 		if (enabled)
-			img.incrementMovement();
+			img.incrementMovement(tickFactor);
 	}
 
 	@Override

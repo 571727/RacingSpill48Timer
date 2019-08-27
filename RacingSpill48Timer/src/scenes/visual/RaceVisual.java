@@ -14,6 +14,7 @@ import adt.VisualElement;
 import elem.Animation;
 import elem.Player;
 import scenes.Race;
+import startup.Main;
 
 public class RaceVisual extends Visual {
 
@@ -87,7 +88,7 @@ public class RaceVisual extends Visual {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(double tickFactor) {
 		if (player.getCar().isGas() && !player.getCar().isClutch() && player.getCar().getGear() != 0) {
 			if (player.getCar().isNOSON()) {
 				y = -15;
@@ -101,7 +102,7 @@ public class RaceVisual extends Visual {
 				width = Race.WIDTH + 16;
 				height = Race.HEIGHT + 9;
 			}
-			if(player.getCar().isGearBoostON()) {
+			if (player.getCar().isGearBoostON()) {
 				y -= 5;
 				x -= 5;
 				width += 16;
@@ -145,8 +146,7 @@ public class RaceVisual extends Visual {
 				blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
 						(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
 			} else if (player.getCar().isGearBoostON()) {
-				shakeAndScaleImage(trans, carImage, x, y, width, height, 1,
-						1, 1, blurShake * 2);
+				shakeAndScaleImage(trans, carImage, x, y, width, height, 1, 1, 1, blurShake * 2);
 			}
 
 			if (player.getCar().getSpeedActual() > blurSpeed)
@@ -156,7 +156,8 @@ public class RaceVisual extends Visual {
 			g2d.setFont(font);
 
 			// DEBUG
-//			drawDebug(g2d, 300);
+			if (Main.DEBUG)
+				drawDebug(g2d, 300);
 
 			// Prerace stuff
 			drawRaceHUD(g2d);
@@ -231,7 +232,7 @@ public class RaceVisual extends Visual {
 				(height + 2 * (int) shake) + (int) yShake, null);
 		g2d.setComposite(ac.derive(1f));
 	}
-	
+
 	private double alpha(double comparedValue, double fromValue, double tillAdditionalValue, double shake) {
 		double alpha = (comparedValue - fromValue) / tillAdditionalValue;
 
@@ -306,7 +307,7 @@ public class RaceVisual extends Visual {
 			g.drawString("N", xGear, yGear);
 
 	}
-	
+
 	private void drawRightShift(Graphics g) {
 		int rs = player.getCar().rightShift();
 		if (rs > 0) {

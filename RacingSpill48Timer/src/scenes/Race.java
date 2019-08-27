@@ -164,6 +164,8 @@ public class Race extends Scene implements Runnable {
 		racingWindow.setFocusable(true);
 		racingWindow.requestFocus();
 
+		player.inTheRace();
+
 	}
 
 	public boolean isEveryoneDone() {
@@ -183,11 +185,19 @@ public class Race extends Scene implements Runnable {
 		}
 	}
 
-	public void tick() {
-		visualTick();
-		player.getCar().updateSpeed();
+	public void tick(long elapsedTime) {
+		//Base a tick around 40 000 000 ns (40 ms) == 25 ticks per sec
+		double tickFactor = elapsedTime / 40000000.0;
+		visualTick(elapsedTime);
+		
+		player.getCar().updateSpeed(tickFactor);
 		checkDistanceLeft();
 
+		controlRaceLightsCountdown();
+
+	}
+
+	private void controlRaceLightsCountdown() {
 		// Controls countdown and cheating and such shait.
 		if (raceVisual != null && !running) {
 			int raceLights = player.updateRaceLights();
@@ -225,20 +235,20 @@ public class Race extends Scene implements Runnable {
 			raceVisual.setBallCount(raceLights);
 			startTime = System.currentTimeMillis();
 		}
-
 	}
 
-	public void lobbyTick() {
-		visualTick();
+	public void lobbyTick(double tickFactor) {
+		visualTick(tickFactor);
 		if (finished && currentVisual != null && !everyoneDone) {
 			updateResults();
 		}
 	}
 
-	public void visualTick() {
+	public void visualTick(double tickFactor) {
 		if (currentVisual != null) {
-			currentVisual.tick();
+			currentVisual.tick(tickFactor);
 
+			//FIXME make me more optimal!
 			if (winVisual.isOver()) {
 				winVisual.addVisualElement(goBackVisual);
 				racingWindow.addKeyListener(goBackVisual);
@@ -257,69 +267,35 @@ public class Race extends Scene implements Runnable {
 	public void run() {
 		joinThread();
 
-		long lastTime = System.nanoTime();
-		double amountOfTicks = TICK_STD;
-		// TODO lagre fps i en textfil. Og gj�re slik at man kan endre verdien i
-		// options.
-		double[] fpsSteps = { 144, 120, 60, 30, 20, 16 };
-		int fps = 2;
-		int tolerance = 5;
-		double nst = 1000000000 / amountOfTicks;
-		double nsr = 1000000000 / fpsSteps[fps];
-		double nsp = 1000000000 / (amountOfTicks / 20.0);
-		double deltat = 0;
-		double deltar = 0;
-		double deltap = 0;
+		long last = System.nanoTime();
+		long now;
+		long elapsed;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 
 		initWindow();
 
 		while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !finished) {
-			long now = System.nanoTime();
-			deltat += (now - lastTime) / nst;
-			deltar += (now - lastTime) / nsr;
-			deltap += (now - lastTime) / nsp;
-			lastTime = now;
-			// Ping
-			while (deltap >= 1) {
-				deltap--;
-				// FIXME NOT PINGING WHEN WINDOW NOT FOCUSED
-				System.out.println("ping");
-			}
+
+			now = System.nanoTime();
+			elapsed = now - last;
+
 			// Tick
-			while (deltat >= 1) {
-				deltat--;
+			if (racingWindow.isVisible())
+				racingWindow.requestFocus();
+			tick(elapsed);
 
-				if (racingWindow.isVisible())
-					racingWindow.requestFocus();
-
-				if (player.isInTheRace() == false) {
-					player.inTheRace();
-				}
-				tick();
-			}
 			// Render
-			frames++;
 			currentVisual.render(null);
+
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS RACE: " + frames);
-//				if ((frames >= fpsSteps[fps] - tolerance && frames < fpsSteps[fps] + tolerance) == false
-//						&& fps < fpsSteps.length - 1 && racingWindow.isFocused()) {
-//					fps++;
-//					nsr = 1000000000 / fpsSteps[fps];
-//				}
-				// Check if frames are ok.
-
 				frames = 0;
 			}
 
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			frames++;
+			last = now;
 		}
 
 		player.outOfTheRace();
@@ -476,7 +452,7 @@ public class Race extends Scene implements Runnable {
 		player.finishRace(System.currentTimeMillis() - startTime);
 		player.getCar().reset();
 		finished = true;
-		
+
 		racingWindow.removeKeyListener(keys);
 		keys = null;
 

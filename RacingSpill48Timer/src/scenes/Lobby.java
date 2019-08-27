@@ -430,6 +430,7 @@ public class Lobby extends Scene implements Runnable {
 				|| SceneHandler.instance.getCurrentScene().getClass().equals(Options.class)
 				|| (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !started)) && !gameEnded) {
 			long now = System.nanoTime();
+			long elapsed = now - lastTime;
 			delta += (now - lastTime) / ns;
 			deltar += (now - lastTime) / nsr;
 			lastTime = now;
@@ -446,7 +447,7 @@ public class Lobby extends Scene implements Runnable {
 			}
 
 			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1) {
-				race.lobbyTick();
+				race.lobbyTick(elapsed);
 				race.visualRender();
 				deltar--;
 			}

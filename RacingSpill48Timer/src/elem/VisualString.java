@@ -32,7 +32,7 @@ public class VisualString implements VisualElement {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(double tickFactor) {
 	}
 
 	@Override

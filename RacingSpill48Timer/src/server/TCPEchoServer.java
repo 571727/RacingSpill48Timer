@@ -85,8 +85,6 @@ public class TCPEchoServer {
 	public String understandRequest(String request) {
 		String[] input = request.split("#");
 
-		System.out.println("PING: " + request);
-		
 		String res = null;
 
 		switch (input[0]) {

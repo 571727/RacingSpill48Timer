@@ -18,7 +18,7 @@ public abstract class Visual extends Canvas {
 	protected Random r = new Random();
 	protected ArrayList<VisualElement> visualElements;
 
-	public abstract void tick();
+	public abstract void tick(double tickFactor);
 
 	public abstract void render(Graphics g);
 

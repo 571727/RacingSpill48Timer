@@ -1,6 +1,6 @@
 package elem;
 
-public class MovingAnimation extends PlacedAnimation{
+public class MovingAnimation extends PlacedAnimation {
 
 	private int x1;
 	private int y1;
@@ -11,7 +11,7 @@ public class MovingAnimation extends PlacedAnimation{
 	private float movementSpeedX;
 	private float movementSpeedY;
 	private int movementIndex;
-	
+
 	public MovingAnimation(String frameName, int frameCount, int x, int y, int x2, int y2, int framesPerMovement) {
 		super(frameName, frameCount, x, y);
 		this.x1 = x;
@@ -20,26 +20,24 @@ public class MovingAnimation extends PlacedAnimation{
 		this.y2 = y2;
 		this.framesPerMovement = framesPerMovement;
 		forwardDirection = true;
-		movementSpeedX = ( x2 - x1 ) / framesPerMovement;
-		movementSpeedY = ( y2 - y1 ) / framesPerMovement;
+		movementSpeedX = (x2 - x1) / framesPerMovement;
+		movementSpeedY = (y2 - y1) / framesPerMovement;
 	}
-	
-	public void incrementMovement() {
-		if(forwardDirection) {
-			x += movementSpeedX;
-			y += movementSpeedY;
+
+	public void incrementMovement(double tickFactor) {
+		if (forwardDirection) {
+			x += movementSpeedX * tickFactor;
+			y += movementSpeedY * tickFactor;
 		} else {
-			x -= movementSpeedX;
-			y -= movementSpeedY;
+			x -= movementSpeedX * tickFactor;
+			y -= movementSpeedY * tickFactor;
 		}
-		
+
 		movementIndex++;
-		if(movementIndex == framesPerMovement) {
+		if (movementIndex == framesPerMovement) {
 			forwardDirection = !forwardDirection;
 			movementIndex = 0;
 		}
 	}
-	
-	
-	
+
 }

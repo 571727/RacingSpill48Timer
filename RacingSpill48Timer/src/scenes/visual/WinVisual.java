@@ -37,20 +37,20 @@ public class WinVisual extends Visual {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(double tickFactor) {
 		for (int i = 0; i < visualElements.size(); i++) {
-			visualElements.get(i).tick();
+			visualElements.get(i).tick(tickFactor);
 		}
 
 		if (everyoneDone) {
 			if (stage == 0) {
-				theWinnerIntroAlpha += 0.01f;
+				theWinnerIntroAlpha += 0.01f * tickFactor;
 				if (theWinnerIntroAlpha >= 1) {
 					theWinnerIntroAlpha = 1;
 					stage++;
 				}
 			} else if (stage == 1) {
-				theWinnerIntroAlpha -= 0.02f;
+				theWinnerIntroAlpha -= 0.02f * tickFactor;
 				if (theWinnerIntroAlpha <= 0) {
 					theWinnerIntroAlpha = 0;
 					stage++;
@@ -58,7 +58,7 @@ public class WinVisual extends Visual {
 			} else if (stage == 2 && alphaIncIndex < alphas.length) {
 
 				if (alphas[alphaIncIndex] < 1f) {
-					alphas[alphaIncIndex] += 0.05f;
+					alphas[alphaIncIndex] += 0.05f * tickFactor;
 					if (alphas[alphaIncIndex] > 1)
 						alphas[alphaIncIndex] = 1;
 				} else {
