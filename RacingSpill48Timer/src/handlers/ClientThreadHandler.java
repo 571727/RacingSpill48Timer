@@ -38,6 +38,9 @@ public class ClientThreadHandler {
 				// Ping
 				while (deltap >= 1) {
 
+//					System.out.println(
+//							pingRunning + "," + lobbyRunning + "," + raceLobbyRunning + "," + raceLightsRunning);
+
 					if (this.pingRunning)
 						client.sendRequest("#" + this.id);
 					if (this.lobbyRunning)

@@ -86,6 +86,7 @@ public class TCPEchoServer {
 		String[] input = request.split("#");
 
 		String res = null;
+		System.out.println(request);
 
 		switch (input[0]) {
 		case "F":

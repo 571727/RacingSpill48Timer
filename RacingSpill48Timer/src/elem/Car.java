@@ -531,6 +531,9 @@ public class Car implements Cloneable {
 		setHp(Double.valueOf(values[fromIndex + 1]));
 		setCurrentWeight(Double.valueOf(values[fromIndex + 2]));
 		setNosStrengthStandard(Double.valueOf(values[fromIndex + 3]));
+		//FIXME legg denne heller inn i cloneToServerString()
+		if(nosStrengthStandard > 0)
+			nosAmountLeftStandard = 1;
 		setTotalGear(Integer.valueOf(values[fromIndex + 4]));
 		setTopSpeed(Double.valueOf(values[fromIndex + 5]));
 		setHighestSpeedAchived(Integer.valueOf(values[fromIndex + 6]));

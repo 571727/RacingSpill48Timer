@@ -226,7 +226,7 @@ public class ServerInfo implements Runnable {
 
 		return updateLobby(player);
 	}
-	
+
 	public void updateReady(String[] input) {
 		PlayerInfo player = getPlayer(input);
 		if (player == null) {
@@ -564,7 +564,7 @@ public class ServerInfo implements Runnable {
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
-				if (!Main.DEBUG && !leavingPlayerMutex)
+				if (!Main.DEBUG)
 					checkPings();
 				updateRaceStatus();
 				delta--;
@@ -606,7 +606,11 @@ public class ServerInfo implements Runnable {
 	}
 
 	public String getChat(String[] input) {
-		return chat.get(getPlayer(input)).poll();
+		PlayerInfo player = getPlayer(input);
+
+		if (player != null)
+			return chat.get(getPlayer(input)).poll();
+		return null;
 	}
 
 	public String getCurrentPlace() {

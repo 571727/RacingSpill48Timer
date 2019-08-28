@@ -77,9 +77,11 @@ public class FinishVisual extends Visual {
 			}
 
 			for (int i = 0; i < visualElements.size(); i++) {
+				//FIXME
 				visualElements.get(i).render(g);
 			}
 
+			//TODO remove me
 			if (g != null) {
 				g.dispose();
 			}

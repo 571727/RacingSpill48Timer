@@ -447,9 +447,9 @@ public class Race extends Scene implements Runnable {
 	private void finishRace(boolean cheated) {
 		System.out.println("Finished");
 
-		player.startUpdateRaceLobby();
-
 		player.finishRace(System.currentTimeMillis() - startTime);
+
+		player.startUpdateRaceLobby();
 		player.getCar().reset();
 		finished = true;
 

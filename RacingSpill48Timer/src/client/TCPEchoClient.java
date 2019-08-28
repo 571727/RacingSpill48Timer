@@ -43,7 +43,10 @@ public class TCPEchoClient {
 			
 			
 		} catch (IOException ex) {
+			System.out.println("SENT " + text);
+			System.out.println("IN " + outtext);
 			System.err.println("TCP client: " + ex.getMessage());
+			ex.printStackTrace();
 			SceneHandler.instance.changeScene(0);
 			
 		}
