@@ -10,7 +10,7 @@ public class ClientThreadHandler {
 
 	private Thread clientThread;
 
-	private String lobbyString = "LOADING";
+	private String lobbyString = "-1#LOADING";
 	private String raceLobbyString = "LOADING";
 	private int raceLights = -1;
 

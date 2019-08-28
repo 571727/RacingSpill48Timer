@@ -267,7 +267,7 @@ public class Lobby extends Scene implements Runnable {
 					result += "Points: " + outputs[i];
 					break;
 				case 5:
-					result +=" -- PING: " + outputs[i] + " ms"; 
+					result += " -- PING: " + outputs[i] + " ms";
 					break;
 				case 6:
 					if (Integer.valueOf(outputs[i]) == 1) {
@@ -414,9 +414,9 @@ public class Lobby extends Scene implements Runnable {
 	@Override
 	public void run() {
 		started = false;
-		
+
 		player.startUpdateLobby();
-		
+
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
@@ -430,7 +430,6 @@ public class Lobby extends Scene implements Runnable {
 				|| SceneHandler.instance.getCurrentScene().getClass().equals(Options.class)
 				|| (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && !started)) && !gameEnded) {
 			long now = System.nanoTime();
-			long elapsed = now - lastTime;
 			delta += (now - lastTime) / ns;
 			deltar += (now - lastTime) / nsr;
 			lastTime = now;
@@ -440,14 +439,13 @@ public class Lobby extends Scene implements Runnable {
 						&& SceneHandler.instance.getWindows().isVisible())
 					SceneHandler.instance.getWindows().requestFocus();
 
-
-					if (!gameEnded && !started)
-						update(player.updateLobby());
+				if (!gameEnded && !started && player != null)
+					update(player.updateLobby());
 				delta--;
 			}
 
 			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1) {
-				race.lobbyTick(elapsed);
+				race.lobbyTick(1);
 				race.visualRender();
 				deltar--;
 			}
@@ -460,7 +458,7 @@ public class Lobby extends Scene implements Runnable {
 		}
 
 		player.stopUpdateLobby();
-		
+
 	}
 
 	/*

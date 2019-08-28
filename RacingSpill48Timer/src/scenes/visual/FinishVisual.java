@@ -45,7 +45,7 @@ public class FinishVisual extends Visual {
 		for (PlacedAnimation ma : finishedPlayers) {
 			if (ma != null) {
 				ma.moveX((int) (resCarMovement * tickFactor));
-				ma.incrementCurrentFrame();
+				ma.incrementCurrentFrame(tickFactor);
 				if (ma.getX() > Race.WIDTH)
 					finishedPlayers.remove(ma);
 			}
@@ -87,7 +87,7 @@ public class FinishVisual extends Visual {
 			Toolkit.getDefaultToolkit().sync();
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage() + "In FinishVisual");
+			e.printStackTrace();
 		}
 
 	}

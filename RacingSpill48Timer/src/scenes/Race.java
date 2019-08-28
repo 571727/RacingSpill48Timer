@@ -188,7 +188,7 @@ public class Race extends Scene implements Runnable {
 	public void tick(long elapsedTime) {
 		//Base a tick around 40 000 000 ns (40 ms) == 25 ticks per sec
 		double tickFactor = elapsedTime / 40000000.0;
-		visualTick(elapsedTime);
+		visualTick(tickFactor);
 		
 		player.getCar().updateSpeed(tickFactor);
 		checkDistanceLeft();

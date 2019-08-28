@@ -49,7 +49,7 @@ public class VisualString implements VisualElement {
 		g2d.setFont(font);
 		for (int i = 0; i < strings.length; i++) {
 			g2d.setColor(tcs.get(i));
-			g2d.drawString(strings[i], x + font.getSize(), y + (i+1) * (font.getSize()));
+			g2d.drawString(strings[i], x + font.getSize(), y + (i + 1) * (font.getSize()));
 		}
 	}
 

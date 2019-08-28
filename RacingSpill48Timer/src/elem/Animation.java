@@ -55,8 +55,8 @@ public class Animation {
 		return frames[(int) currentFrame];
 	}
 	
-	public void incrementCurrentFrame() {
-		currentFrame = (currentFrame + 1) % frameCount;
+	public void incrementCurrentFrame(double tickFactor) {
+		currentFrame = (currentFrame + (1 * tickFactor)) % frameCount;
 	}
 
 	public double getCurrentFrame() {

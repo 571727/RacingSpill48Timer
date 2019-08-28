@@ -175,8 +175,8 @@ public class Car implements Cloneable {
 	public void updateSpeed(double tickFactor) {
 
 		//FIXME speedInc går mot 1000 per tick (* tickfactor nede) Ikke bra
-		updateSpeedInc(tickFactor);
-		double speedLinearChange = speedLinear;
+		updateSpeedInc();
+		double speedLinearChange = 0;
 
 		if (engineOn) {
 			changed = false;
@@ -250,7 +250,7 @@ public class Car implements Cloneable {
 			speedLinearChange += brake();
 			checkIdle();
 		}
-		System.out.println("slc" + speedLinearChange  + ", " +speedLinearChange * tickFactor + "tf:" + tickFactor);
+
 		speedLinear += speedLinearChange * tickFactor;
 
 		calculateActualSpeed();
@@ -287,6 +287,10 @@ public class Car implements Cloneable {
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
 		if (speedActual > highestSpeedAchived)
 			highestSpeedAchived = (int) speedActual;
+		else if (speedActual < 0) {
+			speedActual = 0;
+			speedLinear = 0;
+		}
 	}
 
 	public void calculateDistance(double tickFactor) {
@@ -483,7 +487,7 @@ public class Car implements Cloneable {
 		drag = 1;
 		if (audioActivated)
 			audio.stopAll();
-		updateSpeedInc(0);
+		updateSpeedInc();
 	}
 
 	private void resetBooleans() {
@@ -492,11 +496,13 @@ public class Car implements Cloneable {
 		NOSON = false;
 	}
 
-	public void updateSpeedInc(double tickFactor) {
+	public void updateSpeedInc() {
 		double w = (totalWeight - weightloss);
 //		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
 		double rpmCalc = (double) rpm / (double) totalRPM;
-		spdinc = 6 * (hp * rpmCalc / w * gearsbalance) * drag * tickFactor;
+		if(rpmCalc > 1)
+			System.out.println("stuff");
+		spdinc = 6 * (hp * rpmCalc / w * gearsbalance) * drag;
 	}
 
 	public String showStats(int prevLvl, int nextLvl) {

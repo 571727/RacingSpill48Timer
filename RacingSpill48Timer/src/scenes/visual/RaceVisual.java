@@ -116,7 +116,7 @@ public class RaceVisual extends Visual {
 		}
 
 		background.setCurrentFrame(
-				(background.getCurrentFrame() + player.getCar().getSpeedActual() / 100) % background.getFrameCount());
+				(background.getCurrentFrame() + (player.getCar().getSpeedActual() / 100) * tickFactor)  % background.getFrameCount());
 	}
 
 	@Override
