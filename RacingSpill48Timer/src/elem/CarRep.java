@@ -18,7 +18,7 @@ public class CarRep {
 	private double hp;
 	private double currentWeight;
 	private double topSpeed;
-	private int idleSpeed;
+	private int idleRPM;
 	private int totalRPM;
 	private int totalGear;
 	private boolean upgradedGears;
@@ -36,7 +36,7 @@ public class CarRep {
 	 * @param hp                       ex 220
 	 * @param currentWeight            ex 1400
 	 * @param topSpeed                 ex 250
-	 * @param idleSpeed                ex 1000
+	 * @param idleRPM                ex 1000
 	 * @param totalRPM                 ex 8000
 	 * @param totalGear                ex 6
 	 * @param upgradedGears            ex true
@@ -47,7 +47,7 @@ public class CarRep {
 	 * @param upgradeLVLs              ex {1, 2 ...}
 	 */
 	public CarRep(String name, int nosTimeStandard, int nosBottleAmountStandard, double nosStrengthStandard, double hp,
-			double currentWeight, double topSpeed, int idleSpeed, int totalRPM, int totalGear, boolean upgradedGears,
+			double currentWeight, double topSpeed, int idleRPM, int totalRPM, int totalGear, boolean upgradedGears,
 			int tireGripTimeStandard, double tireGripStrengthStandard, double tireGripAreaTop,
 			double tireGripAreaBottom, int[] upgradeLVLs) {
 
@@ -58,7 +58,7 @@ public class CarRep {
 		this.hp = hp;
 		this.currentWeight = currentWeight;
 		this.topSpeed = topSpeed;
-		this.idleSpeed = idleSpeed;
+		this.idleRPM = idleRPM;
 		this.totalRPM = totalRPM;
 		this.totalGear = totalGear;
 		this.upgradedGears = upgradedGears;
@@ -125,12 +125,12 @@ public class CarRep {
 		this.topSpeed = topSpeed;
 	}
 
-	public int getIdleSpeed() {
-		return idleSpeed;
+	public int getIdleRPM() {
+		return idleRPM;
 	}
 
-	public void setIdleSpeed(int idleSpeed) {
-		this.idleSpeed = idleSpeed;
+	public void setIdleRPM(int idleRPM) {
+		this.idleRPM = idleRPM;
 	}
 
 	public int getTotalRPM() {
@@ -196,5 +196,6 @@ public class CarRep {
 	public void setUpgradeLVLs(int[] upgradeLVLs) {
 		this.upgradeLVLs = upgradeLVLs;
 	}
+
 
 }
