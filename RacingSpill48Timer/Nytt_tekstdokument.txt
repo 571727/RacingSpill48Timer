@@ -1,0 +1,237 @@
+C:\Users\jakba\Desktop\Jhoffis_bilspel>java -jar racingmaybe.jar
+Finding file:
+"/sfx/btn/ready"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/btn/ready.mp3
+Finding file:
+"/sfx/btn/start_game"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/btn/start_game.mp3
+Finding file:
+"/sfx/btn/rbtn"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/btn/rbtn.mp3
+Finding file:
+"/sfx/gear1"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/gear1.mp3
+Finding file:
+"/sfx/gear2"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/gear2.mp3
+Finding file:
+"/sfx/gear3"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/gear3.mp3
+Finding file:
+"/sfx/gear4"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/gear4.mp3
+Finding file:
+"/sfx/turbosurge1"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/turbosurge1.mp3
+Finding file:
+"/sfx/turbosurge2"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/turbosurge2.mp3
+Finding file:
+"/sfx/redline"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/redline.mp3
+Finding file:
+"/sfx/nos"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/nos.mp3
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+true,true,false,false
+thread ended
+Finding file:
+"/sfx/redLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/redLight.mp3
+true,false,false,true
+Finding file:
+"/sfx/redLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/redLight.mp3
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+FPS RACE: 967
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+FPS RACE: 1288
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+Finding file:
+"/sfx/redLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/redLight.mp3
+FPS RACE: 1279
+true,false,false,true
+true,false,false,true
+true,false,false,true
+Finding file:
+"/sfx/redLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/redLight.mp3
+true,false,false,true
+true,false,false,true
+FPS RACE: 1200
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+Finding file:
+"/sfx/redLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/redLight.mp3
+true,false,false,true
+FPS RACE: 1251
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,true
+FPS RACE: 1234
+true,false,false,true
+true,false,false,true
+true,false,false,true
+Finding file:
+"/sfx/greenLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/greenLight.mp3
+true,false,false,true
+true,false,false,true
+FPS RACE: 1241
+true,false,false,true
+true,false,false,true
+true,false,false,true
+true,false,false,false
+true,false,false,false
+FPS RACE: 1320
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+FPS RACE: 1494
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+FPS RACE: 1568
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+FPS RACE: 1517
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+FPS RACE: 1441
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+FPS RACE: 1446
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+true,false,false,false
+FPS RACE: 1466
+true,false,false,false
+true,false,false,false
+true,false,false,false
+Finished
+true,false,false,false
+Finish car: supra.
+Finding file:
+"/sfx/driveBysupra"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/driveBysupra.mp3
+Finish car: supra.
+true,true,true,false
+Finding file:
+"/sfx/driveBysupra"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/driveBysupra.mp3
+thread ended
+Finish car: supra.
+true,true,true,true
+Finding file:
+"/sfx/greenLight"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/greenLight.mp3
+Finding file:
+"/sfx/driveBysupra"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/driveBysupra.mp3
+Finish car: supra.
+Finding file:
+"/sfx/driveBysupra"
+jar:file:/C:/Users/jakba/Desktop/Jhoffis_bilspel/racingmaybe.jar!/sfx/driveBysupra.mp3
+true,false,true,true
+true,false,true,true
+true,false,true,true
+true,false,true,true
+FPS RACE: 1225
+true,false,true,true
+Exception in thread "Thread-1656" java.lang.NullPointerException
+        at scenes.Race.run(Race.java:289)
+        at java.lang.Thread.run(Unknown Source)
+true,false,true,false
+true,false,true,false
+true,false,true,false
+true,false,true,false
+true,false,true,false
+true,false,true,false
+true,false,true,false
+true,false,true,false
+true,false,true,false
+Leaving server...
+true,false,true,false
+
+C:\Users\jakba\Desktop\Jhoffis_bilspel>pause
+Press any key to continue . . .

@@ -1,0 +1,9 @@
+Pål detter ut om mye skjer med serveren.
+Andre race starter med en gang
+Kommer i mål bare noen ganger. - skaper problem med poeng og penger
+Kjøre løpet to ganger soom så gjør en DNF
+RequestFocus er ikke skikkelig.
+Når pål stakk og kom til tilbake etter at han forrige selv forsvant så fikk han ikke tilbake statsa sine.
+Når han disconnecta så ble ikke clientThreadHandler stoppa.
+Farger ble feil i FinishRace
+ID-er i racing.temp blir ikke sletta

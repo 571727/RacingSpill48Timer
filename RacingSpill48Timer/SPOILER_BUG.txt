@@ -1,0 +1,81 @@
+SENT #2
+IN null
+TCP client: Connection timed out: connect
+java.net.ConnectException: Connection timed out: connect
+        at java.base/java.net.DualStackPlainSocketImpl.connect0(Native Method)
+        at java.base/java.net.DualStackPlainSocketImpl.socketConnect(Unknown Source)
+        at java.base/java.net.AbstractPlainSocketImpl.doConnect(Unknown Source)
+        at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(Unknown Source)
+        at java.base/java.net.AbstractPlainSocketImpl.connect(Unknown Source)
+        at java.base/java.net.PlainSocketImpl.connect(Unknown Source)
+        at java.base/java.net.SocksSocketImpl.connect(Unknown Source)
+        at java.base/java.net.Socket.connect(Unknown Source)
+        at java.base/java.net.Socket.connect(Unknown Source)
+        at java.base/java.net.Socket.<init>(Unknown Source)
+        at java.base/java.net.Socket.<init>(Unknown Source)
+        at client.TCPEchoClient.convert(TCPEchoClient.java:27)
+        at client.EchoClient.sendRequest(EchoClient.java:30)
+        at handlers.ClientThreadHandler.lambda$0(ClientThreadHandler.java:45)
+        at java.base/java.lang.Thread.run(Unknown Source)
+Finding file:
+"/sfx/gear1"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/gear1.mp3
+Finding file:
+"/sfx/gear2"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/gear2.mp3
+Finding file:
+"/sfx/gear3"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/gear3.mp3
+Finding file:
+"/sfx/gear4"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/gear4.mp3
+Finding file:
+"/sfx/turbosurge1"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/turbosurge1.mp3
+Finding file:
+"/sfx/turbosurge2"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/turbosurge2.mp3
+Finding file:
+"/sfx/redline"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/redline.mp3
+Finding file:
+"/sfx/nos"
+jar:file:/C:/Racing/racingmaybe.jar!/sfx/nos.mp3
+SENT #2
+
+SENT GEG#2
+
+IN null
+IN null
+TCP client: Connection reset
+TCP client: Connection reset
+java.net.SocketException: Connection reset
+        at java.base/java.net.SocketInputStream.read(Unknown Source)
+        at java.base/java.net.SocketInputStream.read(Unknown Source)
+        at java.base/sun.nio.cs.StreamDecoder.readBytes(Unknown Source)
+        at java.base/sun.nio.cs.StreamDecoder.implRead(Unknown Source)
+        at java.base/sun.nio.cs.StreamDecoder.read(Unknown Source)
+        at java.base/java.io.InputStreamReader.read(Unknown Source)
+        at java.base/java.io.BufferedReader.fill(Unknown Source)
+        at java.base/java.io.BufferedReader.readLine(Unknown Source)
+        at java.base/java.io.BufferedReader.readLine(Unknown Source)
+        at client.TCPEchoClient.convert(TCPEchoClient.java:37)
+        at client.EchoClient.sendRequest(EchoClient.java:30)
+        at elem.Player.getEndGoal(Player.java:193)
+        at scenes.Lobby.update(Lobby.java:240)
+        at scenes.Lobby.run(Lobby.java:443)
+        at java.base/java.lang.Thread.run(Unknown Source)
+java.net.SocketException: Connection reset
+        at java.base/java.net.SocketInputStream.read(Unknown Source)
+        at java.base/java.net.SocketInputStream.read(Unknown Source)
+        at java.base/sun.nio.cs.StreamDecoder.readBytes(Unknown Source)
+        at java.base/sun.nio.cs.StreamDecoder.implRead(Unknown Source)
+        at java.base/sun.nio.cs.StreamDecoder.read(Unknown Source)
+        at java.base/java.io.InputStreamReader.read(Unknown Source)
+        at java.base/java.io.BufferedReader.fill(Unknown Source)
+        at java.base/java.io.BufferedReader.readLine(Unknown Source)
+        at java.base/java.io.BufferedReader.readLine(Unknown Source)
+        at client.TCPEchoClient.convert(TCPEchoClient.java:37)
+        at client.EchoClient.sendRequest(EchoClient.java:30)
+        at handlers.ClientThreadHandler.lambda$0(ClientThreadHandler.java:45)
+        at java.base/java.lang.Thread.run(Unknown Source)
