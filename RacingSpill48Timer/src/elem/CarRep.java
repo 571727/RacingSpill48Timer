@@ -16,12 +16,11 @@ public class CarRep {
 	private int nosBottleAmountStandard;
 	private double nosStrengthStandard;
 	private double hp;
-	private double currentWeight;
-	private double topSpeed;
-	private int idleRPM;
-	private int totalRPM;
-	private int totalGear;
-	private boolean upgradedGears;
+	private double weight;
+	private double speedTop;
+	private int rpmIdle;
+	private int rpmTop;
+	private int gearTop;
 	private int tireGripTimeStandard;
 	private double tireGripStrengthStandard;
 	private double tireGripAreaTop;
@@ -34,12 +33,11 @@ public class CarRep {
 	 * @param nosBottleAmountStandard  ex 1
 	 * @param nosStrengthStandard      ex 0.8
 	 * @param hp                       ex 220
-	 * @param currentWeight            ex 1400
-	 * @param topSpeed                 ex 250
-	 * @param idleRPM                ex 1000
-	 * @param totalRPM                 ex 8000
-	 * @param totalGear                ex 6
-	 * @param upgradedGears            ex true
+	 * @param weight                   ex 1400
+	 * @param speedTop                 ex 250
+	 * @param rpmIdle                  ex 1000
+	 * @param rpmTop                   ex 8000
+	 * @param gearTop                  ex 6
 	 * @param tireGripTimeStandard     ex 1000
 	 * @param tireGripStrengthStandard ex 0.5
 	 * @param tireGripAreaTop          ex 24
@@ -47,21 +45,19 @@ public class CarRep {
 	 * @param upgradeLVLs              ex {1, 2 ...}
 	 */
 	public CarRep(String name, int nosTimeStandard, int nosBottleAmountStandard, double nosStrengthStandard, double hp,
-			double currentWeight, double topSpeed, int idleRPM, int totalRPM, int totalGear, boolean upgradedGears,
-			int tireGripTimeStandard, double tireGripStrengthStandard, double tireGripAreaTop,
-			double tireGripAreaBottom, int[] upgradeLVLs) {
+			double weight, double speedTop, int rpmIdle, int rpmTop, int gearTop, int tireGripTimeStandard,
+			double tireGripStrengthStandard, double tireGripAreaTop, double tireGripAreaBottom, int[] upgradeLVLs) {
 
 		this.name = name;
 		this.nosTimeStandard = nosTimeStandard;
 		this.nosBottleAmountStandard = nosBottleAmountStandard;
 		this.nosStrengthStandard = nosStrengthStandard;
 		this.hp = hp;
-		this.currentWeight = currentWeight;
-		this.topSpeed = topSpeed;
-		this.idleRPM = idleRPM;
-		this.totalRPM = totalRPM;
-		this.totalGear = totalGear;
-		this.upgradedGears = upgradedGears;
+		this.weight = weight;
+		this.speedTop = speedTop;
+		this.rpmIdle = rpmIdle;
+		this.rpmTop = rpmTop;
+		this.gearTop = gearTop;
 		this.tireGripTimeStandard = tireGripTimeStandard;
 		this.tireGripStrengthStandard = tireGripStrengthStandard;
 		this.tireGripAreaTop = tireGripAreaTop;
@@ -109,52 +105,44 @@ public class CarRep {
 		this.hp = hp;
 	}
 
-	public double getCurrentWeight() {
-		return currentWeight;
+	public double getWeight() {
+		return weight;
 	}
 
-	public void setCurrentWeight(double currentWeight) {
-		this.currentWeight = currentWeight;
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
-	public double getTopSpeed() {
-		return topSpeed;
+	public double getSpeedTop() {
+		return speedTop;
 	}
 
-	public void setTopSpeed(double topSpeed) {
-		this.topSpeed = topSpeed;
+	public void setSpeedTop(double speedTop) {
+		this.speedTop = speedTop;
 	}
 
-	public int getIdleRPM() {
-		return idleRPM;
+	public int getRpmIdle() {
+		return rpmIdle;
 	}
 
-	public void setIdleRPM(int idleRPM) {
-		this.idleRPM = idleRPM;
+	public void setRpmIdle(int rpmIdle) {
+		this.rpmIdle = rpmIdle;
 	}
 
-	public int getTotalRPM() {
-		return totalRPM;
+	public int getRpmTop() {
+		return rpmTop;
 	}
 
-	public void setTotalRPM(int totalRPM) {
-		this.totalRPM = totalRPM;
+	public void setRpmTop(int rpmTop) {
+		this.rpmTop = rpmTop;
 	}
 
-	public int getTotalGear() {
-		return totalGear;
+	public int getGearTop() {
+		return gearTop;
 	}
 
-	public void setTotalGear(int totalGear) {
-		this.totalGear = totalGear;
-	}
-
-	public boolean isUpgradedGears() {
-		return upgradedGears;
-	}
-
-	public void setUpgradedGears(boolean upgradedGears) {
-		this.upgradedGears = upgradedGears;
+	public void setGearTop(int gearTop) {
+		this.gearTop = gearTop;
 	}
 
 	public int getTireGripTimeStandard() {
@@ -196,6 +184,5 @@ public class CarRep {
 	public void setUpgradeLVLs(int[] upgradeLVLs) {
 		this.upgradeLVLs = upgradeLVLs;
 	}
-
 
 }
