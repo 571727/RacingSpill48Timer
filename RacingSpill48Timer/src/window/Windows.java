@@ -42,7 +42,7 @@ public class Windows extends JFrame {
 				try {
 					player.leaveServer();
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					System.err.println("FAILED TO LEAVE BY CLOSING WINDOW");
 				}
 			}
 		};

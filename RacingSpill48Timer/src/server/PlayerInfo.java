@@ -40,8 +40,7 @@ public class PlayerInfo {
 	public String getCarInfo() {
 		String res = "";
 		if (car != null)
-			res = car.getCarName().toUpperCase() + ", " + car.getHp() + " HP, " + car.getCurrentWeight() + " kg, TS: "
-					+ car.getTopSpeed() + " km/h, NOS: " + car.isHasNOS() + ", TG: " + car.getGearBoostSTD();
+			res = car.getInfo();
 		return res;
 	}
 

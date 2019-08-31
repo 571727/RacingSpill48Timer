@@ -1,5 +1,7 @@
 package elem;
 
+import startup.Main;
+
 /**
  * Used to store stats about Car and more easily communicate Cars with the
  * server. Also used to restore a players car after they have lost connection
@@ -9,7 +11,7 @@ package elem;
  *
  */
 
-public class CarRep {
+public class CarRep implements Cloneable {
 
 	private String name;
 	private int nosTimeStandard;
@@ -26,6 +28,8 @@ public class CarRep {
 	private double tireGripAreaTop;
 	private double tireGripAreaBottom;
 	private int[] upgradeLVLs;
+	private double gearsbalance;
+	private double maxValuePitch;
 
 	/**
 	 * @param name                     ex "Supra"
@@ -43,10 +47,12 @@ public class CarRep {
 	 * @param tireGripAreaTop          ex 24
 	 * @param tireGripAreaBottom       ex 4
 	 * @param upgradeLVLs              ex {1, 2 ...}
+	 * @param maxValuePitch
 	 */
 	public CarRep(String name, int nosTimeStandard, int nosBottleAmountStandard, double nosStrengthStandard, double hp,
 			double weight, double speedTop, int rpmIdle, int rpmTop, int gearTop, int tireGripTimeStandard,
-			double tireGripStrengthStandard, double tireGripAreaTop, double tireGripAreaBottom, int[] upgradeLVLs) {
+			double tireGripStrengthStandard, double tireGripAreaTop, double tireGripAreaBottom, int[] upgradeLVLs,
+			double gearsbalance, double maxValuePitch) {
 
 		this.name = name;
 		this.nosTimeStandard = nosTimeStandard;
@@ -63,6 +69,94 @@ public class CarRep {
 		this.tireGripAreaTop = tireGripAreaTop;
 		this.tireGripAreaBottom = tireGripAreaBottom;
 		this.upgradeLVLs = upgradeLVLs;
+		this.gearsbalance = gearsbalance;
+		this.maxValuePitch = maxValuePitch;
+	}
+
+	public double getMaxValuePitch() {
+		return maxValuePitch;
+	}
+
+	public void setMaxValuePitch(double maxValuePitch) {
+		this.maxValuePitch = maxValuePitch;
+	}
+
+	public CarRep(String cloneString, int fromIndex) {
+		setClone(cloneString, fromIndex);
+	}
+
+	public CarRep(String[] cloneStrings, int fromIndex) {
+		setClone(cloneStrings, fromIndex);
+	}
+
+	public void setClone(String cloneString, int fromIndex) {
+		setClone(cloneString.split("#"), fromIndex);
+	}
+
+	public void setClone(String[] values, int fromIndex) {
+		name = values[fromIndex + 0];
+		nosTimeStandard = Integer.parseInt(values[fromIndex + 1]);
+		nosBottleAmountStandard = Integer.parseInt(values[fromIndex + 2]);
+		nosStrengthStandard = Double.valueOf(values[fromIndex + 3]);
+		hp = Double.valueOf(values[fromIndex + 4]);
+		weight = Double.valueOf(values[fromIndex + 5]);
+		speedTop = Double.valueOf(values[fromIndex + 6]);
+		rpmIdle = Integer.parseInt(values[fromIndex + 7]);
+		rpmTop = Integer.parseInt(values[fromIndex + 8]);
+		gearTop = Integer.parseInt(values[fromIndex + 9]);
+		tireGripTimeStandard = Integer.parseInt(values[fromIndex + 10]);
+		tireGripStrengthStandard = Double.valueOf(values[fromIndex + 11]);
+		tireGripAreaTop = Double.valueOf(values[fromIndex + 12]);
+		tireGripAreaBottom = Double.valueOf(values[fromIndex + 13]);
+		upgradeLVLsSetString(values[fromIndex + 14]);
+		gearsbalance = Double.valueOf(values[fromIndex + 15]);
+		maxValuePitch = Double.valueOf(values[fromIndex + 16]);
+	}
+
+	public String getCloneString() {
+		return name + "#" + nosTimeStandard + "#" + nosBottleAmountStandard + "#" + nosStrengthStandard + "#" + hp + "#"
+				+ weight + "#" + speedTop + "#" + rpmIdle + "#" + rpmTop + "#" + gearTop + "#" + tireGripTimeStandard
+				+ "#" + tireGripStrengthStandard + "#" + tireGripAreaTop + "#" + tireGripAreaBottom + "#"
+				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch;
+	}
+
+	public CarRep getCloneObject() throws CloneNotSupportedException {
+		CarRep newCar = (CarRep) super.clone();
+		int[] upgradeLVLs = new int[this.upgradeLVLs.length];
+		for (int i = 0; i < this.upgradeLVLs.length; i++) {
+			upgradeLVLs[i] = getUpgradeLVL(i);
+		}
+		newCar.setUpgradeLVLs(upgradeLVLs);
+		return newCar;
+	}
+
+	@Override
+	public CarRep clone() throws CloneNotSupportedException {
+		return getCloneObject();
+	}
+
+	public int getUpgradeLVL(int LVL) {
+		return upgradeLVLs[LVL];
+	}
+
+	private String upgradeLVLsGetString() {
+		String r = "";
+
+		for (int lvl : upgradeLVLs) {
+			r += lvl + Main.UPGRADELVL_REGEX;
+		}
+
+		return r;
+	}
+
+	private void upgradeLVLsSetString(String string) {
+
+		String[] input = string.split(Main.UPGRADELVL_REGEX);
+		upgradeLVLs = new int[Upgrades.UPGRADE_NAMES.length];
+
+		for (int i = 0; i < upgradeLVLs.length; i++) {
+			upgradeLVLs[i] = Integer.parseInt(input[i]);
+		}
 	}
 
 	public String getName() {
@@ -102,7 +196,7 @@ public class CarRep {
 	}
 
 	public void setHp(double hp) {
-		this.hp = hp;
+		this.hp = Math.round(hp);
 	}
 
 	public double getWeight() {
@@ -110,7 +204,7 @@ public class CarRep {
 	}
 
 	public void setWeight(double weight) {
-		this.weight = weight;
+		this.weight = Math.round(weight);
 	}
 
 	public double getSpeedTop() {
@@ -118,7 +212,7 @@ public class CarRep {
 	}
 
 	public void setSpeedTop(double speedTop) {
-		this.speedTop = speedTop;
+		this.speedTop = Math.round(speedTop);
 	}
 
 	public int getRpmIdle() {
@@ -183,6 +277,45 @@ public class CarRep {
 
 	public void setUpgradeLVLs(int[] upgradeLVLs) {
 		this.upgradeLVLs = upgradeLVLs;
+	}
+
+	public String getInfo() {
+		return name + ", " + hp + " HP, " + weight + " kg, TS: " + speedTop + " km/h, NOS: " + nosStrengthStandard
+				+ ", TG: " + tireGripStrengthStandard;
+	}
+
+	public String getStatsNew(int prevLVL, int nextLVL) {
+		return "From LVL " + prevLVL + " to LVL " + nextLVL + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: " + weight
+				+ "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>" + "Amount of gears: " + gearTop + "<br/>"
+				+ "Topspeed: " + speedTop + " km/h<br/>Tiregrip: " + tireGripStrengthStandard;
+	}
+
+	public String getStatsCurrent() {
+		return "<html>" + name + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: " + weight + "<br/>" + "NOS strength: "
+				+ nosStrengthStandard +"<br/>" + "NOS bottles: "
+						+ nosBottleAmountStandard + "<br/>" + "Amount of gears: " + gearTop + "<br/>" + "Topspeed: " + speedTop
+				+ " km/h<br/>Tiregrip: " + tireGripStrengthStandard;
+	}
+
+	public void iterateUpgradeLVL(int LVL) {
+		upgradeLVLs[LVL]++;
+	}
+
+	public void upgradeRightShift(double change) {
+		tireGripAreaTop = tireGripAreaTop * change;
+		tireGripAreaBottom = tireGripAreaBottom * (1 - Math.abs(1 - change));
+	}
+
+	public void guarenteeRightShift() {
+		tireGripAreaTop = -1;
+	}
+
+	public double getGearsbalance() {
+		return gearsbalance;
+	}
+
+	public void setGearsbalance(double gearsbalance) {
+		this.gearsbalance = gearsbalance;
 	}
 
 }

@@ -72,50 +72,34 @@ public class WinVisual extends Visual {
 
 	@Override
 	public void render(Graphics g) {
-		try {
-			bs = this.getBufferStrategy();
-			if (bs == null) {
-				this.createBufferStrategy(3);
-				return;
-			}
-			g = bs.getDrawGraphics();
 
-			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, Race.WIDTH, Race.HEIGHT);
-			Graphics2D g2d = (Graphics2D) g;
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, Race.WIDTH, Race.HEIGHT);
+		Graphics2D g2d = (Graphics2D) g;
 
-			if (everyoneDone) {
-				g2d.setColor(tc);
-				g2d.setFont(font);
-				AlphaComposite ac = null;
+		if (everyoneDone) {
+			g2d.setColor(tc);
+			g2d.setFont(font);
+			AlphaComposite ac = null;
 
-				if (stage > 1) {
-					for (int i = 0; i < strings.length; i++) {
-						ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphas[i]);
-						g2d.setComposite(ac);
-						g2d.drawString(strings[i], x + font.getSize(), y + (i + 1) * (font.getSize()));
-					}
-				} else {
-					ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, theWinnerIntroAlpha);
+			if (stage > 1) {
+				for (int i = 0; i < strings.length; i++) {
+					ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphas[i]);
 					g2d.setComposite(ac);
-					g2d.drawString(theWinnerIntro, font.getSize(), (Race.HEIGHT / 2) - (font.getSize() / 2));
+					g2d.drawString(strings[i], x + font.getSize(), y + (i + 1) * (font.getSize()));
 				}
-
-				g2d.setComposite(ac.derive(1f));
+			} else {
+				ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, theWinnerIntroAlpha);
+				g2d.setComposite(ac);
+				g2d.drawString(theWinnerIntro, font.getSize(), (Race.HEIGHT / 2) - (font.getSize() / 2));
 			}
-			for (int i = 0; i < visualElements.size(); i++) {
-				visualElements.get(i).render(g);
-			}
 
-			if (g != null) {
-				g.dispose();
-			}
-			bs.show();
-			Toolkit.getDefaultToolkit().sync();
-
-		} catch (Exception e) {
-			System.err.println(e.getMessage() + "In win- visual");
+			g2d.setComposite(ac.derive(1f));
 		}
+		for (int i = 0; i < visualElements.size(); i++) {
+			visualElements.get(i).render(g);
+		}
+
 	}
 
 	@Override

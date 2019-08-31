@@ -34,7 +34,7 @@ public class StoreHandler {
 		return null;
 	}
 
-	public String selectUpgrade(String upgradeName, Car car, Bank bank) {
+	public String selectUpgrade(String upgradeName, Car car, Player player) {
 		for (int i = 0; i < upgradeNames.length; i++) {
 			if (upgradeName.equals(getUpgradeName(i)))
 				currentUpgrade = i;
@@ -42,17 +42,20 @@ public class StoreHandler {
 
 		SFX.playMP3Sound("btn/" + upgradeNames[currentUpgrade]);
 
-		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$"
-				+ upgrades.getCostMoney(currentUpgrade, bank) + " or " + upgrades.getCostPoints(currentUpgrade, bank)
-				+ " points </html>";
+		double amount = Math.round(
+				upgrades.getCostMoney(currentUpgrade, player.getCar().getRepresentation()) * podiumInflation(player.getPlacePodium()));
+
+		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$" + amount + " or "
+				+ upgrades.getCostPoints(currentUpgrade, player.getCar().getRepresentation()) + " points </html>";
 
 		return upgradeText;
 	}
 
 	public void buyWithMoney(Player player) {
-		double amount = upgrades.getCostMoney(currentUpgrade, player.getBank())
-				* podiumInflation(player.getPlacePodium());
-		if (player.getBank().canAffordMoney((int) amount) && upgrades.upgrade(currentUpgrade, player.getCar())) {
+		double amount = Math.round(
+				upgrades.getCostMoney(currentUpgrade, player.getCar().getRepresentation()) * podiumInflation(player.getPlacePodium()));
+		if (player.getBank().canAffordMoney((int) amount)
+				&& upgrades.upgrade(currentUpgrade, player.getCar().getRepresentation())) {
 
 			SFX.playMP3Sound("btn/" + "money");
 
@@ -66,8 +69,9 @@ public class StoreHandler {
 	}
 
 	public void buyWithPoints(Player player) {
-		int amount = upgrades.getCostPoints(currentUpgrade, player.getBank());
-		if (player.getBank().canAffordPoints(amount) && upgrades.upgrade(currentUpgrade, player.getCar())) {
+		int amount = upgrades.getCostPoints(currentUpgrade, player.getCar().getRepresentation());
+		if (player.getBank().canAffordPoints(amount)
+				&& upgrades.upgrade(currentUpgrade, player.getCar().getRepresentation())) {
 
 			SFX.playMP3Sound("btn/" + "points");
 
@@ -106,7 +110,7 @@ public class StoreHandler {
 
 		if (fromWith == 0)
 			res += "Information: <br/><br/>";
-		
+
 		for (int i = fromWith; i < toWithout; i++) {
 			res += upgrades.getInformation(i, car);
 		}

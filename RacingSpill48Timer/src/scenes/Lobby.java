@@ -213,7 +213,7 @@ public class Lobby extends Scene implements Runnable {
 	private void goBack() {
 		player.getCar().reset();
 		clearChat();
-		player.stopAllClientHandlerOperations();
+//		player.stopAllClientHandlerOperations();
 		player.endClientHandler();
 		player.leaveServer();
 		player = null;
@@ -359,10 +359,10 @@ public class Lobby extends Scene implements Runnable {
 			player = new Player(name, host, car, ip);
 		else {
 			player = new Player(name, host, car);
-			if (host == 1)
-				player.createNewRaces(amountOfRaces);
 		}
 		player.joinServer();
+		if (host == 1)
+			player.createNewRaces(amountOfRaces);
 		player.updateCarCloneToServer();
 		player.startClientHandler();
 		player.startPing();
@@ -398,6 +398,7 @@ public class Lobby extends Scene implements Runnable {
 			race.setCurrentPlace(currentPlace);
 
 			player.setReady(0);
+			player.updateReady();
 			player.getCar().updateVolume();
 
 			store.setEnabled(true);
@@ -444,9 +445,9 @@ public class Lobby extends Scene implements Runnable {
 				delta--;
 			}
 
-			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1) {
+			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1 ) {
 				race.lobbyTick(1);
-				race.visualRender();
+				race.render();
 				deltar--;
 			}
 
@@ -456,8 +457,8 @@ public class Lobby extends Scene implements Runnable {
 				e.printStackTrace();
 			}
 		}
-
-		player.stopUpdateLobby();
+		if (player != null)
+			player.stopUpdateLobby();
 
 	}
 

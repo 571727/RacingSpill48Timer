@@ -29,6 +29,7 @@ public class VisualString implements VisualElement {
 		this.font = font;
 		alpha = 0.8f;
 		tcs = new ArrayList<Color>();
+		strings = new String[0];
 	}
 
 	@Override
@@ -48,8 +49,7 @@ public class VisualString implements VisualElement {
 		}
 		g2d.setFont(font);
 		for (int i = 0; i < strings.length; i++) {
-			g2d.setColor(Color.WHITE);
-//			FIXME g2d.setColor(tcs.get(i));
+			g2d.setColor(tcs.get(i));
 			g2d.drawString(strings[i], x + font.getSize(), y + (i + 1) * (font.getSize()));
 		}
 	}
@@ -82,27 +82,34 @@ public class VisualString implements VisualElement {
 		return strings;
 	}
 
-	public void setText(String string, String split, String resultColors) {
-		this.strings = string.split(split);
+	public boolean setText(String string, String split, String resultColors) {
+		boolean res = false;
+		String[] strings = string.split(split);
 		String[] colors = resultColors.split(split);
-		for (String c : colors) {
-			switch (c) {
-			case "won":
-				tcs.add(new Color(5, 200, 13));
-				break;
-			case "ai":
-				tcs.add(new Color(25, 29, 144));
-				break;
-			case "dnf":
-				tcs.add(new Color(200, 21, 21));
-				break;
-			case "nf":
-				tcs.add(Color.darkGray);
-				break;
-			default:
-				tcs.add(tc);
-				break;
+		if (colors.length == strings.length) {
+			this.strings = strings;
+			for (String c : colors) {
+				switch (c) {
+				case "won":
+					tcs.add(new Color(5, 200, 13));
+					break;
+				case "ai":
+					tcs.add(new Color(25, 29, 144));
+					break;
+				case "dnf":
+					tcs.add(new Color(200, 21, 21));
+					break;
+				case "nf":
+					tcs.add(Color.darkGray);
+					break;
+				default:
+					tcs.add(tc);
+					break;
+				}
 			}
-		}
+			res = true;
+		} 
+		return res;
 	}
+
 }

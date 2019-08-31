@@ -176,7 +176,7 @@ public class Store extends Scene {
 		buyPoints.setEnabled(true);
 		buyMoney.setEnabled(true);
 
-		String upgradedCarText = storeHandler.selectUpgrade(source.getText(), player.getCar(), player.getBank());
+		String upgradedCarText = storeHandler.selectUpgrade(source.getText(), player.getCar(), player);
 
 		cartStats.setText(upgradedCarText);
 

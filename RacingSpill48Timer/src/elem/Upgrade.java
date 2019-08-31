@@ -29,7 +29,7 @@ public class Upgrade {
 		return car.getUpgradeLVL(i) >= comparedLVL;
 	}
 	
-	public boolean upgrade(Car car) {
+	public boolean upgrade(CarRep car) {
 		return action.upgrade(car);
 	}
 }

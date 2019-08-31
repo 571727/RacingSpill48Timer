@@ -7,3 +7,31 @@ Når pål stakk og kom til tilbake etter at han forrige selv forsvant så fikk han 
 Når han disconnecta så ble ikke clientThreadHandler stoppa.
 Farger ble feil i FinishRace
 ID-er i racing.temp blir ikke sletta
+
+
+thread ended
+java.lang.IllegalStateException: Buffers have not been created
+	at sun.awt.windows.WComponentPeer.getBackBuffer(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.getBackBuffer(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.flip(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.show(Unknown Source)
+	at scenes.Race.render(Race.java:281)
+	at scenes.Lobby.run(Lobby.java:450)
+	at java.lang.Thread.run(Unknown Source)
+FPS RACE: 1118
+Finding file:
+"/sfx/greenLight"
+file:/C:/Users/jonah/git/RacingSpill48Timer/RacingSpill48Timer/bin/sfx/greenLight.mp3
+FPS RACE: 1535
+java.lang.IllegalStateException: Buffers have not been created
+	at sun.awt.windows.WComponentPeer.getBackBuffer(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.getBackBuffer(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.updateInternalBuffers(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.revalidate(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.revalidate(Unknown Source)
+	at java.awt.Component$FlipBufferStrategy.getDrawGraphics(Unknown Source)
+	at scenes.Race.render(Race.java:273)
+	at scenes.Race.run(Race.java:313)
+	at java.lang.Thread.run(Unknown Source)
+LEAVING BY PING
+Leaving server...

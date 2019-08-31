@@ -15,59 +15,63 @@ import handlers.GameHandler;
 public class Main {
 
 	public static final boolean DEBUG = false;
-	public static final String[] CAR_TYPES = { "M3", "Supra", "Mustang", "Bentley", "Skoda Fabia", "Corolla" };
-	public static final String[] AI_NAMES = { "Jens", "Benz", "Razor", "The Boi", "The Viper", "The Biper", "èŠ‚å¥�å¤§å¸ˆ", "Knut",
-			"Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law", "Anime Lover", "noobmaster69", "TeaBottle",
-			"Racerdude", "BestRacer97", "Niki Lauda", "PÃ¥l the Racer"};
-	public static final String[] DIFFICULTY_TYPES = {"Easy", "Normal", "Hard", "Godlike"};
+	public static final String[] CAR_TYPES = { "Decentra", "Oldsroyal", "Fabulvania", "Thoroughbred" };
+	public static final String[] AI_NAMES = { "Jens", "Benz", "Razor", "The Boi", "The Viper", "The Biper",
+			"èŠ‚å¥�å¤§å¸ˆ", "Knut", "Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law", "Anime Lover",
+			"noobmaster69", "TeaBottle", "Racerdude", "BestRacer97", "Niki Lauda", "PÃ¥l the Racer" };
+	public static final String[] DIFFICULTY_TYPES = { "Easy", "Normal", "Hard", "Godlike" };
 	public static String[] AMOUNT_OF_AI;
 	public static boolean[] AI_NAMES_TAKEN;
 	public static final String GAME_NAME = "Jhoffis' Road Racer";
-	public static final String[] RACE_AMOUNT = {String.valueOf(18), String.valueOf(9), String.valueOf(2)};
-	public static final GameMode[] GAME_MODES = {new GolfLike(), new PointRush()}; 
-	
+	public static final String[] RACE_AMOUNT = { String.valueOf(18), String.valueOf(9), String.valueOf(2) };
+	public static final GameMode[] GAME_MODES = { new GolfLike(), new PointRush() };
+	public static final String UPGRADELVL_REGEX = "%";
+	public static final String STANDARD_REGEX = "#";
+	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";
+
 	private static File file;
 	private static List<String> lines;
 	public static long DISCONNECTED_ID = -1;
 
 	public static void main(String[] args) {
 		AMOUNT_OF_AI = new String[9];
-		for(int i = 0; i < AMOUNT_OF_AI.length; i++) {
+		for (int i = 0; i < AMOUNT_OF_AI.length; i++) {
 			AMOUNT_OF_AI[i] = String.valueOf(i);
 		}
-		
+
 		initDisconnectedID();
-		
+
 		new GameHandler(5);
 	}
 
-
 	public static void newDisconnectedID(Long valueOf) {
-		
+
 		int pos = 0;
 		String line = "discID=" + valueOf;
-		
+
 		if (pos == lines.size()) {
 			lines.add(line);
 		} else {
-			lines.add(pos, line);
+			lines.set(pos, line);
 		}
-		
+
 		try {
 			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
 			readDisconnectedIDLines();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		DISCONNECTED_ID = getDisconnectedID();
-		
+
 	}
 
 	public static long getDisconnectedID() {
-		return Long.valueOf(lines.get(0).split("=")[1]);
+		if (lines.size() > 0)
+			return Long.valueOf(lines.get(0).split("=")[1]);
+		return -1;
 	}
-	
+
 	private static void initDisconnectedID() {
 		file = new File("racing.temp");
 		try {
@@ -75,7 +79,6 @@ public class Main {
 			if (!file.isFile()) {
 				if (file.createNewFile()) {
 					PrintWriter pw = new PrintWriter(file);
-					pw.print(0);
 					pw.flush();
 					pw.close();
 				}
@@ -84,8 +87,11 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		DISCONNECTED_ID = getDisconnectedID();
 	}
+
 	private static void readDisconnectedIDLines() throws IOException {
 		lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-	}	
+	}
 }

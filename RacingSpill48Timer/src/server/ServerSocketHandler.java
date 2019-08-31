@@ -9,14 +9,14 @@ import connection_standard.Config;
  * @author jonah
  *
  */
-public class EchoServer implements Runnable {
+public class ServerSocketHandler implements Runnable {
 
 	private int serverport;
 	private boolean running;
-	private ServerSocket welcomeSocket;
+	private ServerSocket serverSocket;
 	private ServerInfo info;
 	
-	public EchoServer(ServerInfo info) {
+	public ServerSocketHandler(ServerInfo info) {
 		serverport = Config.SERVERPORT;
 		this.info = info;
 		System.out.println("TCP server starting at port " + serverport);
@@ -28,17 +28,19 @@ public class EchoServer implements Runnable {
 		running = true;
 		
 		try  {
-			welcomeSocket = new ServerSocket(serverport);
-			TCPEchoServer server = new TCPEchoServer(welcomeSocket, info);
+			serverSocket = new ServerSocket(serverport);
 
 			while (running) {
-
-				server.process();
-
+				new TCPEchoServer(serverSocket.accept(), info).start();
 			}
 		} catch (IOException e) {
-			System.out.println("TCP server: " + e.getMessage());
-			e.printStackTrace();
+			System.err.println("TCP server: " + e.getMessage());
+		}
+
+		try {
+			serverSocket.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -57,7 +59,7 @@ public class EchoServer implements Runnable {
 		
 		if(running == false) {
 			try {
-				welcomeSocket.close();
+				serverSocket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

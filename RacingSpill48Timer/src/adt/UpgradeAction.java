@@ -1,8 +1,8 @@
 package adt;
 
-import elem.Car;
+import elem.CarRep;
 
 public interface UpgradeAction {
 
-	public boolean upgrade(Car car);
+	public boolean upgrade(CarRep car);
 }

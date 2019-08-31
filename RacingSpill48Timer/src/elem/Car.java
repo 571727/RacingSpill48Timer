@@ -1,9 +1,12 @@
 package elem;
 
 import audio.RaceAudio;
+import startup.Main;
 
-public class Car implements Cloneable {
+public class Car {
 
+	private CarRep representation;
+	private RaceAudio audio;
 	private boolean gas;
 	private boolean idle;
 	private boolean brake;
@@ -14,43 +17,21 @@ public class Car implements Cloneable {
 	private boolean NOSON;
 	private boolean engineOn;
 	private boolean changed;
+	private int nosBottleAmountLeft;
 	private long nosTimeLeft;
-	private long nosTimeToGive;
-	private int nosTimeToGiveStandard;
-	private int nosAmountLeft;
-	private int nosAmountLeftStandard;
-	private double nosStrength;
-	private double nosStrengthStandard;
 	private double speedLinear;
 	private double speedActual;
-	private double hp;
-	private double weightloss;
-	private double totalWeight;
-	private double currentWeight;
 	private double spdinc;
 	private double distance;
-	private double topSpeed;
 	private double resistance;
 	private int gear;
-	private int totalGear;
-	private int totalRPM;
 	private int rpm;
-	private String carName;
-	private RaceAudio audio;
-	private int idleSpeed;
-	private double gearsbalance;
 	private boolean upgradedGears;
 	private boolean audioActivated;
-	private double maxValuePitch;
 	private int highestSpeedAchived;
-	private long gearBoostTime;
-	private double gearBoost;
-	private boolean gearBoostON;
-	private double gearBoostSTD;
-	private double top;
-	private double bot;
-	private Integer[] upgradeLVLs;
+	private long tireGripTimeLeft;
 	private double drag;
+	private boolean TireGripON;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -58,7 +39,7 @@ public class Car implements Cloneable {
 	 * highestSpeedAchived;
 	 */
 	public Car(String[] cloneToServerString, int fromIndex) {
-		updateServerClone(cloneToServerString, fromIndex);
+		representation = new CarRep(cloneToServerString, fromIndex);
 	}
 
 	public Car(String cartype, boolean audioActivated) {
@@ -70,78 +51,76 @@ public class Car implements Cloneable {
 
 		speedLinear = 0f;
 		nosTimeLeft = 0;
-		nosTimeToGiveStandard = 1500;
-		nosTimeToGive = nosTimeToGiveStandard;
-		nosAmountLeft = 0;
-		nosAmountLeftStandard = 0;
-		nosStrength = 0;
-		nosStrengthStandard = 0;
-		topSpeed = 250;
 		resistance = 1.0;
-		gearsbalance = 1.0;
-		idleSpeed = 1000;
-		gearBoostSTD = 1;
-		top = 24;
-		bot = 4;
 		drag = 1;
-		setUpgradeLVLs(new Integer[Upgrades.UPGRADE_NAMES.length]);
 
-		// Kanskje Lada der kjï¿½relyden er hardbass.
+		String name;
+		int nosTimeStandard;
+		int nosBottleAmountStandard;
+		double nosStrengthStandard;
+		double hp;
+		double weight;
+		double speedTop;
+		int rpmIdle;
+		int rpmTop;
+		int gearTop;
+		int tireGripTimeStandard;
+		double tireGripStrengthStandard;
+		double tireGripAreaTop;
+		double tireGripAreaBottom;
+		int[] upgradeLVLs;
+		double gearsbalance = 1.0;
+		double maxValuePitch = 2;
 
-		maxValuePitch = 2;
+		name = cartype;
+		tireGripTimeStandard = 1000;
+		tireGripStrengthStandard = 1;
+		tireGripAreaTop = 24;
+		tireGripAreaBottom = 4;
+		nosStrengthStandard = 0;
+		nosTimeStandard = 1500;
+		nosBottleAmountStandard = 0;
+		upgradeLVLs = new int[Upgrades.UPGRADE_NAMES.length];
 
-		switch (cartype) {
-		case "M3":
-			hp = 300;
-			totalWeight = 1549;
-			totalGear = 6;
-			totalRPM = 8000;
-			topSpeed = 249;
-			break;
-		case "Supra":
+		if (name.equals(Main.CAR_TYPES[0])) {
+			rpmIdle = 1000;
 			hp = 220;
-			totalWeight = 1400;
-			totalGear = 5;
-			totalRPM = 7800;
-			topSpeed = 285;
-			break;
-		case "Mustang":
+			weight = 1400;
+			gearTop = 5;
+			rpmTop = 7800;
+			speedTop = 245;
+		} else if (name.equals(Main.CAR_TYPES[1])) {
+			rpmIdle = 300;
 			hp = 310;
-			totalWeight = 1607;
-			totalRPM = 7500;
-			totalGear = 5;
-			topSpeed = 250;
-			break;
-		case "Bentley":
-			// Bentley Blower No.1
-			hp = 242;
-			totalRPM = 3200;
-			totalWeight = 1625;
-			totalGear = 4;
+			weight = 3207;
+			gearTop = 5;
+			rpmTop = 2500;
+			speedTop = 172;
 			maxValuePitch = 3;
-			topSpeed = 222;
-			break;
-		case "Skoda Fabia":
+		} else if (name.equals(Main.CAR_TYPES[2])) {
+			rpmIdle = 800;
 			hp = 64;
-			totalWeight = 1090;
-			totalRPM = 5500;
-			totalGear = 5;
+			weight = 1090;
+			gearTop = 5;
+			rpmTop = 5500;
+			speedTop = 162;
 			maxValuePitch = 4;
-			topSpeed = 162;
-			break;
-		case "Corolla":
-			hp = 118;
-			totalWeight = 998;
-			totalRPM = 8000;
-			totalGear = 5;
-			topSpeed = 201;
-			break;
+		} else {
+			rpmIdle = 1200;
+			hp = 300;
+			weight = 1549;
+			gearTop = 6;
+			rpmTop = 9200;
+			speedTop = 259;
 		}
-//		hp = 1600;
-		setCarName(cartype.toLowerCase());
+
 		if (audioActivated)
-			audio = new RaceAudio(carName);
-//		System.out.println("Weightcalc: " + weightcalc +", spdinc: " + spdinc);
+			audio = new RaceAudio(name);
+
+		representation = new CarRep(name, nosTimeStandard, nosBottleAmountStandard, nosStrengthStandard, hp, weight,
+				speedTop, rpmIdle, rpmTop, gearTop, tireGripTimeStandard, tireGripStrengthStandard, tireGripAreaTop,
+				tireGripAreaBottom, upgradeLVLs, gearsbalance, maxValuePitch);
+
 	}
 
 	public void updateVolume() {
@@ -164,17 +143,16 @@ public class Car implements Cloneable {
 		this.hasNOS = hasNOS;
 	}
 
-	public double getTopSpeed() {
-		return topSpeed;
+	public double getSpeedTop() {
+		return representation.getSpeedTop();
 	}
 
-	public void setTopSpeed(double topSpeed) {
-		this.topSpeed = Math.round(topSpeed);
+	public void setSpeedTop(double topSpeed) {
+		representation.setSpeedTop(Math.round(topSpeed));
 	}
 
 	public void updateSpeed(double tickFactor) {
 
-		//FIXME speedInc går mot 1000 per tick (* tickfactor nede) Ikke bra
 		updateSpeedInc();
 		double speedLinearChange = 0;
 
@@ -182,34 +160,12 @@ public class Car implements Cloneable {
 			changed = false;
 
 			// RPM
-			double rpmChange = 0;
-
-			if (resistance == 0) {
-				// If clutch engaged
-				int engineOnFactor = idleSpeed * (engineOn ? 1 : 0);
-				double gearFactor = speedLinear / (gearMax() + 1);
-				rpm = (int) ((totalRPM - engineOnFactor) * gearFactor + engineOnFactor);
-			} else if (gas) {
-				// Not engaged but throttle down
-				if (rpm < totalRPM - 60)
-					rpmChange = hp * ((double) totalRPM / 9000.0) * resistance;
-				else
-					rpm = totalRPM - 100;
-			} else {
-				// Not engaged and throttle not down
-				if (rpm > idleSpeed)
-					rpmChange = -(hp * 0.5 * resistance);
-				else
-					// Sets RPM to for instance 1000 rpm as standard.
-					rpm = idleSpeed;
-			}
-
-			rpm = (int) (rpmChange * tickFactor) + rpm;
+			updateRPM(tickFactor);
 
 			// SOUND
-			audio.motorPitch(rpm, totalRPM, maxValuePitch);
-			audio.turbospoolPitch(rpm, totalRPM);
-			audio.straightcutgearsPitch(speedLinear, topSpeed);
+			audio.motorPitch(rpm, representation.getRpmTop(), representation.getMaxValuePitch());
+			audio.turbospoolPitch(rpm, representation.getRpmTop());
+			audio.straightcutgearsPitch(speedLinear, representation.getSpeedTop());
 
 			// MOVEMENT
 			if (!clutch && gear > 0 && idle && !gas) {
@@ -220,17 +176,17 @@ public class Car implements Cloneable {
 				idle = false;
 
 				if (nosTimeLeft > System.currentTimeMillis()) {
-					speedLinearChange += nosStrength;
+					speedLinearChange += representation.getNosStrengthStandard();
 					NOSON = true;
 				} else {
 					NOSON = false;
 				}
 
-				if (gearBoostTime > System.currentTimeMillis()) {
-					speedLinearChange += gearBoost;
-					gearBoostON = true;
+				if (tireGripTimeLeft > System.currentTimeMillis()) {
+					speedLinearChange += representation.getTireGripStrengthStandard();
+					TireGripON = true;
 				} else {
-					gearBoostON = false;
+					TireGripON = false;
 				}
 			} else {
 				speedLinearChange += decelerateCar();
@@ -258,6 +214,43 @@ public class Car implements Cloneable {
 		calculateDistance(tickFactor);
 	}
 
+	/**
+	 * Updates RPM value based on engaged clutch and throttle
+	 */
+	private void updateRPM(double tickFactor) {
+		double rpmChange = 0;
+
+		if (resistance == 0) {
+
+			// If clutch engaged
+			int engineOnFactor = representation.getRpmIdle() * (engineOn ? 1 : 0);
+			double gearFactor = speedLinear / (gearMax() + 1);
+			rpm = (int) ((representation.getRpmTop() - engineOnFactor) * gearFactor + engineOnFactor);
+
+		} else if (gas) {
+
+			// Not engaged but throttle down
+			if (rpm < representation.getRpmTop() - 60) {
+				double rpmFactor = (representation.getRpmTop() * 0.8) + (rpm * 0.2);
+				rpmChange = representation.getHp() * (rpmFactor / (double) representation.getRpmTop()) * resistance;
+			} else
+				// Redlining
+				rpm = representation.getRpmTop() - 100;
+
+		} else {
+
+			// Not engaged and throttle not down
+			if (rpm > representation.getRpmIdle())
+				rpmChange = -(representation.getHp() * 0.5 * resistance);
+			else
+				// Sets RPM to for instance 1000 rpm as standard.
+				rpm = representation.getRpmIdle();
+
+		}
+
+		rpm = (int) (rpmChange * tickFactor) + rpm;
+	}
+
 	private double brake() {
 		double brake = 0;
 
@@ -277,14 +270,14 @@ public class Car implements Cloneable {
 	}
 
 	private void calculateDrag() {
-		drag = -Math.pow(speedActual / topSpeed, 5) + 1;
+		drag = -Math.pow(speedActual / representation.getSpeedTop(), 5) + 1;
 		if (drag < 0)
 			drag = 0;
 
 	}
 
 	public void calculateActualSpeed() {
-		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (topSpeed / 500000f);
+		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (representation.getSpeedTop() / 500000f);
 		if (speedActual > highestSpeedAchived)
 			highestSpeedAchived = (int) speedActual;
 		else if (speedActual < 0) {
@@ -300,13 +293,13 @@ public class Car implements Cloneable {
 	public double accelerateCar() {
 		double inc = 0;
 
-		if (speedLinear < ((gear - 1) * (500 / totalGear) - 35)) {
-			//Shifted too early
+		if (speedLinear < ((gear - 1) * (500 / representation.getGearTop()) - 35)) {
+			// Shifted too early
 			inc = spdinc / 6;
 			gearTooHigh = true;
 
 		} else {
-			//Perfect shift
+			// Perfect shift
 			inc = spdinc;
 			gearTooHigh = false;
 		}
@@ -330,15 +323,7 @@ public class Car implements Cloneable {
 		int rs = rightShift();
 		if (rs == 2) {
 			// Best boost
-			gearBoostTime = System.currentTimeMillis() + 1000;
-			gearBoost = gearBoostSTD;
-		} else if (rs == 1) {
-			// Good boost
-			gearBoostTime = System.currentTimeMillis() + 1000;
-			gearBoost = gearBoostSTD / 2;
-		} else {
-			// No boost
-			gearBoostTime = 0;
+			tireGripTimeLeft = System.currentTimeMillis() + representation.getTireGripTimeStandard();
 		}
 	}
 
@@ -359,7 +344,7 @@ public class Car implements Cloneable {
 	}
 
 	private float gearMax() {
-		return gear * (500 / totalGear);
+		return gear * (500 / representation.getGearTop());
 	}
 
 	private boolean gearCheck() {
@@ -376,7 +361,7 @@ public class Car implements Cloneable {
 	}
 
 	public boolean isTopGear() {
-		return gear == totalGear;
+		return gear == representation.getGearTop();
 	}
 
 	public void acc() {
@@ -432,7 +417,7 @@ public class Car implements Cloneable {
 	}
 
 	public void shift(int gear) {
-		if (gear <= totalGear && clutch) {
+		if (gear <= representation.getGearTop() && clutch) {
 			if (this.gear == 1 && gear == 2) {
 
 			}
@@ -460,10 +445,10 @@ public class Car implements Cloneable {
 	}
 
 	public void nos() {
-		if (nosAmountLeft > 0) {
-			nosTimeLeft = System.currentTimeMillis() + nosTimeToGive;
+		if (nosBottleAmountLeft > 0) {
+			nosTimeLeft = System.currentTimeMillis() + representation.getNosTimeStandard();
 			audio.nos();
-			nosAmountLeft--;
+			nosBottleAmountLeft--;
 		}
 	}
 
@@ -474,15 +459,12 @@ public class Car implements Cloneable {
 		engineOn = false;
 		speedLinear = 0f;
 		nosTimeLeft = 0;
-		nosTimeToGive = nosTimeToGiveStandard;
-		nosAmountLeft = nosAmountLeftStandard;
-		nosStrength = nosStrengthStandard;
+		nosBottleAmountLeft = representation.getNosBottleAmountStandard();
 		speedActual = 0;
 		distance = 0;
 		gear = 0;
 		rpm = 0;
-		gearBoostTime = 0;
-		gearBoost = 0;
+		tireGripTimeLeft = 0;
 		resistance = 1.0;
 		drag = 1;
 		if (audioActivated)
@@ -497,55 +479,27 @@ public class Car implements Cloneable {
 	}
 
 	public void updateSpeedInc() {
-		double w = (totalWeight - weightloss);
-//		double weightcalc = (0.00000033 * Math.pow(w, 2) + 0.00019 * w + 0.3);
-		double rpmCalc = (double) rpm / (double) totalRPM;
-		if(rpmCalc > 1)
-			System.out.println("stuff");
-		spdinc = 6 * (hp * rpmCalc / w * gearsbalance) * drag;
+		double w = representation.getWeight();
+		double rpmCalc = (double) rpm / (double) representation.getRpmTop();
+		spdinc = 6 * (representation.getHp() * rpmCalc / w * representation.getGearsbalance()) * drag;
 	}
 
-	public String showStats(int prevLvl, int nextLvl) {
-		return "From LVL " + prevLvl + " to LVL " + nextLvl + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
-				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + " km/h<br/>Tiregrip: "
-				+ gearBoostSTD;
-
+	public String showStats(int prevLVL, int nextLVL) {
+		return representation.getStatsNew(prevLVL, nextLVL);
 	}
 
 	public String showStats() {
-		return "<html>" + carName.toUpperCase() + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: "
-				+ (totalWeight - weightloss) + "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>"
-				+ "Amount of gears: " + totalGear + "<br/>" + "Topspeed: " + topSpeed + " km/h<br/>Tiregrip: "
-				+ gearBoostSTD;
-
-	}
-
-	public String cloneToServerString() {
-		return carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" + nosStrengthStandard + "#" + totalGear + "#"
-				+ topSpeed + "#" + highestSpeedAchived + "#" + gearBoostSTD;
-	}
-
-	public void updateServerClone(String[] values, int fromIndex) {
-		carName = values[fromIndex + 0];
-		setHp(Double.valueOf(values[fromIndex + 1]));
-		setCurrentWeight(Double.valueOf(values[fromIndex + 2]));
-		setNosStrengthStandard(Double.valueOf(values[fromIndex + 3]));
-		//FIXME legg denne heller inn i cloneToServerString()
-		if(nosStrengthStandard > 0)
-			nosAmountLeftStandard = 1;
-		setTotalGear(Integer.valueOf(values[fromIndex + 4]));
-		setTopSpeed(Double.valueOf(values[fromIndex + 5]));
-		setHighestSpeedAchived(Integer.valueOf(values[fromIndex + 6]));
-		setGearBoostSTD(Double.valueOf(values[fromIndex + 7]));
+		return representation.getStatsCurrent();
 	}
 
 	public int rightShift() {
 		int res = 0;
 		if ((this.gear == 1 || this.gear == 0) && speedLinear < 2) {
-			double tr = totalRPM;
+			double rt = representation.getRpmTop();
+			double top = representation.getTireGripAreaTop();
+			double bot = representation.getTireGripAreaBottom();
 
-			if (top == -1 && rpm > totalRPM / 2 || (rpm < tr - tr / top && rpm > tr - tr / bot)) {
+			if (top == -1 && rpm > rt / 2 || (rpm < rt - rt / top && rpm > rt - rt / bot)) {
 				res = 2;
 			}
 		}
@@ -553,23 +507,15 @@ public class Car implements Cloneable {
 	}
 
 	public void upgradeRightShift(double change) {
-		top = top * change;
-		bot = bot * (1 - Math.abs(1 - change));
+		representation.upgradeRightShift(change);
 	}
 
 	public void guarenteeRightShift() {
-		top = -1;
+		representation.guarenteeRightShift();
 	}
 
-	@Override
-	public Car clone() throws CloneNotSupportedException {
-		Car newCar = (Car) super.clone();
-		Integer[] upgradeLVLs = new Integer[this.upgradeLVLs.length];
-		for (int i = 0; i < this.upgradeLVLs.length; i++) {
-			upgradeLVLs[i] = getUpgradeLVL(i);
-		}
-		newCar.setUpgradeLVLs(upgradeLVLs);
-		return newCar;
+	public CarRep clone() throws CloneNotSupportedException {
+		return representation.getCloneObject();
 	}
 
 	public boolean isGas() {
@@ -605,28 +551,11 @@ public class Car implements Cloneable {
 	}
 
 	public double getHp() {
-		return hp;
+		return representation.getHp();
 	}
 
 	public void setHp(double hp) {
-		this.hp = hp;
-	}
-
-	public double getWeightloss() {
-		return weightloss;
-	}
-
-	public void setWeightloss(double weightloss) {
-		this.weightloss = Math.round(weightloss);
-		setCurrentWeight();
-	}
-
-	public double getTotalWeight() {
-		return totalWeight;
-	}
-
-	public void setTotalWeight(double totalWeight) {
-		this.totalWeight = totalWeight;
+		representation.setHp(hp);
 	}
 
 	public double getSpdinc() {
@@ -645,28 +574,28 @@ public class Car implements Cloneable {
 		this.gear = gear;
 	}
 
-	public int getTotalGear() {
-		return totalGear;
+	public int getGearTop() {
+		return representation.getGearTop();
 	}
 
-	public void setTotalGear(int totalGear) {
-		this.totalGear = totalGear;
+	public void setGearTop(int totalGear) {
+		representation.getGearTop();
 	}
 
-	public int getTotalRPM() {
-		return totalRPM;
+	public int getRpmTop() {
+		return representation.getRpmTop();
 	}
 
-	public void setTotalRPM(int totalRPM) {
-		this.totalRPM = totalRPM;
+	public void setRpmTop(int rpmTop) {
+		representation.setRpmTop(rpmTop);
 	}
 
 	public String getCarName() {
-		return carName;
+		return representation.getName();
 	}
 
-	public void setCarName(String carName) {
-		this.carName = carName;
+	public void setCarName(String name) {
+		representation.setName(name);
 	}
 
 	public double getDistance() {
@@ -678,28 +607,36 @@ public class Car implements Cloneable {
 	}
 
 	public double getNosStrengthStandard() {
-		return nosStrengthStandard;
+		return representation.getNosStrengthStandard();
 	}
 
 	public void setNosStrengthStandard(double nosStrengthStandard) {
-		this.nosStrengthStandard = nosStrengthStandard;
+		representation.setNosStrengthStandard(nosStrengthStandard);
 		if (nosStrengthStandard > 0)
 			setHasNOS(true);
 	}
 
-	public int getNosAmountLeftStandard() {
-		return nosAmountLeftStandard;
+	public int getNosBottleAmountStandard() {
+		return representation.getNosBottleAmountStandard();
 	}
 
-	public void setNosAmountLeftStandard(int nosAmountLeftStandard) {
-		this.nosAmountLeftStandard = nosAmountLeftStandard;
+	public void setNosBottleAmountStandard(int nosBottleAmountStandard) {
+		representation.setNosBottleAmountStandard(nosBottleAmountStandard);
 	}
 
 	/**
 	 * @return radian that represents rpm from -180 to ca. 35 - 40 idk yet
 	 */
 	public double getTachometer() {
-		return 235 * ((double) (rpm + 1) / (double) totalRPM) - 203;
+		return 235 * ((double) (rpm + 1) / (double) representation.getRpmTop()) - 203;
+	}
+
+	public int getNosBottleAmountLeft() {
+		return nosBottleAmountLeft;
+	}
+
+	public void setNosBottleAmountLeft(int nosBottleAmountLeft) {
+		this.nosBottleAmountLeft = nosBottleAmountLeft;
 	}
 
 	public boolean isGearTooHigh() {
@@ -708,14 +645,6 @@ public class Car implements Cloneable {
 
 	public void setGearTooHigh(boolean gearTooHigh) {
 		this.gearTooHigh = gearTooHigh;
-	}
-
-	public int getNosAmountLeft() {
-		return nosAmountLeft;
-	}
-
-	public void setNosAmountLeft(int nosAmountLeft) {
-		this.nosAmountLeft = nosAmountLeft;
 	}
 
 	public boolean isNOSON() {
@@ -765,13 +694,6 @@ public class Car implements Cloneable {
 		this.resistance = resistance;
 	}
 
-	public double getGearsbalance() {
-		return gearsbalance;
-	}
-
-	public void setGearsbalance(double gearsbalance) {
-		this.gearsbalance = gearsbalance;
-	}
 
 	public boolean isUpgradedGears() {
 		return upgradedGears;
@@ -781,20 +703,12 @@ public class Car implements Cloneable {
 		this.upgradedGears = upgradedGears;
 	}
 
-	public double getCurrentWeight() {
-		return currentWeight;
+	public double getWeight() {
+		return representation.getWeight();
 	}
 
-	public void setCurrentWeight(double currentWeight) {
-		this.currentWeight = currentWeight;
-		weightloss = 0;
-		totalWeight = currentWeight;
-	}
-
-	public void setCurrentWeight() {
-		this.currentWeight = totalWeight - weightloss;
-		weightloss = 0;
-		totalWeight = currentWeight;
+	public void setWeight(double weight) {
+		representation.setWeight(weight);
 	}
 
 	public int getHighestSpeedAchived() {
@@ -806,39 +720,38 @@ public class Car implements Cloneable {
 	}
 
 	public boolean isGearBoostON() {
-		return gearBoostON;
+		return TireGripON;
 	}
 
 	public void setGearBoostON(boolean gearBoostON) {
-		this.gearBoostON = gearBoostON;
+		this.TireGripON = gearBoostON;
 	}
 
-	public double getGearBoostSTD() {
-		return gearBoostSTD;
+	public double getTireGripStrengthStandard() {
+		return representation.getTireGripStrengthStandard();
 	}
 
-	public void setGearBoostSTD(double gearBoostSTD) {
-		this.gearBoostSTD = gearBoostSTD;
+	public void setTireGripStrengthStandard(double tireGripStrengthStandard) {
+		representation.setTireGripStrengthStandard(tireGripStrengthStandard);
 	}
 
-	public Integer getUpgradeLVL(Integer LVL) {
-		if (upgradeLVLs[LVL] == null)
-			upgradeLVLs[LVL] = 0;
-		return upgradeLVLs[LVL];
+	public void iterateUpgradeLVL(int LVL) {
+		representation.iterateUpgradeLVL(LVL);
 	}
 
-	public void setUpgradeLVLs(Integer[] upgradeLVLs) {
-		this.upgradeLVLs = upgradeLVLs;
+	public String getInfo() {
+		return representation.getInfo();
 	}
 
-	public void iterateUpgradeLVL(Integer LVL) {
-		if (upgradeLVLs[LVL] == null)
-			upgradeLVLs[LVL] = 0;
-		upgradeLVLs[LVL]++;
+	public int getUpgradeLVL(int LVL) {
+		return representation.getUpgradeLVL(LVL);
 	}
 
-	public Integer[] getUpgradeLVLs() {
-		return upgradeLVLs;
+	public CarRep getRepresentation() {
+		return representation;
 	}
 
+	public void setRepresentation(CarRep representation) {
+		this.representation = representation;
+	}
 }

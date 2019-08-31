@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
+import java.awt.Toolkit;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -61,6 +63,7 @@ public class Race extends Scene implements Runnable {
 	private boolean[] finishedPlayers;
 	private VisualButton goBackVisual;
 	private boolean doneWithRace;
+	protected BufferStrategy bs;
 
 	private Animation background;
 	private Animation nitros;
@@ -68,6 +71,7 @@ public class Race extends Scene implements Runnable {
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
 	private BufferedImage resBackground;
+	private boolean raceLobbyResultsReady;
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -98,8 +102,6 @@ public class Race extends Scene implements Runnable {
 		GameHandler.ba.startGame();
 		doneWithRace = false;
 
-		player.startUpdateRaceLights();
-
 		racingWindow = SceneHandler.instance.getWindows();
 		GraphicsDevice device = racingWindow.getGraphicsConfiguration().getDevice();
 		keys = new RaceKeyHandler(player.getCar());
@@ -125,7 +127,7 @@ public class Race extends Scene implements Runnable {
 		}
 		racingWindow.setVisible(true);
 
-		// FIXME her allokeres det for 100 spillere når det ikke trengs
+		// FIXME her allokeres det for 20 spillere når det ikke trengs
 		finishedPlayers = new boolean[20];
 		for (int i = 0; i < finishedPlayers.length; i++) {
 			finishedPlayers[i] = false;
@@ -145,6 +147,7 @@ public class Race extends Scene implements Runnable {
 		winVisual = new WinVisual();
 		winVisual.setPlayer(player);
 
+		raceLobbyResultsReady = false;
 		everyoneDone = false;
 		cheating = false;
 		running = false;
@@ -165,6 +168,7 @@ public class Race extends Scene implements Runnable {
 		racingWindow.requestFocus();
 
 		player.inTheRace();
+		player.startUpdateRaceLights();
 
 	}
 
@@ -186,10 +190,10 @@ public class Race extends Scene implements Runnable {
 	}
 
 	public void tick(long elapsedTime) {
-		//Base a tick around 40 000 000 ns (40 ms) == 25 ticks per sec
+		// Base a tick around 40 000 000 ns (40 ms) == 25 ticks per sec
 		double tickFactor = elapsedTime / 40000000.0;
 		visualTick(tickFactor);
-		
+
 		player.getCar().updateSpeed(tickFactor);
 		checkDistanceLeft();
 
@@ -224,7 +228,8 @@ public class Race extends Scene implements Runnable {
 			}
 
 			// CHEATING
-			if (raceLights < 4 && player.getCar().getSpeedActual() > 2) {
+			if (raceLights < 4 && player.getCar().getSpeedActual() > 1) {
+				player.stopUpdateRaceLights();
 				finishRace(true);
 				racingWindow.removeKeyListener(keys);
 				player.getCar().reset();
@@ -239,7 +244,7 @@ public class Race extends Scene implements Runnable {
 
 	public void lobbyTick(double tickFactor) {
 		visualTick(tickFactor);
-		if (finished && currentVisual != null && !everyoneDone) {
+		if (finished && currentVisual != null && !(raceLobbyResultsReady && everyoneDone)) {
 			updateResults();
 		}
 	}
@@ -248,7 +253,7 @@ public class Race extends Scene implements Runnable {
 		if (currentVisual != null) {
 			currentVisual.tick(tickFactor);
 
-			//FIXME make me more optimal!
+			// FIXME make me more optimal!
 			if (winVisual.isOver()) {
 				winVisual.addVisualElement(goBackVisual);
 				racingWindow.addKeyListener(goBackVisual);
@@ -256,10 +261,29 @@ public class Race extends Scene implements Runnable {
 		}
 	}
 
-	public void visualRender() {
+	public void render() {
 		if (currentVisual != null) {
 			Graphics g = null;
-			currentVisual.render(g);
+			try {
+				bs = currentVisual.getBufferStrategy();
+				if (bs == null) {
+					currentVisual.createBufferStrategy(3);
+					return;
+				}
+				g = bs.getDrawGraphics();
+
+				// RENDER
+				currentVisual.render(g);
+
+				if (g != null) {
+					g.dispose();
+				}
+				bs.show();
+				Toolkit.getDefaultToolkit().sync();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -286,7 +310,7 @@ public class Race extends Scene implements Runnable {
 			tick(elapsed);
 
 			// Render
-			currentVisual.render(null);
+			render();
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
@@ -307,14 +331,13 @@ public class Race extends Scene implements Runnable {
 
 	private BufferedImage findCarImage(String car) {
 		for (int i = 0; i < Main.CAR_TYPES.length; i++) {
-			if (Main.CAR_TYPES[i].toLowerCase().equals(car))
+			if (Main.CAR_TYPES[i].equals(car)) {
 				try {
-					return ImageIO.read(
-							RaceVisual.class.getResourceAsStream("/pics/" + Main.CAR_TYPES[i].toLowerCase() + ".png"));
+					return ImageIO.read(RaceVisual.class.getResourceAsStream("/pics/" + Main.CAR_TYPES[i] + ".png"));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			;
+			}
 		}
 		return null;
 	}
@@ -415,25 +438,26 @@ public class Race extends Scene implements Runnable {
 		if (currentVisual.hasAnimationsRunning())
 			everyoneDone = false;
 
-		if (results.getStrings() == null) {
-			results.setText(result, "<br/>", resultColors);
-		}
+		raceLobbyResultsReady = results.setText(result, "<br/>", resultColors);
 
-		if (everyoneDone) {
+		if (everyoneDone && raceLobbyResultsReady && goBackVisual != null) {
 			// Stop race aka make ready the next race
+			System.out.println("STOPPING MY RACE");
 			player.stopRace();
+			racingWindow.addKeyListener(goBackVisual);
 			goBackVisual.setEnabled(true);
 			racingWindow.requestFocus();
 			lobby.setPlaceChecked(false);
+			
 			player.stopUpdateRaceLobby();
 			if (player.isGameOver())
 				winVisual.setEveryoneDone(everyoneDone);
 
 		} else {
 			// Disable start game button
-			results.setText(result, "<br/>", resultColors);
 			goBackVisual.setEnabled(false);
-
+			raceLobbyResultsReady = false;
+			everyoneDone = false;
 		}
 	}
 
@@ -446,8 +470,8 @@ public class Race extends Scene implements Runnable {
 
 	private void finishRace(boolean cheated) {
 		System.out.println("Finished");
-
-		player.finishRace(System.currentTimeMillis() - startTime);
+		long time = System.currentTimeMillis() - startTime;
+		player.finishRace(time);
 
 		player.startUpdateRaceLobby();
 		player.getCar().reset();
@@ -474,7 +498,6 @@ public class Race extends Scene implements Runnable {
 
 				finishVisual.addVisualElement(goBackVisual);
 				finishVisual.addVisualElement(results);
-				racingWindow.addKeyListener(goBackVisual);
 			} else {
 				changeVisual(winVisual);
 			}

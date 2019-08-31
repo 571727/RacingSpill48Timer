@@ -1,18 +1,19 @@
 package handlers;
 
-import client.EchoClient;
+import client.ClientController;
+import client.TCPEchoClient;
 import scenes.Race;
 
 public class ClientThreadHandler {
 
-	private EchoClient client;
+	private ClientController client;
 	private int id;
 
 	private Thread clientThread;
 
 	private String lobbyString = "-1#LOADING";
 	private String raceLobbyString = "LOADING";
-	private int raceLights = -1;
+	private int raceLights = 0;
 
 	private boolean running;
 	private boolean pingRunning;
@@ -20,9 +21,8 @@ public class ClientThreadHandler {
 	private boolean raceLobbyRunning;
 	private boolean raceLightsRunning;
 
-	public ClientThreadHandler(EchoClient client, int id) {
+	public ClientThreadHandler(int id) {
 
-		this.client = client;
 		this.id = id;
 
 		clientThread = new Thread(() -> {
@@ -40,16 +40,25 @@ public class ClientThreadHandler {
 
 //					System.out.println(
 //							pingRunning + "," + lobbyRunning + "," + raceLobbyRunning + "," + raceLightsRunning);
-
-					if (this.pingRunning)
-						client.sendRequest("#" + this.id);
-					if (this.lobbyRunning)
-						lobbyString = client.sendRequest("UL#" + this.id);
-					if (this.raceLobbyRunning)
-						raceLobbyString = client.sendRequest("UR#" + this.id);
-					if (this.raceLightsRunning)
-						raceLights = Integer.valueOf(client.sendRequest("RL#" + this.id));
+					String response;
+					if (this.pingRunning) {
+						response = client.sendRequest("#" + this.id);
+						
+					}
+					if (this.lobbyRunning) {
+						response = client.sendRequest("UL#" + this.id);
+						lobbyString = response;
+					}
+					if (this.raceLobbyRunning) {
+						response = client.sendRequest("UR#" + this.id);
+						raceLobbyString = response;
+					}
+					if (this.raceLightsRunning) {
+						response = client.sendRequest("RL#" + this.id);
+						raceLights = Integer.valueOf(response);
+					}
 					deltap--;
+
 				}
 
 			}
@@ -83,10 +92,12 @@ public class ClientThreadHandler {
 
 	public void startRaceLights() {
 		raceLightsRunning = true;
+		raceLights = 0;
 	}
 
 	public void stopRaceLights() {
 		raceLightsRunning = false;
+		raceLights = 0;
 	}
 
 	public String getLobbyString() {
@@ -128,5 +139,9 @@ public class ClientThreadHandler {
 		} else {
 			throw new Exception();
 		}
+	}
+
+	public void setClient(ClientController client) {
+		this.client = client;
 	}
 }

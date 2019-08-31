@@ -59,37 +59,19 @@ public class FinishVisual extends Visual {
 
 	@Override
 	public void render(Graphics g) {
-		try {
-			bs = this.getBufferStrategy();
-			if (bs == null) {
-				this.createBufferStrategy(3);
-				return;
-			}
-			g = bs.getDrawGraphics();
 
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.drawImage(resBackground, 0, 0, Race.WIDTH, Race.HEIGHT, null);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.drawImage(resBackground, 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
-			for (PlacedAnimation ma : finishedPlayers) {
-				if (ma != null)
-					if (ma.getX() + ma.getWidth() > 0)
-						g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
-			}
+		for (PlacedAnimation ma : finishedPlayers) {
+			if (ma != null)
+				if (ma.getX() + ma.getWidth() > 0)
+					g2d.drawImage(ma.getFrame(), ma.getX(), ma.getY(), resCarWidth, resCarHeight, null);
+		}
 
-			for (int i = 0; i < visualElements.size(); i++) {
-				//FIXME
-				visualElements.get(i).render(g);
-			}
-
-			//TODO remove me
-			if (g != null) {
-				g.dispose();
-			}
-			bs.show();
-			Toolkit.getDefaultToolkit().sync();
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		for (int i = 0; i < visualElements.size(); i++) {
+			// FIXME
+			visualElements.get(i).render(g);
 		}
 
 	}

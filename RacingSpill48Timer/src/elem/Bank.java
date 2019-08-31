@@ -3,20 +3,14 @@ package elem;
 public class Bank {
 	private int points;
 	private int money;
-	private int[] inflation;
 	private int moneyAchived;
 	private int pointsAchived;
-
-	public Bank() {
-		inflation = new int[Upgrades.UPGRADE_NAMES.length];
-	}
 
 	public boolean buyWithMoney(int amount, int i) {
 		boolean res = false;
 
 		if (amount <= money) {
 			money -= amount;
-			inflation[i]++;
 			res = true;
 		}
 
@@ -34,7 +28,6 @@ public class Bank {
 
 		if (amount <= points) {
 			points -= amount;
-			inflation[i]++;
 			res = true;
 		}
 
@@ -73,10 +66,6 @@ public class Bank {
 		if (money - this.money > 0)
 			moneyAchived += money - this.money;
 		this.money = money;
-	}
-
-	public int getInflation(int i) {
-		return inflation[i];
 	}
 
 	public int getMoneyAchived() {

@@ -7,19 +7,21 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import startup.Main;
+
 /**
- * TODO legg til sjekk av hvem som sender inn requests. Om en ikke har sendt inn
- * en request p� lenge s� betyr det at den clienten har forsvunnet.
- * 
  * @author jonah
  *
  */
 
-public class TCPEchoServer {
+public class TCPEchoServer extends Thread {
 
-	private ServerSocket welcomeSocket;
+	public static final String STANDARD_RESPONSE = "ACK";
+	private Socket socket;
 	private ServerInfo info;
 	private int startRace;
+	private DataOutputStream outToClient;
+	private BufferedReader inFromClient;
 
 	public int getStartRace() {
 		return startRace;
@@ -29,24 +31,23 @@ public class TCPEchoServer {
 		this.startRace = startRace;
 	}
 
-	public TCPEchoServer(ServerSocket welcomeSocket, ServerInfo info) {
-		this.welcomeSocket = welcomeSocket;
+	public TCPEchoServer(Socket socket, ServerInfo info) {
+		this.socket = socket;
 		this.info = info;
 	}
 
-	public void process() {
+	public void run() {
 
 		try {
 //			System.out.println("SERVER ACCEPTING");
 			// sitter her og venter.
-			Socket connectionSocket = welcomeSocket.accept();
 
-			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+			inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			String text = inFromClient.readLine();
 //			System.out.println("SERVER RECEIVED: " + text);
 			String outtext = understandRequest(text);
 
-			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+			outToClient = new DataOutputStream(socket.getOutputStream());
 
 			int n = 0;
 			do {
@@ -63,14 +64,13 @@ public class TCPEchoServer {
 
 			outToClient.close();
 			inFromClient.close();
-
-			connectionSocket.close();
+			socket.close();
 
 		} catch (IOException e) {
 			// Dette skjer om man lukker connection til serveren
 			System.out.println("TCPServer: " + e.getMessage());
-
 		}
+
 	}
 
 	/**
@@ -85,79 +85,86 @@ public class TCPEchoServer {
 	public String understandRequest(String request) {
 		String[] input = request.split("#");
 
+//		System.out.println(request);
+		
 		String res = null;
-		System.out.println(request);
 
-		switch (input[0]) {
-		case "F":
-			info.finishPlayer(input);
-			break;
-		case "I":
-			info.inTheRace(input);
-			break;
-		case "J":
-			res = join(input);
-			break;
-		case "L":
-			res = leave(input);
-			break;
-		case "C":
-			res = join(input);
-			break;
-		case "UL":
-			res = updateLobby(input);
-			break;
-		case "UR":
-			res = info.updateRaceLobbyString();
-			break;
-		case "RL":
-			res = info.getRaceLightsStatus();
-			break;
-		case "SR":
-			info.startStopRace(input);
-			break;
-		case "GL":
-			res = info.getTrackLength();
-			break;
-		case "SPM":
-			info.setPointsMoney(input);
-			break;
-		case "GPM":
-			res = info.getPointsMoney(input);
-			break;
-		case "NEW":
-			info.newRaces(input);
-			break;
-		case "GEG":
-			res = info.getEndGoal();
-			break;
-		case "W":
-			res = info.getPlayerWithMostPoints(input);
-			break;
-		case "ADC":
-			info.addChat(input);
-			break;
-		case "GC":
-			res = info.getChat(input);
-			break;
-		case "GP":
-			res = info.getCurrentPlace();
-			break;
-		case "GPR":
-			res = info.getPrices();
-			break;
-		case "CAR":
-			info.updateCarForPlayer(input);
-			break;
-		case "RE":
-			info.updateReady(input);
-			break;
-		case "GO":
-			res = info.isGameOver();
-			break;
+		if (info.isIdValid(input[1])) {
+
+			switch (input[0]) {
+			case "F":
+				info.finishPlayer(input);
+				break;
+			case "I":
+				info.inTheRace(input);
+				break;
+			case "L":
+				res = leave(input);
+				break;
+			case "UL":
+				res = updateLobby(input);
+				break;
+			case "UR":
+				res = info.updateRaceLobbyString();
+				break;
+			case "RL":
+				res = info.getRaceLightsStatus();
+				break;
+			case "SR":
+				info.startStopRace(input);
+				break;
+			case "GL":
+				res = info.getTrackLength();
+				break;
+			case "SPM":
+				info.setPointsMoney(input);
+				break;
+			case "GPM":
+				res = info.getPointsMoney(input);
+				break;
+			case "NEW":
+				info.newRaces(input);
+				break;
+			case "GEG":
+				res = info.getEndGoal();
+				break;
+			case "W":
+				res = info.getPlayerWithMostPoints(input);
+				break;
+			case "ADC":
+				info.addChat(input);
+				break;
+			case "GC":
+				res = info.getChat(input);
+				break;
+			case "GP":
+				res = info.getCurrentPlace();
+				break;
+			case "GPR":
+				res = info.getPrices();
+				break;
+			case "CAR":
+				info.updateCarForPlayer(input);
+				break;
+			case "RE":
+				info.updateReady(input);
+				break;
+			case "GO":
+				res = info.isGameOver();
+				break;
+
+			}
+			
+			info.ping(input);
+		
+		} else {
+			// Not valid ID
+			if (input[0].equals("J")) {
+				res = join(input);
+			} else {
+				res = Main.END_ALL_CLIENT_STRING;
+			}
 		}
-
-		info.ping(input);
 
 		return res;
 	}
@@ -174,18 +181,6 @@ public class TCPEchoServer {
 
 	private String updateLobby(String[] input) {
 		return info.updateLobby(input);
-	}
-
-	/*
-	 * Getters and setters
-	 */
-
-	public ServerSocket getWelcomeSocket() {
-		return welcomeSocket;
-	}
-
-	public void setWelcomeSocket(ServerSocket welcomeSocket) {
-		this.welcomeSocket = welcomeSocket;
 	}
 
 }

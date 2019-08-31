@@ -1,9 +1,9 @@
 package elem;
 
 import java.util.Arrays;
-import java.util.Random;
 
-import client.EchoClient;
+import client.ClientController;
+import client.TCPEchoClient;
 import connection_standard.Config;
 import handlers.ClientThreadHandler;
 import handlers.StoreHandler;
@@ -22,16 +22,16 @@ public class Player {
 	private int id;
 	private int ready;
 	private String ip;
-	private EchoClient client;
+	private TCPEchoClient echoClient;
 	private Car car;
 	private StoreHandler fixCarHandler;
-	private Random r;
 	private Bank bank;
 	private ClientThreadHandler cth;
 	private boolean inTheRace;
 	private int moneyAchived;
 	private int pointsAchived;
 	private int podium;
+	private ClientController client;
 
 	public Player(String name, int host, String car) {
 		this(name, host, car, Config.SERVER);
@@ -41,19 +41,20 @@ public class Player {
 		this.name = name;
 		this.ip = ip;
 		this.host = host;
+		id = -200;
 		ready = 0;
 		this.car = new Car(car, true);
-		r = new Random();
-		client = new EchoClient(ip);
+		echoClient = new TCPEchoClient(ip);
 		bank = new Bank();
-		cth = new ClientThreadHandler(client, -1);
+		cth = new ClientThreadHandler(-1);
+		client = new ClientController(echoClient, cth);
+		cth.setClient(client);
 		// Request stats about lobby and update lobby
 	}
 
 	public void finishRace(long time) {
 		client.sendRequest("F#" + id + "#" + time);
 	}
-
 
 	public void inTheRace() {
 		inTheRace = true;
@@ -64,19 +65,19 @@ public class Player {
 	 * JOIN#name+id#host-boolean
 	 */
 	public void joinServer() {
-		String[] ids = client
-				.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID)
-				.split("#");
+		String[] ids = client.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID).split("#");
 		this.id = Byte.valueOf(ids[0]);
 		Main.newDisconnectedID(Long.valueOf(ids[1]));
-		
+
+		// Rejoined server
 		if (Integer.valueOf(ids[2]) == 1) {
 			name = ids[3];
-			car.updateServerClone(ids, 4);
+			car.getRepresentation().setClone(ids, 4);
+			car.reset();
 		}
-		
+
 		cth.setID(id);
-		
+
 	}
 
 	/**
@@ -90,13 +91,16 @@ public class Player {
 	/**
 	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
 	 */
-	
+
 	public void stopAllClientHandlerOperations() {
-		cth.stopAll();
+		if (cth != null)
+			cth.stopAll();
 	}
 
 	public void endClientHandler() {
-		cth.end();
+		if (cth != null) {
+			cth.end();
+		}
 	}
 
 	public void startClientHandler() {
@@ -106,59 +110,68 @@ public class Player {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void startPing() {
-		cth.startPing();
+		if (cth != null)
+			cth.startPing();
 	}
-	
+
 	public void stopPing() {
-		cth.stopPing();
+		if (cth != null)
+			cth.stopPing();
 	}
-	
+
 	public String updateLobby() {
-		return cth.getLobbyString();
+		if (cth != null)
+			return cth.getLobbyString();
+		return null;
 	}
 
 	public String updateRaceLobby() {
-		return cth.getRaceLobbyString();
+		if (cth != null)
+			return cth.getRaceLobbyString();
+		return null;
 	}
 
 	public int updateRaceLights() {
-		return cth.getRaceLights();
+		if (cth != null)
+			return cth.getRaceLights();
+		return -1;
 	}
-	
-	
+
 	public void startUpdateLobby() {
-		cth.startLobby();
+		if (cth != null)
+			cth.startLobby();
 	}
 
 	public void startUpdateRaceLobby() {
-		cth.startRaceLobby();
+		if (cth != null)
+			cth.startRaceLobby();
 	}
 
 	public void startUpdateRaceLights() {
-		cth.startRaceLights();
+		if (cth != null)
+			cth.startRaceLights();
 	}
-	
-	
+
 	public void stopUpdateLobby() {
-		cth.stopLobby();
+		if (cth != null)
+			cth.stopLobby();
 	}
 
 	public void stopUpdateRaceLobby() {
-		cth.stopRaceLobby();
+		if (cth != null)
+			cth.stopRaceLobby();
 	}
 
 	public void stopUpdateRaceLights() {
-		cth.stopRaceLights();
+		if (cth != null)
+			cth.stopRaceLights();
 	}
-	
-	
+
 	public void updateReady() {
 		client.sendRequest("RE#" + id + "#" + ready);
 	}
-
-
 
 	public void startRace() {
 		client.sendRequest("SR#" + id + "#" + host + 1);
@@ -215,7 +228,7 @@ public class Player {
 	}
 
 	public void updateCarCloneToServer() {
-		client.sendRequest("CAR#" + id + "#" + car.cloneToServerString());
+		client.sendRequest("CAR#" + id + "#" + car.getRepresentation().getCloneString());
 	}
 
 	public boolean isGameOver() {

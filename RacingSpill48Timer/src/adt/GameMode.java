@@ -214,7 +214,7 @@ public abstract class GameMode {
 	 * Alerts game that a player has finished. Is the game over? Has everyone
 	 * finished their single race?
 	 */
-	public boolean controlGameAfterFinishedPlayer(PlayerInfo player) {
+	public boolean controlGameAfterFinishedPlayer() {
 
 		boolean res = false;
 
@@ -232,7 +232,11 @@ public abstract class GameMode {
 		amountFinished++;
 		this.allFinished = amountFinished == players.size();
 	}
-
+	
+	public void disconnectedFinish() {
+		this.allFinished = amountFinished == players.size();
+	}
+	
 	public void prepareNextRace() {
 		length = getRandomRaceGoal();
 		currentPlace = places[r.nextInt(places.length)];

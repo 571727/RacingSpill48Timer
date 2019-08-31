@@ -2,9 +2,9 @@ package scenes.visual;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -55,6 +55,17 @@ public class RaceVisual extends Visual {
 	private double blurSpeed;
 	private double blurShake;
 
+	private int amountRPMnumbers;
+	private double angle;
+	private double angleFrom;
+	private double angleTo;
+	private double angleDistance;
+	private double distance;
+	private Font rpmFont;
+	private Color rpmColor;
+	private double yRPM;
+	private double xRPM;
+
 	public RaceVisual(Player player, Race race) {
 		super();
 		visualElements = new ArrayList<VisualElement>();
@@ -70,6 +81,18 @@ public class RaceVisual extends Visual {
 		yTachopointer = (int) (yTachometer + heightTachometer / 1.9);
 		scaleXTachopointer = widthTachometer / 380.0;
 		scaleYTachopointer = heightTachometer / 270.0;
+
+		angleFrom = -202;
+		angleTo = 30;
+		amountRPMnumbers = 9;
+		angleDistance = (Math.abs(angleFrom) + Math.abs(angleTo));
+		angle = angleDistance / amountRPMnumbers;
+		distance = widthTachometer / 4.7;
+		rpmFont = new Font("Calibri", 0, (int) (Race.WIDTH / 85.0f));
+		rpmColor = new Color(200, 185, 185);
+		xRPM = xTachopointer - (xTachopointer / 130);
+		yRPM = yTachopointer + (yTachopointer / 400);
+
 		// var 1.7 og 1.2
 		xGear = (int) (xTachometer + widthTachometer / 1.7);
 		yGear = (int) (yTachometer + heightTachometer / 1.15);
@@ -115,67 +138,55 @@ public class RaceVisual extends Visual {
 			height = Race.HEIGHT + 9;
 		}
 
-		background.setCurrentFrame(
-				(background.getCurrentFrame() + (player.getCar().getSpeedActual() / 100) * tickFactor)  % background.getFrameCount());
+		background
+				.setCurrentFrame((background.getCurrentFrame() + (player.getCar().getSpeedActual() / 100) * tickFactor)
+						% background.getFrameCount());
 	}
 
 	@Override
 	public void render(Graphics g) {
-		try {
-			bs = this.getBufferStrategy();
-			if (bs == null) {
-				this.createBufferStrategy(3);
-				return;
-			}
-			g = bs.getDrawGraphics();
 
-			Graphics2D g2d = (Graphics2D) g;
+		Graphics2D g2d = (Graphics2D) g;
 
-			g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
+		g2d.drawImage(background.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT, null);
 
-			AffineTransform trans = new AffineTransform();
-			shakeAndScaleImage(trans, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(),
-					blurSpeed / 2, blurSpeed * 1.5f, blurShake * 2);
-			if (player.getCar().isIdle())
-				rotateIdle(trans, ((double) player.getCar().getRpm() / (double) player.getCar().getTotalRPM() + 1),
-						blurShake / 16);
+		AffineTransform trans = new AffineTransform();
+		shakeAndScaleImage(trans, carImage, x, y, width, height, (float) player.getCar().getSpeedActual(),
+				blurSpeed / 2, blurSpeed * 1.5f, blurShake * 2);
+		if (player.getCar().isIdle())
+			rotateIdle(trans, ((double) player.getCar().getRpm() / (double) player.getCar().getRpmTop() + 1),
+					blurShake / 16);
 
-			g2d.drawImage(carImage, trans, this);
+		g2d.drawImage(carImage, trans, this);
 
-			if (player.getCar().isNOSON()) {
-				blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
-						(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
-			} else if (player.getCar().isGearBoostON()) {
-				shakeAndScaleImage(trans, carImage, x, y, width, height, 1, 1, 1, blurShake * 2);
-			}
-
-			if (player.getCar().getSpeedActual() > blurSpeed)
-				blur(g2d, fastness, 0, 0, Race.WIDTH, Race.HEIGHT, (float) player.getCar().getSpeedActual(), blurSpeed,
-						100f, blurShake);
-
-			g2d.setFont(font);
-
-			// DEBUG
-			if (Main.DEBUG)
-				drawDebug(g2d, 300);
-
-			// Prerace stuff
-			drawRaceHUD(g2d);
-
-			drawTachometer(g2d);
-			drawRightShift(g2d);
-			drawInfoHUD(g2d);
-
-			for (int i = 0; i < visualElements.size(); i++) {
-				visualElements.get(i).render(g);
-			}
-		} finally {
-			if (g != null) {
-				g.dispose();
-			}
+		if (player.getCar().isNOSON()) {
+			blur(g2d, nitros.getFrame(), 0, 0, Race.WIDTH, Race.HEIGHT,
+					(float) player.getCar().getNosStrengthStandard(), 0f, 2.5f, blurShake);
+		} else if (player.getCar().isGearBoostON()) {
+			shakeAndScaleImage(trans, carImage, x, y, width, height, 1, 1, 1, blurShake * 2);
 		}
-		bs.show();
-		Toolkit.getDefaultToolkit().sync();
+
+		if (player.getCar().getSpeedActual() > blurSpeed)
+			blur(g2d, fastness, 0, 0, Race.WIDTH, Race.HEIGHT, (float) player.getCar().getSpeedActual(), blurSpeed,
+					100f, blurShake);
+
+		g2d.setFont(font);
+
+		// DEBUG
+		if (Main.DEBUG)
+			drawDebug(g2d, 300);
+
+		// Prerace stuff
+		drawRaceHUD(g2d);
+
+		drawTachometer(g2d);
+		drawRightShift(g2d);
+		drawInfoHUD(g2d);
+
+		for (int i = 0; i < visualElements.size(); i++) {
+			visualElements.get(i).render(g);
+		}
+
 	}
 
 	private void rotateIdle(AffineTransform trans, double comparedValue, double shake) {
@@ -187,7 +198,6 @@ public class RaceVisual extends Visual {
 		double rad = Math.toRadians(ranShake - (shake / (2 * finetuneShake)));
 		trans.rotate(rad, width / 2, height - (height / 8));
 
-		// TODO overgang fra risting til annet
 	}
 
 	private void shakeAndScaleImage(AffineTransform trans, BufferedImage img, int x, int y, int width, int height,
@@ -290,6 +300,26 @@ public class RaceVisual extends Visual {
 
 		g.drawImage(tachometer, xTachometer, yTachometer, widthTachometer, heightTachometer, null);
 
+		// Draw rpm numbers
+		g.setFont(rpmFont);
+		g.setColor(rpmColor);
+		for (int i = 0; i <= amountRPMnumbers; i++) {
+			// Go to center of tachometer
+			// Find the angles and determine how far up/down and left/right from there with
+			// a fixed distance.
+			// AKA we know the hypotenuse and the angle in degrees.
+			double angle = angleFrom + (this.angle * i);
+			double radian = (angle * (Math.PI)) / 180;
+
+			double xRPM = this.xRPM + (Math.cos(radian) * distance);
+			double yRPM = this.yRPM + (Math.sin(radian) * distance);
+			double rpmNum = player.getCar().getRpmTop() * ((this.angle * i) / angleDistance) / 1000.0;
+
+			g.drawString(String.format("%.1f", rpmNum), (int) xRPM, (int) yRPM);
+		}
+		g.setFont(font);
+		g.setColor(Color.white);
+
 		AffineTransform trans = new AffineTransform();
 		trans.setTransform(identity);
 		trans.translate(xTachopointer,
@@ -298,7 +328,6 @@ public class RaceVisual extends Visual {
 		trans.rotate(Math.toRadians(player.getCar().getTachometer()));
 		g.drawImage(tachopointer, trans, this);
 
-		g.setColor(Color.white);
 		g.drawString(String.format("%.0f", player.getCar().getSpeedActual()), xSpeed, ySpeed);
 
 		if (player.getCar().getGear() > 0)
@@ -336,7 +365,7 @@ public class RaceVisual extends Visual {
 							Float.valueOf(System.currentTimeMillis() - startTime - 3000) / 1000),
 					xDistance, yDistance + 150);
 
-		g.drawString("NOS bottles left: " + String.valueOf(player.getCar().getNosAmountLeft()), xDistance,
+		g.drawString("NOS bottles left: " + String.valueOf(player.getCar().getNosBottleAmountLeft()), xDistance,
 				yDistance + 200);
 
 	}
