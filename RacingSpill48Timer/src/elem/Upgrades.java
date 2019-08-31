@@ -21,7 +21,7 @@ public class Upgrades {
 		// Clutch
 		upgradeValues[0] = new Upgrade((CarRep car) -> {
 
-			car.setHp(car.getHp() + 35f);
+			car.setHp(car.getHp() + 60f);
 
 			double topspeedPrev = car.getSpeedTop();
 			double topspeedInc = car.getSpeedTop() * 0.05;
@@ -35,7 +35,7 @@ public class Upgrades {
 				car.guarenteeRightShift();
 
 			return true;
-		}, 0, "+ 35 HP, + 20 % TG area, + 5 % TS", "Guaranteed TG shift at high RPM", 5);
+		}, 0, "+ 60 HP, + 20 % TG area, + 5 % TS", "Guaranteed TG shift at high RPM", 5);
 		// Weight
 		upgradeValues[1] = new Upgrade((CarRep car) -> {
 			if (car.getWeight() > 2) {
@@ -69,23 +69,28 @@ public class Upgrades {
 				car.iterateUpgradeLVL(2);
 			}
 			return res;
-		}, 2, "1st: + 2 HP, 2nd: + 28 HP, 3rd: + 206 HP", "For every upgrade; upgrading \"" + Upgrades.UPGRADE_NAMES[6]
-				+ "\" increases TS more", 3);
+		}, 2, "1st: + 2 HP, 2nd: + 28 HP, 3rd: + 206 HP",
+				"For every upgrade; upgrading \"" + Upgrades.UPGRADE_NAMES[3] + "\" increases HP by 5 % more", 3);
 		// Turbo
 		upgradeValues[3] = new Upgrade((CarRep car) -> {
-			car.setHp(car.getHp() + (100f));
+			car.setHp(car.getHp() + (100f * (1.05 * car.getUpgradeLVL(2) + car.getUpgradeLVL(2) == 0 ? 1 : 0)));
 			car.setWeight(car.getWeight() + (car.getWeight() * 0.02f));
 			car.iterateUpgradeLVL(3);
 			if (car.getUpgradeLVL(3) == 5) {
-				upgradePrices[5].addSale(0.85, 3);
-				upgradePrices[7].addSale(0.85, 3);
+				upgradePrices[0].addSale(0.90, 3);
+				upgradePrices[7].addSale(0.90, 3);
 			}
+
+			if (car.getUpgradeLVL(6) == 5) {
+				car.setNosBottleAmountStandard(2);
+			}
+
 			return true;
-		}, 3, "+ 100 HP, + 2 % weight", "- 15 % $ \""
-				+ Upgrades.UPGRADE_NAMES[7] + "\" and \"" + Upgrades.UPGRADE_NAMES[5] + "\"", 5);
+		}, 3, "+ 100 HP, + 2 % weight", "\"" + Upgrades.UPGRADE_NAMES[4] + "\" now contains two bottles and "
+				+ "- 10 % $ \"" + Upgrades.UPGRADE_NAMES[0] + "\" & \"" + Upgrades.UPGRADE_NAMES[7] + "\"", 5);
 		// NOS
 		upgradeValues[4] = new Upgrade((CarRep car) -> {
-			if (car.getUpgradeLVL(4) < 1) {
+			if (car.getNosBottleAmountStandard() < 1) {
 				car.setNosBottleAmountStandard(1);
 			}
 
@@ -100,12 +105,17 @@ public class Upgrades {
 			}
 
 			return true;
-		}, 4, "+ 0.4 NOS strength", "- 50 % $ \""
-				+ Upgrades.UPGRADE_NAMES[8] + "\"", 5);
+		}, 4, "+ 0.4 NOS strength", "- 50 % $ \"" + Upgrades.UPGRADE_NAMES[8] + "\"", 5);
 		// Pistons
 		upgradeValues[5] = new Upgrade((CarRep car) -> {
-			car.setWeight(car.getWeight() - (car.getWeight() * 0.05f));
-			car.setHp(car.getHp() + 60f);
+
+			double weightloss = 0.04;
+
+			if (car.getUpgradeLVL(7) >= 5)
+				weightloss = weightloss * 2;
+
+			car.setWeight(car.getWeight() - (car.getWeight() * weightloss));
+			car.setHp(car.getHp() + 35f);
 			car.iterateUpgradeLVL(5);
 
 			if (car.getUpgradeLVL(5) == 5) {
@@ -126,35 +136,30 @@ public class Upgrades {
 			}
 
 			return true;
-		}, 5, "+ 60 HP, - 5 % weight", "+ 100 % HP from \"" + Upgrades.UPGRADE_NAMES[2]
-				+ "\" even if already upgraded", 5);
+		}, 5, "+ 35 HP, - 4 % weight", "+ 100 % HP from \"" + Upgrades.UPGRADE_NAMES[2] + "\" even if already upgraded",
+				5);
 		// Gears
 		upgradeValues[6] = new Upgrade((CarRep car) -> {
 			double topspeedPrev = car.getSpeedTop();
-			double topspeedInc = 72.0 * (car.getUpgradeLVL(2) + 1) * (car.getUpgradeLVL(3) < 5 ? 1 : 0.66);
+			double topspeedInc = 72.0;
 			car.setWeight(car.getWeight() - (car.getWeight() * 0.03f));
 			car.setSpeedTop(topspeedPrev + topspeedInc);
 			car.setGearsbalance(car.getGearsbalance() * (1 - (topspeedInc / topspeedPrev)));
-			
+
 			car.iterateUpgradeLVL(6);
-			if (car.getUpgradeLVL(6) == 5) {
-				car.setNosBottleAmountStandard(2);
-			}
+
 			return true;
-		}, 6, "+ 72 (TS * \"" + Upgrades.UPGRADE_NAMES[2] + "\"), - 3 % weight", "\""
-				+ Upgrades.UPGRADE_NAMES[4] + "\" now contains two bottles", 5);
+		}, 6, "+ 72 (TS * \"" + Upgrades.UPGRADE_NAMES[2] + "\"), - 3 % weight", "Sequential shifting", 5);
 		// Block
 		upgradeValues[7] = new Upgrade((CarRep car) -> {
 			car.iterateUpgradeLVL(7);
 			double inc = 170;
-			if (car.getUpgradeLVL(7) >= 5)
-				inc = inc * 1.75;
 			car.setHp(car.getHp() + inc);
 			if (car.getUpgradeLVL(1) < 5)
 				car.setWeight(car.getWeight() + (car.getWeight() * 0.14f));
 			return true;
-		}, 7, "+ 170 HP, + 14 % weight", "Upgrading \""
-				+ Upgrades.UPGRADE_NAMES[7] + "\" gives + 75 % more HP", 5);
+		}, 7, "+ 170 HP, + 14 % weight", "Upgrading \"" + Upgrades.UPGRADE_NAMES[5] + "\" reduces + 100 % more weight",
+				5);
 		// Tires
 		upgradeValues[8] = new Upgrade((CarRep car) -> {
 			car.setTireGripStrengthStandard(car.getTireGripStrengthStandard() + 0.6);

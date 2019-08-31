@@ -32,6 +32,7 @@ public class Car {
 	private long tireGripTimeLeft;
 	private double drag;
 	private boolean TireGripON;
+	private boolean sequentialShift;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -53,7 +54,7 @@ public class Car {
 		nosTimeLeft = 0;
 		resistance = 1.0;
 		drag = 1;
-
+		
 		String name;
 		int nosTimeStandard;
 		int nosBottleAmountStandard;
@@ -417,10 +418,7 @@ public class Car {
 	}
 
 	public void shift(int gear) {
-		if (gear <= representation.getGearTop() && clutch) {
-			if (this.gear == 1 && gear == 2) {
-
-			}
+		if (gear <= representation.getGearTop() && (clutch || sequentialShift)) {
 			this.gear = gear;
 
 			if (audioActivated)
@@ -437,11 +435,11 @@ public class Car {
 	}
 
 	public void shiftUp() {
-		shift(gear++);
+		shift(gear + 1);
 	}
 
 	public void shiftDown() {
-		shift(gear--);
+		shift(gear - 1);
 	}
 
 	public void nos() {
@@ -470,6 +468,20 @@ public class Car {
 		if (audioActivated)
 			audio.stopAll();
 		updateSpeedInc();
+		
+		//TODO check for upgradeLVLs with sequential shift and sounds:
+		if(representation.getUpgradeLVL(6) >= 5) {
+			//GEARS
+			sequentialShift = true;
+		}
+	}
+
+	public boolean isSequentialShift() {
+		return sequentialShift;
+	}
+
+	public void setSequentialShift(boolean sequentialShift) {
+		this.sequentialShift = sequentialShift;
 	}
 
 	private void resetBooleans() {

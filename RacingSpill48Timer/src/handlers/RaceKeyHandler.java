@@ -29,45 +29,49 @@ public class RaceKeyHandler implements KeyListener {
 			car.clutchOn();
 		}
 		// Gearbox
-		switch (e.getKeyCode()) {
-		case 85:
-			// first gear
-			car.shift(1);
-			break;
-		case 74:
-			// second gear
-			car.shift(2);
-			break;
-		case 73:
-			// third gear
-			car.shift(3);
-			break;
-		case 75:
-			// fourth gear
-			car.shift(4);
-			break;
-		case 79:
-			// fifth gear
-			car.shift(5);
-			break;
-		case 76:
-			// sixth gear
-			car.shift(6);
-			break;
-		case 78:
-			// neutral
-			car.shift(0);
-			break;
+		if (!car.isSequentialShift()) {
+			switch (e.getKeyCode()) {
+			case 85:
+				// first gear
+				car.shift(1);
+				break;
+			case 74:
+				// second gear
+				car.shift(2);
+				break;
+			case 73:
+				// third gear
+				car.shift(3);
+				break;
+			case 75:
+				// fourth gear
+				car.shift(4);
+				break;
+			case 79:
+				// fifth gear
+				car.shift(5);
+				break;
+			case 76:
+				// sixth gear
+				car.shift(6);
+				break;
+			case 78:
+				// neutral
+				car.shift(0);
+				break;
 
+			}
+		} else {
+			if (e.getKeyCode() == 16) {
+				// LShift
+				car.shiftUp();
+			}
+			if (e.getKeyCode() == 17) {
+				// LShift
+				car.shiftDown();
+			}
 		}
-//		if (e.getKeyCode() == 16) {
-//			// LShift
-//			car.shiftUp();
-//		}
-//		if (e.getKeyCode() == 17) {
-//			// LShift
-//			car.shiftDown();
-//		}
+		
 		if (e.getKeyCode() == 84) {
 			// T
 			car.setEngineOn(!car.isEngineOn());
