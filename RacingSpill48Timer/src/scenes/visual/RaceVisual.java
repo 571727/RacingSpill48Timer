@@ -63,8 +63,10 @@ public class RaceVisual extends Visual {
 	private double distance;
 	private Font rpmFont;
 	private Color rpmColor;
-	private double yRPM;
-	private double xRPM;
+	private int[] xRPM;
+	private int[] yRPM;
+	private String[] rpmStr;
+	
 
 	public RaceVisual(Player player, Race race) {
 		super();
@@ -82,16 +84,37 @@ public class RaceVisual extends Visual {
 		scaleXTachopointer = widthTachometer / 380.0;
 		scaleYTachopointer = heightTachometer / 270.0;
 
+		
+		//NUMBERS ON TACHOMETER
 		angleFrom = -202;
 		angleTo = 30;
-		amountRPMnumbers = 9;
+		amountRPMnumbers = 8;
 		angleDistance = (Math.abs(angleFrom) + Math.abs(angleTo));
 		angle = angleDistance / amountRPMnumbers;
 		distance = widthTachometer / 4.7;
 		rpmFont = new Font("Calibri", 0, (int) (Race.WIDTH / 85.0f));
 		rpmColor = new Color(200, 185, 185);
-		xRPM = xTachopointer - (xTachopointer / 130);
-		yRPM = yTachopointer + (yTachopointer / 400);
+		double xRPM = xTachopointer - (xTachopointer / 130);
+		double yRPM = yTachopointer + (yTachopointer / 400);
+		
+		this.xRPM = new int[amountRPMnumbers + 1];
+		this.yRPM = new int[amountRPMnumbers + 1];
+		this.rpmStr = new String[amountRPMnumbers + 1];
+		
+		for (int i = 0; i <= amountRPMnumbers; i++) {
+			// Go to center of tachometer
+			// Find the angles and determine how far up/down and left/right from there with
+			// a fixed distance.
+			// AKA we know the hypotenuse and the angle in degrees.
+			double angle = angleFrom + (this.angle * i);
+			double radian = (angle * (Math.PI)) / 180;
+
+			this.xRPM[i] = (int) (xRPM + (Math.cos(radian) * distance));
+			this.yRPM[i] = (int) (yRPM + (Math.sin(radian) * distance));
+			double rpmNum = player.getCar().getRpmTop() * ((this.angle * i) / angleDistance) / 1000.0;
+			rpmStr[i] = String.format("%.1f", Math.round(rpmNum * 4) / 4.0);
+		}
+		
 
 		// var 1.7 og 1.2
 		xGear = (int) (xTachometer + widthTachometer / 1.7);
@@ -304,18 +327,7 @@ public class RaceVisual extends Visual {
 		g.setFont(rpmFont);
 		g.setColor(rpmColor);
 		for (int i = 0; i <= amountRPMnumbers; i++) {
-			// Go to center of tachometer
-			// Find the angles and determine how far up/down and left/right from there with
-			// a fixed distance.
-			// AKA we know the hypotenuse and the angle in degrees.
-			double angle = angleFrom + (this.angle * i);
-			double radian = (angle * (Math.PI)) / 180;
-
-			double xRPM = this.xRPM + (Math.cos(radian) * distance);
-			double yRPM = this.yRPM + (Math.sin(radian) * distance);
-			double rpmNum = player.getCar().getRpmTop() * ((this.angle * i) / angleDistance) / 1000.0;
-
-			g.drawString(String.format("%.1f", rpmNum), (int) xRPM, (int) yRPM);
+			g.drawString(rpmStr[i], xRPM[i], yRPM[i]);
 		}
 		g.setFont(font);
 		g.setColor(Color.white);

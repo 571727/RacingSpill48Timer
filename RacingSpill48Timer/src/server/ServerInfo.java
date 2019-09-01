@@ -288,7 +288,7 @@ public class ServerInfo implements Runnable {
 
 		// Everyone in the race
 		if (gm.everyoneInRace()) {
-			
+			gm.setStarted(0);
 			// Wait for 3 secounds before the race starts && wait for each racelight
 			if (gm.waitTimeRaceLights()) {
 				raceLights++;
@@ -323,6 +323,7 @@ public class ServerInfo implements Runnable {
 				System.err.println("RACE STOPPED");
 			}
 			gm.setStarted(values);
+			gm.setRacing(values == 1);
 		}
 	}
 
@@ -345,8 +346,8 @@ public class ServerInfo implements Runnable {
 		String output = "Removing player: " + player.name;
 
 		if (player != null) {
-			int s = gm.getStarted();
-			if (s == 1) {
+			boolean s = gm.isRacing();
+			if (s) {
 				gm.rewardPlayer(-1, -1, player);
 				gm.disconnectedFinish();
 				finishControl();
@@ -376,6 +377,7 @@ public class ServerInfo implements Runnable {
 	private void finishControl() {
 		if (gm.getAllFinished()) {
 			gm.setStarted(0);
+			gm.setRacing(false);
 			determinePositioningFinishedRace();
 		}
 

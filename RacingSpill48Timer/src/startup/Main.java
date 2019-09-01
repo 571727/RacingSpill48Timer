@@ -29,8 +29,6 @@ public class Main {
 	public static final String STANDARD_REGEX = "#";
 	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";
 
-	private static File file;
-	private static List<String> lines;
 	public static long DISCONNECTED_ID = -1;
 
 	public static void main(String[] args) {
@@ -39,59 +37,8 @@ public class Main {
 			AMOUNT_OF_AI[i] = String.valueOf(i);
 		}
 
-		initDisconnectedID();
-
 		new GameHandler(5);
 	}
 
-	public static void newDisconnectedID(Long valueOf) {
-
-		int pos = 0;
-		String line = "discID=" + valueOf;
-
-		if (pos == lines.size()) {
-			lines.add(line);
-		} else {
-			lines.set(pos, line);
-		}
-
-		try {
-			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
-			readDisconnectedIDLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		DISCONNECTED_ID = getDisconnectedID();
-
-	}
-
-	public static long getDisconnectedID() {
-		if (lines.size() > 0)
-			return Long.valueOf(lines.get(0).split("=")[1]);
-		return -1;
-	}
-
-	private static void initDisconnectedID() {
-		file = new File("racing.temp");
-		try {
-
-			if (!file.isFile()) {
-				if (file.createNewFile()) {
-					PrintWriter pw = new PrintWriter(file);
-					pw.flush();
-					pw.close();
-				}
-			}
-			readDisconnectedIDLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		DISCONNECTED_ID = getDisconnectedID();
-	}
-
-	private static void readDisconnectedIDLines() throws IOException {
-		lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-	}
+	
 }

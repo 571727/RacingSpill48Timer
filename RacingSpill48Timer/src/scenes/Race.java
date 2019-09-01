@@ -305,8 +305,8 @@ public class Race extends Scene implements Runnable {
 			elapsed = now - last;
 
 			// Tick
-			if (racingWindow.isVisible())
-				racingWindow.requestFocus();
+//			if (racingWindow.isVisible())
+			racingWindow.requestFocus();
 			tick(elapsed);
 
 			// Render
@@ -448,7 +448,7 @@ public class Race extends Scene implements Runnable {
 			goBackVisual.setEnabled(true);
 			racingWindow.requestFocus();
 			lobby.setPlaceChecked(false);
-			
+
 			player.stopUpdateRaceLobby();
 			if (player.isGameOver())
 				winVisual.setEveryoneDone(everyoneDone);

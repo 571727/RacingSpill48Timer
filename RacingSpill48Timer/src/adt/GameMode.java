@@ -20,6 +20,7 @@ public abstract class GameMode {
 
 	protected Random r;
 	protected boolean allFinished;
+	protected boolean racing;
 	protected int started;
 	protected int amountFinished;
 	protected int amountInTheRace;
@@ -78,6 +79,7 @@ public abstract class GameMode {
 		amountInTheRace = 0;
 		amountFinished = 0;
 		started = 0;
+		racing = false;
 	}
 
 	/**
@@ -301,4 +303,11 @@ public abstract class GameMode {
 		allFinished = false;
 	}
 
+	public boolean isRacing() {
+		return racing;
+	}
+
+	public void setRacing(boolean racing) {
+		this.racing = racing;
+	}
 }

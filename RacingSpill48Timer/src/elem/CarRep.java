@@ -196,7 +196,7 @@ public class CarRep implements Cloneable {
 	}
 
 	public void setHp(double hp) {
-		this.hp = Math.round(hp);
+		this.hp = hp;
 	}
 
 	public double getWeight() {
@@ -204,7 +204,7 @@ public class CarRep implements Cloneable {
 	}
 
 	public void setWeight(double weight) {
-		this.weight = Math.round(weight);
+		this.weight = weight;
 	}
 
 	public double getSpeedTop() {
@@ -285,16 +285,18 @@ public class CarRep implements Cloneable {
 	}
 
 	public String getStatsNew(int prevLVL, int nextLVL) {
-		return "From LVL " + prevLVL + " to LVL " + nextLVL + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: " + weight
-				+ "<br/>" + "NOS strength: " + nosStrengthStandard + "<br/>" + "Amount of gears: " + gearTop + "<br/>"
-				+ "Topspeed: " + speedTop + " km/h<br/>Tiregrip: " + tireGripStrengthStandard;
+		return "From LVL " + prevLVL + " to LVL " + nextLVL + ": <br/>" + stats();
 	}
 
 	public String getStatsCurrent() {
-		return "<html>" + name + ": <br/>" + "HP: " + hp + "<br/>" + "Weight: " + weight + "<br/>" + "NOS strength: "
-				+ nosStrengthStandard +"<br/>" + "NOS bottles: "
-						+ nosBottleAmountStandard + "<br/>" + "Amount of gears: " + gearTop + "<br/>" + "Topspeed: " + speedTop
-				+ " km/h<br/>Tiregrip: " + tireGripStrengthStandard;
+		return "<html>" + name + ": <br/>" + stats();
+	}
+	
+	private String stats() {
+		return "HP: " + String.format("%.1f", hp) + "<br/>" + "Weight: " + String.format("%.1f", weight) + " kg<br/>" + "NOS strength: "
+				+ String.format("%.1f", nosStrengthStandard) + "<br/>" + "NOS bottles: " + (int)nosBottleAmountStandard
+				+ "<br/>" + "Amount of gears: " + (int)gearTop + "<br/>" + "Topspeed: " + (int) speedTop + " km/h<br/>Tiregrip: "
+				+ String.format("%.1f", tireGripStrengthStandard);
 	}
 
 	public void iterateUpgradeLVL(int LVL) {

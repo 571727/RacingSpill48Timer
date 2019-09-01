@@ -3,6 +3,10 @@ package scenes;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -11,6 +15,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 
 import adt.Scene;
+import adt.Visual;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import window.Windows;
@@ -22,40 +27,76 @@ public class Options extends Scene {
 	private JButton togglefullscreen;
 	private JButton specifyRes;
 	private JLabel specifyResLabel;
-	private JLabel tutorial;
-	private JLabel volumeTitle;
-	private JSlider slider;
+	private JLabel masterVolumeLabel;
+	private JLabel sfxVolumeLabel;
+	private JLabel musicVolumeLabel;
+	private JSlider masterVolumeSlider;
+	private JSlider sfxVolumeSlider;
+	private JSlider musicVolumeSlider;
+	protected BufferedImage controlsImage;
 
-	public Options(double volume) {
-		super("mainMenu");
-		
+	public Options() {
+		super("options");
+
+		try {
+			controlsImage = ImageIO.read(getClass().getResourceAsStream("/pics/controls.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		goBack = new JButton("Go back");
 		nextSong = new JButton("Play another song instead!");
 		stopMusic = new JButton("Turn off/on that music!!!");
-		volumeTitle = new JLabel("Volumemixer:");
+		masterVolumeLabel = new JLabel("<html><font color='white'>" + "Master-Volume:" + "</font></html>");
+		sfxVolumeLabel = new JLabel("<html><font color='white'>" + "Sounds:" + "</font></html>");
+		musicVolumeLabel = new JLabel("<html><font color='white'>" + "Music:" + "</font></html>");
 		togglefullscreen = new JButton("Fullscreen: " + true);
 		specifyRes = new JButton("Specify resolution");
-		specifyResLabel = new JLabel("Specified resolution: " + false);
-		tutorial = new JLabel("<html><font color='white'>********** C O N T R O L S **********<br/>"+ "Turn engine over / off: T<br/>" + "Throttle: W<br/>"
-				+ "Clutch: Space<br/>"
-				+ "Neutral: N<br/>1st:&ensp;U<br/>2nd: J<br/>3rd:&ensp;I<br/>4th:&ensp;L<br/>5th:&ensp;P (!)<br/>6th:&ensp;L (!)<br/>"
-				+ "NOS: E<br/>"
-				+ "Brakes: S <br/><br/>If game SLOW use WINDOWED<br/>(not fullscreen)<br/><br/>(!) = May not apply to chosen car</font></html>");
-		tutorial.setPreferredSize(new Dimension(500, 300));
-		volumeTitle.setPreferredSize(new Dimension(150, 20));
+		specifyResLabel = new JLabel(
+				"<html><font color='white'>" + "Specified resolution: " + false + "</font></html>");
 
-		slider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, (int) (volume * 100.0));
-		slider.setMinorTickSpacing(1);
-		slider.setMajorTickSpacing(10);
-		slider.setPaintTicks(true);
-		slider.setPaintLabels(true);
+		masterVolumeLabel.setPreferredSize(new Dimension(150, 20));
 
-		slider.addChangeListener((ChangeEvent e) -> {
+		masterVolumeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100,
+				(int) (GameHandler.getMasterVolume() * 100.0));
+		masterVolumeSlider.setMinorTickSpacing(1);
+		masterVolumeSlider.setMajorTickSpacing(10);
+		masterVolumeSlider.setPaintTicks(true);
+		masterVolumeSlider.setPaintLabels(true);
+
+		masterVolumeSlider.addChangeListener((ChangeEvent e) -> {
 			JSlider source = (JSlider) e.getSource();
 
-			GameHandler.volume = source.getValue() / 100.0;
+			GameHandler.setMasterVolume(source.getValue() / 100.0);
 			GameHandler.music.updateVolume();
 		});
+
+		sfxVolumeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, (int) (GameHandler.getSfxVolume() * 100.0));
+		sfxVolumeSlider.setMinorTickSpacing(1);
+		sfxVolumeSlider.setMajorTickSpacing(10);
+		sfxVolumeSlider.setPaintTicks(true);
+		sfxVolumeSlider.setPaintLabels(true);
+
+		sfxVolumeSlider.addChangeListener((ChangeEvent e) -> {
+			JSlider source = (JSlider) e.getSource();
+
+			GameHandler.setSfxVolume(source.getValue() / 100.0);
+		});
+
+		musicVolumeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100,
+				(int) (GameHandler.getMusicVolume() * 100.0));
+		musicVolumeSlider.setMinorTickSpacing(1);
+		musicVolumeSlider.setMajorTickSpacing(10);
+		musicVolumeSlider.setPaintTicks(true);
+		musicVolumeSlider.setPaintLabels(true);
+
+		musicVolumeSlider.addChangeListener((ChangeEvent e) -> {
+			JSlider source = (JSlider) e.getSource();
+
+			GameHandler.setMusicVolume(source.getValue() / 100.0);
+			GameHandler.music.updateVolume();
+		});
+
 		togglefullscreen.addActionListener((ActionEvent e) -> {
 			boolean temp = !SceneHandler.instance.isFullScreen();
 			SceneHandler.instance.setFullScreen(temp);
@@ -109,22 +150,26 @@ public class Options extends Scene {
 		nextSong.addActionListener((ActionEvent e) -> GameHandler.music.playNext());
 		stopMusic.addActionListener((ActionEvent e) -> GameHandler.music.playOrStop());
 
-		
 		add(goBack);
 		add(nextSong);
 		add(stopMusic);
-		add(volumeTitle);
-		add(slider);
+		add(masterVolumeLabel);
+		add(masterVolumeSlider);
+		add(sfxVolumeLabel);
+		add(sfxVolumeSlider);
+		add(musicVolumeLabel);
+		add(musicVolumeSlider);
 		add(togglefullscreen);
 		add(specifyResLabel);
 		add(specifyRes);
-		add(tutorial);
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
 		g.drawImage(backgroundImage, 0, 0, Windows.WIDTH, Windows.HEIGHT, null);
+		g.drawImage(controlsImage, 10, Windows.HEIGHT - (int) (controlsImage.getHeight() * 1.1),
+				controlsImage.getWidth(), controlsImage.getHeight(), null);
 	}
 }

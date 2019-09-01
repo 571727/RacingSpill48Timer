@@ -21,7 +21,7 @@ public class Upgrades {
 		// Clutch
 		upgradeValues[0] = new Upgrade((CarRep car) -> {
 
-			car.setHp(car.getHp() + 60f);
+			car.setHp(car.getHp() + 50f);
 
 			double topspeedPrev = car.getSpeedTop();
 			double topspeedInc = car.getSpeedTop() * 0.05;
@@ -35,7 +35,7 @@ public class Upgrades {
 				car.guarenteeRightShift();
 
 			return true;
-		}, 0, "+ 60 HP, + 20 % TG area, + 5 % TS", "Guaranteed TG shift at high RPM", 5);
+		}, 0, "+ 50 HP, + 20 % TG area, + 5 % TS", "Guaranteed TG shift at high RPM", 5);
 		// Weight
 		upgradeValues[1] = new Upgrade((CarRep car) -> {
 			if (car.getWeight() > 2) {
@@ -115,7 +115,7 @@ public class Upgrades {
 				weightloss = weightloss * 2;
 
 			car.setWeight(car.getWeight() - (car.getWeight() * weightloss));
-			car.setHp(car.getHp() + 35f);
+			car.setHp(car.getHp() + (car.getHp() * 0.8));
 			car.iterateUpgradeLVL(5);
 
 			if (car.getUpgradeLVL(5) == 5) {
@@ -136,7 +136,7 @@ public class Upgrades {
 			}
 
 			return true;
-		}, 5, "+ 35 HP, - 4 % weight", "+ 100 % HP from \"" + Upgrades.UPGRADE_NAMES[2] + "\" even if already upgraded",
+		}, 5, "+ 8 % HP, - 4 % weight", "+ 100 % HP from \"" + Upgrades.UPGRADE_NAMES[2] + "\" even if already upgraded",
 				5);
 		// Gears
 		upgradeValues[6] = new Upgrade((CarRep car) -> {

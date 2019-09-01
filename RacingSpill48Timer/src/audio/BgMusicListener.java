@@ -1,5 +1,7 @@
 package audio;
 
+import handlers.GameHandler;
+
 public class BgMusicListener {
 
 	private MP3Audio[] music;
@@ -40,7 +42,7 @@ public class BgMusicListener {
 
 	public void updateVolume() {
 		if (playingIndex >= 0 && music[playingIndex] != null)
-			music[playingIndex].setVolume(0.4);
+			music[playingIndex].setVolume(GameHandler.getMusicVolume());
 	}
 
 	public void playOrStop() {

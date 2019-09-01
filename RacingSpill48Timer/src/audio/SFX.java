@@ -2,6 +2,8 @@ package audio;
 
 import java.util.Random;
 
+import handlers.GameHandler;
+
 
 public class SFX {
 	private static MP3Audio sfx;
@@ -16,7 +18,7 @@ public class SFX {
 	
 	private static void playMP3(String url, double rate) {
 		sfx = new MP3Audio("/sfx/" + url);
-		sfx.setVolume(1);
+		sfx.setVolume(GameHandler.getSfxVolume());
 		sfx.setRate(rate);
 		sfx.play();
 	}

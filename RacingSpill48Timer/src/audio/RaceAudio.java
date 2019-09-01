@@ -74,7 +74,7 @@ public class RaceAudio implements AudioCueListener {
 	}
 
 	public void updateVolume() {
-		float gain = (float) (GameHandler.volume * 3.5f);
+		float gain = (float) (GameHandler.getMasterVolume() * 2.5f * GameHandler.getSfxVolume());
 		wavgain = gain / 2;
 		if (wavgain > 1) {
 			gain = 1;
@@ -170,7 +170,8 @@ public class RaceAudio implements AudioCueListener {
 
 		value = -0.05 * Math.pow(2, value) + 0.8 * value;
 		turbospool.setSpeed(turbospoolInstance, value);
-		turbospool.setVolume(turbospoolInstance, (value / maxValue) * turbospooling * GameHandler.volume);
+		turbospool.setVolume(turbospoolInstance,
+				(value / maxValue) * turbospooling * GameHandler.getMasterVolume() * GameHandler.getSfxVolume());
 	}
 
 	public void straightcutgears() {
@@ -276,7 +277,7 @@ public class RaceAudio implements AudioCueListener {
 
 	public void openLines(boolean turbo, boolean gears) {
 		try {
-			//FIXME already open
+			// FIXME already open
 			motorAcc.open(2056);
 			motorDcc.open(2056);
 			if (turbo)

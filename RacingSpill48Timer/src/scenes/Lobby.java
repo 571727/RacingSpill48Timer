@@ -440,12 +440,13 @@ public class Lobby extends Scene implements Runnable {
 						&& SceneHandler.instance.getWindows().isVisible())
 					SceneHandler.instance.getWindows().requestFocus();
 
-				if (!gameEnded && !started && player != null)
+				if (!gameEnded && !started && player != null
+						&& !SceneHandler.instance.getCurrentScene().getClass().equals(Race.class))
 					update(player.updateLobby());
 				delta--;
 			}
 
-			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1 ) {
+			while (SceneHandler.instance.getCurrentScene().getClass().equals(Race.class) && deltar >= 1) {
 				race.lobbyTick(1);
 				race.render();
 				deltar--;

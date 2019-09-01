@@ -37,7 +37,7 @@ public class WavAudio implements AudioCueListener, Audio {
 	}
 
 	public void setVolume(double factor) {
-		double newVol = GameHandler.volume * factor;
+		double newVol = GameHandler.getMasterVolume() * factor;
 		mediaPlayer.setVolume(ins, newVol);
 	}
 

@@ -25,7 +25,7 @@ public class MP3Audio implements Audio{
 
 	@Override
 	public void setVolume(double factor) {
-		mediaPlayer.setVolume(GameHandler.volume * factor);		
+		mediaPlayer.setVolume(GameHandler.getMasterVolume() * factor);		
 	}
 
 	@Override

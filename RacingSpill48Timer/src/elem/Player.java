@@ -6,6 +6,7 @@ import client.ClientController;
 import client.TCPEchoClient;
 import connection_standard.Config;
 import handlers.ClientThreadHandler;
+import handlers.GameHandler;
 import handlers.StoreHandler;
 import startup.Main;
 
@@ -67,7 +68,7 @@ public class Player {
 	public void joinServer() {
 		String[] ids = client.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID).split("#");
 		this.id = Byte.valueOf(ids[0]);
-		Main.newDisconnectedID(Long.valueOf(ids[1]));
+		GameHandler.newDisconnectedID(Long.valueOf(ids[1]));
 
 		// Rejoined server
 		if (Integer.valueOf(ids[2]) == 1) {
