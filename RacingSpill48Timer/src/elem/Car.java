@@ -25,7 +25,7 @@ public class Car {
 	private double distance;
 	private double resistance;
 	private int gear;
-	private int rpm;
+	private double rpm;
 	private boolean upgradedGears;
 	private boolean audioActivated;
 	private int highestSpeedAchived;
@@ -54,7 +54,7 @@ public class Car {
 		nosTimeLeft = 0;
 		resistance = 1.0;
 		drag = 1;
-		
+
 		String name;
 		int nosTimeStandard;
 		int nosBottleAmountStandard;
@@ -249,7 +249,7 @@ public class Car {
 
 		}
 
-		rpm = (int) (rpmChange * tickFactor) + rpm;
+		rpm = rpmChange * tickFactor + rpm;
 	}
 
 	private double brake() {
@@ -468,10 +468,10 @@ public class Car {
 		if (audioActivated)
 			audio.stopAll();
 		updateSpeedInc();
-		
-		//TODO check for upgradeLVLs with sequential shift and sounds:
-		if(representation.getUpgradeLVL(6) >= 5) {
-			//GEARS
+
+		// TODO check for upgradeLVLs with sequential shift and sounds:
+		if (representation.getUpgradeLVL(6) >= 5) {
+			// GEARS
 			sequentialShift = true;
 		}
 	}
@@ -668,7 +668,7 @@ public class Car {
 	}
 
 	public int getRpm() {
-		return rpm;
+		return (int) rpm;
 	}
 
 	public void setRpm(int rpm) {
@@ -705,7 +705,6 @@ public class Car {
 	public void setResistance(double resistance) {
 		this.resistance = resistance;
 	}
-
 
 	public boolean isUpgradedGears() {
 		return upgradedGears;

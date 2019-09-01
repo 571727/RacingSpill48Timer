@@ -115,7 +115,7 @@ public class Upgrades {
 				weightloss = weightloss * 2;
 
 			car.setWeight(car.getWeight() - (car.getWeight() * weightloss));
-			car.setHp(car.getHp() + (car.getHp() * 0.8));
+			car.setHp(car.getHp() + (car.getHp() * 0.08));
 			car.iterateUpgradeLVL(5);
 
 			if (car.getUpgradeLVL(5) == 5) {

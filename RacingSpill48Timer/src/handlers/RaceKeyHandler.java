@@ -15,7 +15,6 @@ public class RaceKeyHandler implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-
 		if (e.getKeyCode() == 87) {
 			// W
 			car.acc();
@@ -62,16 +61,16 @@ public class RaceKeyHandler implements KeyListener {
 
 			}
 		} else {
-			if (e.getKeyCode() == 16) {
-				// LShift
+			if (e.getKeyCode() == 17 && e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) {
+				// RShift
 				car.shiftUp();
 			}
-			if (e.getKeyCode() == 17) {
-				// LShift
+			if (e.getKeyCode() == 16 && e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) {
+				// RShift
 				car.shiftDown();
 			}
 		}
-		
+
 		if (e.getKeyCode() == 84) {
 			// T
 			car.setEngineOn(!car.isEngineOn());

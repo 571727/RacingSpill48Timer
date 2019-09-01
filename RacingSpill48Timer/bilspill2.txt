@@ -7,6 +7,7 @@ Når pål stakk og kom til tilbake etter at han forrige selv forsvant så fikk han 
 Når han disconnecta så ble ikke clientThreadHandler stoppa.
 Farger ble feil i FinishRace
 ID-er i racing.temp blir ikke sletta
+Få til dropping av spillere om de dropper og du er i raceLobby eller race overall
 
 
 thread ended
