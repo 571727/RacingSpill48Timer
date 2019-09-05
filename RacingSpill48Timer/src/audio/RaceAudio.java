@@ -19,6 +19,7 @@ public class RaceAudio implements AudioCueListener {
 	private MP3Audio[] turbo;
 	private MP3Audio redline;
 	private MP3Audio nos;
+	private MP3Audio engineStart;
 
 	private double motorOverallVolume = 1;
 
@@ -45,6 +46,8 @@ public class RaceAudio implements AudioCueListener {
 		for (int i = 0; i < turbo.length; i++) {
 			turbo[i] = new MP3Audio("/sfx/turbosurge" + (i + 1));
 		}
+
+		engineStart = new MP3Audio("/sfx/engine_start");
 
 		URL acc = this.getClass().getResource("/sfx/motorAcc" + carname + ".wav");
 		URL dcc = this.getClass().getResource("/sfx/motorDcc" + carname + ".wav");
@@ -99,7 +102,8 @@ public class RaceAudio implements AudioCueListener {
 	}
 
 	public void motorIdle() {
-		motorSound();
+		if (engineStart.isPlaying() == false)
+			motorSound();
 	}
 
 	public void motorPitch(double rpm, double totalRPM, double maxValue) {
@@ -319,6 +323,8 @@ public class RaceAudio implements AudioCueListener {
 
 		stopStraightcutgears();
 		stopMotorAcc();
+		stopMotorDcc();
+		stopEngine();
 
 		if (turbo != null && isMediaArrayPlaying(turbo)) {
 			stopMediaArray(turbo);
@@ -331,7 +337,7 @@ public class RaceAudio implements AudioCueListener {
 		}
 
 	}
-	
+
 	public void closeAll() {
 		if (motorAcc.isRunning())
 			motorAcc.close();
@@ -364,6 +370,15 @@ public class RaceAudio implements AudioCueListener {
 	public void stopMotor() {
 		stopMotorAcc();
 		stopMotorDcc();
+		stopEngine();
+	}
+
+	public void startEngine() {
+		engineStart.play();
+	}
+	
+	public void stopEngine() {
+		engineStart.stop();
 	}
 
 }

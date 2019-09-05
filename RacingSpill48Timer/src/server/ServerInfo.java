@@ -206,6 +206,7 @@ public class ServerInfo implements Runnable {
 					place++;
 				}
 			}
+			player.setPodium(place);
 		}
 		return String.valueOf(place);
 	}
@@ -322,8 +323,10 @@ public class ServerInfo implements Runnable {
 				gm.stopRace();
 				System.err.println("RACE STOPPED");
 			}
+			
 			gm.setStarted(values);
-			gm.setRacing(values == 1);
+			if (!gm.isRacing())
+				gm.setRacing(values == 1);
 		}
 	}
 
@@ -347,6 +350,7 @@ public class ServerInfo implements Runnable {
 
 		if (player != null) {
 			boolean s = gm.isRacing();
+
 			if (s) {
 				gm.rewardPlayer(-1, -1, player);
 				gm.disconnectedFinish();

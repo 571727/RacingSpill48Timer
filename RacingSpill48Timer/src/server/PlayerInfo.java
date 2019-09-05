@@ -14,6 +14,7 @@ public class PlayerInfo {
 	private byte id;
 	private byte finished;
 	private Bank bank;
+	private int podium;
 
 	protected Car car;
 	private boolean inTheRace;
@@ -87,11 +88,15 @@ public class PlayerInfo {
 
 		float inflation = (racesDone + 1f) / 2f;
 		int winnerExtraPoint = (place == 0 ? 1 : 0);
+		int winnerHoldback = (podium == 0 && amountPlayers > 1 ? 1 : 0);
 
 		pointsAdded = 0;
 
 		if (!(amountPlayers == -1 || place == -1)) {
-			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
+			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint - winnerHoldback;
+			if(pointsAdded < 0)
+				pointsAdded = 0;
+			
 			if (place > 0)
 				moneyAdded = (int) (100f * place * inflation);
 			else
@@ -210,6 +215,14 @@ public class PlayerInfo {
 
 	public void setDisconnectID(long id2) {
 		discID = id2;
+	}
+
+	public int getPodium() {
+		return podium;
+	}
+
+	public void setPodium(int podium) {
+		this.podium = podium;
 	}
 
 }

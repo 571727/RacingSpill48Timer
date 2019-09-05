@@ -703,6 +703,8 @@ public class Car {
 			rpm = 0;
 			audio.stopMotor();
 			checkIdle();
+		} else if (audioActivated) {
+			audio.startEngine();
 		}
 	}
 

@@ -87,7 +87,7 @@ public class Store extends Scene {
 		// Layout
 		setLayout(null);
 
-		Font font = new Font("TimesRoman", Font.ITALIC, 16);
+		Font font = new Font("Times New Roman", Font.ITALIC, 16);
 		int ipLabelSize = 250;
 		int bw = 180;
 		int bh = bw / 4;
@@ -95,7 +95,7 @@ public class Store extends Scene {
 		int marginW = (int) (1.5 * margin);
 		int infH2 = Windows.HEIGHT * 3 / 6 + 12;
 		int infH1 = infH2 + 18;
-		int infWInf = (int) (Windows.WIDTH * 0.4);
+		int infWInf = (int) (Windows.WIDTH * 0.32);
 		int infW = (int) (Windows.WIDTH * 0.36);
 		int infY2 = Windows.HEIGHT - infH2 - 2 * margin;
 		int infY1 = infY2;

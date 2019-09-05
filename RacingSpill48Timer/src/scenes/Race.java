@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 
 import adt.Scene;
 import adt.Visual;
-import audio.SFX;
 import elem.Animation;
 import elem.Player;
 import elem.VisualButton;

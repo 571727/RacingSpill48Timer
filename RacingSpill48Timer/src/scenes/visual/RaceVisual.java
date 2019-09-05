@@ -36,7 +36,7 @@ public class RaceVisual extends Visual {
 	private int y;
 	private int width;
 	private int height;
-	private int baller = 0;
+	private int ballCount = 0;
 	private Color ballColor;
 	private int widthTachometer;
 	private int heightTachometer;
@@ -67,6 +67,8 @@ public class RaceVisual extends Visual {
 	private int[] yRPM;
 	private String[] rpmStr;
 
+	private Font NOSFont;
+
 	public RaceVisual(Player player, Race race) {
 		super();
 		visualElements = new ArrayList<VisualElement>();
@@ -91,6 +93,7 @@ public class RaceVisual extends Visual {
 		angle = angleDistance / amountRPMnumbers;
 		distance = widthTachometer / 4.7;
 		rpmFont = new Font("Calibri", 0, (int) (Race.WIDTH / 85.0f));
+		NOSFont = new Font("Calibri", 0, (int) (Race.WIDTH / 12.0f));
 		rpmColor = new Color(200, 185, 185);
 		double xRPM = xTachopointer - (xTachopointer / 130);
 		double yRPM = yTachopointer + (yTachopointer / 400);
@@ -295,22 +298,25 @@ public class RaceVisual extends Visual {
 	}
 
 	private void drawRaceHUD(Graphics2D g) {
-		if (!running) {
-			g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - 100, Race.HEIGHT / 6);
+		
+		if (!running && ballCount <= 0) {
+			g.setColor(Color.WHITE);
+			g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - Race.WIDTH / 10, Race.HEIGHT / 6);
 		}
-
+		if (player.getCar().isGearTooHigh()) {
+			g.setColor(Color.RED);
+			g.drawString("YOU'VE SHIFTED TOO EARLY!!!", Race.WIDTH / 2 - Race.WIDTH / 10, Race.HEIGHT / 7);
+		}
+		if (race.isCheating()) {
+			g.setColor(Color.RED);
+			g.drawString("YOU WENT TOO EARLY!!!", Race.WIDTH / 2 - Race.WIDTH / 8, Race.HEIGHT / 8);
+		}
+		
 		g.setColor(ballColor);
-
-		if (player.getCar().isGearTooHigh())
-			g.drawString("YOU'VE SHIFTED TOO EARLY!!!", Race.WIDTH / 2 - 100, Race.HEIGHT / 7);
-
-		for (int i = 0; i < baller; i++) {
+		for (int i = 0; i < ballCount; i++) {
 			g.fillOval(Race.WIDTH / 2 + (-100 + (75 * i)), Race.HEIGHT / 3, 50, 50);
 		}
 
-		if (race.isCheating()) {
-			g.drawString("You went too early!!!", Race.WIDTH / 2 - 50, Race.HEIGHT / 8);
-		}
 	}
 
 	/**
@@ -373,10 +379,22 @@ public class RaceVisual extends Visual {
 					"Time in sec: " + String.format("%.2f",
 							Float.valueOf(System.currentTimeMillis() - startTime - 3000) / 1000),
 					xDistance, yDistance + 150);
+		
+		// NOS
+		g.drawString("NOS bottles left: ", xDistance, (int) (Race.HEIGHT - NOSFont.getSize() * 2.0));
+		g.setFont(NOSFont);
+		int bottles = player.getCar().getNosBottleAmountLeft();
+		if(bottles > 0)
+			g.setColor(Color.GREEN);
+		else
+			g.setColor(Color.RED);
+		g.drawString(String.valueOf(bottles), xDistance,
+				(int) (Race.HEIGHT - NOSFont.getSize() * 1.2));
+		g.setColor(Color.WHITE);
+		g.setFont(font);
+		
 
-		g.drawString("NOS bottles left: " + String.valueOf(player.getCar().getNosBottleAmountLeft()), xDistance,
-				yDistance + 200);
-
+		// HELP
 		if (player.getCar().isEngineOn() == false) {
 			g.setColor(Color.BLACK);
 			g.fillRect(Race.WIDTH / 2 - Race.WIDTH / 10 - (font.getSize() / 8),
@@ -422,7 +440,7 @@ public class RaceVisual extends Visual {
 	}
 
 	public void setBallCount(int i) {
-		baller = i;
+		ballCount = i;
 	}
 
 	@Override

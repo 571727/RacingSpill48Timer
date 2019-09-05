@@ -89,7 +89,7 @@ public class TCPEchoServer extends Thread {
 		
 		String res = null;
 
-		if (info.isIdValid(input[1])) {
+		if (input.length > 0 && info.isIdValid(input[1])) {
 
 			switch (input[0]) {
 			case "F":

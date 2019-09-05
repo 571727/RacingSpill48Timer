@@ -65,7 +65,7 @@ public class MainMenu extends Scene {
 		double margin = 0.8 * bh;
 
 		setLayout(null);
-		title.setFont(new Font("TimesRoman", Font.ITALIC, 48));
+		title.setFont(new Font("Times New Roman", Font.ITALIC, 48));
 		title.setBounds(125, 50, Windows.WIDTH, 72);
 		
 		host.setBounds(Windows.WIDTH / 2 - bw / 2, (int) (4 * bh + 0 * margin), bw, bh);
