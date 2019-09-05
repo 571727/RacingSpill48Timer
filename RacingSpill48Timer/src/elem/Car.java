@@ -128,7 +128,8 @@ public class Car {
 	}
 
 	public void updateVolume() {
-		audio.updateVolume();
+		if (audioActivated)
+			audio.updateVolume();
 	}
 
 	public boolean isHasTurbo() {
@@ -193,10 +194,11 @@ public class Car {
 			updateRPM(tickFactor);
 
 			// SOUND
-			audio.motorPitch(rpm, representation.getRpmTop(), representation.getMaxValuePitch());
-			audio.turbospoolPitch(rpm, representation.getRpmTop());
-			audio.straightcutgearsPitch(speedLinear, representation.getSpeedTop());
-
+			if (audioActivated) {
+				audio.motorPitch(rpm, representation.getRpmTop(), representation.getMaxValuePitch());
+				audio.turbospoolPitch(rpm, representation.getRpmTop());
+				audio.straightcutgearsPitch(speedLinear, representation.getSpeedTop());
+			}
 		} else {
 			if (!changed) {
 				changed = true;
@@ -322,10 +324,12 @@ public class Car {
 		if (speedActual < 2 && !idle) {
 			if (engineOn) {
 				idle = true;
-				audio.motorIdle();
+				if (audioActivated)
+					audio.motorIdle();
 			} else {
 				rpm = 0;
-				audio.stopAll();
+				if (audioActivated)
+					audio.stopAll();
 			}
 		}
 	}
@@ -362,7 +366,7 @@ public class Car {
 		if (isGearCorrect()) {
 			return true;
 		} else {
-			if (gear > 0 || rpm + 100 >= representation.getRpmTop())
+			if (audioActivated && gear > 0 || rpm + 100 >= representation.getRpmTop())
 				audio.redline();
 			return false;
 		}
@@ -379,7 +383,8 @@ public class Car {
 	public void acc() {
 		if (!gas && engineOn) {
 			gas = true;
-			audio.motorAcc(hasTurbo);
+			if (audioActivated)
+				audio.motorAcc(hasTurbo);
 		}
 
 	}
@@ -387,9 +392,11 @@ public class Car {
 	public void dcc() {
 		if (gas && engineOn) {
 			gas = false;
-			if (hasTurbo)
-				audio.turboSurge();
-			audio.motorDcc();
+			if (audioActivated) {
+				if (hasTurbo)
+					audio.turboSurge();
+				audio.motorDcc();
+			}
 		}
 	}
 
@@ -409,7 +416,7 @@ public class Car {
 		if (!clutch) {
 			clutch = true;
 			resistance = 1.0;
-			if (gas) {
+			if (audioActivated && gas) {
 				if (hasTurbo)
 					audio.turboSurge();
 				audio.motorDcc();
@@ -422,7 +429,7 @@ public class Car {
 			clutch = false;
 			if (gear > 0)
 				resistance = 0.0;
-			if (gas) {
+			if (audioActivated && gas) {
 				audio.motorAcc(hasTurbo);
 			}
 		}
