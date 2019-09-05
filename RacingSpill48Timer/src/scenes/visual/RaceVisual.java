@@ -136,17 +136,19 @@ public class RaceVisual extends Visual {
 	@Override
 	public void tick(double tickFactor) {
 		if (player.getCar().isGas() && !player.getCar().isClutch() && player.getCar().getGear() != 0) {
+
+			int add = (int) (player.getCar().getSpdinc() * 14);
+			y = -2 - add;
+			x = -8 - add / 2;
+			width = (int) (Race.WIDTH + 16 + add * 0.8);
+			height = Race.HEIGHT + 9 + add / 2;
+
 			if (player.getCar().isNOSON()) {
-				y = -15;
-				x = -16;
-				width = Race.WIDTH + 32;
-				height = Race.HEIGHT + 16;
+				y -= 15;
+				x -= 16;
+				width += 32;
+				height += 16;
 				nitros.setCurrentFrame(r.nextInt(4));
-			} else {
-				y = -9;
-				x = -8;
-				width = Race.WIDTH + 16;
-				height = Race.HEIGHT + 9;
 			}
 			if (player.getCar().isGearBoostON()) {
 				y -= 5;
@@ -298,7 +300,7 @@ public class RaceVisual extends Visual {
 	}
 
 	private void drawRaceHUD(Graphics2D g) {
-		
+
 		if (!running && ballCount <= 0) {
 			g.setColor(Color.WHITE);
 			g.drawString("Wait until everyone is ready", Race.WIDTH / 2 - Race.WIDTH / 10, Race.HEIGHT / 6);
@@ -311,7 +313,7 @@ public class RaceVisual extends Visual {
 			g.setColor(Color.RED);
 			g.drawString("YOU WENT TOO EARLY!!!", Race.WIDTH / 2 - Race.WIDTH / 8, Race.HEIGHT / 8);
 		}
-		
+
 		g.setColor(ballColor);
 		for (int i = 0; i < ballCount; i++) {
 			g.fillOval(Race.WIDTH / 2 + (-100 + (75 * i)), Race.HEIGHT / 3, 50, 50);
@@ -379,20 +381,18 @@ public class RaceVisual extends Visual {
 					"Time in sec: " + String.format("%.2f",
 							Float.valueOf(System.currentTimeMillis() - startTime - 3000) / 1000),
 					xDistance, yDistance + 150);
-		
+
 		// NOS
 		g.drawString("NOS bottles left: ", xDistance, (int) (Race.HEIGHT - NOSFont.getSize() * 2.0));
 		g.setFont(NOSFont);
 		int bottles = player.getCar().getNosBottleAmountLeft();
-		if(bottles > 0)
+		if (bottles > 0)
 			g.setColor(Color.GREEN);
 		else
 			g.setColor(Color.RED);
-		g.drawString(String.valueOf(bottles), xDistance,
-				(int) (Race.HEIGHT - NOSFont.getSize() * 1.2));
+		g.drawString(String.valueOf(bottles), xDistance, (int) (Race.HEIGHT - NOSFont.getSize() * 1.2));
 		g.setColor(Color.WHITE);
 		g.setFont(font);
-		
 
 		// HELP
 		if (player.getCar().isEngineOn() == false) {
