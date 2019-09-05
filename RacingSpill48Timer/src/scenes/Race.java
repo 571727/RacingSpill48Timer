@@ -166,7 +166,8 @@ public class Race extends Scene implements Runnable {
 		SceneHandler.instance.justRemove();
 		racingWindow.setFocusable(true);
 		racingWindow.requestFocus();
-
+		
+		player.getCar().openLines();
 		player.inTheRace();
 		player.startUpdateRaceLights();
 
@@ -212,7 +213,7 @@ public class Race extends Scene implements Runnable {
 
 				// CONTROL LIGHTS
 				if (raceLights == 4) {
-					SFX.playMP3Sound("greenLight");
+					GameHandler.ba.playTrafficLight(true);
 					waitTime = System.currentTimeMillis() + 1000;
 					raceVisual.setBallCount(3);
 					raceVisual.setBallColor(Color.GREEN);
@@ -220,7 +221,7 @@ public class Race extends Scene implements Runnable {
 					raceVisual.setRunning(true);
 					player.getCar().tryGearBoost();
 				} else {
-					SFX.playMP3Sound("redLight");
+					GameHandler.ba.playTrafficLight(false);
 					raceVisual.setBallColor(Color.RED);
 					raceVisual.setBallCount(raceLights);
 				}

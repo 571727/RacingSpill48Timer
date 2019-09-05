@@ -66,7 +66,6 @@ public class RaceVisual extends Visual {
 	private int[] xRPM;
 	private int[] yRPM;
 	private String[] rpmStr;
-	
 
 	public RaceVisual(Player player, Race race) {
 		super();
@@ -84,8 +83,7 @@ public class RaceVisual extends Visual {
 		scaleXTachopointer = widthTachometer / 380.0;
 		scaleYTachopointer = heightTachometer / 270.0;
 
-		
-		//NUMBERS ON TACHOMETER
+		// NUMBERS ON TACHOMETER
 		angleFrom = -202;
 		angleTo = 30;
 		amountRPMnumbers = 8;
@@ -96,11 +94,11 @@ public class RaceVisual extends Visual {
 		rpmColor = new Color(200, 185, 185);
 		double xRPM = xTachopointer - (xTachopointer / 130);
 		double yRPM = yTachopointer + (yTachopointer / 400);
-		
+
 		this.xRPM = new int[amountRPMnumbers + 1];
 		this.yRPM = new int[amountRPMnumbers + 1];
 		this.rpmStr = new String[amountRPMnumbers + 1];
-		
+
 		for (int i = 0; i <= amountRPMnumbers; i++) {
 			// Go to center of tachometer
 			// Find the angles and determine how far up/down and left/right from there with
@@ -114,7 +112,6 @@ public class RaceVisual extends Visual {
 			double rpmNum = player.getCar().getRpmTop() * ((this.angle * i) / angleDistance) / 1000.0;
 			rpmStr[i] = String.format("%.1f", Math.round(rpmNum * 4) / 4.0);
 		}
-		
 
 		// var 1.7 og 1.2
 		xGear = (int) (xTachometer + widthTachometer / 1.7);
@@ -379,6 +376,16 @@ public class RaceVisual extends Visual {
 
 		g.drawString("NOS bottles left: " + String.valueOf(player.getCar().getNosBottleAmountLeft()), xDistance,
 				yDistance + 200);
+
+		if (player.getCar().isEngineOn() == false) {
+			g.setColor(Color.BLACK);
+			g.fillRect(Race.WIDTH / 2 - Race.WIDTH / 10 - (font.getSize() / 8),
+					(int) (Race.HEIGHT - Race.HEIGHT / 10 - font.getSize()), (int) (Race.WIDTH / 4.2),
+					(int) (font.getSize() * 1.5));
+			g.setColor(Color.WHITE);
+			g.drawString("Start engine by pressing \"T\"", Race.WIDTH / 2 - Race.WIDTH / 10,
+					Race.HEIGHT - Race.HEIGHT / 10);
+		}
 
 	}
 

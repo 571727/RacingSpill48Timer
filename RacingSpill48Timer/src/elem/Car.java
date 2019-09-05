@@ -1,6 +1,7 @@
 package elem;
 
 import audio.RaceAudio;
+import audio.SFX;
 import startup.Main;
 
 public class Car {
@@ -12,12 +13,14 @@ public class Car {
 	private boolean brake;
 	private boolean clutch;
 	private boolean hasTurbo;
+	private boolean upgradedGears;
 	private boolean hasNOS;
 	private boolean gearTooHigh;
 	private boolean NOSON;
 	private boolean engineOn;
 	private boolean changed;
 	private int nosBottleAmountLeft;
+	private int soundBarrierSpeed;
 	private long nosTimeLeft;
 	private double speedLinear;
 	private double speedActual;
@@ -26,7 +29,6 @@ public class Car {
 	private double resistance;
 	private int gear;
 	private double rpm;
-	private boolean upgradedGears;
 	private boolean audioActivated;
 	private int highestSpeedAchived;
 	private long tireGripTimeLeft;
@@ -50,6 +52,7 @@ public class Car {
 		gearTooHigh = false;
 		this.audioActivated = audioActivated;
 
+		soundBarrierSpeed = 1234;
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		resistance = 1.0;
@@ -160,14 +163,6 @@ public class Car {
 		if (engineOn) {
 			changed = false;
 
-			// RPM
-			updateRPM(tickFactor);
-
-			// SOUND
-			audio.motorPitch(rpm, representation.getRpmTop(), representation.getMaxValuePitch());
-			audio.turbospoolPitch(rpm, representation.getRpmTop());
-			audio.straightcutgearsPitch(speedLinear, representation.getSpeedTop());
-
 			// MOVEMENT
 			if (!clutch && gear > 0 && idle && !gas) {
 				setEngineOn(false);
@@ -193,6 +188,14 @@ public class Car {
 				speedLinearChange += decelerateCar();
 				checkIdle();
 			}
+
+			// RPM
+			updateRPM(tickFactor);
+
+			// SOUND
+			audio.motorPitch(rpm, representation.getRpmTop(), representation.getMaxValuePitch());
+			audio.turbospoolPitch(rpm, representation.getRpmTop());
+			audio.straightcutgearsPitch(speedLinear, representation.getSpeedTop());
 
 		} else {
 			if (!changed) {
@@ -278,12 +281,19 @@ public class Car {
 	}
 
 	public void calculateActualSpeed() {
+		double prev = speedActual;
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (representation.getSpeedTop() / 500000f);
+
 		if (speedActual > highestSpeedAchived)
 			highestSpeedAchived = (int) speedActual;
 		else if (speedActual < 0) {
 			speedActual = 0;
 			speedLinear = 0;
+			return;
+		}
+
+		if (speedActual > soundBarrierSpeed && prev < soundBarrierSpeed) {
+			SFX.playMP3Sound("soundbarrier");
 		}
 	}
 
@@ -352,7 +362,8 @@ public class Car {
 		if (isGearCorrect()) {
 			return true;
 		} else {
-			audio.redline();
+			if (gear > 0 || rpm + 100 >= representation.getRpmTop())
+				audio.redline();
 			return false;
 		}
 	}
@@ -465,13 +476,20 @@ public class Car {
 		tireGripTimeLeft = 0;
 		resistance = 1.0;
 		drag = 1;
-		if (audioActivated)
+		if (audioActivated) {
 			audio.stopAll();
+			audio.closeAll();
+			if (representation.getUpgradeLVL(3) >= 1) {
+				// Turbo
+				hasTurbo = true;
+			}
+
+		}
 		updateSpeedInc();
 
-		// TODO check for upgradeLVLs with sequential shift and sounds:
 		if (representation.getUpgradeLVL(6) >= 5) {
 			// GEARS
+			upgradedGears = true;
 			sequentialShift = true;
 		}
 	}
@@ -681,9 +699,7 @@ public class Car {
 
 	public void setEngineOn(boolean engineOn) {
 		this.engineOn = engineOn;
-		if (engineOn) {
-			audio.openLines(hasTurbo, upgradedGears);
-		} else {
+		if (!engineOn) {
 			rpm = 0;
 			audio.stopMotor();
 			checkIdle();
@@ -764,5 +780,18 @@ public class Car {
 
 	public void setRepresentation(CarRep representation) {
 		this.representation = representation;
+	}
+
+	public RaceAudio getAudio() {
+		return audio;
+	}
+
+	public void setAudio(RaceAudio audio) {
+		this.audio = audio;
+	}
+
+	public void openLines() {
+		if (audioActivated)
+			audio.openLines(hasTurbo, upgradedGears);
 	}
 }
