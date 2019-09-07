@@ -100,7 +100,6 @@ public class Car {
 			gearTop = 5;
 			rpmTop = 2500;
 			speedTop = 172;
-			maxValuePitch = 3;
 		} else if (name.equals(Main.CAR_TYPES[2])) {
 			rpmIdle = 800;
 			hp = 64;

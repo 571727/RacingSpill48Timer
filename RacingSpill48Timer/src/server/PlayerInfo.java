@@ -71,12 +71,12 @@ public class PlayerInfo {
 	 */
 	public String getRaceInfo(boolean allFinished) {
 		String carName = null;
-		if(car != null) {
+		if (car != null) {
 			carName = car.getCarName();
 		} else {
 			carName = "NO_NAME";
 		}
-		
+
 		if (allFinished == false)
 			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + carName;
 		else
@@ -87,17 +87,16 @@ public class PlayerInfo {
 	public void addPointsAndMoney(int amountPlayers, int place, int racesDone) {
 
 		float inflation = (racesDone + 1f) / 2f;
-		int winnerExtraPoint = (place == 0 ? 1 : 0);
-		int winnerHoldback = (podium == 0 && amountPlayers > 1 ? 1 : 0);
+		int winnerExtraPoint = (place == 0 && podium != 0 && amountPlayers != 1 ? 1 : 0);
 
 		pointsAdded = 0;
 
 		if (!(amountPlayers == -1 || place == -1)) {
-			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint - winnerHoldback;
-			if(pointsAdded < 0)
-				pointsAdded = 0;
-			
-			if (place > 0)
+			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
+
+			if (amountPlayers == 1)
+				moneyAdded = (int) (50f * inflation);
+			else if (place > 0)
 				moneyAdded = (int) (100f * place * inflation);
 			else
 				moneyAdded = (int) (25f * inflation);
