@@ -4,12 +4,11 @@ import java.awt.Color;
 
 import adt.Scene;
 import elem.Player;
-import javafx.embed.swing.JFXPanel;
-import scenes.Store;
 import scenes.Lobby;
 import scenes.MainMenu;
 import scenes.Options;
 import scenes.Race;
+import scenes.Store;
 import startup.Main;
 import window.Windows;
 
@@ -44,8 +43,6 @@ public class SceneHandler {
 		scenes[1] = new Lobby((Race) scenes[3], (Store) scenes[2]);
 		scenes[0] = new MainMenu((Lobby) scenes[1]);
 
-		JFXPanel fxPanel = new JFXPanel();
-		windows.add(fxPanel);
 	}
 
 	public void addClosingListener(Player player) {

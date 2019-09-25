@@ -22,7 +22,7 @@ public class Main {
 	public static final String[] DIFFICULTY_TYPES = { "Easy", "Normal", "Hard", "Godlike" };
 	public static String[] AMOUNT_OF_AI;
 	public static boolean[] AI_NAMES_TAKEN;
-	public static final String GAME_NAME = "Jhoffis' Road Racer";
+	public static final String GAME_NAME = "racingmaybe.jar";
 	public static final String[] RACE_AMOUNT = { String.valueOf(18), String.valueOf(9), String.valueOf(2) };
 	public static final GameMode[] GAME_MODES = { new GolfLike(), new PointRush() };
 	public static final String UPGRADELVL_REGEX = "%";

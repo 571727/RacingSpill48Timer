@@ -7,6 +7,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/javafx"/>
+	<classpathentry kind="lib" path="/home/jhoffis/usr/apps/mp3/jaco-mp3-player-0.9.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

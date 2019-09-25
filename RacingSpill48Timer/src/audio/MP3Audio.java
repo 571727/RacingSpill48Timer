@@ -1,12 +1,10 @@
 package audio;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.commons.io.FileUtils;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import adt.Audio;
 import jaco.mp3.player.MP3Player;
@@ -19,13 +17,21 @@ public class MP3Audio implements Audio {
 	public MP3Audio(String file) {
 		System.out.println("Finding file:");
 		System.out.println("\"" + file + "\"");
+		String name = file.split("/")[file.split("/").length - 1];
 
 		InputStream input = getClass().getResourceAsStream(file + ".mp3");
 		File tempFile = null;
 		try {
-			tempFile = File.createTempFile("abc", null);
-			FileOutputStream out = new FileOutputStream(tempFile);
-			FileUtils.copyInputStreamToFile(input, tempFile);
+			String outputFile = name + ".tmp";
+
+			tempFile = new File(outputFile);
+			if (!tempFile.exists()) {
+				Files.copy(input, Paths.get(outputFile));
+				tempFile = new File(outputFile);
+			}
+			
+			tempFile.deleteOnExit();
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
