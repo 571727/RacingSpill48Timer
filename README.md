@@ -7,11 +7,14 @@ My motivation behind making this game was to have another game to play with my f
 but I really like racing games. I could not find a game that satisfied both areas, so here we are. Also this is free.
 
 ## Screenshots
-# "The lobby"
+### "The lobby"
 ![screenshot](https://i.imgur.com/7tn15o8.png)
-![screenshot](https://i.imgur.com/JPecje6.png "Racing")
-![screenshot](https://i.imgur.com/WosjQ5V.png "After racing")
-![screenshot](https://i.imgur.com/YbR9kbD.png "The store")
+### "Racing"
+![screenshot](https://i.imgur.com/JPecje6.png)
+### "After racing"
+![screenshot](https://i.imgur.com/WosjQ5V.png)
+### "The store"
+![screenshot](https://i.imgur.com/YbR9kbD.png)
 
 ## Tech/framework used
 - Standard Java 1.8
