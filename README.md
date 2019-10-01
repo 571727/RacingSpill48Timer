@@ -8,7 +8,7 @@ but I really like racing games. I could not find a game that satisfied both area
 
 ## Screenshots
 ![screenshot](https://i.imgur.com/7tn15o8.png "The lobby")
-![screenshot](hhttps://i.imgur.com/JPecje6.png "Racing")
+![screenshot](https://i.imgur.com/JPecje6.png "Racing")
 ![screenshot](https://i.imgur.com/WosjQ5V.png "After racing")
 ![screenshot](https://i.imgur.com/YbR9kbD.png "The store")
 
