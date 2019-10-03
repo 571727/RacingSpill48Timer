@@ -29,9 +29,9 @@ public class ButtonAudio {
 
 	public void playTrafficLight(boolean green) {
 		if(!green)
-			play(3);
+			playNew(3);
 		else
-			play(4);
+			playNew(4);
 	}
 	
 	private void play(int btn) {
@@ -40,4 +40,7 @@ public class ButtonAudio {
 		btns[btn].play();
 	}
 
+	private void playNew(int btn) {
+		btns[btn].playNewInstance(GameHandler.getSfxVolume());
+	}
 }

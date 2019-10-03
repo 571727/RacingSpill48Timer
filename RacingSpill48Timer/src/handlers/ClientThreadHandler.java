@@ -105,7 +105,9 @@ public class ClientThreadHandler {
 	}
 
 	public String getRaceLobbyString() {
-		return raceLobbyString;
+		String res = raceLobbyString;
+		raceLobbyString = null;
+		return res;
 	}
 
 	public int getRaceLights() {

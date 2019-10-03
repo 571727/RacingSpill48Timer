@@ -74,8 +74,8 @@ public class Player {
 		if (Integer.valueOf(ids[2]) == 1) {
 			name = ids[3];
 			car.getRepresentation().setClone(ids, 4);
-			car.reset();
 		}
+		car.reset();
 
 		cth.setID(id);
 

@@ -13,7 +13,7 @@ public class GolfLike extends GameMode {
 
 	@Override
 	public boolean isGameEnded() {
-		return allFinished && races <= 0;
+		return races <= 0;
 	}
 
 	@Override

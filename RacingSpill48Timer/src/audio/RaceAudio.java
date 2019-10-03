@@ -16,10 +16,11 @@ public class RaceAudio implements AudioCueListener {
 
 	private Random r = new Random();
 	private MP3Audio[] gear;
-	private MP3Audio[] turbo;
+	private MP3Audio turbo;
 	private MP3Audio redline;
 	private MP3Audio nos;
 	private MP3Audio engineStart;
+	private MP3Audio grind;
 
 	private double motorOverallVolume = 1;
 
@@ -37,15 +38,13 @@ public class RaceAudio implements AudioCueListener {
 	public RaceAudio(String carname) {
 		// Maybe use action for something later, cause it's awesome
 		gear = new MP3Audio[4];
-		turbo = new MP3Audio[2];
 
 		for (int i = 0; i < gear.length; i++) {
-			gear[i] = new MP3Audio("/sfx/gear" + (i + 1));
+			gear[i] = new MP3Audio("/sfx/gear" + i);
 		}
 
-		for (int i = 0; i < turbo.length; i++) {
-			turbo[i] = new MP3Audio("/sfx/turbosurge" + (i + 1));
-		}
+		turbo = new MP3Audio("/sfx/turbosurge" + 0);
+		grind = new MP3Audio("/sfx/grind");
 
 		engineStart = new MP3Audio("/sfx/engine_start");
 
@@ -88,9 +87,7 @@ public class RaceAudio implements AudioCueListener {
 			wavgain = 1;
 		}
 
-		for (MP3Audio t : turbo) {
-			t.setVolume(1);
-		}
+		turbo.setVolume(1);
 
 		for (MP3Audio g : gear) {
 			g.setVolume(1);
@@ -99,6 +96,10 @@ public class RaceAudio implements AudioCueListener {
 		redline.setVolume(1);
 		nos.setVolume(1);
 
+	}
+	
+	public void grind() {
+		grind.playNewInstance(1);
 	}
 
 	public void motorIdle() {
@@ -222,9 +223,6 @@ public class RaceAudio implements AudioCueListener {
 		stopMotorDcc();
 		if (turboInstalled) {
 			turbospool();
-			if (turbo != null && isMediaArrayPlaying(turbo)) {
-				stopMediaArray(turbo);
-			}
 		}
 
 		if (redline != null && redline.isPlaying()) {
@@ -270,13 +268,9 @@ public class RaceAudio implements AudioCueListener {
 		nos.play();
 	}
 
-	public void turboSurge() {
+	public void turboBlowoff() {
 
-		int nextSfx = 0;
-		nextSfx = r.nextInt(2);
-
-		turbo[nextSfx].play();
-
+		turbo.playNewInstance(1);
 //		if (turbo != null && turbo.isPlaying())
 //			turbo.stop();
 	}
@@ -326,9 +320,6 @@ public class RaceAudio implements AudioCueListener {
 		stopMotorDcc();
 		stopEngine();
 
-		if (turbo != null && isMediaArrayPlaying(turbo)) {
-			stopMediaArray(turbo);
-		}
 		if (nos != null && nos.isPlaying()) {
 			nos.stop();
 		}
@@ -376,7 +367,7 @@ public class RaceAudio implements AudioCueListener {
 	public void startEngine() {
 		engineStart.play();
 	}
-	
+
 	public void stopEngine() {
 		engineStart.stop();
 	}

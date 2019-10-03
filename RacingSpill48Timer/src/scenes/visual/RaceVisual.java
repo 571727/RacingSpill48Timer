@@ -7,11 +7,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import adt.Visual;
 import adt.VisualElement;
 import elem.Animation;
+import elem.MovingAnimation;
+import elem.PlacedAnimation;
 import elem.Player;
 import scenes.Race;
 import startup.Main;
@@ -21,6 +26,10 @@ public class RaceVisual extends Visual {
 	private Race race;
 	private Player player;
 
+	private PlacedAnimation[] gearButtons;
+	private MovingAnimation nitrosButton;
+	private MovingAnimation[] warningButtons;
+	private MovingAnimation tireboost;
 	private BufferedImage carImage;
 	private BufferedImage tachopointer;
 	private BufferedImage tachometer;
@@ -68,6 +77,7 @@ public class RaceVisual extends Visual {
 	private String[] rpmStr;
 
 	private Font NOSFont;
+	private BufferedImage tireboostNone;
 
 	public RaceVisual(Player player, Race race) {
 		super();
@@ -131,6 +141,37 @@ public class RaceVisual extends Visual {
 		startTime = 0;
 		startCountDown = false;
 
+		// HELP
+		gearButtons = new PlacedAnimation[9];
+		for (int i = 0; i < gearButtons.length; i++) {
+			gearButtons[i] = new PlacedAnimation("gearButtons" + i, -1, xTachometer, Race.HEIGHT - heightTachometer);
+			gearButtons[i].scale(3);
+		}
+		warningButtons = new MovingAnimation[2];
+		for (int i = 0; i < warningButtons.length; i++) {
+			int padding = 0;
+			if (i != 0) {
+				padding = (int) (gearButtons[i - 1].getHeight() * 1.2);
+			}
+			int y = Race.HEIGHT - Race.HEIGHT / 10;
+			warningButtons[i] = new MovingAnimation("warningButtons" + i, -1, Race.WIDTH / 2, y - padding,
+					Race.WIDTH / 2, (int) (y - Race.HEIGHT / 32) - padding, 15);
+			warningButtons[i].scale(3);
+		}
+		nitrosButton = new MovingAnimation("e", -1, (int) (xDistance * 2.4),
+				(int) (Race.HEIGHT - NOSFont.getSize() * 1.85), (int) (xDistance * 2.4),
+				(int) (Race.HEIGHT - NOSFont.getSize() * 1.7), 15);
+		nitrosButton.scale(4);
+		tireboost = new MovingAnimation("tireboost", -1, Race.WIDTH / 2, (int) (Race.HEIGHT / 2.3), Race.WIDTH / 2,
+				(int) (Race.HEIGHT / 2.3 - Race.HEIGHT / 520), 3);
+		tireboost.scale(3);
+
+		try {
+			tireboostNone = ImageIO.read(this.getClass().getResourceAsStream("/pics/tireboost_none.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -162,6 +203,12 @@ public class RaceVisual extends Visual {
 			width = Race.WIDTH + 16;
 			height = Race.HEIGHT + 9;
 		}
+
+		for (MovingAnimation ma : warningButtons) {
+			ma.incrementMovement(tickFactor);
+		}
+		nitrosButton.incrementMovement(tickFactor);
+		tireboost.incrementMovement(tickFactor);
 
 		background
 				.setCurrentFrame((background.getCurrentFrame() + (player.getCar().getSpeedActual() / 100) * tickFactor)
@@ -316,7 +363,9 @@ public class RaceVisual extends Visual {
 
 		g.setColor(ballColor);
 		for (int i = 0; i < ballCount; i++) {
-			g.fillOval(Race.WIDTH / 2 + (-100 + (75 * i)), Race.HEIGHT / 3, 50, 50);
+			g.fillOval((int) (Race.WIDTH / 2
+					+ (-tireboost.getHalfWidth() - (tireboost.getHeight() * 0.6) + (tireboost.getHalfWidth() * i))),
+					Race.HEIGHT / 3, (int) (tireboost.getHeight() * 1.2), (int) (tireboost.getHeight() * 1.2));
 		}
 
 	}
@@ -347,25 +396,50 @@ public class RaceVisual extends Visual {
 
 		g.drawString(String.format("%.0f", player.getCar().getSpeedActual()), xSpeed, ySpeed);
 
-		if (player.getCar().getGear() > 0)
+		int currentGear = player.getCar().getGear();
+		int nextGear = currentGear + 1;
+		int prevGear = currentGear - 1;
+
+		BufferedImage next = null;
+		BufferedImage prev = null;
+
+		if (!player.getCar().isSequentialShift()) {
+			if (prevGear >= 0)
+				prev = gearButtons[prevGear].getFrame();
+			if (nextGear <= player.getCar().getGearTop())
+				next = gearButtons[nextGear].getFrame();
+		} else {
+			prev = gearButtons[gearButtons.length - 2].getFrame();
+			next = gearButtons[gearButtons.length - 1].getFrame();
+		}
+
+		if (player.getCar().getGear() > 0) {
+
 			g.drawString(String.valueOf(player.getCar().getGear()), xGear, yGear);
-		else
+
+			g.drawImage(prev, gearButtons[prevGear].getX() - (gearButtons[0].getWidth()), gearButtons[prevGear].getY(),
+					gearButtons[prevGear].getHalfWidth(), gearButtons[prevGear].getHalfHeight(), null);
+
+		} else {
 			g.drawString("N", xGear, yGear);
+		}
+
+		if (nextGear <= player.getCar().getGearTop())
+			g.drawImage(next, gearButtons[nextGear].getX(), gearButtons[nextGear].getY(),
+					gearButtons[nextGear].getWidth(), gearButtons[nextGear].getHeight(), null);
 
 	}
 
 	private void drawRightShift(Graphics g) {
 		int rs = player.getCar().rightShift();
-		if (rs > 0) {
-
-			int size = (int) (Race.WIDTH * 0.045);
-
-			if (rs == 2)
-				g.setColor(Color.YELLOW);
-			else if (rs == 1)
-				g.setColor(Color.BLUE);
-			g.fillOval((Race.WIDTH / 2) - (size / 2), (Race.HEIGHT / 2) - size, size, size);
-
+		if (!race.isRunning()) {
+			if (rs > 0) {
+				g.drawImage(tireboost.getFrame(), tireboost.getX() - tireboost.getHalfWidth(), tireboost.getY(),
+						tireboost.getWidth(), tireboost.getHeight(), null);
+			} else {
+				g.drawImage(tireboostNone, tireboost.getX() - tireboost.getHalfWidth(), tireboost.getY(),
+						tireboost.getWidth(), tireboost.getHeight(), null);
+			}
 		}
 	}
 
@@ -386,9 +460,11 @@ public class RaceVisual extends Visual {
 		g.drawString("NOS bottles left: ", xDistance, (int) (Race.HEIGHT - NOSFont.getSize() * 2.0));
 		g.setFont(NOSFont);
 		int bottles = player.getCar().getNosBottleAmountLeft();
-		if (bottles > 0)
+		if (bottles > 0) {
 			g.setColor(Color.GREEN);
-		else
+			g.drawImage(nitrosButton.getFrame(), nitrosButton.getX() - nitrosButton.getHalfWidth(), nitrosButton.getY(),
+					nitrosButton.getWidth(), nitrosButton.getHeight(), null);
+		} else
 			g.setColor(Color.RED);
 		g.drawString(String.valueOf(bottles), xDistance, (int) (Race.HEIGHT - NOSFont.getSize() * 1.2));
 		g.setColor(Color.WHITE);
@@ -396,13 +472,12 @@ public class RaceVisual extends Visual {
 
 		// HELP
 		if (player.getCar().isEngineOn() == false) {
-			g.setColor(Color.BLACK);
-			g.fillRect(Race.WIDTH / 2 - Race.WIDTH / 10 - (font.getSize() / 8),
-					(int) (Race.HEIGHT - Race.HEIGHT / 10 - font.getSize()), (int) (Race.WIDTH / 4.2),
-					(int) (font.getSize() * 1.5));
-			g.setColor(Color.WHITE);
-			g.drawString("Start engine by pressing \"T\"", Race.WIDTH / 2 - Race.WIDTH / 10,
-					Race.HEIGHT - Race.HEIGHT / 10);
+			g.drawImage(warningButtons[1].getFrame(), warningButtons[1].getX() - warningButtons[1].getHalfWidth(),
+					warningButtons[1].getY(), warningButtons[1].getWidth(), warningButtons[1].getHeight(), null);
+		}
+		if (player.getCar().isFailedShift()) {
+			g.drawImage(warningButtons[0].getFrame(), warningButtons[0].getX() - warningButtons[0].getHalfWidth(),
+					warningButtons[0].getY(), warningButtons[0].getWidth(), warningButtons[0].getHeight(), null);
 		}
 
 	}

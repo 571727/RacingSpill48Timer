@@ -7,12 +7,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import adt.Audio;
+import handlers.GameHandler;
+import jaco.mp3.MP3;
 import jaco.mp3.player.MP3Player;
 
 public class MP3Audio implements Audio {
-//	private Media hit;
-	private MP3Player mediaPlayer;
-//	private AudioClip loopPlayer;
+	private MP3 mediaPlayer;
+	private File mediaFile;
 
 	public MP3Audio(String file) {
 		System.out.println("Finding file:");
@@ -29,22 +30,27 @@ public class MP3Audio implements Audio {
 				Files.copy(input, Paths.get(outputFile));
 				tempFile = new File(outputFile);
 			}
-			
+
 			tempFile.deleteOnExit();
 
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
-		mediaPlayer = new MP3Player();
-		mediaPlayer.addToPlayList(tempFile);
+		mediaPlayer = new MP3(tempFile);
+		mediaFile = tempFile;
 
 		setVolume(1);
 	}
 
 	@Override
 	public void setVolume(double factor) {
-//		mediaPlayer.(GameHandler.volume * factor);		
+//		mediaPlayer.();
+		setVolume(mediaPlayer, factor);
+	}
+	
+	private void setVolume(MP3 player, double factor) {
+		player.setVolume((int) (GameHandler.getMasterVolume() * GameHandler.getSfxVolume() * factor * 100.0));
 	}
 
 	@Override
@@ -53,7 +59,8 @@ public class MP3Audio implements Audio {
 	}
 
 	public void play() {
-		mediaPlayer.play();
+		if (mediaPlayer.isStopped())
+			mediaPlayer.play();
 	}
 
 	public void stop() {
@@ -71,7 +78,13 @@ public class MP3Audio implements Audio {
 	}
 
 	public boolean isPlaying() {
-		return !mediaPlayer.isPaused();
+		return !mediaPlayer.isStopped();
+	}
+
+	public void playNewInstance(double factor) {
+		MP3 temp = new MP3(mediaFile);
+		setVolume(temp, factor);
+		temp.play();
 	}
 
 //	public Media getHit() {

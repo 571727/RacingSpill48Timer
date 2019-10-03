@@ -259,6 +259,8 @@ public class ServerInfo implements Runnable {
 		}
 		player.setFinished(1);
 
+		System.out.println(greenLights);
+		
 		if (greenLights) {
 			player.setTime(Long.valueOf(input[2]));
 		} else {
@@ -391,9 +393,9 @@ public class ServerInfo implements Runnable {
 		} else {
 			raceLobbyString = updateRaceLobby(true);
 			raceLobbyStringFinalized = true;
+			gm.noneFinished();
 		}
 
-		gm.noneFinished();
 	}
 
 	/**
@@ -416,9 +418,9 @@ public class ServerInfo implements Runnable {
 			PlayerInfo player = entry.getValue();
 			int place = 0;
 			long thisTime = player.getTime();
-
+			System.out.println(thisTime);
 			if (thisTime == -1) {
-
+				
 				gm.rewardPlayer(-1, -1, player);
 
 			} else {
@@ -498,7 +500,7 @@ public class ServerInfo implements Runnable {
 				result += "#" + (i + 1) + ": " + str;
 			}
 		}
-
+		System.out.println(result);
 		return result;
 	}
 
@@ -576,6 +578,9 @@ public class ServerInfo implements Runnable {
 		return System.currentTimeMillis() - ping.get(player.getID());
 	}
 
+	/**
+	 * Updates pings and trafficlights
+	 */
 	@Override
 	public void run() {
 

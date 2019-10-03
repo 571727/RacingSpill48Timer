@@ -35,6 +35,7 @@ public class Car {
 	private double drag;
 	private boolean TireGripON;
 	private boolean sequentialShift;
+	private boolean failedShift;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -85,6 +86,7 @@ public class Car {
 		nosTimeStandard = 1500;
 		nosBottleAmountStandard = 0;
 		upgradeLVLs = new int[Upgrades.UPGRADE_NAMES.length];
+		sequentialShift = true;
 
 		if (name.equals(Main.CAR_TYPES[0])) {
 			rpmIdle = 1000;
@@ -107,6 +109,8 @@ public class Car {
 			gearTop = 5;
 			rpmTop = 5500;
 			speedTop = 162;
+			nosBottleAmountStandard = 1;
+			nosStrengthStandard = 0.6;
 			maxValuePitch = 4;
 		} else {
 			rpmIdle = 1200;
@@ -384,6 +388,7 @@ public class Car {
 			gas = true;
 			if (audioActivated)
 				audio.motorAcc(hasTurbo);
+			failedShift = false;
 		}
 
 	}
@@ -393,7 +398,7 @@ public class Car {
 			gas = false;
 			if (audioActivated) {
 				if (hasTurbo)
-					audio.turboSurge();
+					audio.turboBlowoff();
 				audio.motorDcc();
 			}
 		}
@@ -417,7 +422,7 @@ public class Car {
 			resistance = 1.0;
 			if (audioActivated && gas) {
 				if (hasTurbo)
-					audio.turboSurge();
+					audio.turboBlowoff();
 				audio.motorDcc();
 			}
 		}
@@ -435,11 +440,24 @@ public class Car {
 	}
 
 	public void shift(int gear) {
-		if (gear <= representation.getGearTop() && (clutch || sequentialShift)) {
-			this.gear = gear;
-
-			if (audioActivated)
-				audio.gearSound();
+		if (gear <= representation.getGearTop() && gear >= 0) {
+			if (clutch || sequentialShift) {
+				
+				if (!clutch && sequentialShift) {
+					if (gear == 0)
+						resistance = 1.0;
+					else
+						resistance = 0.0;
+				}
+				
+				this.gear = gear;
+				failedShift = false;
+				if (audioActivated)
+					audio.gearSound();
+			} else if (audioActivated) {
+				failedShift = true;
+				audio.grind();
+			}
 		}
 	}
 
@@ -469,6 +487,7 @@ public class Car {
 
 	public void reset() {
 		brake = false;
+		failedShift = false;
 		clutch = false;
 		resetBooleans();
 		engineOn = false;
@@ -709,9 +728,16 @@ public class Car {
 			rpm = 0;
 			audio.stopMotor();
 			checkIdle();
+
 		} else if (audioActivated) {
+
 			audio.startEngine();
 		}
+
+		if (speedActual <= 1 && gear > 0 && !clutch)
+			failedShift = true;
+		else
+			failedShift = false;
 	}
 
 	public boolean isIdle() {
@@ -801,5 +827,9 @@ public class Car {
 	public void openLines() {
 		if (audioActivated)
 			audio.openLines(hasTurbo, upgradedGears);
+	}
+
+	public boolean isFailedShift() {
+		return failedShift;
 	}
 }

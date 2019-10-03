@@ -165,7 +165,7 @@ public class Race extends Scene implements Runnable {
 		SceneHandler.instance.justRemove();
 		racingWindow.setFocusable(true);
 		racingWindow.requestFocus();
-		
+
 		player.getCar().openLines();
 		player.inTheRace();
 		player.startUpdateRaceLights();
@@ -345,6 +345,8 @@ public class Race extends Scene implements Runnable {
 	private void updateResults() {
 		everyoneDone = true;
 		String outtext = player.updateRaceLobby();
+		if (outtext == null)
+			return;
 
 		String[] outputs = outtext.split("#");
 
@@ -444,15 +446,27 @@ public class Race extends Scene implements Runnable {
 			// Stop race aka make ready the next race
 			System.out.println("STOPPING MY RACE");
 			player.stopRace();
-			racingWindow.addKeyListener(goBackVisual);
-			goBackVisual.setEnabled(true);
+
+			if (player.isGameOver()) {
+
+				if (!currentVisual.getClass().equals(winVisual.getClass())) {
+					try {
+						changeVisual(winVisual);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				winVisual.setEveryoneDone(everyoneDone);
+
+			} else {
+				racingWindow.addKeyListener(goBackVisual);
+				goBackVisual.setEnabled(true);
+			}
+
 			racingWindow.requestFocus();
 			lobby.setPlaceChecked(false);
 
 			player.stopUpdateRaceLobby();
-			if (player.isGameOver())
-				winVisual.setEveryoneDone(everyoneDone);
-
 		} else {
 			// Disable start game button
 			goBackVisual.setEnabled(false);
@@ -592,6 +606,10 @@ public class Race extends Scene implements Runnable {
 
 	public void setLobbyThread(Thread lobbyThread) {
 		this.lobbyThread = lobbyThread;
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 
 }

@@ -61,16 +61,15 @@ public class RaceKeyHandler implements KeyListener {
 
 			}
 		} else {
-			if (e.getKeyCode() == 17 && e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) {
-				// RShift
+			if (e.getKeyCode() == 38) {
+				// up arrow
 				car.shiftUp();
 			}
-			if (e.getKeyCode() == 16 && e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) {
-				// RShift
+			if (e.getKeyCode() == 40) {
+				// down arrow
 				car.shiftDown();
 			}
 		}
-
 		if (e.getKeyCode() == 84) {
 			// T
 			car.setEngineOn(!car.isEngineOn());
