@@ -14,7 +14,7 @@ import handlers.GameHandler;
 
 public class Main {
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static final String[] CAR_TYPES = { "Decentra", "Oldsroyal", "Fabulvania", "Thoroughbred" };
 	public static final String[] AI_NAMES = { "Jens", "Benz", "Razor", "The Boi", "The Viper", "The Biper",
 			"èŠ‚å¥�å¤§å¸ˆ", "Knut", "Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law", "Anime Lover",

@@ -86,7 +86,6 @@ public class Car {
 		nosTimeStandard = 1500;
 		nosBottleAmountStandard = 0;
 		upgradeLVLs = new int[Upgrades.UPGRADE_NAMES.length];
-		sequentialShift = true;
 
 		if (name.equals(Main.CAR_TYPES[0])) {
 			rpmIdle = 1000;

@@ -147,9 +147,11 @@ public class GameHandler {
 	}
 
 	private void initSettings() {
-		file = new File("settings.temp");
+		new File("racingmaybe_temp").mkdir();
+		file = new File("racingmaybe_temp/settings.temp");
 		try {
 
+			
 			if (!file.isFile()) {
 				if (file.createNewFile()) {
 					PrintWriter pw = new PrintWriter(file);

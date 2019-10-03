@@ -23,7 +23,7 @@ public class MP3Audio implements Audio {
 		InputStream input = getClass().getResourceAsStream(file + ".mp3");
 		File tempFile = null;
 		try {
-			String outputFile = name + ".tmp";
+			String outputFile = "racingmaybe_temp/" + name + ".tmp";
 
 			tempFile = new File(outputFile);
 			if (!tempFile.exists()) {
