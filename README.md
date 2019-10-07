@@ -8,12 +8,12 @@ but I really like racing games. I could not find a game that satisfied both area
 
 ## Screenshots
 ### "Started"
-![screenshot](https://www.jhoffis.dev/pics/ldjam440.png)
+![screenshot](https://jhoffis.dev/pics/ldjam440.PNG)
 ### "After first turn"
-![screenshot](https://www.jhoffis.dev/pics/ldjam441.png)
+![screenshot](https://jhoffis.dev/pics/ldjam441.PNG)
 ### "After second turn"
+![screenshot](https://jhoffis.dev/pics/ldjam442.PNG)
 The borders have changed a bit...
-![screenshot](https://www.jhoffis.dev/pics/ldjam442.png)
 
 ## Tech/framework used
 - Godot
