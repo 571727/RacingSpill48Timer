@@ -7,24 +7,21 @@ My motivation behind making this game was to have another game to play with my f
 but I really like racing games. I could not find a game that satisfied both areas, so here we are. Also this is free.
 
 ## Screenshots
-### "The lobby"
-![screenshot](https://i.imgur.com/7tn15o8.png)
-### "Racing"
-![screenshot](https://i.imgur.com/JPecje6.png)
-### "After racing"
-![screenshot](https://i.imgur.com/WosjQ5V.png)
-### "The store"
-![screenshot](https://i.imgur.com/YbR9kbD.png)
+### "Started"
+![screenshot](https://www.jhoffis.dev/pics/ldjam440.png)
+### "After first turn"
+![screenshot](https://www.jhoffis.dev/pics/ldjam441.png)
+### "After second turn"
+The borders have changed a bit...
+![screenshot](https://www.jhoffis.dev/pics/ldjam442.png)
 
 ## Tech/framework used
-- Standard Java 1.8
-- Java Graphics2D
-- Audiocue  1.1
-- Jaco MP3 Player 0.9.4
+- Godot
+- .NET Framework (C#)
 
 ## How to use?
-### https://www.jhoffis.dev/games/racingmaybe/
-I try to update this link as often as possible.
+### https://www.jhoffis.dev/games/ldjamapril2019/
+Download here to Windows
 
 ## License
 © [jhoffis]()
