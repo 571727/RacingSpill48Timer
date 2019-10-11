@@ -35,7 +35,7 @@ public class Upgrades {
 				car.guarenteeRightShift();
 
 			return true;
-		}, 0, "+ 50 HP, + 20 % TB area, + 10 % TS", "Guaranteed TG shift at high RPM", 5);
+		}, 0, "+ 50 HP, + 20 % TB area, + 10 % TS", "Virtually guaranteed TB", 5);
 		// Weight
 		upgradeValues[1] = new Upgrade((CarRep car) -> {
 			if (car.getWeight() > 2) {
@@ -158,7 +158,7 @@ public class Upgrades {
 			car.setHp(car.getHp() + inc);
 			
 			if(car.getUpgradeLVL(7) == 5)
-				car.setTireGripStrengthStandard(car.getTireGripStrengthStandard() * 2);
+				car.setTireGripStrengthStandard(car.getStrengthStandard() * 2);
 			
 			if (car.getUpgradeLVL(1) < 5)
 				car.setWeight(car.getWeight() + (car.getWeight() * 0.14f));
