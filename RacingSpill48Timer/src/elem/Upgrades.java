@@ -158,7 +158,7 @@ public class Upgrades {
 			car.setHp(car.getHp() + inc);
 			
 			if(car.getUpgradeLVL(7) == 5)
-				car.setTireGripStrengthStandard(car.getStrengthStandard() * 2);
+				car.setTireGripStrengthStandard(car.getTireGripStrengthStandard() * 2);
 			
 			if (car.getUpgradeLVL(1) < 5)
 				car.setWeight(car.getWeight() + (car.getWeight() * 0.14f));
