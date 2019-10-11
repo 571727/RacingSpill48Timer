@@ -5,6 +5,7 @@ import handlers.GameHandler;
 public class BgMusicListener {
 
 	private MP3Audio[] music;
+	private MP3Audio store;
 	private int playingIndex;
 	private int amount;
 	private boolean stopped;
@@ -15,6 +16,7 @@ public class BgMusicListener {
 
 		music = new MP3Audio[amount];
 
+		store = new MP3Audio("/music/waltz_for_memory");
 		for (int i = 0; i < amount; i++) {
 			music[i] = new MP3Audio("/music/music" + i);
 		}
@@ -22,6 +24,14 @@ public class BgMusicListener {
 		this.amount = amount;
 		if (amount != 0)
 			playNext();
+	}
+	
+	public void playStore() {
+		store.play();
+	}
+	
+	public void stopStore() {
+		store.pause();
 	}
 
 	public void playNext() {
@@ -43,6 +53,8 @@ public class BgMusicListener {
 	public void updateVolume() {
 		if (playingIndex >= 0 && music[playingIndex] != null)
 			music[playingIndex].setVolume(GameHandler.getMusicVolume());
+		
+		store.setVolume(GameHandler.getMusicVolume());
 	}
 
 	public void playOrStop() {

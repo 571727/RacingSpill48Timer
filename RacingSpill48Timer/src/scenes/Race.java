@@ -195,9 +195,11 @@ public class Race extends Scene implements Runnable {
 		visualTick(tickFactor);
 
 		player.getCar().updateSpeed(tickFactor);
-		checkDistanceLeft();
+		if (!(raceLobbyResultsReady && everyoneDone)) {
+			checkDistanceLeft();
 
-		controlRaceLightsCountdown();
+			controlRaceLightsCountdown();
+		}
 
 	}
 
@@ -312,13 +314,13 @@ public class Race extends Scene implements Runnable {
 			// Render
 			render();
 
-			if (System.currentTimeMillis() - timer > 1000) {
+			if (System.currentTimeMillis() - timer > 1000 / TICK_STD) {
 				timer += 1000;
-				System.out.println("FPS RACE: " + frames);
-				frames = 0;
+//				System.out.println("FPS RACE: " + frames);
+//				frames = 0;
 			}
 
-			frames++;
+//			frames++;
 			last = now;
 		}
 
@@ -344,7 +346,48 @@ public class Race extends Scene implements Runnable {
 
 	private void updateResults() {
 		everyoneDone = true;
-		String outtext = player.updateRaceLobby();
+
+		understandRaceLobbyFromServer(player.updateRaceLobby(), results);
+
+		if (everyoneDone && raceLobbyResultsReady && goBackVisual != null) {
+			// Stop race aka make ready the next race
+			System.out.println("STOPPING MY RACE");
+			player.stopRace();
+
+			if (player.isGameOver()) {
+
+				understandRaceLobbyFromServer(player.forceUpdateRaceLobby(), results);
+
+				if (!currentVisual.getClass().equals(winVisual.getClass())) {
+					try {
+						changeVisual(winVisual);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				winVisual.addVisualElement(results);
+				winVisual.setEveryoneDone(everyoneDone);
+
+			} else {
+				racingWindow.addKeyListener(goBackVisual);
+				goBackVisual.setEnabled(true);
+			}
+
+			racingWindow.requestFocus();
+			lobby.setPlaceChecked(false);
+
+			player.stopUpdateRaceLobby();
+		} else {
+			// Disable start game button
+			goBackVisual.setEnabled(false);
+			raceLobbyResultsReady = false;
+			everyoneDone = false;
+		}
+	}
+
+	public void understandRaceLobbyFromServer(String codedString, VisualString results) {
+
+		String outtext = codedString;
 		if (outtext == null)
 			return;
 
@@ -375,7 +418,6 @@ public class Race extends Scene implements Runnable {
 					color = "regular";
 
 				if (Integer.valueOf(outputs[i]) == 1) {
-//					result += "Finished, ";
 					finished = true;
 
 					// Controlling animation of players finishing after a race
@@ -397,12 +439,10 @@ public class Race extends Scene implements Runnable {
 
 				} else if (Integer.valueOf(outputs[i]) == 2) {
 					// AI
-//					result += "Finished, ";
 					finished = true;
 					color = "ai";
 
 				} else {
-//					result += "Not finished, ";
 					everyoneDone = false;
 					finished = false;
 					color = "nf";
@@ -441,38 +481,6 @@ public class Race extends Scene implements Runnable {
 			everyoneDone = false;
 
 		raceLobbyResultsReady = results.setText(result, "<br/>", resultColors);
-
-		if (everyoneDone && raceLobbyResultsReady && goBackVisual != null) {
-			// Stop race aka make ready the next race
-			System.out.println("STOPPING MY RACE");
-			player.stopRace();
-
-			if (player.isGameOver()) {
-
-				if (!currentVisual.getClass().equals(winVisual.getClass())) {
-					try {
-						changeVisual(winVisual);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				winVisual.setEveryoneDone(everyoneDone);
-
-			} else {
-				racingWindow.addKeyListener(goBackVisual);
-				goBackVisual.setEnabled(true);
-			}
-
-			racingWindow.requestFocus();
-			lobby.setPlaceChecked(false);
-
-			player.stopUpdateRaceLobby();
-		} else {
-			// Disable start game button
-			goBackVisual.setEnabled(false);
-			raceLobbyResultsReady = false;
-			everyoneDone = false;
-		}
 	}
 
 	public void checkDistanceLeft() {
@@ -500,15 +508,13 @@ public class Race extends Scene implements Runnable {
 						closeWindow();
 						if (player.isGameOver()) {
 							lobby.endGame();
-							GameHandler.music.playNext();
 						}
 					});
 
+			results = new VisualString((int) (WIDTH - WIDTH / 3.6f), HEIGHT / 24, (int) (WIDTH / 3.8f),
+					(int) (HEIGHT / 1.5f), Color.white, Color.black, new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
 			if (!player.isGameOver()) {
 				changeVisual(finishVisual);
-				results = new VisualString((int) (WIDTH - WIDTH / 3.6f), HEIGHT / 24, (int) (WIDTH / 3.8f),
-						(int) (HEIGHT / 1.5f), Color.white, Color.black,
-						new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
 
 				finishVisual.addVisualElement(goBackVisual);
 				finishVisual.addVisualElement(results);
@@ -607,7 +613,7 @@ public class Race extends Scene implements Runnable {
 	public void setLobbyThread(Thread lobbyThread) {
 		this.lobbyThread = lobbyThread;
 	}
-	
+
 	public boolean isRunning() {
 		return running;
 	}

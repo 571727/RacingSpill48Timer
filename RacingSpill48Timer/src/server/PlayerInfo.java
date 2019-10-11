@@ -69,7 +69,7 @@ public class PlayerInfo {
 	/**
 	 * @return name#ready#car#...
 	 */
-	public String getRaceInfo(boolean allFinished) {
+	public String getRaceInfo(boolean allFinished, boolean full) {
 		String carName = null;
 		if (car != null) {
 			carName = car.getCarName();
@@ -77,11 +77,12 @@ public class PlayerInfo {
 			carName = "NO_NAME";
 		}
 
+		int point = full ? bank.getPoints() : pointsAdded;
+
 		if (allFinished == false)
 			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + carName;
 		else
-			return name + "#" + finished + "#" + timeLapsedInRace + "#, +" + pointsAdded + " points, +$" + moneyAdded
-					+ "#" + carName;
+			return name + "#" + finished + "#" + timeLapsedInRace + "#, " + (full ? "" : "+ ") + point + " points" + ", +$" + moneyAdded + "#" + carName;
 	}
 
 	public void addPointsAndMoney(int amountPlayers, int place, int racesDone) {
@@ -95,13 +96,13 @@ public class PlayerInfo {
 			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
 
 			if (amountPlayers == 1)
-				moneyAdded = (int) (50f * inflation);
+				moneyAdded = (int) (55f * inflation);
 			else if (place > 0)
 				moneyAdded = (int) (100f * place * inflation);
 			else
-				moneyAdded = (int) (25f * inflation);
+				moneyAdded = (int) (40f * inflation);
 		} else {
-			moneyAdded = (int) (50f * inflation);
+			moneyAdded = (int) (55f * inflation);
 		}
 
 		bank.addPoints(pointsAdded);

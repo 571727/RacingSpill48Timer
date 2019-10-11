@@ -155,7 +155,6 @@ public abstract class GameMode {
 		else
 			winnerText = otherMultiWinnerText(asker);
 
-		winnerText += "#Highest speed you achived was " + asker.getCar().getHighestSpeedAchived() + "km/h!";
 		winnerText += "#You made $" + asker.getBank().getMoneyAchived() + " and " + asker.getBank().getPointsAchived()
 				+ " points in total!";
 

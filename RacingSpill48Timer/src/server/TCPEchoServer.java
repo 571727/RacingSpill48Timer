@@ -105,7 +105,10 @@ public class TCPEchoServer extends Thread {
 				res = updateLobby(input);
 				break;
 			case "UR":
-				res = info.updateRaceLobbyString();
+				res = info.updateRaceLobbyString(false);
+				break;
+			case "FUR":
+				res = info.updateRaceLobbyString(true);
 				break;
 			case "RL":
 				res = info.getRaceLightsStatus();

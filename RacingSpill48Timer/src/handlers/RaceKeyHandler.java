@@ -93,7 +93,7 @@ public class RaceKeyHandler implements KeyListener {
 
 		if (e.getKeyCode() == 69) {
 			// E
-			car.nos();
+			car.nos(System.currentTimeMillis(), 1);
 		}
 	}
 

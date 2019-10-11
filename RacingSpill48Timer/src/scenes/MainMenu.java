@@ -28,7 +28,7 @@ public class MainMenu extends Scene {
 	private JButton exit;
 
 	public MainMenu(Lobby lobby) {
-		super("mainMenu");
+		super("lobby");
 
 		// Init variables
 		serverHandler = new ServerHandler();
@@ -37,7 +37,7 @@ public class MainMenu extends Scene {
 		join = new JButton("Join");
 		exit = new JButton("Quit Game");
 		this.lobby = lobby;
-		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v.1.8.0" + "</font></html>");
+		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v.1.8.1_FINAL" + "</font></html>");
 
 		title.setPreferredSize(new Dimension(550, 20));
 
@@ -105,6 +105,7 @@ public class MainMenu extends Scene {
 		String diff;
 		if (Integer.valueOf(amountOfAI) != 0) {
 			diff = difficultySelection();
+			System.out.println(diff);
 			if (diff == null)
 				return;
 		} else {
@@ -154,7 +155,7 @@ public class MainMenu extends Scene {
 
 		for (int i = 0; i < Main.DIFFICULTY_TYPES.length; i++) {
 			if (Main.DIFFICULTY_TYPES[i].equals(str))
-				str = String.valueOf(i * 100 / Main.DIFFICULTY_TYPES.length);
+				str = String.valueOf(i);
 		}
 
 		return str;

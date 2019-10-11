@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import adt.Visual;
 import adt.VisualElement;
 import audio.SFX;
+import elem.CarRep;
 import elem.Player;
 import handlers.GameHandler;
 import scenes.Race;
@@ -96,8 +97,10 @@ public class WinVisual extends Visual {
 
 			g2d.setComposite(ac.derive(1f));
 		}
-		for (int i = 0; i < visualElements.size(); i++) {
-			visualElements.get(i).render(g);
+		if (stage == 2 && alphas != null && alphas[2] >= 1 ) {
+			for (int i = 0; i < visualElements.size(); i++) {
+				visualElements.get(i).render(g);
+			}
 		}
 
 	}
@@ -129,10 +132,16 @@ public class WinVisual extends Visual {
 	private void claimWinner() {
 		tc = Color.white;
 		GameHandler.music.stop();
-		SFX.playMP3Sound("winsound");
-		strings = player.getWinner().split("#");
+		CarRep rep = player.getCar().getRepresentation();
+		String temp = player.getWinner() + "#Your stats:" + "#Highest speed you achived was "
+				+ player.getCar().getHighestSpeedAchived() + "km/h!#"
+				+ String.format("%.1f", rep.getHp()) + " HP," + String.format("%.1f", rep.getWeight()) + " kg, "
+				+ String.format("%.1f", rep.getSpeedTop()) + " TS,#" + rep.getNosStrengthStandard() + " NOS, "
+				+ rep.getTireGripStrengthStandard() + " TB";
+
+		strings = temp.split("#");
 		alphas = new float[strings.length];
-		font = new Font("Calibri", 0, Race.WIDTH / 25);
+		font = new Font("Calibri", 0, Race.WIDTH / 40);
 	}
 
 	public boolean isOver() {

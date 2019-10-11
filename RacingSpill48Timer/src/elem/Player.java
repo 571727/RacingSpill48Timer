@@ -344,4 +344,8 @@ public class Player {
 		return podium;
 	}
 
+	public String forceUpdateRaceLobby() {
+		return client.sendRequest("FUR#" + this.id);
+	}
+
 }

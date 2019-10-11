@@ -30,7 +30,6 @@ public class Car {
 	private int gear;
 	private double rpm;
 	private boolean audioActivated;
-	private int highestSpeedAchived;
 	private long tireGripTimeLeft;
 	private double drag;
 	private boolean TireGripON;
@@ -171,22 +170,9 @@ public class Car {
 				setEngineOn(false);
 			} else if (gas && !clutch && gearCheck()) {
 
-				speedLinearChange += accelerateCar();
+				speedLinearChange += accelerateCar(System.currentTimeMillis());
 				idle = false;
 
-				if (nosTimeLeft > System.currentTimeMillis()) {
-					speedLinearChange += representation.getNosStrengthStandard();
-					NOSON = true;
-				} else {
-					NOSON = false;
-				}
-
-				if (tireGripTimeLeft > System.currentTimeMillis()) {
-					speedLinearChange += representation.getTireGripStrengthStandard();
-					TireGripON = true;
-				} else {
-					TireGripON = false;
-				}
 			} else {
 				speedLinearChange += decelerateCar();
 				checkIdle();
@@ -218,6 +204,7 @@ public class Car {
 		speedLinear += speedLinearChange * tickFactor;
 
 		calculateActualSpeed();
+
 		calculateDrag();
 		calculateDistance(tickFactor);
 	}
@@ -225,7 +212,7 @@ public class Car {
 	/**
 	 * Updates RPM value based on engaged clutch and throttle
 	 */
-	private void updateRPM(double tickFactor) {
+	public void updateRPM(double tickFactor) {
 		double rpmChange = 0;
 
 		if (resistance == 0) {
@@ -277,7 +264,7 @@ public class Car {
 		return dec;
 	}
 
-	private void calculateDrag() {
+	public void calculateDrag() {
 		drag = -Math.pow(speedActual / representation.getSpeedTop(), 5) + 1;
 		if (drag < 0)
 			drag = 0;
@@ -288,8 +275,8 @@ public class Car {
 		double prev = speedActual;
 		speedActual = (-2 * Math.pow(speedLinear, 2) + 2000f * speedLinear) * (representation.getSpeedTop() / 500000f);
 
-		if (speedActual > highestSpeedAchived)
-			highestSpeedAchived = (int) speedActual;
+		if (speedActual > representation.getHighestSpeedAchived())
+			representation.setHighestSpeedAchived((int) speedActual);
 		else if (speedActual < 0) {
 			speedActual = 0;
 			speedLinear = 0;
@@ -305,7 +292,7 @@ public class Car {
 		distance += (speedActual / 24) * tickFactor;
 	}
 
-	public double accelerateCar() {
+	public double accelerateCar(long comparedTimeLeft) {
 		double inc = 0;
 
 		if (speedLinear < ((gear - 1) * (500 / representation.getGearTop()) - 35)) {
@@ -317,6 +304,20 @@ public class Car {
 			// Perfect shift
 			inc = spdinc;
 			gearTooHigh = false;
+		}
+
+		if (nosTimeLeft > comparedTimeLeft) {
+			inc += representation.getNosStrengthStandard();
+			NOSON = true;
+		} else {
+			NOSON = false;
+		}
+
+		if (tireGripTimeLeft > comparedTimeLeft) {
+			inc += representation.getTireGripStrengthStandard();
+			TireGripON = true;
+		} else {
+			TireGripON = false;
 		}
 
 		return inc;
@@ -339,9 +340,13 @@ public class Car {
 	public void tryGearBoost() {
 		int rs = rightShift();
 		if (rs == 2) {
-			// Best boost
-			tireGripTimeLeft = System.currentTimeMillis() + representation.getTireGripTimeStandard();
+			gearBoost(System.currentTimeMillis(), 1);
+			SFX.playMP3Sound("tireboost");
 		}
+	}
+
+	public void gearBoost(long comparedTimeValue, int divideTime) {
+		tireGripTimeLeft = comparedTimeValue + representation.getTireGripTimeStandard() / divideTime;
 	}
 
 	public double getSpeedLinear() {
@@ -441,14 +446,14 @@ public class Car {
 	public void shift(int gear) {
 		if (gear <= representation.getGearTop() && gear >= 0) {
 			if (clutch || sequentialShift) {
-				
+
 				if (!clutch && sequentialShift) {
 					if (gear == 0)
 						resistance = 1.0;
 					else
 						resistance = 0.0;
 				}
-				
+
 				this.gear = gear;
 				failedShift = false;
 				if (audioActivated)
@@ -476,11 +481,12 @@ public class Car {
 		shift(gear - 1);
 	}
 
-	public void nos() {
+	public void nos(long comparedTimeValue, int divideTime) {
 		if (nosBottleAmountLeft > 0) {
-			nosTimeLeft = System.currentTimeMillis() + representation.getNosTimeStandard();
-			audio.nos();
+			nosTimeLeft = comparedTimeValue + representation.getNosTimeStandard() / divideTime;
 			nosBottleAmountLeft--;
+			if (audioActivated)
+				audio.nos();
 		}
 	}
 
@@ -739,6 +745,10 @@ public class Car {
 			failedShift = false;
 	}
 
+	public void setEngineOnActual(boolean b) {
+		this.engineOn = b;
+	}
+
 	public boolean isIdle() {
 		return idle;
 	}
@@ -772,11 +782,11 @@ public class Car {
 	}
 
 	public int getHighestSpeedAchived() {
-		return highestSpeedAchived;
+		return representation.getHighestSpeedAchived();
 	}
 
 	public void setHighestSpeedAchived(int highestSpeedAchived) {
-		this.highestSpeedAchived = highestSpeedAchived;
+		representation.setHighestSpeedAchived(highestSpeedAchived);
 	}
 
 	public boolean isGearBoostON() {
@@ -831,4 +841,5 @@ public class Car {
 	public boolean isFailedShift() {
 		return failedShift;
 	}
+
 }

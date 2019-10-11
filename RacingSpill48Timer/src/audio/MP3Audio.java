@@ -14,6 +14,7 @@ import jaco.mp3.player.MP3Player;
 public class MP3Audio implements Audio {
 	private MP3 mediaPlayer;
 	private File mediaFile;
+	private boolean startedPlaying;
 
 	public MP3Audio(String file) {
 		System.out.println("Finding file:");
@@ -50,7 +51,7 @@ public class MP3Audio implements Audio {
 	}
 	
 	private void setVolume(MP3 player, double factor) {
-		player.setVolume((int) (GameHandler.getMasterVolume() * GameHandler.getSfxVolume() * factor * 100.0));
+		player.setVolume((int) (GameHandler.getMasterVolume() * factor * 100.0));
 	}
 
 	@Override
@@ -59,8 +60,16 @@ public class MP3Audio implements Audio {
 	}
 
 	public void play() {
-		if (mediaPlayer.isStopped())
+		if (mediaPlayer.isStopped() || mediaPlayer.isPaused()) {
 			mediaPlayer.play();
+			if(startedPlaying && mediaPlayer.getPosition() == 0) {
+				//Reset
+				startedPlaying = false;
+				mediaPlayer = new MP3(mediaFile);
+				play();
+			}
+			startedPlaying = true;
+		}
 	}
 
 	public void stop() {
@@ -69,7 +78,9 @@ public class MP3Audio implements Audio {
 	}
 
 	public void loop() {
-		mediaPlayer.play();
+		
+		play();
+		
 //		mediaPlayer.setOnEndOfMedia(new Runnable() {
 //			public void run() {
 //				mediaPlayer.seek(Duration.ZERO);
@@ -85,6 +96,10 @@ public class MP3Audio implements Audio {
 		MP3 temp = new MP3(mediaFile);
 		setVolume(temp, factor);
 		temp.play();
+	}
+
+	public void pause() {
+		mediaPlayer.pause();
 	}
 
 //	public Media getHit() {

@@ -30,6 +30,7 @@ public class CarRep implements Cloneable {
 	private int[] upgradeLVLs;
 	private double gearsbalance;
 	private double maxValuePitch;
+	private int highestSpeedAchived;
 
 	/**
 	 * @param name                     ex "Supra"
@@ -111,13 +112,14 @@ public class CarRep implements Cloneable {
 		upgradeLVLsSetString(values[fromIndex + 14]);
 		gearsbalance = Double.valueOf(values[fromIndex + 15]);
 		maxValuePitch = Double.valueOf(values[fromIndex + 16]);
+		highestSpeedAchived = Integer.parseInt(values[fromIndex + 17]);
 	}
 
 	public String getCloneString() {
 		return name + "#" + nosTimeStandard + "#" + nosBottleAmountStandard + "#" + nosStrengthStandard + "#" + hp + "#"
 				+ weight + "#" + speedTop + "#" + rpmIdle + "#" + rpmTop + "#" + gearTop + "#" + tireGripTimeStandard
 				+ "#" + tireGripStrengthStandard + "#" + tireGripAreaTop + "#" + tireGripAreaBottom + "#"
-				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch;
+				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch + "#" + highestSpeedAchived;
 	}
 
 	public CarRep getCloneObject() throws CloneNotSupportedException {
@@ -281,7 +283,7 @@ public class CarRep implements Cloneable {
 
 	public String getInfo() {
 		return name + ", " + String.format("%.1f", hp) + " HP, " + String.format("%.1f", weight) + " kg, TS: "
-				+ (int) speedTop + " km/h, NOS: " + String.format("%.1f", nosStrengthStandard) + ", TG: "
+				+ (int) speedTop + " km/h, NOS: " + String.format("%.1f", nosStrengthStandard) + ", TB: "
 				+ String.format("%.1f", tireGripStrengthStandard);
 	}
 
@@ -295,9 +297,9 @@ public class CarRep implements Cloneable {
 
 	private String stats() {
 		return "HP: " + String.format("%.1f", hp) + "<br/>" + "Weight: " + String.format("%.1f", weight) + " kg<br/>"
-				+ "NOS strength: " + String.format("%.1f", nosStrengthStandard) + "<br/>" + "NOS bottles: "
-				+ (int) nosBottleAmountStandard + "<br/>" + "Amount of gears: " + (int) gearTop + "<br/>" + "Topspeed: "
-				+ (int) speedTop + " km/h<br/>Tiregrip: " + String.format("%.1f", tireGripStrengthStandard);
+				+ "Topspeed: " + (int) speedTop + " km/h<br/>" + "Amount of gears: " + (int) gearTop + "<br/>"
+				+ "NOS boost: " + String.format("%.1f", nosStrengthStandard) + "<br/>" + "NOS bottles: "
+				+ (int) nosBottleAmountStandard + "<br/>Tireboost: " + String.format("%.1f", tireGripStrengthStandard);
 	}
 
 	public void iterateUpgradeLVL(int LVL) {
@@ -319,6 +321,14 @@ public class CarRep implements Cloneable {
 
 	public void setGearsbalance(double gearsbalance) {
 		this.gearsbalance = gearsbalance;
+	}
+
+	public int getHighestSpeedAchived() {
+		return highestSpeedAchived;
+	}
+
+	public void setHighestSpeedAchived(int highestSpeedAchived) {
+		this.highestSpeedAchived = highestSpeedAchived;
 	}
 
 }

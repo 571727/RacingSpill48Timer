@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Random;
@@ -47,6 +48,7 @@ public class ServerInfo implements Runnable {
 	private GameMode gm;
 	private byte nextID;
 	private boolean raceLobbyStringFinalized;
+	private List<PlayerInfo> sortedPlayers;
 
 	public ServerInfo(int amountOfAI, int diff, String gamemode) {
 		players = new HashMap<Byte, PlayerInfo>();
@@ -65,6 +67,12 @@ public class ServerInfo implements Runnable {
 		r = new Random();
 		setRunning(true);
 
+		upgradePrices = new int[Upgrades.UPGRADE_NAMES.length];
+
+		for (int i = 0; i < upgradePrices.length; i++) {
+			upgradePrices[i] = 40 + r.nextInt(40);
+		}
+
 		ArrayList<String> names = new ArrayList<String>();
 		for (String name : Main.AI_NAMES) {
 			names.add(name);
@@ -72,16 +80,10 @@ public class ServerInfo implements Runnable {
 
 		for (int i = 0; i < amountOfAI; i++) {
 			int nameIndex = r.nextInt(names.size());
-			AI ai = new AI(names.get(nameIndex), (byte) i, diff);
+			AI ai = new AI(names.get(nameIndex), (byte) i, diff, upgradePrices);
 			names.remove(nameIndex);
 			this.ai.add(ai);
 			players.put(generateID(), ai);
-		}
-
-		upgradePrices = new int[Upgrades.UPGRADE_NAMES.length];
-
-		for (int i = 0; i < upgradePrices.length; i++) {
-			upgradePrices[i] = 40 + r.nextInt(40);
 		}
 
 		for (int i = 0; i < Main.GAME_MODES.length; i++) {
@@ -147,7 +149,7 @@ public class ServerInfo implements Runnable {
 		// noticed?
 		if (!jump) {
 			for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
-				if (entry.getValue().getDisconnectID() == discID) {
+				if (entry.getValue().getDisconnectID() != null && entry.getValue().getDisconnectID() == discID) {
 					newPlayer = entry.getValue();
 					copyCar = 1;
 					jump = true;
@@ -165,10 +167,13 @@ public class ServerInfo implements Runnable {
 
 		addChat(newPlayer.getName() + " joined the game.");
 
-		return newPlayer.getID() + "#" + generateDisconnectID(newPlayer) + "#" + copyCar
+		String res = newPlayer.getID() + "#" + generateDisconnectID(newPlayer) + "#" + copyCar
 				+ ((copyCar == 1)
 						? "#" + newPlayer.getName() + "#" + newPlayer.getCar().getRepresentation().getCloneString()
 						: "");
+		
+		updateSortedPlayers();
+		return res;
 	}
 
 	public void updateCarForPlayer(String[] input) {
@@ -185,17 +190,23 @@ public class ServerInfo implements Runnable {
 	 * @return name#ready#car#...
 	 */
 	public String updateLobby(PlayerInfo player) {
-		String result = getPlacePodium(player);
+		String result = getPlacePodiumString(player);
 
-		for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
-			result += "#" + entry.getValue().getLobbyInfo() + "#" + getPing(entry.getValue()) + "#" + gm.getStarted()
-					+ "#" + entry.getValue().getCarInfo();
+		for (int i = 0; i < sortedPlayers.size(); i++) {
+			PlayerInfo entry = sortedPlayers.get(i);
+			result += "#" + entry.getLobbyInfo() + "#"
+					+ (ping.containsKey(entry.getID()) ? getPing(entry) : ":-) ") + "#" + gm.getStarted()
+					+ "#" + entry.getCarInfo();
 		}
 
 		return result;
 	}
 
-	private String getPlacePodium(PlayerInfo player) {
+	private String getPlacePodiumString(PlayerInfo player) {
+		return String.valueOf(getPlacePodium(player));
+	}
+
+	private int getPlacePodium(PlayerInfo player) {
 		int place = 0;
 		for (Entry<Byte, PlayerInfo> otherEntry : players.entrySet()) {
 
@@ -206,9 +217,25 @@ public class ServerInfo implements Runnable {
 					place++;
 				}
 			}
-			player.setPodium(place);
 		}
-		return String.valueOf(place);
+		player.setPodium(place);
+		return place;
+	}
+
+	private int getPointsAhead(PlayerInfo player) {
+		int pointDifference = -10000;
+		for (Entry<Byte, PlayerInfo> otherEntry : players.entrySet()) {
+
+			if (otherEntry.getValue() != player) {
+
+				int otherPoints = otherEntry.getValue().getPoints();
+				int tempDifference = player.getPoints() - otherPoints;
+				if (tempDifference > pointDifference) {
+					pointDifference = tempDifference;
+				}
+			}
+		}
+		return pointDifference;
 	}
 
 	/**
@@ -259,8 +286,8 @@ public class ServerInfo implements Runnable {
 		}
 		player.setFinished(1);
 
-		System.out.println(greenLights);
-		
+//		System.out.println(greenLights);
+
 		if (greenLights) {
 			player.setTime(Long.valueOf(input[2]));
 		} else {
@@ -271,7 +298,29 @@ public class ServerInfo implements Runnable {
 
 		gm.anotherPlayerFinished();
 		finishControl();
+		updateSortedPlayers();
+	}
+	
+	private void updateSortedPlayers() {
+		sortedPlayers = new LinkedList<PlayerInfo>();
 
+		// Sorter alle spillere etter alle har fullført racet
+		sortedPlayers.addAll(players.values());
+		Collections.sort(sortedPlayers, new Comparator<PlayerInfo>() {
+			@Override
+			public int compare(PlayerInfo o1, PlayerInfo o2) {
+
+				int result = 0;
+				if (o1.getBank().getPoints() < o2.getBank().getPoints()) {
+					result = 1;
+
+				} else if (o1.getBank().getPoints() > o2.getBank().getPoints()) {
+					result = -1;
+				}
+
+				return result;
+			}
+		});
 	}
 
 	private void updateRaceStatus() {
@@ -325,7 +374,7 @@ public class ServerInfo implements Runnable {
 				gm.stopRace();
 				System.err.println("RACE STOPPED");
 			}
-			
+
 			gm.setStarted(values);
 			if (!gm.isRacing())
 				gm.setRacing(values == 1);
@@ -388,10 +437,11 @@ public class ServerInfo implements Runnable {
 		}
 
 		if (gm.controlGameAfterFinishedPlayer()) {
-			updateRaceLobbyString();
+			raceLobbyString = updateRaceLobby(true, true);
+			raceLobbyStringFinalized = true;
 			endGame();
 		} else {
-			raceLobbyString = updateRaceLobby(true);
+			raceLobbyString = updateRaceLobby(true, false);
 			raceLobbyStringFinalized = true;
 			gm.noneFinished();
 		}
@@ -403,11 +453,11 @@ public class ServerInfo implements Runnable {
 	 * 
 	 * F�rste gang f�r alle 10 andre gang f�r ingen poeng?
 	 */
-	public String updateRaceLobbyString() {
+	public String updateRaceLobbyString(boolean full) {
 
 		// If racing, finished and is first time telling that it has finished
 		if (!raceLobbyStringFinalized) {
-			raceLobbyString = updateRaceLobby(false);
+			raceLobbyString = updateRaceLobby(false, full);
 		}
 
 		return raceLobbyString;
@@ -420,7 +470,7 @@ public class ServerInfo implements Runnable {
 			long thisTime = player.getTime();
 			System.out.println(thisTime);
 			if (thisTime == -1) {
-				
+
 				gm.rewardPlayer(-1, -1, player);
 
 			} else {
@@ -440,12 +490,15 @@ public class ServerInfo implements Runnable {
 			}
 		}
 
+		for (AI ai : this.ai) {
+			ai.upgradeCar(getPointsAhead(ai));
+		}
 	}
 
 	/**
 	 * @return name#ready#car#...
 	 */
-	public String updateRaceLobby(boolean allFinished) {
+	public String updateRaceLobby(boolean allFinished, boolean full) {
 		String result = "";
 
 		if (!allFinished) {
@@ -454,7 +507,7 @@ public class ServerInfo implements Runnable {
 			result += 3;
 
 			for (Entry<Byte, PlayerInfo> entry : players.entrySet()) {
-				result += "#" + entry.getValue().getRaceInfo(allFinished);
+				result += "#" + entry.getValue().getRaceInfo(allFinished, full);
 			}
 		} else {
 
@@ -469,18 +522,26 @@ public class ServerInfo implements Runnable {
 				public int compare(PlayerInfo o1, PlayerInfo o2) {
 
 					int result = 0;
+					if (!full) {
+						if (o1.getTime() < o2.getTime()) {
+							if (o1.getTime() != -1)
+								result = -1;
+							else
+								result = 1;
 
-					if (o1.getTime() < o2.getTime()) {
-						if (o1.getTime() != -1)
-							result = -1;
-						else
+						} else if (o1.getTime() > o2.getTime()) {
+							if (o2.getTime() != -1)
+								result = 1;
+							else
+								result = -1;
+						}
+					} else {
+						if (o1.getBank().getPoints() < o2.getBank().getPoints()) {
 							result = 1;
 
-					} else if (o1.getTime() > o2.getTime()) {
-						if (o2.getTime() != -1)
-							result = 1;
-						else
+						} else if (o1.getBank().getPoints() > o2.getBank().getPoints()) {
 							result = -1;
+						}
 					}
 					return result;
 				}
@@ -492,9 +553,9 @@ public class ServerInfo implements Runnable {
 				String str = null;
 				if (sortedByTime.get(i).getClass().equals(AI.class)) {
 					AI p = (AI) sortedByTime.get(i);
-					str = p.getRaceInfo(allFinished);
+					str = p.getRaceInfo(allFinished, full);
 				} else {
-					str = sortedByTime.get(i).getRaceInfo(allFinished);
+					str = sortedByTime.get(i).getRaceInfo(allFinished, full);
 				}
 
 				result += "#" + (i + 1) + ": " + str;
@@ -512,6 +573,7 @@ public class ServerInfo implements Runnable {
 		}
 		player.setPoints(Integer.valueOf(input[2]));
 		player.setMoney(Integer.valueOf(input[3]));
+		updateSortedPlayers();
 	}
 
 	public String getPointsMoney(String[] input) {

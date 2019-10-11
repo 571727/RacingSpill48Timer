@@ -3,6 +3,7 @@ package handlers;
 import audio.SFX;
 import elem.Bank;
 import elem.Car;
+import elem.CarRep;
 import elem.Player;
 import elem.UpgradePrice;
 import elem.Upgrades;
@@ -42,8 +43,8 @@ public class StoreHandler {
 
 		SFX.playMP3Sound("btn/" + upgradeNames[currentUpgrade]);
 
-		double amount = Math.round(
-				upgrades.getCostMoney(currentUpgrade, player.getCar().getRepresentation()) * podiumInflation(player.getPlacePodium()));
+		double amount = Math.round(upgrades.getCostMoney(currentUpgrade, player.getCar().getRepresentation())
+				* podiumInflation(player.getPlacePodium()));
 
 		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$" + amount + " or "
 				+ upgrades.getCostPoints(currentUpgrade, player.getCar().getRepresentation()) + " points </html>";
@@ -51,37 +52,66 @@ public class StoreHandler {
 		return upgradeText;
 	}
 
-	public void buyWithMoney(Player player) {
-		double amount = Math.round(
-				upgrades.getCostMoney(currentUpgrade, player.getCar().getRepresentation()) * podiumInflation(player.getPlacePodium()));
-		if (player.getBank().canAffordMoney((int) amount)
-				&& upgrades.upgrade(currentUpgrade, player.getCar().getRepresentation())) {
+	public void buyWithMoneyClient(Player player) {
+		boolean bought = buyWithMoney(player.getBank(), currentUpgrade, player.getCar().getRepresentation(),
+				player.getPlacePodium(), -1);
 
-			SFX.playMP3Sound("btn/" + "money");
-
-			player.getBank().buyWithMoney((int) amount, currentUpgrade);
+		if (bought) {
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
+			SFX.playMP3Sound("btn/" + "money");
 		} else {
 			SFX.playMP3Sound("btn/" + "not_enough");
 		}
 	}
 
-	public void buyWithPoints(Player player) {
-		int amount = upgrades.getCostPoints(currentUpgrade, player.getCar().getRepresentation());
-		if (player.getBank().canAffordPoints(amount)
-				&& upgrades.upgrade(currentUpgrade, player.getCar().getRepresentation())) {
+	public void buyWithPointsClient(Player player) {
+		boolean bought = buyWithPoints(player.getBank(), currentUpgrade, player.getCar().getRepresentation(), -1);
 
-			SFX.playMP3Sound("btn/" + "points");
-
-			player.getBank().buyWithPoints(amount, currentUpgrade);
+		if (bought) {
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
+
+			SFX.playMP3Sound("btn/" + "points");
 		} else {
 			SFX.playMP3Sound("btn/" + "not_enough");
 		}
+	}
+
+	public boolean buyWithMoney(Bank bank, int upgrade, CarRep representation, int podiumPosition, double maxSpend) {
+		boolean res = false;
+		double amount = getCostMoney(upgrade, representation, podiumPosition);
+		if ((maxSpend == -1 ? true : amount <= maxSpend) && bank.canAffordMoney((int) amount)
+				&& upgrades.upgrade(upgrade, representation)) {
+
+			bank.buyWithMoney((int) amount, upgrade);
+			res = true;
+		}
+		System.out.println("Upgrading: " + getUpgradeName(upgrade) + ", " + res);
+		return res;
+	}
+
+	public boolean buyWithPoints(Bank bank, int upgrade, CarRep representation, int maxSpend) {
+		boolean res = false;
+		int amount = getCostPoints(upgrade, representation);
+		if ((maxSpend == -1 ? true : amount <= maxSpend) && bank.canAffordPoints(amount)
+				&& upgrades.upgrade(upgrade, representation)) {
+
+			bank.buyWithPoints(amount, upgrade);
+			res = true;
+		}
+		System.out.println("Upgrading: " + getUpgradeName(upgrade) + ", " + res);
+		return res;
+	}
+
+	public double getCostMoney(int upgrade, CarRep representation, int podiumPosition) {
+		return Math.round(upgrades.getCostMoney(upgrade, representation) * podiumInflation(podiumPosition));
+	}
+
+	public int getCostPoints(int upgrade, CarRep representation) {
+		return upgrades.getCostPoints(upgrade, representation);
 	}
 
 	public String[] getUpgradeNames() {
@@ -117,4 +147,11 @@ public class StoreHandler {
 		return res;
 	}
 
+	public Upgrades getUpgrades() {
+		return upgrades;
+	}
+
+	public void setUpgrades(Upgrades upgrades) {
+		this.upgrades = upgrades;
+	}
 }

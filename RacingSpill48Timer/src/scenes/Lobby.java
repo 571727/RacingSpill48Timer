@@ -78,7 +78,8 @@ public class Lobby extends Scene implements Runnable {
 		chatOutput = new JLabel();
 		chatScrollPane = new JScrollPane(chatOutput);
 		chatScrollPane.setPreferredSize(new Dimension(500, 300));
-
+		
+		
 		String ipLabelText = "<html><font color='white'>IPs: ";
 		try {
 			Enumeration enumIP = NetworkInterface.getNetworkInterfaces();
@@ -111,6 +112,7 @@ public class Lobby extends Scene implements Runnable {
 		});
 		store.addActionListener((ActionEvent e) -> {
 			SFX.playMP3Sound("btn/open_store");
+			GameHandler.music.playStore();
 			SceneHandler.instance.changeScene(2);
 			if (!fixCarChecked) {
 				fixCarScene.init(player);
@@ -253,9 +255,9 @@ public class Lobby extends Scene implements Runnable {
 					break;
 				case 2:
 					if (Integer.valueOf(outputs[i]) == 1) {
-						result += "Ready, ";
+						result += "<font color='#0099cc'>Ready</font>, ";
 					} else {
-						result += "Not ready, ";
+						result += "<font color='red'>Not ready</font>, ";
 						everyoneReady = false;
 					}
 					break;
@@ -276,7 +278,7 @@ public class Lobby extends Scene implements Runnable {
 					result += "<br/>";
 					break;
 				case 7:
-					result += outputs[i] + "<br/>";
+					result += outputs[i] + "<br/><br/>";
 					n = 0;
 					break;
 				}

@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import adt.Scene;
 import audio.SFX;
 import elem.Player;
+import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.StoreHandler;
 import window.Windows;
@@ -71,16 +72,17 @@ public class Store extends Scene {
 
 		goBackLobby.addActionListener((ActionEvent e) -> {
 			SFX.playMP3Sound("btn/close_store");
+			GameHandler.music.stopStore();
 			SceneHandler.instance.changeScene(1);
 		});
 
 		buyMoney.addActionListener((ActionEvent e) -> {
-			storeHandler.buyWithMoney(player);
+			storeHandler.buyWithMoneyClient(player);
 			updateText(currentPlace, currentLength);
 
 		});
 		buyPoints.addActionListener((ActionEvent e) -> {
-			storeHandler.buyWithPoints(player);
+			storeHandler.buyWithPointsClient(player);
 			updateText(currentPlace, currentLength);
 		});
 
