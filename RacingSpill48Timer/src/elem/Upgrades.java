@@ -169,8 +169,10 @@ public class Upgrades {
 		upgradeValues[8] = new Upgrade((CarRep car) -> {
 			car.setTireGripStrengthStandard(car.getTireGripStrengthStandard() + 0.6);
 			car.iterateUpgradeLVL(8);
+			
 			if (car.getUpgradeLVL(8) == 5)
 				car.setNosStrengthStandard(car.getNosStrengthStandard() * 2);
+			
 			return true;
 		}, 8, "+ 0.6 TB", "+ 100 % more NOS boost always", 5);
 

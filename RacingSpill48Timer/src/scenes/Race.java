@@ -508,6 +508,7 @@ public class Race extends Scene implements Runnable {
 						closeWindow();
 						if (player.isGameOver()) {
 							lobby.endGame();
+							System.exit(0);
 						}
 					});
 

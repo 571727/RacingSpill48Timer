@@ -96,7 +96,7 @@ public class PlayerInfo {
 			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
 
 			if (amountPlayers == 1)
-				moneyAdded = (int) (55f * inflation);
+				moneyAdded = (int) (60f * inflation);
 			else if (place > 0)
 				moneyAdded = (int) (100f * place * inflation);
 			else

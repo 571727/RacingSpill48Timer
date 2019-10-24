@@ -26,7 +26,6 @@ public class GolfLike extends GameMode {
 
 		raceStartedTime = System.currentTimeMillis();
 		regulatingWaitTime = waitTime * 3;
-		
 
 		amountInTheRace += ai.size();
 
@@ -50,7 +49,8 @@ public class GolfLike extends GameMode {
 
 	@Override
 	public int getRandomRaceGoal() {
-		return 500 * (r.nextInt(totalRaces - races + 1) + 1);
+		return 500 * (r.nextInt(2 * totalRaces - 2 * races + 1) + 1
+				+ Integer.parseInt(String.valueOf(totalRaces - races + 1 / 3f).split("\\.")[0]));
 	}
 
 	@Override

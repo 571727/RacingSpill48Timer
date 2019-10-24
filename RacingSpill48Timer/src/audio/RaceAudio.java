@@ -97,7 +97,7 @@ public class RaceAudio implements AudioCueListener {
 		nos.setVolume(1);
 
 	}
-	
+
 	public void grind() {
 		grind.playNewInstance(1);
 	}
@@ -260,8 +260,9 @@ public class RaceAudio implements AudioCueListener {
 
 	public void redline() {
 		stopMotorAcc();
-
-		redline.loop();
+		if (!redline.isPlaying()) {
+			redline.loop();
+		}
 	}
 
 	public void nos() {
@@ -271,8 +272,8 @@ public class RaceAudio implements AudioCueListener {
 	public void turboBlowoff() {
 
 		turbo.playNewInstance(1);
-//		if (turbo != null && turbo.isPlaying())
-//			turbo.stop();
+		if (turbo != null && turbo.isPlaying())
+			turbo.stop();
 	}
 
 	public void gearSound() {
