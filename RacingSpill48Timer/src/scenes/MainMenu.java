@@ -37,7 +37,7 @@ public class MainMenu extends Scene {
 		join = new JButton("Join");
 		exit = new JButton("Quit Game");
 		this.lobby = lobby;
-		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v.1.8.2_FINAL" + "</font></html>");
+		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v.1.8.4_FINAL" + "</font></html>");
 
 		title.setPreferredSize(new Dimension(550, 20));
 

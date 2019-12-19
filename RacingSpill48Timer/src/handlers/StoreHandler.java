@@ -43,11 +43,10 @@ public class StoreHandler {
 
 		SFX.playMP3Sound("btn/" + upgradeNames[currentUpgrade]);
 
-		double amount = Math.round(upgrades.getCostMoney(currentUpgrade, player.getCar().getRepresentation())
-				* podiumInflation(player.getPlacePodium()));
+		double amount = getCostMoney(currentUpgrade, car.getRepresentation(), player.getPlacePodium());
 
-		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car) + "<br/><br/>$" + amount + " or "
-				+ upgrades.getCostPoints(currentUpgrade, player.getCar().getRepresentation()) + " points </html>";
+		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car, false) + "<br/><br/>$" + amount
+				+ " or " + getCostPoints(currentUpgrade, car.getRepresentation()) + " points </html>";
 
 		return upgradeText;
 	}
@@ -84,8 +83,7 @@ public class StoreHandler {
 		boolean res = false;
 		double amount = getCostMoney(upgrade, representation, podiumPosition);
 		if ((maxSpend == -1 ? true : amount <= maxSpend) && bank.canAffordMoney((int) amount)
-				&& upgrades.upgrade(upgrade, representation)) {
-
+				&& upgrades.upgrade(upgrade, representation, true)) {
 			bank.buyWithMoney((int) amount, upgrade);
 			res = true;
 		}
@@ -97,8 +95,7 @@ public class StoreHandler {
 		boolean res = false;
 		int amount = getCostPoints(upgrade, representation);
 		if ((maxSpend == -1 ? true : amount <= maxSpend) && bank.canAffordPoints(amount)
-				&& upgrades.upgrade(upgrade, representation)) {
-
+				&& upgrades.upgrade(upgrade, representation, true)) {
 			bank.buyWithPoints(amount, upgrade);
 			res = true;
 		}
@@ -107,11 +104,19 @@ public class StoreHandler {
 	}
 
 	public double getCostMoney(int upgrade, CarRep representation, int podiumPosition) {
-		return Math.round(upgrades.getCostMoney(upgrade, representation) * podiumInflation(podiumPosition));
+		int sp = upgrades.specialPriceMoney(upgrade, representation);
+		if (sp == -1)
+			return Math.round(upgrades.getCostMoney(upgrade, representation) * podiumInflation(podiumPosition));
+		else
+			return sp;
 	}
 
 	public int getCostPoints(int upgrade, CarRep representation) {
-		return upgrades.getCostPoints(upgrade, representation);
+		int sp = upgrades.specialPricePoints(upgrade, representation);
+		if (sp == -1)
+			return upgrades.getCostPoints(upgrade, representation);
+		else
+			return sp;
 	}
 
 	public String[] getUpgradeNames() {
@@ -139,7 +144,7 @@ public class StoreHandler {
 		String res = "<html><font color='white'>";
 
 		if (fromWith == 0)
-			res += "Information: <br/><br/>";
+			res += "<b>Information: </b><br/><br/>";
 
 		for (int i = fromWith; i < toWithout; i++) {
 			res += upgrades.getInformation(i, car);

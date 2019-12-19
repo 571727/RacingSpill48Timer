@@ -1,13 +1,14 @@
-Pål detter ut om mye skjer med serveren.
+Pï¿½l detter ut om mye skjer med serveren.
 Andre race starter med en gang
-Kommer i mål bare noen ganger. - skaper problem med poeng og penger
-Kjøre løpet to ganger soom så gjør en DNF
+Kommer i mï¿½l bare noen ganger. - skaper problem med poeng og penger
+Kjï¿½re lï¿½pet to ganger soom sï¿½ gjï¿½r en DNF
 RequestFocus er ikke skikkelig.
-Når pål stakk og kom til tilbake etter at han forrige selv forsvant så fikk han ikke tilbake statsa sine.
-Når han disconnecta så ble ikke clientThreadHandler stoppa.
+Nï¿½r pï¿½l stakk og kom til tilbake etter at han forrige selv forsvant sï¿½ fikk han ikke tilbake statsa sine.
+Nï¿½r han disconnecta sï¿½ ble ikke clientThreadHandler stoppa.
 Farger ble feil i FinishRace
 ID-er i racing.temp blir ikke sletta
-Få til dropping av spillere om de dropper og du er i raceLobby eller race overall
+Fï¿½ til dropping av spillere om de dropper og du er i raceLobby eller race overall
+Icon ved siden av oppgraderinger
 
 
 thread ended

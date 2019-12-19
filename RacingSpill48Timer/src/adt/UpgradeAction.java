@@ -4,5 +4,5 @@ import elem.CarRep;
 
 public interface UpgradeAction {
 
-	public boolean upgrade(CarRep car);
+	public int upgrade(CarRep car, boolean notRep);
 }

@@ -158,7 +158,7 @@ public class Store extends Scene {
 		this.currentLength = currentLength;
 		currentStats.setText(player.getCar().showStats());
 		cashStats
-				.setText(player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m</html>");
+				.setText(player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m<br/>" + storeHandler.getUpgrades().getBonuses() + "</html>");
 		cartStats.setText("");
 		buyPoints.setEnabled(false);
 		buyMoney.setEnabled(false);
@@ -168,7 +168,7 @@ public class Store extends Scene {
 		information1.setText(storeHandler.getInformation(player.getCar(), 4, 9));
 
 		double di = storeHandler.podiumInflation(player.getPlacePodium());
-		playerInformation.setText("<html><font color =" + (di == 1 ? "'white'>+ 0" : "'red'>+ " + (int) (di * 300 / 53))
+		playerInformation.setText("<html><font color =" + (di == 1 ? "'white'>+ 0" : "'red'>+ " + (int) di)
 				+ " % $ podium inflation</font>\"</html>");
 	}
 

@@ -87,19 +87,19 @@ public class RaceAudio implements AudioCueListener {
 			wavgain = 1;
 		}
 
-		turbo.setVolume(1);
+		turbo.setVolume(GameHandler.getSfxVolume());
 
 		for (MP3Audio g : gear) {
-			g.setVolume(1);
+			g.setVolume(GameHandler.getSfxVolume());
 		}
 
-		redline.setVolume(1);
-		nos.setVolume(1);
+		redline.setVolume(GameHandler.getSfxVolume());
+		nos.setVolume(GameHandler.getSfxVolume());
 
 	}
 
 	public void grind() {
-		grind.playNewInstance(1);
+		grind.playNewInstance(GameHandler.getSfxVolume());
 	}
 
 	public void motorIdle() {

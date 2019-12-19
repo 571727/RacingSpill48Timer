@@ -41,7 +41,7 @@ public class MP3Audio implements Audio {
 		mediaPlayer = new MP3(tempFile);
 		mediaFile = tempFile;
 
-		setVolume(1);
+		setVolume(GameHandler.getMusicVolume());
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class MP3Audio implements Audio {
 	}
 
 	public void play() {
-		if (mediaPlayer.isStopped() || mediaPlayer.isPaused()) {
+		if (!mediaPlayer.isPlaying() && mediaPlayer.getVolume() != 0) {
 			mediaPlayer.play();
 			if(startedPlaying && mediaPlayer.getPosition() == 0) {
 				//Reset
@@ -89,7 +89,7 @@ public class MP3Audio implements Audio {
 	}
 
 	public boolean isPlaying() {
-		return !mediaPlayer.isStopped();
+		return mediaPlayer.isPlaying();
 	}
 
 	public void playNewInstance(double factor) {

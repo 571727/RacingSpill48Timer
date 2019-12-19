@@ -31,6 +31,10 @@ public class CarRep implements Cloneable {
 	private double gearsbalance;
 	private double maxValuePitch;
 	private int highestSpeedAchived;
+	private boolean clutchSuper;
+	private double turboHP;
+	private boolean doesSpool = true;
+	private boolean sequentialShift;
 
 	/**
 	 * @param name                     ex "Supra"
@@ -113,13 +117,17 @@ public class CarRep implements Cloneable {
 		gearsbalance = Double.valueOf(values[fromIndex + 15]);
 		maxValuePitch = Double.valueOf(values[fromIndex + 16]);
 		highestSpeedAchived = Integer.parseInt(values[fromIndex + 17]);
+		turboHP = Double.valueOf(values[fromIndex + 18]);
+		doesSpool = Integer.parseInt(values[fromIndex + 19]) == 1;
+		sequentialShift = Integer.parseInt(values[fromIndex + 20]) == 1;
 	}
 
 	public String getCloneString() {
 		return name + "#" + nosTimeStandard + "#" + nosBottleAmountStandard + "#" + nosStrengthStandard + "#" + hp + "#"
 				+ weight + "#" + speedTop + "#" + rpmIdle + "#" + rpmTop + "#" + gearTop + "#" + tireGripTimeStandard
 				+ "#" + tireGripStrengthStandard + "#" + tireGripAreaTop + "#" + tireGripAreaBottom + "#"
-				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch + "#" + highestSpeedAchived;
+				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch + "#" + highestSpeedAchived + "#"
+				+ turboHP + "#" + (doesSpool ? 1 : 0)+ "#" + (sequentialShift ? 1 : 0);
 	}
 
 	public CarRep getCloneObject() throws CloneNotSupportedException {
@@ -302,8 +310,9 @@ public class CarRep implements Cloneable {
 				+ (int) nosBottleAmountStandard + "<br/>Tireboost: " + String.format("%.1f", tireGripStrengthStandard);
 	}
 
-	public void iterateUpgradeLVL(int LVL) {
+	public int iterateUpgradeLVL(int LVL) {
 		upgradeLVLs[LVL]++;
+		return upgradeLVLs[LVL];
 	}
 
 	public void upgradeRightShift(double change) {
@@ -330,5 +339,38 @@ public class CarRep implements Cloneable {
 	public void setHighestSpeedAchived(int highestSpeedAchived) {
 		this.highestSpeedAchived = highestSpeedAchived;
 	}
+
+	public boolean isClutchSuper() {
+		return clutchSuper;
+	}
+
+	public void setClutchSuper(boolean clutchSuper) {
+		this.clutchSuper = clutchSuper;
+	}
+
+	public double getTurboHP() {
+		return turboHP;
+	}
+
+	public void setTurboHP(double d) {
+		turboHP = d;
+	}
+
+	public void setDoesSpool(boolean b) {
+		doesSpool = b;
+	}
+
+	public boolean doesSpool() {
+		return doesSpool;
+	}
+	
+	public boolean isSequentialShift() {
+		return sequentialShift;
+	}
+
+	public void setSequentialShift(boolean sequentialShift) {
+		this.sequentialShift = sequentialShift;
+	}
+
 
 }

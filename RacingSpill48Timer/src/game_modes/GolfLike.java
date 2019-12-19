@@ -49,7 +49,7 @@ public class GolfLike extends GameMode {
 
 	@Override
 	public int getRandomRaceGoal() {
-		return 500 * (r.nextInt(2 * totalRaces - 2 * races + 1) + 1
+		return 120 * (r.nextInt(totalRaces - races + 1) + 1
 				+ Integer.parseInt(String.valueOf(totalRaces - races + 1 / 3f).split("\\.")[0]));
 	}
 
@@ -72,8 +72,8 @@ public class GolfLike extends GameMode {
 	}
 
 	@Override
-	public void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player) {
-		player.addPointsAndMoney(amountOfPlayers, place, Math.abs(totalRaces - races));
+	public void rewardPlayer(int place, int amountOfPlayers, int behindLeaderBy, PlayerInfo player) {
+		player.addPointsAndMoney(amountOfPlayers, place, behindLeaderBy, Math.abs(totalRaces - races));
 	}
 
 	@Override

@@ -16,11 +16,12 @@ public class GameHandler {
 
 	public static BgMusicListener music;
 	public static ButtonAudio ba;
+	private static File file;
+	private static List<String> lines;
+	// Disse går fra 0.0 - 1.0
 	private static double masterVolume;
 	private static double sfxVolume;
 	private static double musicVolume;
-	private static File file;
-	private static List<String> lines;
 
 	public GameHandler(int numScenes) {
 		initSettings();

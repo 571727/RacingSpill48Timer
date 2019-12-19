@@ -20,6 +20,7 @@ public class Car {
 	private boolean engineOn;
 	private boolean changed;
 	private int nosBottleAmountLeft;
+	private boolean soundBarrierBroken;
 	private int soundBarrierSpeed;
 	private long nosTimeLeft;
 	private double speedLinear;
@@ -35,6 +36,7 @@ public class Car {
 	private boolean TireGripON;
 	private boolean sequentialShift;
 	private boolean failedShift;
+	private double spool;
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -228,6 +230,8 @@ public class Car {
 			if (rpm < representation.getRpmTop() - 60) {
 				double rpmFactor = (representation.getRpmTop() * 0.8) + (rpm * 0.2);
 				rpmChange = representation.getHp() * (rpmFactor / (double) representation.getRpmTop()) * resistance;
+				if (spool < 1)
+					spool += 0.1 * tickFactor;
 			} else
 				// Redlining
 				rpm = representation.getRpmTop() - 100;
@@ -240,7 +244,7 @@ public class Car {
 			else
 				// Sets RPM to for instance 1000 rpm as standard.
 				rpm = representation.getRpmIdle();
-
+			spool = 0;
 		}
 
 		rpm = rpmChange * tickFactor + rpm;
@@ -283,13 +287,18 @@ public class Car {
 			return;
 		}
 
-		if (speedActual > soundBarrierSpeed && prev < soundBarrierSpeed) {
+		if (speedActual > soundBarrierSpeed && prev <= soundBarrierSpeed) {
 			SFX.playMP3Sound("soundbarrier");
+			if(!soundBarrierBroken) {
+				nosBottleAmountLeft++;
+				soundBarrierBroken = true;
+			}
 		}
 	}
 
 	public void calculateDistance(double tickFactor) {
-		distance += (speedActual / 24) * tickFactor;
+		// 25 ticks per sec. kmh, distance in meters. So, x / 3.6 / 25.
+		distance += (speedActual / 90) * tickFactor;
 	}
 
 	public double accelerateCar(long comparedTimeLeft) {
@@ -496,6 +505,7 @@ public class Car {
 		clutch = false;
 		resetBooleans();
 		engineOn = false;
+		soundBarrierBroken = false;
 		speedLinear = 0f;
 		nosTimeLeft = 0;
 		nosBottleAmountLeft = representation.getNosBottleAmountStandard();
@@ -516,12 +526,8 @@ public class Car {
 
 		}
 		updateSpeedInc();
-
-		if (representation.getUpgradeLVL(6) >= 5) {
-			// GEARS
-			upgradedGears = true;
-			sequentialShift = true;
-		}
+		sequentialShift = representation.isSequentialShift();
+		upgradedGears = sequentialShift;
 	}
 
 	public boolean isSequentialShift() {
@@ -540,8 +546,15 @@ public class Car {
 
 	public void updateSpeedInc() {
 		double w = representation.getWeight();
-		double rpmCalc = (double) rpm / (double) representation.getRpmTop();
-		spdinc = 6 * (representation.getHp() * rpmCalc / w * representation.getGearsbalance()) * drag;
+		double rpmCalc = 1;
+		if (!representation.isClutchSuper())
+			rpmCalc = (double) rpm / (double) representation.getRpmTop();
+
+		double hp = representation.getHp();
+		if (representation.doesSpool())
+			hp += (representation.getTurboHP() * spool) - representation.getTurboHP();
+
+		spdinc = 6 * (hp * rpmCalc / w * representation.getGearsbalance()) * drag;
 	}
 
 	public String showStats(int prevLVL, int nextLVL) {

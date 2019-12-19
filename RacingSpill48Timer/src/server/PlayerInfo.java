@@ -85,10 +85,10 @@ public class PlayerInfo {
 			return name + "#" + finished + "#" + timeLapsedInRace + "#, " + (full ? "" : "+ ") + point + " points" + ", +$" + moneyAdded + "#" + carName;
 	}
 
-	public void addPointsAndMoney(int amountPlayers, int place, int racesDone) {
+	public void addPointsAndMoney(int amountPlayers, int place, int behindLeaderBy, int racesDone) {
 
 		float inflation = (racesDone + 1f) / 2f;
-		int winnerExtraPoint = (place == 0 && podium != 0 && amountPlayers != 1 ? 1 : 0);
+		int winnerExtraPoint = (place == 0 && behindLeaderBy > 3 && amountPlayers != 1 ? 1 : 0) + 1;
 
 		pointsAdded = 0;
 

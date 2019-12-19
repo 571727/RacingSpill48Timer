@@ -70,7 +70,7 @@ public class ServerInfo implements Runnable {
 		upgradePrices = new int[Upgrades.UPGRADE_NAMES.length];
 
 		for (int i = 0; i < upgradePrices.length; i++) {
-			upgradePrices[i] = 40 + r.nextInt(40);
+			upgradePrices[i] = 30 + r.nextInt(60);
 		}
 
 		ArrayList<String> names = new ArrayList<String>();
@@ -403,7 +403,7 @@ public class ServerInfo implements Runnable {
 			boolean s = gm.isRacing();
 
 			if (s) {
-				gm.rewardPlayer(-1, -1, player);
+				gm.rewardPlayer(-1, -1, -1, player);
 				gm.disconnectedFinish();
 				finishControl();
 			}
@@ -468,13 +468,16 @@ public class ServerInfo implements Runnable {
 			PlayerInfo player = entry.getValue();
 			int place = 0;
 			long thisTime = player.getTime();
+			int thisPoints = player.getPoints();
 			System.out.println(thisTime);
 			if (thisTime == -1) {
 
-				gm.rewardPlayer(-1, -1, player);
+				gm.rewardPlayer(-1, -1, -1, player);
 
 			} else {
 
+				int behindLeaderBy = 0;
+				
 				for (Entry<Byte, PlayerInfo> otherEntry : players.entrySet()) {
 
 					if (otherEntry.getKey() != entry.getKey()) {
@@ -483,10 +486,14 @@ public class ServerInfo implements Runnable {
 						if (thisTime > otherTime && otherTime != -1) {
 							place++;
 						}
+						int otherPoints = otherEntry.getValue().getPoints();
+						if(thisPoints < otherPoints)
+							behindLeaderBy = otherPoints - thisPoints;
 					}
 				}
 
-				gm.rewardPlayer(place, players.size(), player);
+				gm.rewardPlayer(place, players.size(), behindLeaderBy, player);
+				System.out.println(behindLeaderBy);
 			}
 		}
 

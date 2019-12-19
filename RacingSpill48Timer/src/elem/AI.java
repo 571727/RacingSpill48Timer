@@ -139,7 +139,7 @@ public class AI extends PlayerInfo {
 			// POWAAAHHH
 			double hpw = -1;
 			for (int i = 0; i < upgrades.getUpgradeNames().length; i++) {
-				CarRep temp = u.upgradeNewCarRep(i, car);
+				CarRep temp = u.upgradeNewCarRep(i, car, true);
 				double price;
 				boolean next = false;
 				if (money) {
@@ -175,7 +175,7 @@ public class AI extends PlayerInfo {
 						next = true;
 
 				}
-				double compared = (u.upgradeNewCarRep(i, car).getSpeedTop() - car.getSpeedTop()) / price;
+				double compared = (u.upgradeNewCarRep(i, car, true).getSpeedTop() - car.getSpeedTop()) / price;
 				if (!next && compared > ts) {
 					bestValueIndex = i;
 					ts = compared;

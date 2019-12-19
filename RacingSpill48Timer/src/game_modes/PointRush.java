@@ -66,7 +66,7 @@ public class PointRush extends GameMode {
 
 	@Override
 	public int getRandomRaceGoal() {
-		return 500 * (r.nextInt(currentRace + 1) + 1);
+		return 120 * (r.nextInt(currentRace + 1) + 1);
 	}
 
 	@Override
@@ -83,8 +83,8 @@ public class PointRush extends GameMode {
 	}
 
 	@Override
-	public void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player) {
-		player.addPointsAndMoney(amountOfPlayers, place, currentRace);
+	public void rewardPlayer(int place, int amountOfPlayers, int behindLeaderBy, PlayerInfo player) {
+		player.addPointsAndMoney(amountOfPlayers, place, behindLeaderBy, currentRace);
 	}
 
 	@Override

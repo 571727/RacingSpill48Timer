@@ -290,7 +290,7 @@ public abstract class GameMode {
 	 * @param amountOfPlayers
 	 * @param player
 	 */
-	public abstract void rewardPlayer(int place, int amountOfPlayers, PlayerInfo player);
+	public abstract void rewardPlayer(int place, int amountOfPlayers, int behindLeaderBy, PlayerInfo player);
 
 	public abstract int getRaceGoal();
 
