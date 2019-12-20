@@ -66,7 +66,7 @@ public class Player {
 	 * JOIN#name+id#host-boolean
 	 */
 	public void joinServer() {
-		String[] ids = client.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID).split("#");
+		String[] ids = client.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID + "#" + Main.GAME_VERSION).split("#");
 		this.id = Byte.valueOf(ids[0]);
 		GameHandler.newDisconnectedID(Long.valueOf(ids[1]));
 

@@ -23,10 +23,12 @@ public class Store extends Scene {
 
 	private JLabel currentStats;
 	private JLabel cartStats;
-	private JLabel cashStats;
+	private JLabel upgradesStats;
 	private JLabel playerInformation;
 	private JLabel information0;
 	private JLabel information1;
+	private JLabel[] lvlPerUpgrade;
+	private JLabel[] lvlPerUpgrade2;
 
 	private JButton[] upgrades;
 	private JButton buyMoney;
@@ -47,11 +49,18 @@ public class Store extends Scene {
 		goBackLobby = new JButton("Go back to the lobby");
 		storeHandler = new StoreHandler();
 		upgrades = new JButton[storeHandler.getUpgradeNames().length];
+		lvlPerUpgrade = new JLabel[storeHandler.getUpgradeNames().length];
+		lvlPerUpgrade2 = new JLabel[storeHandler.getUpgradeNames().length];
 
 		for (int i = 0; i < upgrades.length; i++) {
 			upgrades[i] = new JButton(storeHandler.getUpgradeName(i));
 			upgrades[i].addActionListener((ActionEvent e) -> showUpgrades(e));
 			add(upgrades[i]);
+			
+			lvlPerUpgrade[i] = new JLabel();
+			add(lvlPerUpgrade[i]);
+			lvlPerUpgrade2[i] = new JLabel();
+			add(lvlPerUpgrade2[i]);
 		}
 
 		currentStats = new JLabel();
@@ -60,8 +69,8 @@ public class Store extends Scene {
 		cartStats = new JLabel();
 		cartStatsPane = new JScrollPane(cartStats);
 		cartStatsPane.setPreferredSize(new Dimension(200, 150));
-		cashStats = new JLabel();
-		cashStatsPane = new JScrollPane(cashStats);
+		upgradesStats = new JLabel();
+		cashStatsPane = new JScrollPane(upgradesStats);
 		cashStatsPane.setPreferredSize(new Dimension(200, 150));
 		information0 = new JLabel();
 		information1 = new JLabel();
@@ -119,6 +128,8 @@ public class Store extends Scene {
 
 		for (int i = 0; i < upgrades.length; i++) {
 			upgrades[i].setBounds(btnX, (int) ((from + i) * bh + i * margin), bw, bh);
+			lvlPerUpgrade[i].setBounds(btnX - 80, (int) ((from + i) * bh + i * margin), bw, bh);
+			lvlPerUpgrade2[i].setBounds(btnX - 78, (int) ((from + i) * bh + i * margin) + 2, bw, bh) ;
 		}
 		int gbW = (int) (bw * 1.4);
 		goBackLobby.setBounds(midRightX - gbW / 2, (int) ((from + upgrades.length) * bh + upgrades.length * margin),
@@ -127,9 +138,9 @@ public class Store extends Scene {
 		int statsPaneW = (informationW - 4 * margin) / 3;
 		int statsPaneH = Windows.HEIGHT * 3 / 4 / 2;
 
-		currentStatsPane.setBounds(margin, margin, statsPaneW, statsPaneH);
-		cartStatsPane.setBounds(2 * margin + statsPaneW, margin, statsPaneW, statsPaneH);
-		cashStatsPane.setBounds(3 * margin + 2 * statsPaneW, margin, statsPaneW, statsPaneH);
+		currentStatsPane.setBounds(margin, margin, statsPaneW * 2 / 3, statsPaneH);
+		cartStatsPane.setBounds(2 * margin + statsPaneW - (statsPaneW * 1 / 3), margin , statsPaneW * 2 / 3, statsPaneH);
+		cashStatsPane.setBounds(3 * margin + 2 * statsPaneW - (statsPaneW * 2 / 3), margin , statsPaneW * 5 / 3, statsPaneH);
 		playerInformation.setBounds(margin, margin + statsPaneH + font.getSize(), statsPaneW, font.getSize() * 3 / 2);
 		playerInformation.setFont(font);
 //		lobbyInfoScrollPane.setBounds(marginW, margin, paneSizeW, paneSizeH);
@@ -157,11 +168,16 @@ public class Store extends Scene {
 		this.currentPlace = currentPlace;
 		this.currentLength = currentLength;
 		currentStats.setText(player.getCar().showStats());
-		cashStats
-				.setText(player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m<br/>" + storeHandler.getUpgrades().getBonuses() + "</html>");
-		cartStats.setText("");
+		upgradesStats
+				.setText("<html><br><font size='6'>Upgrade bonuses:</font><br><br>" + storeHandler.getUpgrades().getBonuses() + "</html>");
+		cartStats.setText(player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m");
 		buyPoints.setEnabled(false);
 		buyMoney.setEnabled(false);
+		
+		for(int i = 0; i < lvlPerUpgrade.length; i++) {
+			lvlPerUpgrade[i].setText("<html><font color='#00ff00' size='10'>" + player.getCar().getUpgradeLVL(i) + "</font></html>");
+			lvlPerUpgrade2[i].setText("<html><font color='black' size='10'>" + player.getCar().getUpgradeLVL(i) + "</font></html>");
+		}
 
 		information0.setText(storeHandler.getInformation(player.getCar(), 0, 4));
 
@@ -180,7 +196,7 @@ public class Store extends Scene {
 
 		String upgradedCarText = storeHandler.selectUpgrade(source.getText(), player.getCar(), player);
 
-		cartStats.setText(upgradedCarText);
+		cartStats.setText(upgradedCarText + "<br/><br/>" + player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m</html>");
 
 	}
 

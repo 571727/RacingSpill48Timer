@@ -28,6 +28,7 @@ public class Main {
 	public static final String UPGRADELVL_REGEX = "%";
 	public static final String STANDARD_REGEX = "#";
 	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";
+	public static final String GAME_VERSION = "1.8.4_FINAL";
 
 	public static long DISCONNECTED_ID = -1;
 

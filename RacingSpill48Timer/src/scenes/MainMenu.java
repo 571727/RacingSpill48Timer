@@ -37,7 +37,7 @@ public class MainMenu extends Scene {
 		join = new JButton("Join");
 		exit = new JButton("Quit Game");
 		this.lobby = lobby;
-		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v.1.8.4_FINAL" + "</font></html>");
+		title = new JLabel("<html><font color='white'>" + Main.GAME_NAME + " v." + Main.GAME_VERSION + "</font></html>");
 
 		title.setPreferredSize(new Dimension(550, 20));
 
@@ -130,16 +130,15 @@ public class MainMenu extends Scene {
 
 	private String gameMode() {
 		
-		//FIXME
-		String[] arr = new String[Main.GAME_MODES.length];
-		for(int i = 0; i < arr.length; i++) {
-			arr[i] = Main.GAME_MODES[i].getName();
-		}
-		
-		String str = (String) JOptionPane.showInputDialog(null, "Choose gamemode, bro", Main.GAME_NAME,
-				JOptionPane.PLAIN_MESSAGE, null, arr, arr[0]);
+//		String[] arr = new String[Main.GAME_MODES.length];
+//		for(int i = 0; i < arr.length; i++) {
+//			arr[i] = Main.GAME_MODES[i].getName();
+//		}
+//		
+//		String str = (String) JOptionPane.showInputDialog(null, "Choose gamemode, bro", Main.GAME_NAME,
+//				JOptionPane.PLAIN_MESSAGE, null, arr, arr[0]);
 
-		return str;
+		return Main.GAME_MODES[0].getName();
 	}
 
 	private String amountOfRacesSelection() {

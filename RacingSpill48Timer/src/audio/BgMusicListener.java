@@ -27,6 +27,7 @@ public class BgMusicListener {
 	}
 	
 	public void playStore() {
+		System.out.println(store.getVolume());
 		store.play();
 	}
 	

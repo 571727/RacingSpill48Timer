@@ -102,6 +102,10 @@ public class MP3Audio implements Audio {
 		mediaPlayer.pause();
 	}
 
+	public int getVolume() {
+		return mediaPlayer.getVolume();
+	}
+
 //	public Media getHit() {
 //		return hit;
 //	}

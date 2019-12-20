@@ -365,6 +365,7 @@ public class Race extends Scene implements Runnable {
 						e.printStackTrace();
 					}
 				}
+				
 				winVisual.addVisualElement(results);
 				winVisual.setEveryoneDone(everyoneDone);
 
@@ -489,7 +490,9 @@ public class Race extends Scene implements Runnable {
 			finishRace(false);
 		}
 	}
-
+	/**
+	 * @param cheated TODO
+	 */
 	private void finishRace(boolean cheated) {
 		System.out.println("Finished");
 		long time = System.currentTimeMillis() - startTime;
@@ -514,6 +517,8 @@ public class Race extends Scene implements Runnable {
 
 			results = new VisualString((int) (WIDTH - WIDTH / 3.6f), HEIGHT / 24, (int) (WIDTH / 3.8f),
 					(int) (HEIGHT / 1.5f), Color.white, Color.black, new Font("Calibri", Font.BOLD, Race.WIDTH / 90));
+			
+			//The problem is that it tells if the race is over here and now instead of when it is confirmed.
 			if (!player.isGameOver()) {
 				changeVisual(finishVisual);
 

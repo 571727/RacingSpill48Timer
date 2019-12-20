@@ -123,7 +123,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	/**
-	 * input 1 = name input 2 = id input 3 = host boolean input 4 = carname
+	 * input 1 = id input 2 = name input 3 = host boolean input 4 = disconnectedid input 5 = gameversion
 	 * 
 	 */
 
@@ -133,6 +133,11 @@ public class ServerInfo implements Runnable {
 		boolean jump = false;
 		int copyCar = 0;
 		long discID = Long.valueOf(input[4]);
+		
+		//On a different version
+		if(input.length < 6 || !input[5].equals(Main.GAME_VERSION)) {
+			return Main.END_ALL_CLIENT_STRING;
+		}
 
 		// Have key?
 		if (lostPlayers.containsKey(discID)) {
