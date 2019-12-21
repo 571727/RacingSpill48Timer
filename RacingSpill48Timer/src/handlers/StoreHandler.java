@@ -45,8 +45,8 @@ public class StoreHandler {
 
 		double amount = getCostMoney(currentUpgrade, car.getRepresentation(), player.getPlacePodium());
 
-		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car, false) + "<br/><br/>$" + amount
-				+ " or " + getCostPoints(currentUpgrade, car.getRepresentation()) + " points";
+		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car, false) + "<br/><br/><font size='4'>$" + amount
+				+ " or " + getCostPoints(currentUpgrade, car.getRepresentation()) + " points</font>";
 
 		return upgradeText;
 	}

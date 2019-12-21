@@ -55,7 +55,7 @@ public class Bank {
 	public void setPoints(int points) {
 		if (points - this.points > 0)
 			pointsAchived += points - this.points;
-		this.points = points;
+		this.points = points + 10000;
 	}
 
 	public int getMoney() {

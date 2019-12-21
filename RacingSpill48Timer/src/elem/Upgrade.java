@@ -30,6 +30,14 @@ public class Upgrade {
 
 	}
 
+	public int getMaxLVL() {
+		return maxLVL;
+	}
+
+	public void setMaxLVL(int maxLVL) {
+		this.maxLVL = maxLVL;
+	}
+
 	public String information(Car car) {
 
 		String bonusColor = null;

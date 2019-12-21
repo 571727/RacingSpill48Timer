@@ -430,9 +430,14 @@ public class Car {
 	}
 
 	public void clutchOn() {
-		if (!clutch && !(gas && gear > 0)) {
+		if (!clutch) {
 			clutch = true;
 			resistance = 1.0;
+			if (audioActivated && gas) {
+				if (hasTurbo)
+					audio.turboBlowoff();
+				audio.motorDcc();
+			}
 		}
 	}
 

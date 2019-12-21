@@ -29,13 +29,15 @@ public class Store extends Scene {
 	private JLabel information1;
 	private JLabel[] lvlPerUpgrade;
 	private JLabel[] lvlPerUpgrade2;
+	private JLabel[] pricePerUpgrade;
+	private JLabel[] pricePerUpgrade2;
 
 	private JButton[] upgrades;
 	private JButton buyMoney;
 	private JButton buyPoints;
 	private JScrollPane currentStatsPane;
 	private JScrollPane cartStatsPane;
-	private JScrollPane cashStatsPane;
+	private JScrollPane upgradesStatsPane;
 
 	private StoreHandler storeHandler;
 	private Player player;
@@ -51,6 +53,8 @@ public class Store extends Scene {
 		upgrades = new JButton[storeHandler.getUpgradeNames().length];
 		lvlPerUpgrade = new JLabel[storeHandler.getUpgradeNames().length];
 		lvlPerUpgrade2 = new JLabel[storeHandler.getUpgradeNames().length];
+		pricePerUpgrade = new JLabel[storeHandler.getUpgradeNames().length];
+		pricePerUpgrade2 = new JLabel[storeHandler.getUpgradeNames().length];
 
 		for (int i = 0; i < upgrades.length; i++) {
 			upgrades[i] = new JButton(storeHandler.getUpgradeName(i));
@@ -61,6 +65,11 @@ public class Store extends Scene {
 			add(lvlPerUpgrade[i]);
 			lvlPerUpgrade2[i] = new JLabel();
 			add(lvlPerUpgrade2[i]);
+
+			pricePerUpgrade[i] = new JLabel();
+			add(pricePerUpgrade[i]);
+			pricePerUpgrade2[i] = new JLabel();
+			add(pricePerUpgrade2[i]);
 		}
 
 		currentStats = new JLabel();
@@ -70,8 +79,8 @@ public class Store extends Scene {
 		cartStatsPane = new JScrollPane(cartStats);
 		cartStatsPane.setPreferredSize(new Dimension(200, 150));
 		upgradesStats = new JLabel();
-		cashStatsPane = new JScrollPane(upgradesStats);
-		cashStatsPane.setPreferredSize(new Dimension(200, 150));
+		upgradesStatsPane = new JScrollPane(upgradesStats);
+		upgradesStatsPane.setPreferredSize(new Dimension(200, 150));
 		information0 = new JLabel();
 		information1 = new JLabel();
 		playerInformation = new JLabel();
@@ -127,9 +136,11 @@ public class Store extends Scene {
 				(int) buyW, bh);
 
 		for (int i = 0; i < upgrades.length; i++) {
-			upgrades[i].setBounds(btnX, (int) ((from + i) * bh + i * margin), bw, bh);
+			upgrades[i].setBounds(btnX - 35, (int) ((from + i) * bh + i * margin), bw, bh);
 			lvlPerUpgrade[i].setBounds(btnX - 80, (int) ((from + i) * bh + i * margin), bw, bh);
-			lvlPerUpgrade2[i].setBounds(btnX - 78, (int) ((from + i) * bh + i * margin) + 2, bw, bh) ;
+			lvlPerUpgrade2[i].setBounds(btnX - 78, (int) ((from + i) * bh + i * margin) + 2, bw, bh);
+			pricePerUpgrade[i].setBounds(btnX + bw - 28, (int) ((from + i) * bh + i * margin), bw, bh);
+			pricePerUpgrade2[i].setBounds(btnX + bw + 2 - 28, (int) ((from + i) * bh + i * margin) + 2, bw, bh);
 		}
 		int gbW = (int) (bw * 1.4);
 		goBackLobby.setBounds(midRightX - gbW / 2, (int) ((from + upgrades.length) * bh + upgrades.length * margin),
@@ -140,7 +151,7 @@ public class Store extends Scene {
 
 		currentStatsPane.setBounds(margin, margin, statsPaneW * 2 / 3, statsPaneH);
 		cartStatsPane.setBounds(2 * margin + statsPaneW - (statsPaneW * 1 / 3), margin , statsPaneW * 2 / 3, statsPaneH);
-		cashStatsPane.setBounds(3 * margin + 2 * statsPaneW - (statsPaneW * 2 / 3), margin , statsPaneW * 5 / 3, statsPaneH);
+		upgradesStatsPane.setBounds(3 * margin + 2 * statsPaneW - (statsPaneW * 2 / 3), margin , statsPaneW * 5 / 3, statsPaneH);
 		playerInformation.setBounds(margin, margin + statsPaneH + font.getSize(), statsPaneW, font.getSize() * 3 / 2);
 		playerInformation.setFont(font);
 //		lobbyInfoScrollPane.setBounds(marginW, margin, paneSizeW, paneSizeH);
@@ -149,7 +160,7 @@ public class Store extends Scene {
 
 		add(currentStatsPane);
 		add(cartStatsPane);
-		add(cashStatsPane);
+		add(upgradesStatsPane);
 		add(goBackLobby);
 		add(buyMoney);
 		add(buyPoints);
@@ -167,16 +178,20 @@ public class Store extends Scene {
 	public void updateText(String currentPlace, int currentLength) {
 		this.currentPlace = currentPlace;
 		this.currentLength = currentLength;
-		currentStats.setText(player.getCar().showStats());
+		currentStats.setText(player.getCar().showStats() + "<br/><br/><font size='4'>"+ player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m</font></html>");
 		upgradesStats
 				.setText("<html><br><font size='6'>Upgrade bonuses:</font><br><br>" + storeHandler.getUpgrades().getBonuses() + "</html>");
-		cartStats.setText(player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m");
+		cartStats.setText("Upgrade displayed here...");
 		buyPoints.setEnabled(false);
 		buyMoney.setEnabled(false);
 		
 		for(int i = 0; i < lvlPerUpgrade.length; i++) {
 			lvlPerUpgrade[i].setText("<html><font color='#00ff00' size='10'>" + player.getCar().getUpgradeLVL(i) + "</font></html>");
 			lvlPerUpgrade2[i].setText("<html><font color='black' size='10'>" + player.getCar().getUpgradeLVL(i) + "</font></html>");
+
+			String price = "$" + storeHandler.getCostMoney(i, player.getCar().getRepresentation(), player.getPlacePodium());
+			pricePerUpgrade[i].setText("<html><font color='#00ff00' size='6'>" + price + "</font></html>");
+			pricePerUpgrade2[i].setText("<html><font color='black' size='6'>" + price+ "</font></html>");
 		}
 
 		information0.setText(storeHandler.getInformation(player.getCar(), 0, 4));
@@ -196,7 +211,7 @@ public class Store extends Scene {
 
 		String upgradedCarText = storeHandler.selectUpgrade(source.getText(), player.getCar(), player);
 
-		cartStats.setText(upgradedCarText + "<br/><br/>" + player.getPointsAndMoney() + "<br/><br/>" + currentPlace + ", " + currentLength + " m</html>");
+		cartStats.setText(upgradedCarText +"</html>");
 
 	}
 

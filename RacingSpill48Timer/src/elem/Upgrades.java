@@ -21,8 +21,8 @@ public class Upgrades {
 
 		// Clutch
 		int clutchID = 0;
-		int[] clutchLVLs = { 3, 5, 7, 9 };
-		int clutchMaxLVL = 20;
+		int[] clutchLVLs = { 3, 5, 7, 14 };
+		int clutchMaxLVL = 14;
 		float[] clutchRegUpgrades = { 50, -1, -1, -1, -1, 10, -1, 20 };
 		boolean[] clutchRegUpgradesPercent = { false, false, false, false, false, true, false, true };
 		UpgradeRegularValues clutchRegularUpgradeText = new UpgradeRegularValues(clutchRegUpgrades,
@@ -30,10 +30,10 @@ public class Upgrades {
 
 		// Weight
 		int weightID = 1;
-		int[] weightLVLs = { 3, 5, 7, 10 };
-		int weightMaxLVL = 10;
+		int[] weightLVLs = { 3, 5, 7 };
+		int weightMaxLVL = 7;
 
-		float[] weightRegUpgrades = { -1, -3, -1, -1, -1, -1, -1, -1 };
+		float[] weightRegUpgrades = { -1, -2, -1, -1, -1, -1, -1, -1 };
 		boolean[] weightRegUpgradesPercent = { false, true, false, false, false, false, false, false };
 		UpgradeRegularValues weightRegularUpgradeText = new UpgradeRegularValues(weightRegUpgrades,
 				weightRegUpgradesPercent);
@@ -75,7 +75,7 @@ public class Upgrades {
 
 		// Gears
 		int gearID = 6;
-		int[] gearLVLs = { 3, 7, 12 };
+		int[] gearLVLs = { 3, 5, 10 };
 		int gearMaxLVL = 20;
 		float[] gearRegUpgrades = { -1, -3, -1, -1, -1, 92, -1, -1 };
 		boolean[] gearRegUpgradesPercent = { false, true, false, false, false, false, false, false };
@@ -83,7 +83,7 @@ public class Upgrades {
 
 		// Block
 		int blockID = 7;
-		int[] blockLVLs = { 5, 7, 9 };
+		int[] blockLVLs = { 5, 7, 8 };
 		int blockMaxLVL = 20;
 		float[] blockRegUpgrades = { 170, 14, -1, -1, -1, -1, -1, -1 };
 		boolean[] blockRegUpgradesPercent = { false, true, false, false, false, false, false, false };
@@ -123,7 +123,7 @@ public class Upgrades {
 		} };
 		String[] weightTexts = { "\"" + Upgrades.UPGRADE_NAMES[turboID] + "\" no longer increases weight",
 				"\"" + Upgrades.UPGRADE_NAMES[blockID] + "\" no longer increases weight",
-				UPGRADE_NAMES[clutchID] + " switch TB area with weight", "Weight = 69" };
+				UPGRADE_NAMES[clutchID] + " switch TB area with - 10 % weight"};
 		UpgradeAction[] weightBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			if (notRep)
@@ -137,13 +137,9 @@ public class Upgrades {
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
 			if (notRep) {
-				clutchRegularUpgradeText.setValue(1, - clutchRegularUpgradeText.getValue(7), true);
+				clutchRegularUpgradeText.setValue(1, - 10, true);
 				clutchRegularUpgradeText.setValue(7, -1, false);
 			}
-			return -1;
-		}, (CarRep car, boolean notRep) -> {
-			// Fourth bonus
-			car.setWeight(69);
 			return -1;
 		} };
 		String[] fuelTexts = { "+ " + fuelHP[1] + " HP instead from " + UPGRADE_NAMES[fuelID],
@@ -244,7 +240,7 @@ public class Upgrades {
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Fourth bonus
-			upgradePrices[gearID].addSale(50, blockID);
+			upgradePrices[gearID].addSale(0.5, blockID);
 			return -1;
 		} };
 		String[] tbTexts = { "+ 50 % NOS boost time", "+ 100 % more NOS boost always", "+ 30 % TS", "" };
@@ -373,7 +369,7 @@ public class Upgrades {
 	public String getUpgradedStats(int i, Car car, boolean notRep) {
 		CarRep newCar = upgradeNewCarRep(i, car, notRep);
 		String s = newCar.getStatsNew(car.getUpgradeLVL(i), newCar.getUpgradeLVL(i));
-		return s;
+		return "<font size='4'>" + UPGRADE_NAMES[i] + "</font><br/>" + s;
 	}
 
 	public CarRep upgradeNewCarRep(int i, Car car, boolean notRep) {
@@ -427,10 +423,15 @@ public class Upgrades {
 					break;
 				res += "LVL " + bonusTextLVLs[i][u] + ": " + bonusText[i][u] + "<br/>";
 			}
+			res += "Max LVL: " + getUpgrade(i).getMaxLVL() + "<br/>";
 			res += "<br/>";
 		}
 		
 		
 		return res;
+	}
+	
+	public Upgrade getUpgrade(int i) {
+		return upgradeValues[i];
 	}
 }

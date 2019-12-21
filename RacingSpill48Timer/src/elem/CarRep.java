@@ -296,11 +296,11 @@ public class CarRep implements Cloneable {
 	}
 
 	public String getStatsNew(int prevLVL, int nextLVL) {
-		return "From LVL " + prevLVL + " to LVL " + nextLVL + ": <br/>" + stats();
+		return "<font size='4'>From LVL " + prevLVL + " to LVL " + nextLVL + ":</font><br/>" + stats();
 	}
 
 	public String getStatsCurrent() {
-		return "<html>" + name + ": <br/>" + stats();
+		return "<html><font size='4'>" + name + ":</font><br/>" + stats();
 	}
 
 	private String stats() {
