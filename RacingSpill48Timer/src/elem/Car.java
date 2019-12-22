@@ -102,6 +102,7 @@ public class Car {
 			gearTop = 5;
 			rpmTop = 2500;
 			speedTop = 172;
+			
 		} else if (name.equals(Main.CAR_TYPES[2])) {
 			rpmIdle = 800;
 			hp = 64;
@@ -127,6 +128,10 @@ public class Car {
 		representation = new CarRep(name, nosTimeStandard, nosBottleAmountStandard, nosStrengthStandard, hp, weight,
 				speedTop, rpmIdle, rpmTop, gearTop, tireGripTimeStandard, tireGripStrengthStandard, tireGripAreaTop,
 				tireGripAreaBottom, upgradeLVLs, gearsbalance, maxValuePitch);
+		
+		if(name.equals(Main.CAR_TYPES[1])) {
+			representation.guarenteeRightShift();
+		}
 
 	}
 
