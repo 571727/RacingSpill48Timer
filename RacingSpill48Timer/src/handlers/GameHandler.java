@@ -7,14 +7,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import audio.BgMusicListener;
+import audio.MusicAudio;
 import audio.ButtonAudio;
 import scenes.Options;
 import startup.Main;
 
 public class GameHandler {
 
-	public static BgMusicListener music;
+	public static MusicAudio music;
 	public static ButtonAudio ba;
 	private static File file;
 	private static List<String> lines;
@@ -34,7 +34,7 @@ public class GameHandler {
 		new SceneHandler(numScenes, options);
 		SceneHandler.instance.changeScene(0);
 
-		music = new BgMusicListener(0);
+		music = new MusicAudio(0);
 		ba = new ButtonAudio();
 		// Loop som kj�rer viss kode basert p� scene, hvis i det hele tatt-
 

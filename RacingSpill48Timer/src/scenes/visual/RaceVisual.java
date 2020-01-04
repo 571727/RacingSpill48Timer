@@ -17,7 +17,7 @@ import adt.VisualElement;
 import elem.Animation;
 import elem.MovingAnimation;
 import elem.PlacedAnimation;
-import elem.Player;
+import player_local.Player;
 import scenes.Race;
 import startup.Main;
 

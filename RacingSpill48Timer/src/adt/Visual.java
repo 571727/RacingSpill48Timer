@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.Random;
 
-import elem.Player;
+import player_local.Player;
 import scenes.Race;
 
 public abstract class Visual extends Canvas {

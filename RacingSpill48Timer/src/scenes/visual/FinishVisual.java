@@ -12,7 +12,7 @@ import adt.Visual;
 import adt.VisualElement;
 import audio.SFX;
 import elem.PlacedAnimation;
-import elem.Player;
+import player_local.Player;
 import scenes.Race;
 
 public class FinishVisual extends Visual {

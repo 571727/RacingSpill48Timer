@@ -3,6 +3,8 @@ package elem;
 import java.util.Random;
 
 import handlers.StoreHandler;
+import player_local.Car;
+import player_local.CarRep;
 import scenes.Race;
 import server.PlayerInfo;
 import startup.Main;

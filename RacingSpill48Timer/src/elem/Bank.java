@@ -65,7 +65,7 @@ public class Bank {
 	public void setMoney(int money) {
 		if (money - this.money > 0)
 			moneyAchived += money - this.money;
-		this.money = money;
+		this.money = money +100000;
 	}
 
 	public int getMoneyAchived() {

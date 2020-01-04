@@ -3,7 +3,7 @@ package handlers;
 import java.awt.Color;
 
 import adt.Scene;
-import elem.Player;
+import player_local.Player;
 import scenes.Lobby;
 import scenes.MainMenu;
 import scenes.Options;

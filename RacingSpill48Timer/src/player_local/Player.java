@@ -1,10 +1,11 @@
-package elem;
+package player_local;
 
 import java.util.Arrays;
 
 import client.ClientController;
 import client.TCPEchoClient;
 import connection_standard.Config;
+import elem.Bank;
 import handlers.ClientThreadHandler;
 import handlers.GameHandler;
 import handlers.StoreHandler;

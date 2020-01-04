@@ -1,42 +1,17 @@
-package elem;
+package player_local;
 
 import audio.RaceAudio;
 import audio.SFX;
+import elem.Upgrades;
 import startup.Main;
 
 public class Car {
 
-	private CarRep representation;
+	private CarFuncs funcs;
+	private CarRep rep;
+	private CarStats stats;
 	private RaceAudio audio;
-	private boolean gas;
-	private boolean idle;
-	private boolean brake;
-	private boolean clutch;
-	private boolean hasTurbo;
-	private boolean upgradedGears;
-	private boolean hasNOS;
-	private boolean gearTooHigh;
-	private boolean NOSON;
-	private boolean engineOn;
-	private boolean changed;
-	private int nosBottleAmountLeft;
-	private boolean soundBarrierBroken;
-	private int soundBarrierSpeed;
-	private long nosTimeLeft;
-	private double speedLinear;
-	private double speedActual;
-	private double spdinc;
-	private double distance;
-	private double resistance;
-	private int gear;
-	private double rpm;
-	private boolean audioActivated;
-	private long tireGripTimeLeft;
-	private double drag;
-	private boolean TireGripON;
-	private boolean sequentialShift;
-	private boolean failedShift;
-	private double spool;
+	
 
 	/**
 	 * carName + "#" + hp + "#" + (totalWeight - weightloss) + "#" +
@@ -44,147 +19,28 @@ public class Car {
 	 * highestSpeedAchived;
 	 */
 	public Car(String[] cloneToServerString, int fromIndex) {
-		representation = new CarRep(cloneToServerString, fromIndex);
+		rep = new CarRep(cloneToServerString, fromIndex);
+		init();
 	}
 
-	public Car(String cartype, boolean audioActivated) {
-
-		hasTurbo = false;
-		hasNOS = false;
-		gearTooHigh = false;
-		this.audioActivated = audioActivated;
-
-		soundBarrierSpeed = 1234;
-		speedLinear = 0f;
-		nosTimeLeft = 0;
-		resistance = 1.0;
-		drag = 1;
-
-		String name;
-		int nosTimeStandard;
-		int nosBottleAmountStandard;
-		double nosStrengthStandard;
-		double hp;
-		double weight;
-		double speedTop;
-		int rpmIdle;
-		int rpmTop;
-		int gearTop;
-		int tireGripTimeStandard;
-		double tireGripStrengthStandard;
-		double tireGripAreaTop;
-		double tireGripAreaBottom;
-		int[] upgradeLVLs;
-		double gearsbalance = 1.0;
-		double maxValuePitch = 2;
-
-		name = cartype;
-		tireGripTimeStandard = 1000;
-		tireGripStrengthStandard = 1;
-		tireGripAreaTop = 24;
-		tireGripAreaBottom = 4;
-		nosStrengthStandard = 0;
-		nosTimeStandard = 1500;
-		nosBottleAmountStandard = 0;
-		upgradeLVLs = new int[Upgrades.UPGRADE_NAMES.length];
-
-		if (name.equals(Main.CAR_TYPES[0])) {
-			rpmIdle = 1000;
-			hp = 220;
-			weight = 1400;
-			gearTop = 5;
-			rpmTop = 7800;
-			speedTop = 245;
-		} else if (name.equals(Main.CAR_TYPES[1])) {
-			rpmIdle = 300;
-			hp = 310;
-			weight = 3207;
-			gearTop = 5;
-			rpmTop = 2500;
-			speedTop = 172;
-			
-		} else if (name.equals(Main.CAR_TYPES[2])) {
-			rpmIdle = 800;
-			hp = 64;
-			weight = 1090;
-			gearTop = 5;
-			rpmTop = 5500;
-			speedTop = 162;
-			nosBottleAmountStandard = 1;
-			nosStrengthStandard = 0.6;
-			maxValuePitch = 4;
-		} else {
-			rpmIdle = 1200;
-			hp = 300;
-			weight = 1549;
-			gearTop = 6;
-			rpmTop = 9200;
-			speedTop = 259;
-		}
-
-		if (audioActivated)
-			audio = new RaceAudio(name);
-
-		representation = new CarRep(name, nosTimeStandard, nosBottleAmountStandard, nosStrengthStandard, hp, weight,
-				speedTop, rpmIdle, rpmTop, gearTop, tireGripTimeStandard, tireGripStrengthStandard, tireGripAreaTop,
-				tireGripAreaBottom, upgradeLVLs, gearsbalance, maxValuePitch);
-		
-		if(name.equals(Main.CAR_TYPES[1])) {
-			representation.guarenteeRightShift();
-		}
-
+	public Car(String cartype) {
+		rep = CarsExpert.getRep(cartype);
+		init();
 	}
-
-	public void updateVolume() {
-		if (audioActivated)
-			audio.updateVolume();
-	}
-
-	public boolean isHasTurbo() {
-		return hasTurbo;
-	}
-
-	public void setHasTurbo(boolean hasTurbo) {
-		this.hasTurbo = hasTurbo;
-	}
-
-	public boolean isHasNOS() {
-		return hasNOS;
-	}
-
-	public void setHasNOS(boolean hasNOS) {
-		this.hasNOS = hasNOS;
-	}
-
-	public double getSpeedTop() {
-		return representation.getSpeedTop();
-	}
-
-	public void setSpeedTop(double topSpeed) {
-		representation.setSpeedTop(Math.round(topSpeed));
+	
+	public void init() {
+		stats = new CarStats();
+		funcs = new CarFuncs();
 	}
 
 	public void updateSpeed(double tickFactor) {
 
-		updateSpeedInc();
+		funcs.updateSpeedInc(rep, stats);
 		double speedLinearChange = 0;
 
-		if (engineOn) {
-			changed = false;
-
+		if (stats.isEngineOn()) {
 			// MOVEMENT
-			if (!clutch && gear > 0 && idle && !gas) {
-				setEngineOn(false);
-			} else if (gas && !clutch && gearCheck()) {
-
-				speedLinearChange += accelerateCar(System.currentTimeMillis());
-				idle = false;
-
-			} else {
-				speedLinearChange += decelerateCar();
-				checkIdle();
-			}
-
+				speedLinearChange += funcs.movement(rep, stats, audio);
 			// RPM
 			updateRPM(tickFactor);
 
@@ -195,10 +51,7 @@ public class Car {
 				audio.straightcutgearsPitch(speedLinear, representation.getSpeedTop());
 			}
 		} else {
-			if (!changed) {
-				changed = true;
 				resetBooleans();
-			}
 
 			speedLinearChange += decelerateCar();
 		}
@@ -264,14 +117,7 @@ public class Car {
 		return brake;
 	}
 
-	public double decelerateCar() {
-		double dec = 0;
-
-		if (speedLinear > 0)
-			dec = -0.5f;
-
-		return dec;
-	}
+	
 
 	public void calculateDrag() {
 		drag = -Math.pow(speedActual / representation.getSpeedTop(), 5) + 1;
@@ -306,51 +152,18 @@ public class Car {
 		distance += (speedActual / 90) * tickFactor;
 	}
 
-	public double accelerateCar(long comparedTimeLeft) {
-		double inc = 0;
-
-		if (speedLinear < ((gear - 1) * (500 / representation.getGearTop()) - 35)) {
-			// Shifted too early
-			inc = spdinc / 6;
-			gearTooHigh = true;
-
-		} else {
-			// Perfect shift
-			inc = spdinc;
-			gearTooHigh = false;
-		}
-
-		if (nosTimeLeft > comparedTimeLeft) {
-			inc += representation.getNosStrengthStandard();
-			NOSON = true;
-		} else {
-			NOSON = false;
-		}
-
-		if (tireGripTimeLeft > comparedTimeLeft) {
-			inc += representation.getTireGripStrengthStandard();
-			TireGripON = true;
-		} else {
-			TireGripON = false;
-		}
-
-		return inc;
+	public void setEngineOn() {
+		audio.startEngine();
+		stats.setEngineOn();
+	}
+	
+	public void setEngineOff() {
+		setEngineOff();
+		audio.stopMotor();
+		checkIdle();
 	}
 
-	private void checkIdle() {
-		if (speedActual < 2 && !idle) {
-			if (engineOn) {
-				idle = true;
-				if (audioActivated)
-					audio.motorIdle();
-			} else {
-				rpm = 0;
-				if (audioActivated)
-					audio.stopAll();
-			}
-		}
-	}
-
+	
 	public void tryGearBoost() {
 		int rs = rightShift();
 		if (rs == 2) {
@@ -379,23 +192,9 @@ public class Car {
 		this.speedActual = speedActual;
 	}
 
-	private float gearMax() {
-		return gear * (500 / representation.getGearTop());
-	}
 
-	private boolean gearCheck() {
-		if (isGearCorrect()) {
-			return true;
-		} else {
-			if (audioActivated && gear > 0 || rpm + 100 >= representation.getRpmTop())
-				audio.redline();
-			return false;
-		}
-	}
 
-	public boolean isGearCorrect() {
-		return speedLinear < gearMax();
-	}
+	
 
 	public boolean isTopGear() {
 		return gear == representation.getGearTop();
@@ -505,34 +304,11 @@ public class Car {
 	}
 
 	public void reset() {
-		brake = false;
-		failedShift = false;
-		clutch = false;
-		resetBooleans();
-		engineOn = false;
-		soundBarrierBroken = false;
-		speedLinear = 0f;
-		nosTimeLeft = 0;
-		nosBottleAmountLeft = representation.getNosBottleAmountStandard();
-		speedActual = 0;
-		distance = 0;
-		gear = 0;
-		rpm = 0;
-		tireGripTimeLeft = 0;
-		resistance = 1.0;
-		drag = 1;
-		if (audioActivated) {
 			audio.stopAll();
 			audio.closeAll();
-			if (representation.getUpgradeLVL(3) >= 1) {
-				// Turbo
-				hasTurbo = true;
-			}
+			
 
-		}
 		updateSpeedInc();
-		sequentialShift = representation.isSequentialShift();
-		upgradedGears = sequentialShift;
 	}
 
 	public boolean isSequentialShift() {
@@ -543,24 +319,6 @@ public class Car {
 		this.sequentialShift = sequentialShift;
 	}
 
-	private void resetBooleans() {
-		idle = false;
-		gas = false;
-		NOSON = false;
-	}
-
-	public void updateSpeedInc() {
-		double w = representation.getWeight();
-		double rpmCalc = 1;
-		if (!representation.isClutchSuper())
-			rpmCalc = (double) rpm / (double) representation.getRpmTop();
-
-		double hp = representation.getHp();
-		if (representation.doesSpool())
-			hp += (representation.getTurboHP() * spool) - representation.getTurboHP();
-
-		spdinc = 6 * (hp * rpmCalc / w * representation.getGearsbalance()) * drag;
-	}
 
 	public String showStats(int prevLVL, int nextLVL) {
 		return representation.getStatsNew(prevLVL, nextLVL);
@@ -745,23 +503,7 @@ public class Car {
 		return engineOn;
 	}
 
-	public void setEngineOn(boolean engineOn) {
-		this.engineOn = engineOn;
-		if (!engineOn) {
-			rpm = 0;
-			audio.stopMotor();
-			checkIdle();
 
-		} else if (audioActivated) {
-
-			audio.startEngine();
-		}
-
-		if (speedActual <= 1 && gear > 0 && !clutch)
-			failedShift = true;
-		else
-			failedShift = false;
-	}
 
 	public void setEngineOnActual(boolean b) {
 		this.engineOn = b;

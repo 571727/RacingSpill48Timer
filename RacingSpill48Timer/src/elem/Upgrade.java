@@ -1,6 +1,8 @@
 package elem;
 
 import adt.UpgradeAction;
+import player_local.Car;
+import player_local.CarRep;
 
 public class Upgrade {
 

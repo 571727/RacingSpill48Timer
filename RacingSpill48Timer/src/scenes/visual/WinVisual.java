@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import adt.Visual;
 import adt.VisualElement;
 import audio.SFX;
-import elem.CarRep;
-import elem.Player;
 import handlers.GameHandler;
+import player_local.CarRep;
+import player_local.Player;
 import scenes.Race;
 
 //Vis også tid osv more information

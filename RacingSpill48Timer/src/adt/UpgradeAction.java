@@ -1,6 +1,6 @@
 package adt;
 
-import elem.CarRep;
+import player_local.CarRep;
 
 public interface UpgradeAction {
 

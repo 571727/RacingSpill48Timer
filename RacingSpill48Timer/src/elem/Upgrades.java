@@ -1,6 +1,8 @@
 package elem;
 
 import adt.UpgradeAction;
+import player_local.Car;
+import player_local.CarRep;
 
 //Dyrere for de som leder: 1st (+10%), 2nd (5%), 3rd (2%) osv.
 
@@ -21,16 +23,16 @@ public class Upgrades {
 
 		// Clutch
 		int clutchID = 0;
-		int[] clutchLVLs = { 3, 5, 7, 14 };
-		int clutchMaxLVL = 14;
-		float[] clutchRegUpgrades = { 50, -1, -1, -1, -1, 10, -1, 20 };
+		int[] clutchLVLs = { 3, 5, 8 };
+		int clutchMaxLVL = 8;
+		float[] clutchRegUpgrades = { 40, -1, -1, -1, -1, 10, -1, 20 };
 		boolean[] clutchRegUpgradesPercent = { false, false, false, false, false, true, false, true };
 		UpgradeRegularValues clutchRegularUpgradeText = new UpgradeRegularValues(clutchRegUpgrades,
 				clutchRegUpgradesPercent);
 
 		// Weight
 		int weightID = 1;
-		int[] weightLVLs = { 3, 5, 7 };
+		int[] weightLVLs = { 2, 5, 7 };
 		int weightMaxLVL = 7;
 
 		float[] weightRegUpgrades = { -1, -2, -1, -1, -1, -1, -1, -1 };
@@ -49,7 +51,7 @@ public class Upgrades {
 
 		// Turbo
 		int turboID = 3;
-		int[] turboLVLs = { 3, 7, 9 };
+		int[] turboLVLs = { 3, 5, 7 };
 		int turboMaxLVL = 20;
 		float[] turboRegUpgrades = { 100, 2, -1, -1, -1, -1, -1, -1 };
 		boolean[] turboRegUpgradesPercent = { false, true, false, false, false, false, false, false };
@@ -100,8 +102,8 @@ public class Upgrades {
 		UpgradeRegularValues tbRegularUpgradeText = new UpgradeRegularValues(tbRegUpgrades, tbRegUpgradesPercent);
 
 		String[] clutchTexts = { UPGRADE_NAMES[gearID] + " - 6 % weight instead", "Virtually guaranteed TB",
-				"+ 0.2 extra TB", "Super clutch (equal power at any RPM except at too early shift)" };
-		
+				"Super clutch (equal power at any RPM except at too early shift)" };
+
 		UpgradeAction[] clutchBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			if (notRep)
@@ -113,17 +115,12 @@ public class Upgrades {
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
-			if (notRep)
-				tbRegularUpgradeText.setValue(6, tbRegularUpgradeText.getValue(6) + 0.2f, false);
-			return -1;
-		}, (CarRep car, boolean notRep) -> {
-			// Fourth bonus
 			car.setClutchSuper(true);
 			return -1;
 		} };
 		String[] weightTexts = { "\"" + Upgrades.UPGRADE_NAMES[turboID] + "\" no longer increases weight",
 				"\"" + Upgrades.UPGRADE_NAMES[blockID] + "\" no longer increases weight",
-				UPGRADE_NAMES[clutchID] + " switch TB area with - 10 % weight"};
+				UPGRADE_NAMES[clutchID] + " switch TB area with - 10 % weight" };
 		UpgradeAction[] weightBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			if (notRep)
@@ -137,7 +134,7 @@ public class Upgrades {
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
 			if (notRep) {
-				clutchRegularUpgradeText.setValue(1, - 10, true);
+				clutchRegularUpgradeText.setValue(1, -10, true);
 				clutchRegularUpgradeText.setValue(7, -1, false);
 			}
 			return -1;
@@ -159,8 +156,8 @@ public class Upgrades {
 			gearRegularUpgradeText.setValue(5, 20, true);
 			return -1;
 		} };
-		String[] turboTexts = { "\"" + Upgrades.UPGRADE_NAMES[4] + "\" now contains an additional bottle",
-				"Everything gets on sale! 10 % off!", "Turbo no longer spools" };
+		String[] turboTexts = { "\"" + Upgrades.UPGRADE_NAMES[nosID] + "\" now contains an additional bottle",
+				"Everything gets on sale! 10 % off!", Upgrades.UPGRADE_NAMES[turboID] + " no longer spools and now gives + 15 % TS" };
 		UpgradeAction[] turboBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			car.setNosBottleAmountStandard(car.getNosBottleAmountStandard() + 1);
@@ -177,9 +174,11 @@ public class Upgrades {
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
 			car.setDoesSpool(false);
+			turboRegularUpgradeText.setValue(5, 15, true);
 			return -1;
 		} };
-		String[] nosTexts = { "+ 0.1 TB for " + UPGRADE_NAMES[tbID], "- 50 % $ \"" + Upgrades.UPGRADE_NAMES[8] + "\"", "+ 420 TS" };
+		String[] nosTexts = { "+ 0.1 TB for " + UPGRADE_NAMES[tbID], "- 50 % $ \"" + Upgrades.UPGRADE_NAMES[8] + "\"",
+				"+ 420 TS" };
 		UpgradeAction[] nosBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			tbRegularUpgradeText.setValue(6, tbRegularUpgradeText.getValue(6) + 0.1f, false);
@@ -229,10 +228,10 @@ public class Upgrades {
 			car.setGearTop(1);
 			return -1;
 		} };
-		String[] blockTexts = { "+ 100 % TB time", "+ 100 % current TB", "- 50 % $ " + UPGRADE_NAMES[gearID] };
+		String[] blockTexts = { "+ 50 % TB time", "+ 100 % current TB", "- 50 % $ " + UPGRADE_NAMES[gearID] };
 		UpgradeAction[] blockBonuses = { (CarRep car, boolean notRep) -> {
 			// Second bonus
-			car.setTireGripTimeStandard(car.getTireGripTimeStandard() * 2);
+			car.setTireGripTimeStandard((int) (car.getTireGripTimeStandard() * 1.5));
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
@@ -251,7 +250,7 @@ public class Upgrades {
 		}, (CarRep car, boolean notRep) -> {
 			// Second bonus
 			car.setNosStrengthStandard(car.getNosStrengthStandard() * 2);
-			if(notRep)
+			if (notRep)
 				nosRegularUpgradeText.setValue(2, nosRegularUpgradeText.getValue(2), false);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
@@ -269,7 +268,7 @@ public class Upgrades {
 		bonusText[gearID] = gearTexts;
 		bonusText[blockID] = blockTexts;
 		bonusText[tbID] = tbTexts;
-		
+
 		bonusTextLVLs[clutchID] = clutchLVLs;
 		bonusTextLVLs[weightID] = weightLVLs;
 		bonusTextLVLs[fuelID] = fuelLVLs;
@@ -279,8 +278,7 @@ public class Upgrades {
 		bonusTextLVLs[gearID] = gearLVLs;
 		bonusTextLVLs[blockID] = blockLVLs;
 		bonusTextLVLs[tbID] = tbLVLs;
-		
-		
+
 		try {
 
 			upgradeValues[clutchID] = new Upgrade((CarRep car, boolean notRep) -> {
@@ -415,22 +413,21 @@ public class Upgrades {
 
 	public String getBonuses() {
 		String res = "";
-		
-		for(int i = 0; i < UPGRADE_NAMES.length; i++) {
+
+		for (int i = 0; i < UPGRADE_NAMES.length; i++) {
 			res += UPGRADE_NAMES[i] + "<br/>";
-			for(int u = 0; u < bonusText[i].length; u++) {
-				if(bonusText[i][u] == null || bonusText[i][u].isEmpty())
+			for (int u = 0; u < bonusText[i].length; u++) {
+				if (bonusText[i][u] == null || bonusText[i][u].isEmpty())
 					break;
 				res += "LVL " + bonusTextLVLs[i][u] + ": " + bonusText[i][u] + "<br/>";
 			}
 			res += "Max LVL: " + getUpgrade(i).getMaxLVL() + "<br/>";
 			res += "<br/>";
 		}
-		
-		
+
 		return res;
 	}
-	
+
 	public Upgrade getUpgrade(int i) {
 		return upgradeValues[i];
 	}

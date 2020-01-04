@@ -2,11 +2,11 @@ package handlers;
 
 import audio.SFX;
 import elem.Bank;
-import elem.Car;
-import elem.CarRep;
-import elem.Player;
 import elem.UpgradePrice;
 import elem.Upgrades;
+import player_local.Car;
+import player_local.CarRep;
+import player_local.Player;
 
 /**
  * 

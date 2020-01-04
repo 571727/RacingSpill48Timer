@@ -1,5 +1,7 @@
 package elem;
 
+import player_local.CarRep;
+
 public class UpgradeRegularValues {
 
 	private float[] values;

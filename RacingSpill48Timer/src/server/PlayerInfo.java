@@ -1,7 +1,7 @@
 package server;
 
 import elem.Bank;
-import elem.Car;
+import player_local.Car;
 
 public class PlayerInfo {
 
@@ -82,27 +82,24 @@ public class PlayerInfo {
 		if (allFinished == false)
 			return name + "#" + finished + "#" + timeLapsedInRace + "#0#" + carName;
 		else
-			return name + "#" + finished + "#" + timeLapsedInRace + "#, " + (full ? "" : "+ ") + point + " points" + ", +$" + moneyAdded + "#" + carName;
+			return name + "#" + finished + "#" + timeLapsedInRace + "#, " + (full ? "" : "+ ") + point + " points"
+					+ ", +$" + moneyAdded + "#" + carName;
 	}
 
 	public void addPointsAndMoney(int amountPlayers, int place, int behindLeaderBy, int racesDone) {
 
 		float inflation = (racesDone + 1f) / 2f;
-		int winnerExtraPoint = (place == 0 && behindLeaderBy > 3 && amountPlayers != 1 ? 1 : 0) + 1;
-
+		int winnerExtraPoint = (place == 0 && behindLeaderBy > 5 && amountPlayers != 1 ? 1 : 0) + 1;
+		float stdPrice = 100f;
 		pointsAdded = 0;
 
 		if (!(amountPlayers == -1 || place == -1)) {
 			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
-
-			if (amountPlayers == 1)
-				moneyAdded = (int) (60f * inflation);
-			else if (place > 0)
-				moneyAdded = (int) (100f * place * inflation);
-			else
-				moneyAdded = (int) (40f * inflation);
+			moneyAdded = (int) (stdPrice * inflation);
+			if (place > 0)
+				moneyAdded += (int) (stdPrice * (0.30 * place / (amountPlayers - 1)) * inflation);
 		} else {
-			moneyAdded = (int) (55f * inflation);
+			moneyAdded = (int) (stdPrice * (3 / 2) * inflation);
 		}
 
 		bank.addPoints(pointsAdded);

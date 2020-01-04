@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import adt.GameMode;
 import elem.AI;
-import elem.Car;
 import elem.Upgrades;
+import player_local.Car;
 import startup.Main;
 
 /**

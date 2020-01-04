@@ -2,7 +2,7 @@ package audio;
 
 import handlers.GameHandler;
 
-public class BgMusicListener {
+public class MusicAudio {
 
 	private MP3Audio[] music;
 	private MP3Audio store;
@@ -10,7 +10,7 @@ public class BgMusicListener {
 	private int amount;
 	private boolean stopped;
 
-	public BgMusicListener(int amount) {
+	public MusicAudio(int amount) {
 		// Maybe use action for something later, cause it's awesome
 		playingIndex = -1;
 

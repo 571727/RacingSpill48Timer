@@ -11,10 +11,10 @@ import javax.swing.JScrollPane;
 
 import adt.Scene;
 import audio.SFX;
-import elem.Player;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.StoreHandler;
+import player_local.Player;
 import window.Windows;
 
 public class Store extends Scene {
@@ -206,7 +206,7 @@ public class Store extends Scene {
 	private void showUpgrades(ActionEvent e) {
 		JButton source = (JButton) e.getSource();
 
-		buyPoints.setEnabled(true);
+//		buyPoints.setEnabled(true);
 		buyMoney.setEnabled(true);
 
 		String upgradedCarText = storeHandler.selectUpgrade(source.getText(), player.getCar(), player);

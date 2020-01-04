@@ -4,7 +4,8 @@ import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
-import elem.Player;
+
+import player_local.Player;
 
 public class Windows extends JFrame {
 

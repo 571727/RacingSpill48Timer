@@ -3,7 +3,7 @@ package handlers;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import elem.Car;
+import player_local.Car;
 
 public class RaceKeyHandler implements KeyListener {
 

@@ -22,10 +22,10 @@ import javax.swing.SwingConstants;
 
 import adt.Scene;
 import audio.SFX;
-import elem.Player;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
+import player_local.Player;
 import window.Windows;
 
 public class Lobby extends Scene implements Runnable {

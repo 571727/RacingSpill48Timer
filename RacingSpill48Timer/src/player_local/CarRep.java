@@ -1,5 +1,6 @@
-package elem;
+package player_local;
 
+import elem.Upgrades;
 import startup.Main;
 
 /**
