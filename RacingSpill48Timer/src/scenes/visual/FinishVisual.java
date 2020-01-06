@@ -17,7 +17,7 @@ import scenes.Race;
 
 public class FinishVisual extends Visual {
 
-	private Race race;
+	private RaceScene race;
 	private Player player;
 
 	private Queue<PlacedAnimation> finishedPlayers;
@@ -26,13 +26,13 @@ public class FinishVisual extends Visual {
 	private int resCarHeight;
 	private float resCarMovement;
 
-	public FinishVisual(Player player, Race race) {
+	public FinishVisual(Player player, RaceScene race) {
 		this.race = race;
 		this.player = player;
 
-		resCarWidth = (int) (Race.WIDTH * 1.16f / 2);
-		resCarHeight = (int) (Race.HEIGHT * 0.726f / 2);
-		resCarMovement = Race.WIDTH / 7f;
+		resCarWidth = (int) (RaceScene.WIDTH * 1.16f / 2);
+		resCarHeight = (int) (RaceScene.HEIGHT * 0.726f / 2);
+		resCarMovement = RaceScene.WIDTH / 7f;
 
 		finishedPlayers = new ConcurrentLinkedQueue<PlacedAnimation>();
 
@@ -46,7 +46,7 @@ public class FinishVisual extends Visual {
 			if (ma != null) {
 				ma.moveX((int) (resCarMovement * tickFactor));
 				ma.incrementCurrentFrame(tickFactor);
-				if (ma.getX() > Race.WIDTH)
+				if (ma.getX() > RaceScene.WIDTH)
 					finishedPlayers.remove(ma);
 			}
 		}
@@ -61,7 +61,7 @@ public class FinishVisual extends Visual {
 	public void render(Graphics g) {
 
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(resBackground, 0, 0, Race.WIDTH, Race.HEIGHT, null);
+		g2d.drawImage(resBackground, 0, 0, RaceScene.WIDTH, RaceScene.HEIGHT, null);
 
 		for (PlacedAnimation ma : finishedPlayers) {
 			if (ma != null)
@@ -78,12 +78,12 @@ public class FinishVisual extends Visual {
 
 	public void addFinish(String carname, int frameCount) {
 		finishedPlayers.add(new PlacedAnimation("resCar" + carname, frameCount, -3 * resCarWidth,
-				(int) (Race.HEIGHT - (Race.HEIGHT / 1.9f))));
+				(int) (RaceScene.HEIGHT - (RaceScene.HEIGHT / 1.9f))));
 		SFX.playMP3Sound("driveBy" + carname);
 	}
 
 	@Override
-	public void setRace(Race race) {
+	public void setRace(RaceScene race) {
 		this.race = race;
 	}
 

@@ -1,103 +1,54 @@
 package handlers;
 
-import java.awt.Color;
-
 import adt.Scene;
-import player_local.Player;
-import scenes.Lobby;
-import scenes.MainMenu;
-import scenes.Options;
-import scenes.Race;
-import scenes.Store;
-import startup.Main;
-import window.Windows;
+import adt.SceneChangeAction;
+import scenes.LobbyScene;
+import scenes.MainMenuScene;
+import scenes.SetupScene;
+import scenes.race.EndScene;
+import scenes.race.FinishScene;
+import scenes.race.RaceScene;
 
 public class SceneHandler {
 
-	public static SceneHandler instance;
-
-	private Windows windows;
 	private Scene[] scenes;
 	private int lastScene;
 	private int currentScene;
-	private boolean fullscreen;
 	private boolean specified;
-	public int HEIGHT;
-	public int WIDTH;
 
-	public SceneHandler(int numScenes, Options options) {
-		// Make this class static
-		if (instance != null)
-			// Destroy myself
-			return;
-		else
-			instance = this;
-
-		fullscreen = true;
-		windows = new Windows(1280, 800, Main.GAME_NAME, Color.BLACK);
-		scenes = new Scene[numScenes];
-
-		scenes[2] = new Store();
-		scenes[3] = new Race();
+	public SceneHandler() {
+		scenes = new Scene[7];
+	}
+	
+	public void init(Scene options) {
+		scenes[0] = new MainMenuScene();
+		scenes[1] = new SetupScene();
+		scenes[2] = new LobbyScene();
+		scenes[3] = new RaceScene();
 		scenes[4] = options;
-		scenes[1] = new Lobby((Race) scenes[3], (Store) scenes[2]);
-		scenes[0] = new MainMenu((Lobby) scenes[1]);
-
+		scenes[5] = new FinishScene();
+		scenes[6] = new EndScene();
 	}
 
-	public void addClosingListener(Player player) {
-		windows.closing(player);
+	public void changeSceneAction(InputHandler input) {
+		SceneChangeAction sceneChange = (scenenr)->{
+			if(scenenr == -1)
+				scenenr = this.lastScene;
+			changeScene(scenenr);
+			input.setCurrent(scenes[currentScene]);
+		};
+		for(Scene scene : scenes) {
+			scene.setSceneChangeAction(sceneChange);
+		}
 	}
-
+	
 	public void changeScene(int scenenr) {
 		lastScene = currentScene;
-		windows.remove(scenes[currentScene]);
-		windows.add(scenes[scenenr]);
 		currentScene = scenenr;
-
-		windows.invalidate();
-		windows.validate();
-
-		windows.repaint();
-
-	}
-
-	public void justRemove() {
-		windows.remove(scenes[currentScene]);
-
-		windows.invalidate();
-		windows.validate();
-
-		windows.repaint();
 	}
 
 	public Scene getCurrentScene() {
 		return scenes[currentScene];
-	}
-
-	public Windows getWindows() {
-		return windows;
-	}
-
-	public void setWindows(Windows windows) {
-		this.windows = windows;
-	}
-
-	public void setFullScreen(boolean b) {
-		fullscreen = b;
-	}
-
-	public boolean isFullScreen() {
-		return fullscreen;
-	}
-
-	public int getWIDTH() {
-		return WIDTH;
-	}
-
-	public void setHEIGHT(int i) {
-		HEIGHT = i;
-		WIDTH = HEIGHT * 16 / 9;
 	}
 
 	public int getLastScene() {
@@ -115,5 +66,6 @@ public class SceneHandler {
 	public int getCurrentSceneID() {
 		return currentScene;
 	}
+
 
 }

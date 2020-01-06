@@ -1,6 +1,6 @@
 package handlers;
 
-import audio.SFX;
+import audio.Audio;
 import elem.Bank;
 import elem.UpgradePrice;
 import elem.Upgrades;
@@ -41,41 +41,42 @@ public class StoreHandler {
 				currentUpgrade = i;
 		}
 
-		SFX.playMP3Sound("btn/" + upgradeNames[currentUpgrade]);
+		
+		Audio.BTN.playUpgrade(upgradeNames[currentUpgrade]);
 
-		double amount = getCostMoney(currentUpgrade, car.getRepresentation(), player.getPlacePodium());
+		double amount = getCostMoney(currentUpgrade, car.getRep(), player.getPlacePodium());
 
 		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car, false) + "<br/><br/><font size='4'>$" + amount
-				+ " or " + getCostPoints(currentUpgrade, car.getRepresentation()) + " points</font>";
+				+ " or " + getCostPoints(currentUpgrade, car.getRep()) + " points</font>";
 
 		return upgradeText;
 	}
 
 	public void buyWithMoneyClient(Player player) {
-		boolean bought = buyWithMoney(player.getBank(), currentUpgrade, player.getCar().getRepresentation(),
+		boolean bought = buyWithMoney(player.getBank(), currentUpgrade, player.getCar().getRep(),
 				player.getPlacePodium(), -1);
 
 		if (bought) {
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
-			SFX.playMP3Sound("btn/" + "money");
+			Audio.BTN.playMoney();
 		} else {
-			SFX.playMP3Sound("btn/" + "not_enough");
+			Audio.BTN.playNotEnough();
 		}
 	}
 
 	public void buyWithPointsClient(Player player) {
-		boolean bought = buyWithPoints(player.getBank(), currentUpgrade, player.getCar().getRepresentation(), -1);
+		boolean bought = buyWithPoints(player.getBank(), currentUpgrade, player.getCar().getRep(), -1);
 
 		if (bought) {
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());
 			player.updateCarCloneToServer();
 			player.getCar().reset();
 
-			SFX.playMP3Sound("btn/" + "points");
+			Audio.BTN.playPoints();
 		} else {
-			SFX.playMP3Sound("btn/" + "not_enough");
+			Audio.BTN.playNotEnough();
 		}
 	}
 

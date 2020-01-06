@@ -60,7 +60,7 @@ public class Upgrade {
 			break;
 		}
 
-		if (car.getUpgradeLVL(nameID) < maxLVL) {
+		if (car.getRep().getUpgradeLVL(nameID) < maxLVL) {
 			res = "<b>" + Upgrades.UPGRADE_NAMES[nameID] + "</b>: <br/>" + upgrades.getUpgradeRep() + "<br/>"
 					+ "<font color=" + bonusColor + ">";
 			if (bonusLVL < bonusLVLs.length) {

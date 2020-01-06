@@ -1,7 +1,7 @@
 package player_local;
 
 import elem.Upgrades;
-import startup.Main;
+import main.Main;
 
 /**
  * Used to store stats about Car and more easily communicate Cars with the
@@ -31,7 +31,7 @@ public class CarRep implements Cloneable {
 	private int[] upgradeLVLs;
 	private double gearsbalance;
 	private double maxValuePitch;
-	private int highestSpeedAchived;
+	private double highestSpeedAchived;
 	private boolean clutchSuper;
 	private double turboHP;
 	private boolean doesSpool = true;
@@ -127,7 +127,7 @@ public class CarRep implements Cloneable {
 		return name + "#" + nosTimeStandard + "#" + nosBottleAmountStandard + "#" + nosStrengthStandard + "#" + hp + "#"
 				+ weight + "#" + speedTop + "#" + rpmIdle + "#" + rpmTop + "#" + gearTop + "#" + tireGripTimeStandard
 				+ "#" + tireGripStrengthStandard + "#" + tireGripAreaTop + "#" + tireGripAreaBottom + "#"
-				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch + "#" + highestSpeedAchived + "#"
+				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch + "#" + (int) highestSpeedAchived + "#"
 				+ turboHP + "#" + (doesSpool ? 1 : 0)+ "#" + (sequentialShift ? 1 : 0);
 	}
 
@@ -334,11 +334,11 @@ public class CarRep implements Cloneable {
 	}
 
 	public int getHighestSpeedAchived() {
-		return highestSpeedAchived;
+		return (int) highestSpeedAchived;
 	}
 
-	public void setHighestSpeedAchived(int highestSpeedAchived) {
-		this.highestSpeedAchived = highestSpeedAchived;
+	public void setHighestSpeedAchived(double d) {
+		this.highestSpeedAchived = d;
 	}
 
 	public boolean isClutchSuper() {

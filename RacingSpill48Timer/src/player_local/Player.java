@@ -9,10 +9,12 @@ import elem.Bank;
 import handlers.ClientThreadHandler;
 import handlers.GameHandler;
 import handlers.StoreHandler;
-import startup.Main;
+import main.Main;
 
 /**
  * holds and handles its client. Controls lobby for now.
+ * 
+ * FIXME SEPERATE THE SERVER COMMUNICATION FROM PLAYER INTO ITS OWN SIMILAR CLASS	
  * 
  * @author jonah
  *
@@ -45,7 +47,7 @@ public class Player {
 		this.host = host;
 		id = -200;
 		ready = 0;
-		this.car = new Car(car, true);
+		this.car = new Car(car);
 		echoClient = new TCPEchoClient(ip);
 		bank = new Bank();
 		cth = new ClientThreadHandler(-1);
@@ -74,7 +76,7 @@ public class Player {
 		// Rejoined server
 		if (Integer.valueOf(ids[2]) == 1) {
 			name = ids[3];
-			car.getRepresentation().setClone(ids, 4);
+			car.getRep().setClone(ids, 4);
 		}
 		car.reset();
 
@@ -230,7 +232,7 @@ public class Player {
 	}
 
 	public void updateCarCloneToServer() {
-		client.sendRequest("CAR#" + id + "#" + car.getRepresentation().getCloneString());
+		client.sendRequest("CAR#" + id + "#" + car.getRep().getCloneString());
 	}
 
 	public boolean isGameOver() {

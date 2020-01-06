@@ -2,7 +2,6 @@ package game_modes;
 
 import java.util.Map.Entry;
 
-import adt.GameMode;
 import elem.AI;
 import server.PlayerInfo;
 

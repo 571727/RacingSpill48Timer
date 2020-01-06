@@ -75,7 +75,7 @@ public class WinVisual extends Visual {
 	public void render(Graphics g) {
 
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, Race.WIDTH, Race.HEIGHT);
+		g.fillRect(0, 0, RaceScene.WIDTH, RaceScene.HEIGHT);
 		Graphics2D g2d = (Graphics2D) g;
 
 		if (everyoneDone) {
@@ -92,7 +92,7 @@ public class WinVisual extends Visual {
 			} else {
 				ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, theWinnerIntroAlpha);
 				g2d.setComposite(ac);
-				g2d.drawString(theWinnerIntro, font.getSize(), (Race.HEIGHT / 2) - (font.getSize() / 2));
+				g2d.drawString(theWinnerIntro, font.getSize(), (RaceScene.HEIGHT / 2) - (font.getSize() / 2));
 			}
 
 			g2d.setComposite(ac.derive(1f));
@@ -106,7 +106,7 @@ public class WinVisual extends Visual {
 	}
 
 	@Override
-	public void setRace(Race race) {
+	public void setRace(RaceScene race) {
 
 	}
 
@@ -141,7 +141,7 @@ public class WinVisual extends Visual {
 
 		strings = temp.split("#");
 		alphas = new float[strings.length];
-		font = new Font("Calibri", 0, Race.WIDTH / 40);
+		font = new Font("Calibri", 0, RaceScene.WIDTH / 40);
 	}
 
 	public boolean isOver() {

@@ -1,8 +1,7 @@
 package handlers;
 
 import client.ClientController;
-import client.TCPEchoClient;
-import scenes.Race;
+import window.Timer;
 
 public class ClientThreadHandler {
 
@@ -27,7 +26,7 @@ public class ClientThreadHandler {
 
 		clientThread = new Thread(() -> {
 			long lastTime = System.nanoTime();
-			double amountOfTicks = Race.TICK_STD;
+			double amountOfTicks = Timer.TARGET_TPS;
 			double nsp = 1000000000 / (amountOfTicks / 5.0);
 			double deltap = 0;
 

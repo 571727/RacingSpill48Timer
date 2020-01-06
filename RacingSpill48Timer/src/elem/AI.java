@@ -3,11 +3,11 @@ package elem;
 import java.util.Random;
 
 import handlers.StoreHandler;
+import main.Main;
 import player_local.Car;
 import player_local.CarRep;
 import scenes.Race;
 import server.PlayerInfo;
-import startup.Main;
 
 public class AI extends PlayerInfo {
 
@@ -243,7 +243,7 @@ public class AI extends PlayerInfo {
 
 			// Tiregrip? TODO change value
 			if (chance(tbChance))
-				car.gearBoost(time, 1000 / Race.TICK_STD);
+				car.gearBoost(time, 1000 / RaceScene.TICK_STD);
 
 		}
 
@@ -251,7 +251,7 @@ public class AI extends PlayerInfo {
 		while (car.getDistance() < length) {
 
 			if (car.getNosBottleAmountLeft() > 0 && !car.isNOSON()) {
-				car.nos(time, 1000 / Race.TICK_STD);
+				car.nos(time, 1000 / RaceScene.TICK_STD);
 				System.out.println("NOS!!");
 			}
 
@@ -280,7 +280,7 @@ public class AI extends PlayerInfo {
 
 		// convert time to right timetype
 
-		long tickTime = 1000 / Race.TICK_STD;
+		long tickTime = 1000 / RaceScene.TICK_STD;
 		long fineTime = (long) (tickTime / (car.getDistance() - length + 1));
 		time = tickTime * time;
 		time += fineTime;

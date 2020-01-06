@@ -28,12 +28,12 @@ public class ButtonAudio {
 	}
 
 	public void playTrafficLight(boolean green) {
-		if(!green)
+		if (!green)
 			playNew(3);
 		else
 			playNew(4);
 	}
-	
+
 	private void play(int btn) {
 		btns[btn].stop();
 		btns[btn].setVolume(GameHandler.getSfxVolume());
@@ -42,5 +42,39 @@ public class ButtonAudio {
 
 	private void playNew(int btn) {
 		btns[btn].playNewInstance(GameHandler.getSfxVolume());
+	}
+
+	public void playUpgrade(String string) {
+
+	}
+
+	public void playNotEnough() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void playMoney() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void playPoints() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void playOpenStore() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * Play a taunt: 0 = "Start the game already!"
+	 * 
+	 * @param i = input from a user in chat
+	 */
+	public void playTaunt(int i) {
+		// TODO Auto-generated method stub
+
 	}
 }

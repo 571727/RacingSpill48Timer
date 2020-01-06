@@ -12,7 +12,7 @@ import audio.audiocue.AudioCueInstanceEvent;
 import audio.audiocue.AudioCueListener;
 import handlers.GameHandler;
 
-public class RaceAudio implements AudioCueListener {
+public class RaceAudio {
 
 	private Random r = new Random();
 	private MP3Audio[] gear;
@@ -25,17 +25,13 @@ public class RaceAudio implements AudioCueListener {
 	private double motorOverallVolume = 1;
 
 	private AudioCue motorAcc;
-	private int motorAccInstance;
 	private AudioCue motorDcc;
-	private int motorDccInstance;
 	private AudioCue turbospool;
-	private int turbospoolInstance;
 	private AudioCue straightcutgears;
-	private int straightcutgearsInstance;
 	private float wavgain;
 	private double turbospooling;
 
-	public RaceAudio(String carname) {
+	public RaceAudio() {
 		// Maybe use action for something later, cause it's awesome
 		gear = new MP3Audio[4];
 
@@ -48,35 +44,23 @@ public class RaceAudio implements AudioCueListener {
 
 		engineStart = new MP3Audio("/sfx/engine_start");
 
-		URL acc = this.getClass().getResource("/sfx/motorAcc" + carname + ".wav");
-		URL dcc = this.getClass().getResource("/sfx/motorDcc" + carname + ".wav");
-		URL ts = this.getClass().getResource("/sfx/turbospool.wav");
-		URL scg = this.getClass().getResource("/sfx/straightcutgears.wav");
-		try {
-			motorAcc = AudioCue.makeStereoCue(acc, 3);
-			motorDcc = AudioCue.makeStereoCue(dcc, 3);
+			URL ts = this.getClass().getResource("/sfx/turbospool.wav");
+			URL scg = this.getClass().getResource("/sfx/straightcutgears.wav");
 			turbospool = AudioCue.makeStereoCue(ts, 3);
 			straightcutgears = AudioCue.makeStereoCue(scg, 3);
-		} catch (UnsupportedAudioFileException | IOException e1) {
-			e1.printStackTrace();
-		}
-		motorAcc.setName("motorAcc");
-		motorDcc.setName("motorDcc");
-		turbospool.setName("turbospool");
-		straightcutgears.setName("straightcutgears");
 
-		motorAcc.addAudioCueListener(this);
-		motorDcc.addAudioCueListener(this);
-		turbospool.addAudioCueListener(this);
-		straightcutgears.addAudioCueListener(this);
 
-		motorAccInstance = motorAcc.obtainInstance();
-		motorDccInstance = motorDcc.obtainInstance();
-		turbospoolInstance = turbospool.obtainInstance();
-		straightcutgearsInstance = straightcutgears.obtainInstance();
 
 		redline = new MP3Audio("/sfx/redline");
 		nos = new MP3Audio("/sfx/nos");
+	}
+	
+	public void init(String carname) {
+		URL acc = this.getClass().getResource("/sfx/motorAcc" + carname + ".wav");
+		URL dcc = this.getClass().getResource("/sfx/motorDcc" + carname + ".wav");
+		motorAcc = AudioCue.makeStereoCue(acc, 3);
+		motorDcc = AudioCue.makeStereoCue(dcc, 3);
+		
 	}
 
 	public void updateVolume() {
@@ -371,6 +355,16 @@ public class RaceAudio implements AudioCueListener {
 
 	public void stopEngine() {
 		engineStart.stop();
+	}
+
+	public void playSoundBarrier() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void playTireboost() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

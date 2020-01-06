@@ -1,4 +1,4 @@
-package adt;
+package game_modes;
 
 import java.util.ArrayList;
 import java.util.HashMap;

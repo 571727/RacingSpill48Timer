@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import startup.Main;
+import main.Main;
 
 /**
  * @author jonah

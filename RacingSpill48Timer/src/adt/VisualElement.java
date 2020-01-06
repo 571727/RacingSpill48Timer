@@ -1,13 +1,8 @@
 package adt;
 
-import java.awt.Graphics;
-import java.awt.event.KeyListener;
+public interface VisualElement{
 
-public interface VisualElement extends KeyListener{
-
-	public void tick(double tickFactor);
-	public void render(Graphics g);
-	public boolean isWithin(int x, int y);
-	public void run();
+	public void tick(double delta);
+	public void render();
 	
 }

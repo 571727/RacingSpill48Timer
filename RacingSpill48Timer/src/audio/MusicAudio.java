@@ -10,10 +10,10 @@ public class MusicAudio {
 	private int amount;
 	private boolean stopped;
 
-	public MusicAudio(int amount) {
+	public MusicAudio() {
 		// Maybe use action for something later, cause it's awesome
 		playingIndex = -1;
-
+		int amount = 11;
 		music = new MP3Audio[amount];
 
 		store = new MP3Audio("/music/waltz_for_memory");

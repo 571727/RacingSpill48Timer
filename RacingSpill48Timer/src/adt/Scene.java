@@ -1,29 +1,30 @@
 package adt;
 
+public abstract class Scene {
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-
-public abstract class Scene extends JPanel{
-
-	/**
-	 * Generated value
-	 */
-	private static final long serialVersionUID = 1768390057592575498L;
-	protected BufferedImage backgroundImage;
-	protected Visual currentVisual;
-
-	public Scene(String sceneName) {
-		
-		try {
-			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/pics/back/" + sceneName + ".png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	protected SceneChangeAction sceneChange;
+	protected Visual visual;
+	protected String sceneName;
+	
+	public Scene(Visual visual, String sceneName) {
+		this.visual = visual;
+		this.sceneName = sceneName;
 	}
-	public Scene() {
+	
+	public void setSceneChangeAction(SceneChangeAction sceneChange) {
+		this.sceneChange = sceneChange;
 	}
+	
+	public abstract void init();
+
+	public abstract void tick(double delta);
+	public abstract void render();
+
+	public abstract void keyInput(int keycode, int action);
+
+	public abstract void mouseButtonInput(int button, int action);
+	public abstract void mousePosInput(double x, double y);
+	public abstract void mouseScrollInput(double x, double y);
+	public abstract void mouseEnterWindowInput(boolean entered);
+	
 }

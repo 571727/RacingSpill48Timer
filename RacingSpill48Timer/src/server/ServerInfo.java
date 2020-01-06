@@ -12,11 +12,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import adt.GameMode;
 import elem.AI;
 import elem.Upgrades;
+import game_modes.GameMode;
+import main.Main;
 import player_local.Car;
-import startup.Main;
 
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
@@ -174,7 +174,7 @@ public class ServerInfo implements Runnable {
 
 		String res = newPlayer.getID() + "#" + generateDisconnectID(newPlayer) + "#" + copyCar
 				+ ((copyCar == 1)
-						? "#" + newPlayer.getName() + "#" + newPlayer.getCar().getRepresentation().getCloneString()
+						? "#" + newPlayer.getName() + "#" + newPlayer.getCar().getRep().getCloneString()
 						: "");
 		
 		updateSortedPlayers();
@@ -185,7 +185,7 @@ public class ServerInfo implements Runnable {
 		PlayerInfo player = getPlayer(input);
 		int from = 2;
 		if (player.getCar() != null) {
-			player.getCar().getRepresentation().setClone(input, from);
+			player.getCar().getRep().setClone(input, from);
 		} else {
 			player.setCar(new Car(input, from));
 		}

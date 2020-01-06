@@ -13,10 +13,10 @@ import adt.Scene;
 import handlers.GameHandler;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
-import startup.Main;
+import main.Main;
 import window.Windows;
 
-public class MainMenu extends Scene {
+public class MainMenuScene extends Scene {
 
 	private JButton options;
 	private JButton host;
@@ -24,11 +24,15 @@ public class MainMenu extends Scene {
 	private JLabel title;
 	private Thread thread;
 	private ServerHandler serverHandler;
-	private Lobby lobby;
+	private LobbyScene lobby;
 	private JButton exit;
 
-	public MainMenu(Lobby lobby) {
+	public MainMenuScene() {
 		super("lobby");
+
+	}
+
+	public void init(LobbyScene lobbyScene) {
 
 		// Init variables
 		serverHandler = new ServerHandler();
@@ -80,7 +84,7 @@ public class MainMenu extends Scene {
 		add(options);
 		add(exit);
 	}
-
+	
 	private void host() {
 		// init server and player and then go to lobby
 		// Register your username
@@ -127,6 +131,7 @@ public class MainMenu extends Scene {
 
 		thread.start();
 	}
+	
 
 	private String gameMode() {
 		

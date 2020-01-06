@@ -41,7 +41,7 @@ public class PlayerInfo {
 	public String getCarInfo() {
 		String res = "";
 		if (car != null)
-			res = car.getInfo();
+			res = car.getRep().getInfo();
 		return res;
 	}
 

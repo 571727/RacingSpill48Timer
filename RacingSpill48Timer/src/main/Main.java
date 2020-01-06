@@ -1,13 +1,6 @@
-package startup;
+package main;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
-
-import adt.GameMode;
+import game_modes.GameMode;
 import game_modes.GolfLike;
 import game_modes.PointRush;
 import handlers.GameHandler;
@@ -15,7 +8,7 @@ import handlers.GameHandler;
 public class Main {
 
 	public static final boolean DEBUG = false;
-	public static final String[] CAR_TYPES = { "Decentra", "Oldsroyal", "Fabulvania", "Thoroughbred" };
+	public static final String[] CAR_TYPES = { "Decentra", "Bentslie", "Fabula", "Tuffbred", "Tiềnmobile" };
 	public static final String[] AI_NAMES = { "Jens", "Benz", "Razor", "The Boi", "The Viper", "The Biper",
 			"èŠ‚å¥�å¤§å¸ˆ", "Knut", "Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law", "Anime Lover",
 			"noobmaster69", "TeaBottle", "Racerdude", "BestRacer97", "Niki Lauda", "PÃ¥l the Racer" };
@@ -38,7 +31,8 @@ public class Main {
 			AMOUNT_OF_AI[i] = String.valueOf(i);
 		}
 
-		new GameHandler(5);
+		GameHandler game = new GameHandler();
+		game.start("fixme");
 	}
 
 	

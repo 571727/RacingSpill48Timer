@@ -16,11 +16,14 @@ import javax.swing.event.ChangeEvent;
 
 import adt.Scene;
 import adt.Visual;
+import audio.Audio;
 import handlers.GameHandler;
 import handlers.SceneHandler;
+import main.RaceKeysSettings;
+import main.RegularSettings;
 import window.Windows;
 
-public class Options extends Scene {
+public class OptionsScene extends Scene {
 	private JButton goBack;
 	private JButton nextSong;
 	private JButton stopMusic;
@@ -35,7 +38,7 @@ public class Options extends Scene {
 	private JSlider musicVolumeSlider;
 	protected BufferedImage controlsImage;
 
-	public Options() {
+	public OptionsScene() {
 		super("options");
 
 		try {
@@ -163,6 +166,12 @@ public class Options extends Scene {
 		add(specifyResLabel);
 		add(specifyRes);
 	}
+	
+
+	public void init(RegularSettings settings, RaceKeysSettings keys, Audio audio) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -172,4 +181,5 @@ public class Options extends Scene {
 		g.drawImage(controlsImage, 10, Windows.HEIGHT - (int) (controlsImage.getHeight() * 1.1),
 				controlsImage.getWidth(), controlsImage.getHeight(), null);
 	}
+
 }

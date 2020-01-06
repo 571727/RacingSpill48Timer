@@ -1,5 +1,10 @@
 package handlers;
 
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,201 +12,112 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
+import org.lwjgl.glfw.GLFWErrorCallback;
+
 import audio.MusicAudio;
+import handlers.InputHandler;
+import main.Main;
+import main.RegularSettings;
+import window.Timer;
+import window.Window;
+import audio.Audio;
 import audio.ButtonAudio;
-import scenes.Options;
-import startup.Main;
+import scenes.OptionsScene;
 
 public class GameHandler {
 
-	public static MusicAudio music;
-	public static ButtonAudio ba;
-	private static File file;
-	private static List<String> lines;
-	// Disse går fra 0.0 - 1.0
-	private static double masterVolume;
-	private static double sfxVolume;
-	private static double musicVolume;
-
-	public GameHandler(int numScenes) {
-		initSettings();
-		masterVolume = getSettingAsDouble(1);
-		sfxVolume = getSettingAsDouble(2);
-		musicVolume = getSettingAsDouble(3);
-
-		Options options = new Options();
-
-		new SceneHandler(numScenes, options);
-		SceneHandler.instance.changeScene(0);
-
-		music = new MusicAudio(0);
-		ba = new ButtonAudio();
-		// Loop som kj�rer viss kode basert p� scene, hvis i det hele tatt-
-
+	private boolean running;
+	private RegularSettings settings;
+	private Audio audio;
+	private OptionsScene options;
+	private SceneHandler sceneHandler;
+	private Window window;
+	private Timer timer;
+	private InputHandler input;
+	
+	public GameHandler() {
+		settings = new RegularSettings();
+		audio = new Audio(settings);
+		options = new OptionsScene();
+		timer = new Timer();
+		sceneHandler = new SceneHandler();
+	}
+	
+	public void start(String checksum) {
+		init();
+		gameLoop();
+		dispose();
 	}
 
-	public static double getMasterVolume() {
-		return masterVolume;
-	}
+	private void init() {
+		// All static methods
+		GLFWErrorCallback.createPrint(System.err).set();
 
-	public static double getSfxVolume() {
-		return sfxVolume;
-	}
+//		Init GLFW
+		if (!glfwInit())
+			throw new IllegalStateException("Unable to initialize GLFW");
 
-	public static double getMusicVolume() {
-		return musicVolume;
-	}
+		window = new Window(settings.getWidth(), settings.getHeight(), settings.getFullscreen(), Main.GAME_NAME, Color.BLACK);
+		window.init();
 
-	public static void setMasterVolume(double val) {
+		sceneHandler.init(options);
+		sceneHandler.changeScene(0);
 
-		int pos = 1;
-		String line = "masterVolume=" + val;
+		input = new InputHandler(sceneHandler.getCurrentScene(), window.getWindow());
+		options.init(settings, input.getKeys(), audio);
+		sceneHandler.changeSceneAction(input);
 		
-		
-		if (pos != lines.size()) {
-			lines.set(pos, line);
-		} else {
-			lines.add(line);
-		}
+		timer.init();
 
-		try {
-			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
-			readSettingsLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		masterVolume = val;
+		running = true;
 	}
 
-	public static void setSfxVolume(double val) {
-		int pos = 2;
-		String line = "sfxVolume=" + val;
-
-		if (pos != lines.size()) {
-			lines.set(pos, line);
-		} else {
-			lines.add(line);
-		}
-
-		try {
-			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
-			readSettingsLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		sfxVolume = val;
-	}
-
-	public static void setMusicVolume(double val) {
-		int pos = 3;
-		String line = "musicVolume=" + val;
-		
-		if (pos != lines.size()) {
-			lines.set(pos, line);
-		} else {
-			lines.add(line);
-		}
-
-		try {
-			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
-			readSettingsLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		musicVolume = val;
-	}
-
-	public static void newDisconnectedID(Long valueOf) {
-
-		int pos = 0;
-		String line = "discID=" + valueOf;
-
-		if (pos != lines.size()) {
-			lines.set(pos, line);
-		} else {
-			lines.add(line);
-		}
-
-		try {
-			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
-			readSettingsLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		Main.DISCONNECTED_ID = getSettingAsLong(0);
-	}
-
-	private static long getSettingAsLong(int line) {
-		if (lines.size() > line)
-			return Long.valueOf(lines.get(line).split("=")[1]);
-		return -1;
-	}
-
-	private static double getSettingAsDouble(int line) {
-		if (lines.size() > line)
-			return Double.valueOf(lines.get(line).split("=")[1]);
-		return -1;
-	}
-
-	private void initSettings() {
-		new File("racingmaybe_temp").mkdir();
-		file = new File("racingmaybe_temp/settings.temp");
-		try {
-
+	private void gameLoop() {
+		double delta;
+		while (running) {
+			if (window.isClosing()) 
+				running = false;
 			
-			if (!file.isFile()) {
-				if (file.createNewFile()) {
-					PrintWriter pw = new PrintWriter(file);
-					pw.flush();
-					pw.close();
-				}
-			}
-			readSettingsLines();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		newSettings();
-		Main.DISCONNECTED_ID = getSettingAsLong(0);
-	}
+			delta = timer.getDelta();
 
-	private void newSettings() {
-
-		int pos = 0;
-		String line = "discID=" + Main.DISCONNECTED_ID;
-		if (pos >= lines.size()) {
-			lines.add(line);
-		}
-		pos = 1;
-		line = "masterVolume=" + 0.5;
-		if (pos >= lines.size()) {
-			lines.add(line);
-		}
-		pos = 2;
-		line = "sfxVolume=" + 1.0;
-		if (pos >= lines.size()) {
-			lines.add(line);
-		}
-		pos = 3;
-		line = "musicVolume=" + 1.0;
-		if (pos >= lines.size()) {
-			lines.add(line);
-		}
-
-		try {
-			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
-			readSettingsLines();
-		} catch (IOException e) {
-			e.printStackTrace();
+			//update game
+			tick(delta);
+			timer.updateTPS();
+			
+			//render the game
+			render();
+			timer.updateFPS();
+			
+			timer.update();
+			
+			window.update();
 		}
 	}
 
-	private static void readSettingsLines() throws IOException {
-		lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+	private void tick(double delta) {
+		sceneHandler.getCurrentScene().tick(delta);
 	}
 
+	private void render() {
+		sceneHandler.getCurrentScene().render();
+	}
+
+	private void dispose() {
+		System.out.println("disposing");
+		input.free();
+		window.destroy();
+//		Terminate GLFW and free the error callback
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
+	}
+
+	/**
+	 * FIXME create a checksum for this program so people have a hard time cheating
+	 */
+	@Override
+	public int hashCode() {
+		return 1;
+	}
+	
 }

@@ -215,7 +215,7 @@ public class Upgrades {
 			return -1;
 		} };
 		String[] gearTexts = { UPGRADE_NAMES[pistonsID] + " has + 0.1 NOS boost",
-				"Sequential shifting; (use arrows + virtually no clutch)", "Direct drive" };
+				"Sequential shifting; (use arrows + virtually no clutch)", "Direct drive (Only one gear)" };
 		UpgradeAction[] gearBonuses = { (CarRep car, boolean notRep) -> {
 			if (notRep) {
 				pistonsRegularUpgradeText.setValue(2, 0.1f, false);
@@ -366,7 +366,7 @@ public class Upgrades {
 
 	public String getUpgradedStats(int i, Car car, boolean notRep) {
 		CarRep newCar = upgradeNewCarRep(i, car, notRep);
-		String s = newCar.getStatsNew(car.getUpgradeLVL(i), newCar.getUpgradeLVL(i));
+		String s = newCar.getStatsNew(car.getRep().getUpgradeLVL(i), newCar.getUpgradeLVL(i));
 		return "<font size='4'>" + UPGRADE_NAMES[i] + "</font><br/>" + s;
 	}
 
