@@ -1,4 +1,4 @@
-package scenes;
+package scenes.upgrade;
 
 import java.awt.Dimension;
 import java.awt.Font;

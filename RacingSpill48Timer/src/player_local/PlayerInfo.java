@@ -1,7 +1,6 @@
-package server;
+package player_local;
 
-import elem.Bank;
-import player_local.Car;
+import player_local.car.Car;
 
 public class PlayerInfo {
 
@@ -20,10 +19,14 @@ public class PlayerInfo {
 	private boolean inTheRace;
 	private Long discID;
 
-	public PlayerInfo(String name, byte id, String host) {
-		this.name = name;
+	public PlayerInfo(String name, byte id, byte host) {
+		this(name, host);
 		this.id = id;
-		this.host = Byte.valueOf(host);
+	}
+
+	public PlayerInfo(String name, byte host) {
+		this.name = name;
+		this.host = host;
 		this.car = null;
 		bank = new Bank();
 	}
@@ -43,6 +46,14 @@ public class PlayerInfo {
 		if (car != null)
 			res = car.getRep().getInfo();
 		return res;
+	}
+
+	public void newCar(String carname) {
+		car = new Car(carname);
+	}
+	
+	public void newCar(String[] ids, int i) {
+		car = new Car(ids, i);
 	}
 
 	public void newRace() {
@@ -89,15 +100,16 @@ public class PlayerInfo {
 	public void addPointsAndMoney(int amountPlayers, int place, int behindLeaderBy, int racesDone) {
 
 		float inflation = (racesDone + 1f) / 2f;
-		int winnerExtraPoint = (place == 0 && behindLeaderBy > 5 && amountPlayers != 1 ? 1 : 0) + 1;
 		float stdPrice = 100f;
 		pointsAdded = 0;
 
 		if (!(amountPlayers == -1 || place == -1)) {
-			pointsAdded = (amountPlayers - (place + 1)) + winnerExtraPoint;
+			pointsAdded = (amountPlayers - (place + 1)) + car.getRep().getPointParadise();
 			moneyAdded = (int) (stdPrice * inflation);
 			if (place > 0)
 				moneyAdded += (int) (stdPrice * (0.30 * place / (amountPlayers - 1)) * inflation);
+			else if (place == 0)
+				moneyAdded += car.getRep().getMoneyMails();
 		} else {
 			moneyAdded = (int) (stdPrice * (3 / 2) * inflation);
 		}
@@ -135,7 +147,7 @@ public class PlayerInfo {
 	}
 
 	public String getNameID() {
-		return name + id;
+		return id + "#" + name;
 	}
 
 	public void setName(String name) {
@@ -210,7 +222,7 @@ public class PlayerInfo {
 		return discID;
 	}
 
-	public void setDisconnectID(long id2) {
+	public void setDiscID(long id2) {
 		discID = id2;
 	}
 
@@ -221,5 +233,16 @@ public class PlayerInfo {
 	public void setPodium(int podium) {
 		this.podium = podium;
 	}
+
+	public void setID(byte id2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getHost() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

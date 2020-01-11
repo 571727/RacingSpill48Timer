@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Map.Entry;
 
 import elem.AI;
-import server.PlayerInfo;
+import player_local.PlayerInfo;
 
 public abstract class GameMode {
 

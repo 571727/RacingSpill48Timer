@@ -1,16 +1,21 @@
-package elem;
+package scenes.upgrade;
 
-import player_local.CarRep;
-
+import player_local.car.CarRep;
+/**
+ * { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip",
+			"RPM", "Aero", "Victory Money", "Victory Point"};
+ * @author jhoffis
+ *
+ */
 public class UpgradeRegularValues {
 
-	private float[] values;
+	private double[] values;
 	private boolean[] percentOrNah;
-	private String[] tags = {
-			"HP", "weight", "NOS boost", "NOS bottle(s)", "gears", "TS", "TB", "TB area" };
+	private String[] tags = { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip",
+			"RPM", "Aero", "Victory Money", "Victory Point"};
 	private boolean changed;
 
-	public UpgradeRegularValues(float[] values, boolean[] percentOrNah) {
+	public UpgradeRegularValues(double[] values, boolean[] percentOrNah) {
 		this.values = values;
 		this.percentOrNah = percentOrNah;
 	}
@@ -47,12 +52,12 @@ public class UpgradeRegularValues {
 		return res;
 	}
 
-	public float getValue(int i) {
+	public double getValue(int i) {
 		return values[i];
 	}
 
-	public void setValue(int i, float val, boolean percent) {
-		values[i] = val;
+	public void setValue(int i, double d, boolean percent) {
+		values[i] = d;
 		setPercent(i, percent);
 	}
 
@@ -88,7 +93,7 @@ public class UpgradeRegularValues {
 			car.setNosBottleAmountStandard((int) (car.getNosBottleAmountStandard() + values[3]));
 		}
 		if (values[4] != -1) {
-				car.setGearTop((int) (car.getGearTop() + values[4]));
+			car.setGearTop((int) (car.getGearTop() + values[4]));
 		}
 		if (values[5] != -1) {
 			double speedTopPrev = car.getSpeedTop();
@@ -100,13 +105,36 @@ public class UpgradeRegularValues {
 		}
 		if (values[6] != -1) {
 			if (percentOrNah[6])
-				car.setTireGripStrengthStandard(car.getTireGripStrengthStandard() * (values[6] / 100.0 + 1));
+				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() * (values[6] / 100.0 + 1));
 			else
-				car.setTireGripStrengthStandard(car.getTireGripStrengthStandard() + values[6]);
+				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() + values[6]);
 		}
 		if (values[7] != -1) {
-				car.upgradeRightShift(values[7] / 100.0 + 1);
+			car.upgradeRightShift(values[7] / 100.0 + 1);
+		}
+
+		if (values[8] != -1) {
+			if (percentOrNah[8])
+				car.setGripStartStandard(car.getGripStartStandard() * (values[8] / 100.0 + 1));
+			else
+				car.setGripStartStandard(car.getGripStartStandard() + values[8]);
 		}
 		
+		if (values[9] != -1) {
+			if (percentOrNah[8])
+				car.setRpmTop((int) (car.getRpmTop() * (values[9] / 100.0 + 1)));
+			else
+				car.setRpmTop((int) (car.getRpmTop() + values[9]));
+		}
+		
+		if (values[10] != -1) {
+			if (percentOrNah[10])
+				car.setTitjuiceStrengthStandard((int) (car.getTitjuiceStrengthStandard() * (values[10] / 100.0 + 1)));
+			else
+				car.setTitjuiceStrengthStandard((int) (car.getTitjuiceStrengthStandard() + values[10]));
+			
+			if(car.getTitjuiceAmountLeft() == 0)
+				car.setTitjuiceAmountLeft(1);
+		}
 	}
 }

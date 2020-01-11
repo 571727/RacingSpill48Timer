@@ -1,8 +1,7 @@
-package elem;
+package scenes.upgrade;
 
-import adt.UpgradeAction;
-import player_local.Car;
-import player_local.CarRep;
+import player_local.car.Car;
+import player_local.car.CarRep;
 
 public class Upgrade {
 
@@ -26,7 +25,7 @@ public class Upgrade {
 		this.bonuses = bonuses;
 		this.maxLVL = maxLVL;
 
-		if (bonusLVLs.length != bonuses.length && bonuses.length != 4) {
+		if (bonuses != null && bonusLVLs.length != bonuses.length && bonuses.length != 4) {
 			throw new Exception("Bonuses not same length as lvl ints or wrong length");
 		}
 
@@ -63,7 +62,7 @@ public class Upgrade {
 		if (car.getRep().getUpgradeLVL(nameID) < maxLVL) {
 			res = "<b>" + Upgrades.UPGRADE_NAMES[nameID] + "</b>: <br/>" + upgrades.getUpgradeRep() + "<br/>"
 					+ "<font color=" + bonusColor + ">";
-			if (bonusLVL < bonusLVLs.length) {
+			if (bonuses != null && bonusLVL < bonusLVLs.length) {
 				res += "LVL " + bonusLVLs[bonusLVL] + ": " + bonusesText[bonusLVL];
 			}
 			res += "</font><br/><br/>";
@@ -81,7 +80,7 @@ public class Upgrade {
 		if (car.getUpgradeLVL(nameID) < maxLVL) {
 			int newLVL = regular.upgrade(car, notRep);
 
-			if (notRep && bonusLVL < bonusLVLs.length && newLVL == bonusLVLs[bonusLVL]) {
+			if (bonuses != null && notRep && bonusLVL < bonusLVLs.length && newLVL == bonusLVLs[bonusLVL]) {
 				bonuses[bonusLVL].upgrade(car, notRep);
 				bonusLVL++;
 			}

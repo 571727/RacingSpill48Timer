@@ -1,12 +1,12 @@
 package handlers;
 
 import audio.Audio;
-import elem.Bank;
-import elem.UpgradePrice;
-import elem.Upgrades;
-import player_local.Car;
-import player_local.CarRep;
+import player_local.Bank;
 import player_local.Player;
+import player_local.car.Car;
+import player_local.car.CarRep;
+import scenes.upgrade.UpgradePrice;
+import scenes.upgrade.Upgrades;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class StoreHandler {
 		
 		Audio.BTN.playUpgrade(upgradeNames[currentUpgrade]);
 
-		double amount = getCostMoney(currentUpgrade, car.getRep(), player.getPlacePodium());
+		double amount = getCostMoney(currentUpgrade, car.getRep(), player.getMyInfo().getPodium());
 
 		String upgradeText = "<html>" + upgrades.getUpgradedStats(currentUpgrade, car, false) + "<br/><br/><font size='4'>$" + amount
 				+ " or " + getCostPoints(currentUpgrade, car.getRep()) + " points</font>";
@@ -54,7 +54,7 @@ public class StoreHandler {
 
 	public void buyWithMoneyClient(Player player) {
 		boolean bought = buyWithMoney(player.getBank(), currentUpgrade, player.getCar().getRep(),
-				player.getPlacePodium(), -1);
+				player.getMyInfo().getPodium(), -1);
 
 		if (bought) {
 			player.setPointsAndMoney(player.getBank().getPoints(), player.getBank().getMoney());

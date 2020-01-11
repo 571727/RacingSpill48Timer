@@ -1,5 +1,10 @@
 package adt;
-
+/**
+ * Plays sound effect. Use only me for sound effects to keep it simple.
+ * Add more as more is needed. 
+ * @author jhoffis
+ *
+ */
 public interface Audio {
 	public void setVolume(double factor);
 

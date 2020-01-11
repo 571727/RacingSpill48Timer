@@ -6,8 +6,9 @@ import handlers.StoreHandler;
 import main.Main;
 import player_local.Car;
 import player_local.CarRep;
+import player_local.PlayerInfo;
 import scenes.Race;
-import server.PlayerInfo;
+import scenes.upgrade.Upgrades;
 
 public class AI extends PlayerInfo {
 

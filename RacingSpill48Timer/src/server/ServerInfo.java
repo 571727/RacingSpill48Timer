@@ -13,10 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import elem.AI;
-import elem.Upgrades;
 import game_modes.GameMode;
 import main.Main;
-import player_local.Car;
+import player_local.PlayerInfo;
+import player_local.car.Car;
+import scenes.upgrade.Upgrades;
 
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
@@ -110,7 +111,7 @@ public class ServerInfo implements Runnable {
 
 	private long generateDisconnectID(PlayerInfo player) {
 		long id = Math.abs(r.nextLong());
-		player.setDisconnectID(id);
+		player.setDiscID(id);
 		return id;
 	}
 
@@ -123,7 +124,7 @@ public class ServerInfo implements Runnable {
 	}
 
 	/**
-	 * input 1 = id input 2 = name input 3 = host boolean input 4 = disconnectedid input 5 = gameversion
+	 * input 1 = name input 2 = host boolean input 3 = disconnectedid input 4 = gameversion
 	 * 
 	 */
 
@@ -132,10 +133,10 @@ public class ServerInfo implements Runnable {
 		PlayerInfo newPlayer = null;
 		boolean jump = false;
 		int copyCar = 0;
-		long discID = Long.valueOf(input[4]);
+		long discID = Long.valueOf(input[3]);
 		
 		//On a different version
-		if(input.length < 6 || !input[5].equals(Main.GAME_VERSION)) {
+		if(input.length < 5 || !input[4].equals(Main.GAME_VERSION)) {
 			return Main.END_ALL_CLIENT_STRING;
 		}
 
@@ -143,6 +144,8 @@ public class ServerInfo implements Runnable {
 		if (lostPlayers.containsKey(discID)) {
 			newPlayer = lostPlayers.remove(discID);
 
+			newPlayer.setName(input[1]);
+			
 			players.put(newPlayer.getID(), newPlayer);
 			ping.put(newPlayer.getID(), System.currentTimeMillis());
 			chat.put(newPlayer, new ConcurrentLinkedQueue<String>());
@@ -162,8 +165,9 @@ public class ServerInfo implements Runnable {
 			}
 		}
 
+		// Add new player to club
 		if (!jump) {
-			newPlayer = new PlayerInfo(input[2], generateID(), input[3]);
+			newPlayer = new PlayerInfo(input[1], generateID(), Byte.valueOf(input[2]));
 
 			players.put(newPlayer.getID(), newPlayer);
 			ping.put(newPlayer.getID(), System.currentTimeMillis());
@@ -172,9 +176,10 @@ public class ServerInfo implements Runnable {
 
 		addChat(newPlayer.getName() + " joined the game.");
 
+		//Respond with new id, discID, old car if lost.
 		String res = newPlayer.getID() + "#" + generateDisconnectID(newPlayer) + "#" + copyCar
 				+ ((copyCar == 1)
-						? "#" + newPlayer.getName() + "#" + newPlayer.getCar().getRep().getCloneString()
+						? "#" + newPlayer.getCar().getRep().getCloneString()
 						: "");
 		
 		updateSortedPlayers();
@@ -402,7 +407,7 @@ public class ServerInfo implements Runnable {
 	 */
 	@SuppressWarnings("unused")
 	private void leave(PlayerInfo player) {
-		String output = "Removing player: " + player.name;
+		String output = "Removing player: " + player.getName();
 
 		if (player != null) {
 			boolean s = gm.isRacing();

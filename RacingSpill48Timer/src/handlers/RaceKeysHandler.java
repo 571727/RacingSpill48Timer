@@ -3,7 +3,7 @@ package handlers;
 import java.util.ArrayList;
 
 import main.RaceKeysSettings;
-import player_local.Car;
+import player_local.car.Car;
 
 public class RaceKeysHandler {
 

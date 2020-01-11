@@ -1,5 +1,7 @@
 package adt;
 
+import elem.graphics.Renderer;
+
 public abstract class Scene {
 
 	protected SceneChangeAction sceneChange;
@@ -14,11 +16,12 @@ public abstract class Scene {
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {
 		this.sceneChange = sceneChange;
 	}
-	
-	public abstract void init();
 
+	public void render(Renderer renderer) {
+		visual.render(renderer);
+	}
+	
 	public abstract void tick(double delta);
-	public abstract void render();
 
 	public abstract void keyInput(int keycode, int action);
 

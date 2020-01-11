@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import adt.Action;
+import handlers.InputHandler;
 import player_local.Player;
 
 public class Window {
@@ -65,7 +66,15 @@ public class Window {
 
 		GL.createCapabilities();
 
-		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(1.0f, 0.8f, 0.0f, 0.0f);
+	}
+
+	public void initCallbacks(InputHandler input) {
+		glfwSetCursorEnterCallback(window, input.getEnterCallback());
+		glfwSetKeyCallback(window, input.getKeyCallback());
+		glfwSetMouseButtonCallback(window, input.getMouseCallback());
+		glfwSetCursorPosCallback(window, input.getPosCallback());
+		glfwSetScrollCallback(window, input.getScrollCallback());
 	}
 
 	public void initClosingProtocol(Player player) {

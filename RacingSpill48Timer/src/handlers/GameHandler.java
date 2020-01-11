@@ -5,24 +5,19 @@ import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 
-import audio.MusicAudio;
-import handlers.InputHandler;
+import audio.Audio;
+import elem.graphics.Mesh;
+import elem.graphics.Renderer;
+import elem.graphics.Vertex;
+import elem.math.Vector3f;
 import main.Main;
 import main.RegularSettings;
+import scenes.OptionsScene;
 import window.Timer;
 import window.Window;
-import audio.Audio;
-import audio.ButtonAudio;
-import scenes.OptionsScene;
 
 public class GameHandler {
 
@@ -34,6 +29,17 @@ public class GameHandler {
 	private Window window;
 	private Timer timer;
 	private InputHandler input;
+	private Renderer renderer;
+	
+	private Mesh testMesh = new Mesh(new Vertex[] {
+			new Vertex(new Vector3f(-0.5f,0.5f, 0.0f)),
+			new Vertex(new Vector3f(0.5f,0.5f, 0.0f)),
+			new Vertex(new Vector3f(0.5f,-0.5f, 0.0f)),
+			new Vertex(new Vector3f(-0.5f,-0.5f, 0.0f))
+	}, new int[] {
+			0, 1, 2,
+			0, 3, 2
+	});
 	
 	public GameHandler() {
 		settings = new RegularSettings();
@@ -41,6 +47,7 @@ public class GameHandler {
 		options = new OptionsScene();
 		timer = new Timer();
 		sceneHandler = new SceneHandler();
+		renderer = new Renderer();
 	}
 	
 	public void start(String checksum) {
@@ -53,7 +60,7 @@ public class GameHandler {
 		// All static methods
 		GLFWErrorCallback.createPrint(System.err).set();
 
-//		Init GLFW
+		//	Init GLFW
 		if (!glfwInit())
 			throw new IllegalStateException("Unable to initialize GLFW");
 
@@ -64,12 +71,15 @@ public class GameHandler {
 		sceneHandler.changeScene(0);
 
 		input = new InputHandler(sceneHandler.getCurrentScene(), window.getWindow());
+		window.initCallbacks(input);
+		
 		options.init(settings, input.getKeys(), audio);
 		sceneHandler.changeSceneAction(input);
 		
 		timer.init();
 
 		running = true;
+		testMesh.create();
 	}
 
 	private void gameLoop() {
@@ -100,7 +110,8 @@ public class GameHandler {
 	}
 
 	private void render() {
-		sceneHandler.getCurrentScene().render();
+		renderer.renderMesh(testMesh);
+		sceneHandler.getCurrentScene().render(renderer);
 	}
 
 	private void dispose() {

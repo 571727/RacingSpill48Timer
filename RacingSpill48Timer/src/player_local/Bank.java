@@ -1,4 +1,4 @@
-package elem;
+package player_local;
 
 public class Bank {
 	private int points;

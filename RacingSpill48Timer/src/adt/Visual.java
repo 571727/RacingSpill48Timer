@@ -1,11 +1,10 @@
 package adt;
 
-import java.awt.Canvas;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
+import elem.graphics.Renderer;
 import window.Window;
 
 public abstract class Visual {
@@ -17,7 +16,7 @@ public abstract class Visual {
 
 	public abstract void tick(double delta);
 
-	public abstract void render();
+	public abstract void render(Renderer renderer);
 
 	public void addVisualElement(VisualElement btn) {
 		visualElements.add(btn);

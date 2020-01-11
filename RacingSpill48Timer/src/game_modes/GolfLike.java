@@ -3,7 +3,7 @@ package game_modes;
 import java.util.Map.Entry;
 
 import elem.AI;
-import server.PlayerInfo;
+import player_local.PlayerInfo;
 
 public class GolfLike extends GameMode {
 

@@ -2,14 +2,10 @@ package player_local;
 
 import java.util.Arrays;
 
-import client.ClientController;
-import client.TCPEchoClient;
 import connection_standard.Config;
-import elem.Bank;
-import handlers.ClientThreadHandler;
-import handlers.GameHandler;
 import handlers.StoreHandler;
-import main.Main;
+import main.RegularSettings;
+import player_local.car.Car;
 
 /**
  * holds and handles its client. Controls lobby for now.
@@ -21,334 +17,180 @@ import main.Main;
  */
 public class Player {
 
-	private String name;
-	private int host;
-	private int id;
-	private int ready;
-	private String ip;
-	private TCPEchoClient echoClient;
-	private Car car;
-	private StoreHandler fixCarHandler;
-	private Bank bank;
-	private ClientThreadHandler cth;
-	private boolean inTheRace;
-	private int moneyAchived;
-	private int pointsAchived;
-	private int podium;
-	private ClientController client;
-
-	public Player(String name, int host, String car) {
+	private PlayerCommunicator com;
+	private PlayerInfo myInfo;
+	
+	public Player(String name, byte host, String car) {
 		this(name, host, car, Config.SERVER);
 	}
 
-	public Player(String name, int host, String car, String ip) {
-		this.name = name;
-		this.ip = ip;
-		this.host = host;
-		id = -200;
-		ready = 0;
-		this.car = new Car(car);
-		echoClient = new TCPEchoClient(ip);
-		bank = new Bank();
-		cth = new ClientThreadHandler(-1);
-		client = new ClientController(echoClient, cth);
-		cth.setClient(client);
-		// Request stats about lobby and update lobby
+	public Player(String name, byte host, String car, String ip) {
+		com = new PlayerCommunicator(ip);
+		myInfo = new PlayerInfo(name, host);
 	}
-
-	public void finishRace(long time) {
-		client.sendRequest("F#" + id + "#" + time);
+	
+	public void lockSetupReadyInit(String car) {
+		myInfo.newCar(car);
 	}
-
-	public void inTheRace() {
-		inTheRace = true;
-		client.sendRequest("I#" + id);
+	
+	
+	public PlayerInfo getMyInfo() {
+		return myInfo;
 	}
-
-	/**
-	 * JOIN#name+id#host-boolean
-	 */
-	public void joinServer() {
-		String[] ids = client.sendRequest("J#" + id + "#" + name + "#" + host + "#" + Main.DISCONNECTED_ID + "#" + Main.GAME_VERSION).split("#");
-		this.id = Byte.valueOf(ids[0]);
-		GameHandler.newDisconnectedID(Long.valueOf(ids[1]));
-
-		// Rejoined server
-		if (Integer.valueOf(ids[2]) == 1) {
-			name = ids[3];
-			car.getRep().setClone(ids, 4);
-		}
-		car.reset();
-
-		cth.setID(id);
-
+	
+	public void setMyInfo(PlayerInfo myInfo) {
+		this.myInfo = myInfo;
 	}
-
-	/**
-	 * LEAVE#name+id
-	 */
-	public void leaveServer() {
-		System.out.println("Leaving server...");
-		client.sendRequest("L#" + id);
-	}
-
-	/**
-	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
-	 */
-
-	public void stopAllClientHandlerOperations() {
-		if (cth != null)
-			cth.stopAll();
-	}
-
-	public void endClientHandler() {
-		if (cth != null) {
-			cth.end();
-		}
-	}
-
-	public void startClientHandler() {
-		try {
-			cth.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void startPing() {
-		if (cth != null)
-			cth.startPing();
-	}
-
-	public void stopPing() {
-		if (cth != null)
-			cth.stopPing();
-	}
-
-	public String updateLobby() {
-		if (cth != null)
-			return cth.getLobbyString();
-		return null;
-	}
-
-	public String updateRaceLobby() {
-		if (cth != null)
-			return cth.getRaceLobbyString();
-		return null;
-	}
-
-	public int updateRaceLights() {
-		if (cth != null)
-			return cth.getRaceLights();
-		return -1;
-	}
-
-	public void startUpdateLobby() {
-		if (cth != null)
-			cth.startLobby();
-	}
-
-	public void startUpdateRaceLobby() {
-		if (cth != null)
-			cth.startRaceLobby();
-	}
-
-	public void startUpdateRaceLights() {
-		if (cth != null)
-			cth.startRaceLights();
-	}
-
-	public void stopUpdateLobby() {
-		if (cth != null)
-			cth.stopLobby();
-	}
-
-	public void stopUpdateRaceLobby() {
-		if (cth != null)
-			cth.stopRaceLobby();
-	}
-
-	public void stopUpdateRaceLights() {
-		if (cth != null)
-			cth.stopRaceLights();
-	}
-
-	public void updateReady() {
-		client.sendRequest("RE#" + id + "#" + ready);
-	}
-
-	public void startRace() {
-		client.sendRequest("SR#" + id + "#" + host + 1);
-	}
-
-	public void stopRace() {
-		client.sendRequest("SR#" + id + "#" + host + 0);
-	}
-
-	public int getTrackLength() {
-		return Integer.valueOf(client.sendRequest("GL#" + id));
-	}
-
-	public void setPointsAndMoney(int newPoints, int newMoney) {
-		client.sendRequest("SPM#" + id + "#" + newPoints + "#" + newMoney);
-	}
-
-	public String getPointsAndMoney() {
-		String result = client.sendRequest("GPM#" + id);
-		String[] output = result.split("#");
-		bank.setPoints(Integer.valueOf(output[0]));
-		bank.setMoney(Integer.valueOf(output[1]));
-		return "<html>" + name + ": <br/>" + "Points: " + bank.getPoints() + ".<br/>" + "Money: " + bank.getMoney()
-				+ ".";
-	}
-
-	public void createNewRaces(int amount) {
-		client.sendRequest("NEW#" + id + "#" + amount);
-	}
-
-	public String getEndGoal() {
-		return client.sendRequest("GEG#" + id);
-	}
-
-	public String getWinner() {
-		return client.sendRequest("W#" + id);
-	}
-
-	public void addChat(String text) {
-		client.sendRequest("ADC#" + id + "#" + name + "#" + text);
-	}
-
-	public String getChat() {
-		return client.sendRequest("GC#" + id);
-	}
-
-	public String getCurrentPlace() {
-		return client.sendRequest("GP#" + id);
-	}
-
-	public void setPricesAccordingToServer() {
-		String[] s = client.sendRequest("GPR#" + id).split("#");
-		fixCarHandler.setPrices(Arrays.asList(s).stream().mapToInt(Integer::parseInt).toArray());
-	}
-
-	public void updateCarCloneToServer() {
-		client.sendRequest("CAR#" + id + "#" + car.getRep().getCloneString());
-	}
-
-	public boolean isGameOver() {
-		return client.sendRequest("GO#" + id).equals("1");
-	}
-
-	public int getHost() {
-		return host;
-	}
-
-	public void setHost(int host) {
-		this.host = host;
-	}
-
-	public int getReady() {
-		return ready;
-	}
-
-	public void setReady(int ready) {
-		this.ready = ready;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
+	
+	public Bank getBank() {
+		return myInfo.getBank();
 	}
 
 	public Car getCar() {
-		return car;
+		return myInfo.getCar();
+	}
+	
+	
+	/*
+	 * SERVER COMMUNICATION
+	 */
+	
+
+	public void joinServer(RegularSettings settings) {
+		com.joinServer(myInfo, settings);
 	}
 
-	public void setCar(Car car) {
-		this.car = car;
+	public void leaveServer() {
+		com.leaveServer(myInfo);
 	}
 
-	public int getPoints() {
-		return bank.getPoints();
+	public void stopAllClientHandlerOperations() {
+		com.stopAllClientHandlerOperations();
 	}
 
-	public void setPoints(int points) {
-		bank.setPoints(points);
+	public void endClientHandler() {
+		com.endClientHandler();
 	}
 
-	public int getMoney() {
-		return bank.getMoney();
+	public void startClientHandler() {
+		com.startClientHandler();
 	}
 
-	public void setMoney(int money) {
-		bank.setMoney(money);
+	public void startPing() {
+		com.startPing();
 	}
 
-	public boolean isHost() {
-		return host == 1;
+	public void stopPing() {
+		com.stopPing();
 	}
 
-	public boolean isInTheRace() {
-		return inTheRace;
+	public String updateLobby() {
+		return com.updateLobby();
 	}
 
-	public void outOfTheRace() {
-		inTheRace = false;
+	public String updateRaceLobby() {
+		return com.updateRaceLobby();
 	}
 
-	public String getName() {
-		return name;
+	public int updateRaceLights() {
+		return com.updateRaceLights();
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void startUpdateLobby() {
+		com.startUpdateLobby();
 	}
 
-	public Bank getBank() {
-		return bank;
+	public void startUpdateRaceLobby() {
+		com.startUpdateRaceLobby();
 	}
 
-	public void setBank(Bank bank) {
-		this.bank = bank;
+	public void startUpdateRaceLights() {
+		com.startUpdateRaceLights();
 	}
 
-	public StoreHandler getFixCarHandler() {
-		return fixCarHandler;
+	public void stopUpdateLobby() {
+		com.stopUpdateLobby();
 	}
 
-	public void setFixCarHandler(StoreHandler fixCarHandler) {
-		this.fixCarHandler = fixCarHandler;
+	public void stopUpdateRaceLobby() {
+		com.stopUpdateRaceLobby();
 	}
 
-	public int getMoneyAchived() {
-		return moneyAchived;
+	public void stopUpdateRaceLights() {
+		com.stopUpdateRaceLights();
 	}
 
-	public void setMoneyAchived(int moneyAchived) {
-		this.moneyAchived = moneyAchived;
+	public void updateReady() {
+		com.updateReady(myInfo);
 	}
 
-	public int getPointsAchived() {
-		return pointsAchived;
+	public void startRace() {
+		com.startRace(myInfo);
 	}
 
-	public void setPointsAchived(int pointsAchived) {
-		this.pointsAchived = pointsAchived;
+	public void stopRace() {
+		com.stopRace(myInfo);
 	}
 
-	public void setPlacePodium(int podium) {
-		this.podium = podium;
+	public int getTrackLength() {
+		return com.getTrackLength(myInfo);
 	}
 
-	public int getPlacePodium() {
-		return podium;
+	public void setPointsAndMoney(int newPoints, int newMoney) {
+		com.setPointsAndMoney(myInfo, newPoints, newMoney);
+	}
+	
+
+	public void finishRace(long time) {
+		com.finishRace(myInfo, time);
 	}
 
+	public void inTheRace() {
+		com.inTheRace(myInfo);
+	}
+	
+	public void createNewRaces(int amount) {
+		com.createNewRaces(myInfo, amount);
+	}
+
+	public String getEndGoal() {
+		return com.getEndGoal(myInfo);
+	}
+
+	public String getWinner() {
+		return com.getWinner(myInfo);
+	}
+
+	public void addChat(String text) {
+		com.addChat(myInfo, text);
+	}
+
+	public String getChat() {
+		return com.getChat(myInfo);
+	}
+
+	public String getCurrentPlace() {
+		return com.getCurrentPlace(myInfo);
+	}
+
+	public void setPricesAccordingToServer(StoreHandler store) {
+		com.setPricesAccordingToServer(myInfo, store);
+	}
+
+	public void updateCarCloneToServer() {
+		com.updateCarCloneToServer(myInfo, myInfo.getCar().getRep());
+	}
+
+	public boolean isGameOver() {
+		return com.isGameOver(myInfo);
+	}
+	
 	public String forceUpdateRaceLobby() {
-		return client.sendRequest("FUR#" + this.id);
+		return com.forceUpdateRaceLobby(myInfo);
+	}
+	
+	public String getPointsAndMoney() {
+		return com.getPointsAndMoney(myInfo);
 	}
 
 }

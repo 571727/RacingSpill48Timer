@@ -8,6 +8,7 @@ import elem.interactions.Button;
 import handlers.SceneHandler;
 import handlers.ServerHandler;
 import player_local.Player;
+import scenes.upgrade.Store;
 import scenes.visual.LobbyVisual;
 
 public class LobbyScene extends Scene {
@@ -31,7 +32,6 @@ public class LobbyScene extends Scene {
 		super(new LobbyVisual(), "Lobby");
 	}
 	
-	@Override
 	public void init() {
 		store.init(player);
 	}
@@ -39,11 +39,6 @@ public class LobbyScene extends Scene {
 	@Override
 	public void tick(double delta) {
 		visual.tick(delta);
-	}
-
-	@Override
-	public void render() {
-		visual.render();
 	}
 
 	@Override
