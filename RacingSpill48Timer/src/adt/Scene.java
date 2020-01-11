@@ -1,6 +1,6 @@
 package adt;
 
-import elem.graphics.Renderer;
+import engine.graphics.Renderer;
 
 public abstract class Scene {
 

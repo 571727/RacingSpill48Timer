@@ -4,8 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import adt.Scene;
-import elem.interactions.Button;
-import handlers.SceneHandler;
+import engine.interactions.Button;
 import handlers.ServerHandler;
 import player_local.Player;
 import scenes.upgrade.Store;

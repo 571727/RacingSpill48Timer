@@ -1,7 +1,7 @@
 package scenes.visual;
 
 import adt.Visual;
-import elem.graphics.Renderer;
+import engine.graphics.Renderer;
 
 public class RaceVisual extends Visual {
 
