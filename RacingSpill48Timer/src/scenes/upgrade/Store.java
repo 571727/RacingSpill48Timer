@@ -9,12 +9,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import adt.Scene;
 import audio.SFX;
-import handlers.GameHandler;
-import handlers.SceneHandler;
-import handlers.StoreHandler;
+import main.GameHandler;
 import player_local.Player;
+import scenes.Scene;
+import scenes.SceneHandler;
 import window.Windows;
 
 public class Store extends Scene {

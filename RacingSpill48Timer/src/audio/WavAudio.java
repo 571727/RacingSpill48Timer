@@ -1,7 +1,5 @@
 package audio;
 
-import adt.Audio;
-
 public class WavAudio implements Audio {
 
 	public WavAudio(String file) {

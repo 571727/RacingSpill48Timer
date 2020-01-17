@@ -1,6 +1,5 @@
 package client;
 
-import handlers.ClientThreadHandler;
 import main.Main;
 
 public class ClientController {

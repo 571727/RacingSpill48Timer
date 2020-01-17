@@ -1,6 +1,6 @@
 package player_local;
 
-import player_local.car.Car;
+import player_local.Car;
 
 public class PlayerInfo {
 
@@ -83,7 +83,7 @@ public class PlayerInfo {
 	public String getRaceInfo(boolean allFinished, boolean full) {
 		String carName = null;
 		if (car != null) {
-			carName = car.getCarName();
+			carName = car.getRep().getName();
 		} else {
 			carName = "NO_NAME";
 		}
@@ -155,7 +155,7 @@ public class PlayerInfo {
 	}
 
 	public String getCarName() {
-		return car.getCarName();
+		return car.getRep().getName();
 	}
 
 	public long getTime() {
@@ -235,13 +235,11 @@ public class PlayerInfo {
 	}
 
 	public void setID(byte id2) {
-		// TODO Auto-generated method stub
-		
+		this.id = id2;
 	}
 
-	public String getHost() {
-		// TODO Auto-generated method stub
-		return null;
+	public byte getHost() {
+		return host;
 	}
 
 

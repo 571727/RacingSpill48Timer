@@ -3,7 +3,6 @@ package main;
 import game_modes.GameMode;
 import game_modes.GolfLike;
 import game_modes.PointRush;
-import handlers.GameHandler;
 
 public class Main {
 

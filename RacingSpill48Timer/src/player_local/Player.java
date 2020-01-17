@@ -2,10 +2,10 @@ package player_local;
 
 import java.util.Arrays;
 
-import connection_standard.Config;
-import handlers.StoreHandler;
-import main.RegularSettings;
-import player_local.car.Car;
+import server.connection_standard.Config;
+import file_manipulation.RegularSettings;
+import player_local.Car;
+import scenes.upgrade.StoreHandler;
 
 /**
  * holds and handles its client. Controls lobby for now.

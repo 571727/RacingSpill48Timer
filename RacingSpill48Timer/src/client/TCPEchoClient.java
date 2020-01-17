@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import connection_standard.Config;
-import handlers.ClientThreadHandler;
-import handlers.SceneHandler;
 import main.Main;
+import server.connection_standard.Config;
 
 public class TCPEchoClient {
 	

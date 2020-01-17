@@ -8,13 +8,13 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
-import adt.Visual;
-import adt.VisualElement;
 import audio.SFX;
-import handlers.GameHandler;
+import main.GameHandler;
 import player_local.CarRep;
 import player_local.Player;
 import scenes.Race;
+import scenes.Visual;
+import scenes.VisualElement;
 
 //Vis også tid osv more information
 
@@ -137,7 +137,7 @@ public class WinVisual extends Visual {
 				+ player.getCar().getHighestSpeedAchived() + "km/h!#"
 				+ String.format("%.1f", rep.getHp()) + " HP," + String.format("%.1f", rep.getWeight()) + " kg, "
 				+ String.format("%.1f", rep.getSpeedTop()) + " TS,#" + rep.getNosStrengthStandard() + " NOS, "
-				+ rep.getTireGripStrengthStandard() + " TB";
+				+ rep.getTireboostStrengthStandard() + " TB";
 
 		strings = temp.split("#");
 		alphas = new float[strings.length];

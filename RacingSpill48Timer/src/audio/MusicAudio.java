@@ -1,6 +1,6 @@
 package audio;
 
-import handlers.GameHandler;
+import main.GameHandler;
 
 public class MusicAudio {
 

@@ -2,12 +2,12 @@ package elem;
 
 import java.util.Random;
 
-import handlers.StoreHandler;
 import main.Main;
 import player_local.Car;
 import player_local.CarRep;
 import player_local.PlayerInfo;
 import scenes.Race;
+import scenes.upgrade.StoreHandler;
 import scenes.upgrade.Upgrades;
 
 public class AI extends PlayerInfo {
@@ -103,7 +103,7 @@ public class AI extends PlayerInfo {
 		boolean boughtSomething = false;
 		// Needs ts?
 		while (car.getHp() / car.getWeight() / car.getSpeedTop() / ((car.getNosStrengthStandard() + 1) / 2)
-				/ (car.getTireGripStrengthStandard() / 2) > 0.001 && boughtSomething) {
+				/ (car.getTireboostStrengthStandard() / 2) > 0.001 && boughtSomething) {
 			boughtSomething = false;
 			buythis = findBestUpgrade(1, money, spend);
 
@@ -240,7 +240,7 @@ public class AI extends PlayerInfo {
 			shiftUp(false);
 			car.setEngineOnActual(true);
 			car.setRpm(car.getRepresentation().getRpmIdle());
-			car.setGas(true);
+			car.setThrottle(true);
 
 			// Tiregrip? TODO change value
 			if (chance(tbChance))
