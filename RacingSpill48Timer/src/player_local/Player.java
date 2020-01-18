@@ -20,6 +20,10 @@ public class Player {
 	private PlayerCommunicator com;
 	private PlayerInfo myInfo;
 	
+	public Player() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public Player(String name, byte host, String car) {
 		this(name, host, car, Config.SERVER);
 	}
@@ -28,7 +32,7 @@ public class Player {
 		com = new PlayerCommunicator(ip);
 		myInfo = new PlayerInfo(name, host);
 	}
-	
+
 	public void lockSetupReadyInit(String car) {
 		myInfo.newCar(car);
 	}
@@ -92,20 +96,8 @@ public class Player {
 		return com.updateRaceLobby();
 	}
 
-	public int updateRaceLights() {
-		return com.updateRaceLights();
-	}
-
 	public void startUpdateLobby() {
 		com.startUpdateLobby();
-	}
-
-	public void startUpdateRaceLobby() {
-		com.startUpdateRaceLobby();
-	}
-
-	public void startUpdateRaceLights() {
-		com.startUpdateRaceLights();
 	}
 
 	public void stopUpdateLobby() {
@@ -122,14 +114,6 @@ public class Player {
 
 	public void updateReady() {
 		com.updateReady(myInfo);
-	}
-
-	public void startRace() {
-		com.startRace(myInfo);
-	}
-
-	public void stopRace() {
-		com.stopRace(myInfo);
 	}
 
 	public int getTrackLength() {

@@ -25,7 +25,7 @@ public abstract class Scene {
 
 	public abstract void keyInput(int keycode, int action);
 
-	public abstract void mouseButtonInput(int button, int action);
+	public abstract void mouseButtonInput(int button, int action, double x, double y);
 	public abstract void mousePosInput(double x, double y);
 	public abstract void mouseScrollInput(double x, double y);
 	public abstract void mouseEnterWindowInput(boolean entered);

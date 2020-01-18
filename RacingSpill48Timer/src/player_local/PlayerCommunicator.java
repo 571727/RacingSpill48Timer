@@ -1,5 +1,7 @@
 package player_local;
 
+import java.util.Arrays;
+
 import client.ClientController;
 import client.ClientThreadHandler;
 import client.TCPEchoClient;
@@ -23,9 +25,13 @@ public class PlayerCommunicator {
 		cth.setClient(client);
 	}
 
+	/**
+	 * JOIN#name+id#host-boolean#discID#checksum
+	 */
 	public void joinServer(PlayerInfo myInfo, RegularSettings settings) {
-		String[] ids = client.sendRequest("J#" + myInfo.getNameID() + "#" + myInfo.getHost() + "#"
-				+ settings.getDiscID() + "#" + Main.GAME_VERSION).split("#");
+		String[] ids = client.sendRequest(
+				"J#" + myInfo.getNameID() + "#" + myInfo.getHost() + "#" + settings.getDiscID() + "#" + Main.CHECKSUM)
+				.split("#");
 		byte id = Byte.valueOf(ids[0]);
 		myInfo.setID(id);
 		cth.setID(id);
@@ -43,169 +49,150 @@ public class PlayerCommunicator {
 
 	}
 
+	/**
+	 * LEAVE#name+id
+	 */
 	public void leaveServer(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-
+		System.out.println("Leaving server...");
+		client.sendRequest("L#" + myInfo.getID());
 	}
 
+	/**
+	 * UPDATELOBBY#name+id#ready - ready : int (0,1)
+	 */
 	public void stopAllClientHandlerOperations() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.stopAll();
 	}
 
 	public void endClientHandler() {
-		// TODO Auto-generated method stub
-
+		if (cth != null) {
+			cth.end();
+		}
 	}
 
 	public void startClientHandler() {
-		// TODO Auto-generated method stub
-
+		try {
+			cth.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void startPing() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.startPing();
 	}
 
 	public void stopPing() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.stopPing();
 	}
 
 	public String updateLobby() {
-		// TODO Auto-generated method stub
+		if (cth != null)
+			return cth.getLobbyString();
 		return null;
 	}
 
 	public String updateRaceLobby() {
-		// TODO Auto-generated method stub
+		if (cth != null)
+			return cth.getRaceLobbyString();
 		return null;
-	}
-
-	public int updateRaceLights() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	public void startUpdateLobby() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void startUpdateRaceLobby() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void startUpdateRaceLights() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.startLobby();
 	}
 
 	public void stopUpdateLobby() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.stopLobby();
 	}
 
 	public void stopUpdateRaceLobby() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.stopRaceLobby();
 	}
 
 	public void stopUpdateRaceLights() {
-		// TODO Auto-generated method stub
-
+		if (cth != null)
+			cth.stopRaceLights();
 	}
 
 	public void updateReady(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void startRace(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void stopRace(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-
+		client.sendRequest("RE#" + myInfo.getID() + "#" + myInfo.getReady());
 	}
 
 	public int getTrackLength(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return 0;
+		return Integer.valueOf(client.sendRequest("GL#" + myInfo.getID()));
 	}
 
 	public void setPointsAndMoney(PlayerInfo myInfo, int newPoints, int newMoney) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void finishRace(PlayerInfo myInfo, long time) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void inTheRace(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void createNewRaces(PlayerInfo myInfo, int amount) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getEndGoal(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getWinner(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void addChat(PlayerInfo myInfo, String text) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getChat(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getCurrentPlace(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setPricesAccordingToServer(PlayerInfo myInfo, StoreHandler store) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void updateCarCloneToServer(PlayerInfo myInfo, CarRep rep) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public boolean isGameOver(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public String forceUpdateRaceLobby(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return null;
+		client.sendRequest("SPM#" + myInfo.getID() + "#" + newPoints + "#" + newMoney);
 	}
 
 	public String getPointsAndMoney(PlayerInfo myInfo) {
-		// TODO Auto-generated method stub
-		return null;
+		String result = client.sendRequest("GPM#" + myInfo.getID());
+		String[] output = result.split("#");
+		myInfo.getBank().setPoints(Integer.valueOf(output[0]));
+		myInfo.getBank().setMoney(Integer.valueOf(output[1]));
+		return "<html>" + myInfo.getName() + ": <br/>" + "Points: " + myInfo.getBank().getPoints() + ".<br/>" + "Money: " + myInfo.getBank().getMoney()
+				+ ".";
+	}
+
+	public void finishRace(PlayerInfo myInfo, long time) {
+		client.sendRequest("F#" + myInfo.getID() + "#" + time);
+	}
+
+	public void inTheRace(PlayerInfo myInfo) {
+		myInfo.setIn(true);
+		client.sendRequest("I#" + myInfo.getID());
+	}
+
+	public void createNewRaces(PlayerInfo myInfo, int amount) {
+		client.sendRequest("NEW#" + myInfo.getID() + "#" + amount);
+	}
+
+	public String getEndGoal(PlayerInfo myInfo) {
+		return client.sendRequest("GEG#" + myInfo.getID());
+	}
+	
+	/**
+	 * At end of game figure out who won
+	 */
+	public String getWinner(PlayerInfo myInfo) {
+		return client.sendRequest("W#" + myInfo.getID());
+	}
+
+	public void addChat(PlayerInfo myInfo, String text) {
+		client.sendRequest("ADC#" + myInfo.getNameID() + "#" + text);
+	}
+
+	public String getChat(PlayerInfo myInfo) {
+		return client.sendRequest("GC#" + myInfo.getID());
+	}
+
+	public String getCurrentPlace(PlayerInfo myInfo) {
+		return client.sendRequest("GP#" + myInfo.getID());
+	}
+
+	public void setPricesAccordingToServer(PlayerInfo myInfo, StoreHandler store) {
+		String[] s = client.sendRequest("GPR#" + myInfo.getID()).split("#");
+		store.setPrices(Arrays.asList(s).stream().mapToInt(Integer::parseInt).toArray());
+	}
+
+	public void updateCarCloneToServer(PlayerInfo myInfo, CarRep rep) {
+		client.sendRequest("CAR#" + myInfo.getID() + "#" + rep.getCloneString());
+	}
+
+	public boolean isGameOver(PlayerInfo myInfo) {
+		return client.sendRequest("GO#" + myInfo.getID()).equals("1");
+	}
+
+	public String forceUpdateRaceLobby(PlayerInfo myInfo) {
+		return client.sendRequest("FUR#" + myInfo.getID());
 	}
 
 }

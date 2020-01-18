@@ -95,6 +95,10 @@ public class CarRep implements Cloneable {
 		setClone(cloneStrings, fromIndex);
 	}
 
+	public CarRep() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void setClone(String cloneString, int fromIndex) {
 		setClone(cloneString.split("#"), fromIndex);
 	}

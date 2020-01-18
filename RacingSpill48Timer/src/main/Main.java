@@ -1,6 +1,10 @@
 package main;
 
 import game_modes.GameMode;
+
+import java.nio.ByteBuffer;
+
+import org.lwjgl.util.meow.*;
 import game_modes.GolfLike;
 import game_modes.PointRush;
 
@@ -8,8 +12,8 @@ public class Main {
 
 	public static final boolean DEBUG = false;
 	public static final String[] AI_NAMES = { "Jens", "Benz", "Razor", "The Boi", "The Viper", "The Biper",
-			"èŠ‚å¥�å¤§å¸ˆ", "Knut", "Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law", "Anime Lover",
-			"noobmaster69", "TeaBottle", "Racerdude", "BestRacer97", "Niki Lauda", "PÃ¥l the Racer" };
+			"èŠ‚å¥�å¤§å¸ˆ", "Knut", "Pepsi", "Cola", "Cherry", "Sprite", "Apex Legend", "The Law",
+			"Anime Lover", "noobmaster69", "TeaBottle", "Racerdude", "BestRacer97", "Niki Lauda", "PÃ¥l the Racer" };
 	public static final String[] DIFFICULTY_TYPES = { "Easy", "Normal", "Hard", "Godlike" };
 	public static String[] AMOUNT_OF_AI;
 	public static boolean[] AI_NAMES_TAKEN;
@@ -20,6 +24,7 @@ public class Main {
 	public static final String STANDARD_REGEX = "#";
 	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";
 	public static final String GAME_VERSION = "1.8.4_FINAL";
+	public static final int CHECKSUM = new GameHandler().hashCode();
 
 	public static long DISCONNECTED_ID = -1;
 
@@ -30,8 +35,8 @@ public class Main {
 		}
 
 		GameHandler game = new GameHandler();
+		
 		game.start("fixme");
 	}
 
-	
 }

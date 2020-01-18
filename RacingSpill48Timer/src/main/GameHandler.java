@@ -9,6 +9,7 @@ import java.awt.Color;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import audio.AudioHandler;
+import elem.interactions.TopBar;
 import engine.graphics.Mesh;
 import engine.graphics.Renderer;
 import engine.graphics.Shader;
@@ -18,7 +19,13 @@ import engine.io.Window;
 import engine.math.Vector3f;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
+import player_local.Bank;
+import player_local.Car;
+import player_local.CarFuncs;
+import player_local.CarRep;
+import player_local.Player;
 import scenes.SceneHandler;
+import scenes.racing.RaceScene;
 import scenes.regular.OptionsScene;
 
 public class GameHandler {
@@ -33,10 +40,9 @@ public class GameHandler {
 	private InputHandler input;
 	private Renderer renderer;
 
-	
 	private Shader testShader;
 	private Mesh testMesh = new Mesh(
-			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f)), new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
+			new Vertex[] { new Vertex(new Vector3f(-0.0f, 0.5f, 0.0f)), new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
 					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f)), new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f)) },
 			new int[] { 0, 1, 2, 0, 3, 2 });
 
@@ -67,7 +73,9 @@ public class GameHandler {
 				Color.RED);
 		window.init();
 
-		sceneHandler.init(options);
+		TopBar topBar = new TopBar(window.getWindow());
+
+		sceneHandler.init(options, topBar);
 		sceneHandler.changeScene(0);
 
 		input = new InputHandler(sceneHandler.getCurrentScene(), window.getWindow());
@@ -80,7 +88,7 @@ public class GameHandler {
 
 		running = true;
 
-		//TESTING 
+		// TESTING
 		testShader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
 		testShader.create();
 		testMesh.create();
@@ -131,7 +139,11 @@ public class GameHandler {
 	 */
 	@Override
 	public int hashCode() {
-		return 1;
+		int hash = settings.hashCode() * audio.hashCode() * options.hashCode() / timer.hashCode()
+				/ sceneHandler.hashCode() * renderer.hashCode() + new Player().hashCode() + new CarFuncs().hashCode()
+				+ new Bank().hashCode() + new CarRep().hashCode()
+				+ new RaceScene().hashCode() * Main.GAME_VERSION.hashCode() / Main.GAME_NAME.hashCode();
+		return hash;
 	}
 
 }
