@@ -29,5 +29,6 @@ public abstract class Scene {
 	public abstract void mousePosInput(double x, double y);
 	public abstract void mouseScrollInput(double x, double y);
 	public abstract void mouseEnterWindowInput(boolean entered);
+	public abstract void destroy();
 	
 }

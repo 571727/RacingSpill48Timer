@@ -35,7 +35,7 @@ public class MainMenuScene extends Scene {
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
 		if (action != GLFW.GLFW_RELEASE) {
-			topBar.hold(x, y);
+			topBar.press(x, y);
 		} else {
 			topBar.release();
 		}
@@ -56,6 +56,12 @@ public class MainMenuScene extends Scene {
 	public void mouseEnterWindowInput(boolean entered) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

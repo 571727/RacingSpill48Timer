@@ -6,7 +6,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
 import engine.io.Window;
-
+import static org.lwjgl.glfw.GLFW.*;
 public class TopBar {
 
 	private double x, y;
@@ -17,11 +17,17 @@ public class TopBar {
 		this.window = window;
 	}
 	
-	public void hold(double x, double y) {
+	public void press(double x, double y) {
 		if (y < Window.CLIENT_HEIGHT / 26) {
+			if(x > Window.CLIENT_WIDTH - (Window.CLIENT_WIDTH / 40)) {
+				//FIXME exit button
+				glfwSetWindowShouldClose(window, true);
+			} else {
+				// Move window
 			this.x = x;
 			this.y = y;
 			held = true;
+			}
 		}
 	}
 

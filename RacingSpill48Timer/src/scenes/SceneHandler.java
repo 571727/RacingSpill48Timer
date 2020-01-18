@@ -30,6 +30,15 @@ public class SceneHandler {
 		scenes[6] = new EndScene();
 	}
 
+	/**
+	 * Destroy all the meshes and shaders etc
+	 */
+	public void destroy() {
+//		for(Scene scene : scenes) {
+//			scene.destroy();
+//		}		
+	}
+
 	public void changeSceneAction(InputHandler input) {
 		SceneChangeAction sceneChange = (scenenr)->{
 			if(scenenr == -1)
@@ -66,6 +75,5 @@ public class SceneHandler {
 	public int getCurrentSceneID() {
 		return currentScene;
 	}
-
 
 }

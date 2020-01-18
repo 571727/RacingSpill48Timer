@@ -42,8 +42,10 @@ public class GameHandler {
 
 	private Shader testShader;
 	private Mesh testMesh = new Mesh(
-			new Vertex[] { new Vertex(new Vector3f(-0.0f, 0.5f, 0.0f)), new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
-					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f)), new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f)) },
+			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f)), 
+					new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
+					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)), 
+					new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f)) },
 			new int[] { 0, 1, 2, 0, 3, 2 });
 
 	public GameHandler() {
@@ -130,6 +132,11 @@ public class GameHandler {
 		System.out.println("disposing");
 		input.free();
 		window.destroy();
+		sceneHandler.destroy();
+		
+		testMesh.destroy();
+		testShader.destroy();
+		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
@@ -139,11 +146,11 @@ public class GameHandler {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = settings.hashCode() * audio.hashCode() * options.hashCode() / timer.hashCode()
-				/ sceneHandler.hashCode() * renderer.hashCode() + new Player().hashCode() + new CarFuncs().hashCode()
-				+ new Bank().hashCode() + new CarRep().hashCode()
-				+ new RaceScene().hashCode() * Main.GAME_VERSION.hashCode() / Main.GAME_NAME.hashCode();
-		return hash;
+//		int hash = settings.hashCode() * audio.hashCode() * options.hashCode() / timer.hashCode()
+//				/ sceneHandler.hashCode() * renderer.hashCode() + new Player().hashCode() + new CarFuncs().hashCode()
+//				+ new Bank().hashCode() + new CarRep().hashCode()
+//				+ new RaceScene().hashCode() * Main.GAME_VERSION.hashCode() / Main.GAME_NAME.hashCode();
+		return 1;
 	}
 
 }
