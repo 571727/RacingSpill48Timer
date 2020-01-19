@@ -1,6 +1,6 @@
 package scenes.upgrade;
 
-import audio.Audio;
+import audio.lowstuff.Audio;
 import player_local.Bank;
 import player_local.Player;
 import player_local.car.Car;

@@ -1,4 +1,4 @@
-package audio;
+package audio.lowstuff;
 
 public class WavAudio implements Audio {
 

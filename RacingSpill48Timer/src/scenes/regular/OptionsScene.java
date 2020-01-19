@@ -1,7 +1,7 @@
 package scenes.regular;
 
-import audio.Audio;
 import audio.AudioHandler;
+import audio.lowstuff.Audio;
 import file_manipulation.ControlsSettings;
 import file_manipulation.RegularSettings;
 import scenes.Scene;

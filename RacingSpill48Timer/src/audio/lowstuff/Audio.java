@@ -1,4 +1,4 @@
-package audio;
+package audio.lowstuff;
 /**
  * Plays sound effect. Use to avoid the complex nature of OpenAL
  * @author jhoffis
