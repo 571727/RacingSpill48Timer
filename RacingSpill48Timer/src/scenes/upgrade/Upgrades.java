@@ -1,7 +1,7 @@
 package scenes.upgrade;
 
-import player_local.car.Car;
-import player_local.car.CarRep;
+import player_local.Car;
+import player_local.CarRep;
 
 //Dyrere for de som leder: 1st (+10%), 2nd (5%), 3rd (2%) osv.
 
@@ -25,22 +25,15 @@ public class Upgrades {
 		int clutchID = 0;
 		int[] clutchLVLs = { 3, 5, 8 };
 		int clutchMaxLVL = 8;
-		double[] clutchRegUpgrades = { 40, -1, -1, -1, -1, 10, -1, 20, -1, -1, -1, -1, -1 };
-		boolean[] clutchRegUpgradesPercent = { false, false, false, false, false, true, false, true, false, false,
-				false, false, false };
-		UpgradeRegularValues clutchRegularUpgradeText = new UpgradeRegularValues(clutchRegUpgrades,
-				clutchRegUpgradesPercent);
+		double[] clutchRegUpgrades = { 40, -1, -1, -1, -1, 0.10, -1, 0.20, -1, -1, -1, -1, -1 };
+		UpgradeRegularValues clutchRegularUpgradeText = new UpgradeRegularValues(clutchRegUpgrades);
 
 		// Weight
 		int weightID = 1;
 		int[] weightLVLs = { 2, 5, 7 };
 		int weightMaxLVL = 7;
-
-		double[] weightRegUpgrades = { -1, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-		boolean[] weightRegUpgradesPercent = { false, true, false, false, false, false, false, false, false, false,
-				false, false, false };
-		UpgradeRegularValues weightRegularUpgradeText = new UpgradeRegularValues(weightRegUpgrades,
-				weightRegUpgradesPercent);
+		double[] weightRegUpgrades = { -1, -0.02, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		UpgradeRegularValues weightRegularUpgradeText = new UpgradeRegularValues(weightRegUpgrades);
 
 		// Fuel
 		int fuelID = 2;
@@ -48,112 +41,74 @@ public class Upgrades {
 		int[] fuelLVLs = { 1, 2, 3 };
 		int fuelMaxLVL = 3;
 		double[] fuelRegUpgrades = { 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-		boolean[] fuelRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false,
-				false, false, false };
-		UpgradeRegularValues fuelRegularUpgradeText = new UpgradeRegularValues(fuelRegUpgrades, fuelRegUpgradesPercent);
+		UpgradeRegularValues fuelRegularUpgradeText = new UpgradeRegularValues(fuelRegUpgrades);
 
 		// Turbo
 		int turboID = 3;
 		int[] turboLVLs = { 3, 5, 6 };
 		int turboMaxLVL = 20;
-		double[] turboRegUpgrades = { 100, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-		boolean[] turboRegUpgradesPercent = { false, true, false, false, false, false, false, false, false, false,
-				false, false, false };
-		UpgradeRegularValues turboRegularUpgradeText = new UpgradeRegularValues(turboRegUpgrades,
-				turboRegUpgradesPercent);
+		double[] turboRegUpgrades = { 100, 0.02, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		UpgradeRegularValues turboRegularUpgradeText = new UpgradeRegularValues(turboRegUpgrades);
 
 		// NOS
 		int nosID = 4;
 		int[] nosLVLs = { 3, 5, 8 };
 		int nosMaxLVL = 8;
-		double[] nosRegUpgrades = { -1, -1, 0.4f, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-		boolean[] nosRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false, false,
-				false, false };
-		UpgradeRegularValues nosRegularUpgradeText = new UpgradeRegularValues(nosRegUpgrades, nosRegUpgradesPercent);
+		double[] nosRegUpgrades = { -1, -1, 4, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		UpgradeRegularValues nosRegularUpgradeText = new UpgradeRegularValues(nosRegUpgrades);
 
 		// Pistons
 		int pistonsID = 5;
 		int[] pistonsLVLs = { 3, 5 };
 		int pistonsMaxLVL = 10;
-		double[] pistonsRegUpgrades = { 8, -8, -1, -1, -1, -1, -1, -1, -1, 200, -1, -1, -1 };
-		boolean[] pistonsRegUpgradesPercent = { true, true, false, false, false, false, false, false, false, true,
-				false, false, false };
-		UpgradeRegularValues pistonsRegularUpgradeText = new UpgradeRegularValues(pistonsRegUpgrades,
-				pistonsRegUpgradesPercent);
+		double[] pistonsRegUpgrades = { 0.08, -0.08, -1, -1, -1, -1, -1, -1, -1, 200, -1, -1, -1 };
+		UpgradeRegularValues pistonsRegularUpgradeText = new UpgradeRegularValues(pistonsRegUpgrades);
 
 		// Gears
 		int gearID = 6;
 		int[] gearLVLs = { 3, 5, 10 };
 		int gearMaxLVL = 22;
-		double[] gearRegUpgrades = { -1, -3, -1, -1, -1, 92, -1, -1, -1, 2, -1, -1, -1 };
-		boolean[] gearRegUpgradesPercent = { false, true, false, false, false, false, false, false, false, true, false,
-				false, false };
-		UpgradeRegularValues gearRegularUpgradeText = new UpgradeRegularValues(gearRegUpgrades, gearRegUpgradesPercent);
+		double[] gearRegUpgrades = { -1, -0.03, -1, -1, -1, 92, -1, -1, -1, 0.02, -1, -1, -1 };
+		UpgradeRegularValues gearRegularUpgradeText = new UpgradeRegularValues(gearRegUpgrades);
 
 		// Block
 		int blockID = 7;
 		int[] blockLVLs = { 5, 7, 8 };
 		int blockMaxLVL = 12;
-		double[] blockRegUpgrades = { 170, 14, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-		boolean[] blockRegUpgradesPercent = { false, true, false, false, false, false, false, false, false, false,
-				false, false, false };
-		UpgradeRegularValues blockRegularUpgradeText = new UpgradeRegularValues(blockRegUpgrades,
-				blockRegUpgradesPercent);
+		double[] blockRegUpgrades = { 170, 0.14, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		UpgradeRegularValues blockRegularUpgradeText = new UpgradeRegularValues(blockRegUpgrades);
 
 		// Tires
 		int tbID = 8;
 		int[] tbLVLs = { 3, 5, 7 };
 		int tbMaxLVL = 12;
-		double[] tbRegUpgrades = { -1, -1, -1, -1, -1, -1, 0.6f, -1, -1, -1, -1, -1, -1 };
-		boolean[] tbRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false, false,
-				false, false };
-		UpgradeRegularValues tbRegularUpgradeText = new UpgradeRegularValues(tbRegUpgrades, tbRegUpgradesPercent);
-
-		// Titjuice
-		int titjuiceID = 9;
-		int[] titjuiceLVLs = { 2 };
-		int titjuiceMaxLVL = 5;
-		double[] titjuiceRegUpgrades = { 12, -2, -1, -1, -1, -1, -1, -1, -1, -1, -10, -1, -1 };
-		boolean[] titjuiceRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false,
-				true, false, false };
-		UpgradeRegularValues titjuiceRegularUpgradeText = new UpgradeRegularValues(titjuiceRegUpgrades,
-				titjuiceRegUpgradesPercent);
+		double[] tbRegUpgrades = { -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1, -1 };
+		UpgradeRegularValues tbRegularUpgradeText = new UpgradeRegularValues(tbRegUpgrades);
 
 		// Grippy Bombady
 		int gbID = 10;
 		int gbMaxLVL = 4;
-		double[] gbRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, 0.4, -1, -1, -1, -1 };
-		boolean[] gbRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false, false,
-				false, false };
-		UpgradeRegularValues gbRegularUpgradeText = new UpgradeRegularValues(gbRegUpgrades, gbRegUpgradesPercent);
+		double[] gbRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1 };
+		UpgradeRegularValues gbRegularUpgradeText = new UpgradeRegularValues(gbRegUpgrades);
 
 		// Lift that cam
 		int liftCamID = 11;
 		int[] liftCamLVLs = { 3 };
 		int liftCamMaxLVL = 3;
-		double[] liftCamRegUpgrades = { 3, -1, -1, -1, -1, -1, -1, -1, -1, 1200, -1, -1, -1 };
-		boolean[] liftCamRegUpgradesPercent = { true, false, false, false, false, false, false, false, false, true,
-				false, false, false };
-		UpgradeRegularValues liftCamRegularUpgradeText = new UpgradeRegularValues(liftCamRegUpgrades,
-				liftCamRegUpgradesPercent);
+		double[] liftCamRegUpgrades = { 0.03, -1, -1, -1, -1, -1, -1, -1, -1, 1200, -1, -1, -1 };
+		UpgradeRegularValues liftCamRegularUpgradeText = new UpgradeRegularValues(liftCamRegUpgrades);
 
 		// Money mails
 		int moneyID = 12;
 		int moneyMaxLVL = 3;
 		double[] moneyRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1 };
-		boolean[] moneyRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false,
-				false, false, false };
-		UpgradeRegularValues moneyRegularUpgradeText = new UpgradeRegularValues(moneyRegUpgrades,
-				moneyRegUpgradesPercent);
+		UpgradeRegularValues moneyRegularUpgradeText = new UpgradeRegularValues(moneyRegUpgrades);
 
 		// Point paradise
 		int paradiseID = 13;
 		int paradiseMaxLVL = 1;
 		double[] paradiseRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 };
-		boolean[] paradiseRegUpgradesPercent = { false, false, false, false, false, false, false, false, false, false,
-				false, false, false };
-		UpgradeRegularValues paradiseRegularUpgradeText = new UpgradeRegularValues(paradiseRegUpgrades,
-				paradiseRegUpgradesPercent);
+		UpgradeRegularValues paradiseRegularUpgradeText = new UpgradeRegularValues(paradiseRegUpgrades);
 
 		/*
 		 * BONUSES
@@ -165,7 +120,7 @@ public class Upgrades {
 		UpgradeAction[] clutchBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			if (notRep)
-				gearRegularUpgradeText.setValue(1, -6, true);
+				gearRegularUpgradeText.setValue(1, -0.06);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Second bonus
@@ -182,18 +137,18 @@ public class Upgrades {
 		UpgradeAction[] weightBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			if (notRep)
-				turboRegularUpgradeText.setValue(1, -1, false);
+				turboRegularUpgradeText.setValue(1, -1);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Second bonus
 			if (notRep)
-				blockRegularUpgradeText.setValue(1, -1, false);
+				blockRegularUpgradeText.setValue(1, -1);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
 			if (notRep) {
-				clutchRegularUpgradeText.setValue(1, -10, true);
-				clutchRegularUpgradeText.setValue(7, -1, false);
+				clutchRegularUpgradeText.setValue(1, -0.10);
+				clutchRegularUpgradeText.setValue(7, -1);
 			}
 			return -1;
 		} };
@@ -203,15 +158,15 @@ public class Upgrades {
 		UpgradeAction[] fuelBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			if (notRep)
-				fuelRegularUpgradeText.setValue(0, fuelHP[1], false);
+				fuelRegularUpgradeText.setValue(0, fuelHP[1]);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			if (notRep)
-				fuelRegularUpgradeText.setValue(0, fuelHP[2], false);
+				fuelRegularUpgradeText.setValue(0, fuelHP[2]);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 
-			gearRegularUpgradeText.setValue(5, 20, true);
+			gearRegularUpgradeText.setValue(5, 0.20);
 			return -1;
 		} };
 		String[] turboTexts = { "\"" + Upgrades.UPGRADE_NAMES[nosID] + "\" now contains an additional bottle",
@@ -233,14 +188,14 @@ public class Upgrades {
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
 			car.setDoesSpool(false);
-			turboRegularUpgradeText.setValue(5, 15, true);
+			turboRegularUpgradeText.setValue(5, 0.15);
 			return -1;
 		} };
-		String[] nosTexts = { "+ 0.1 TB for " + UPGRADE_NAMES[tbID], "- 50 % $ \"" + Upgrades.UPGRADE_NAMES[8] + "\"",
+		String[] nosTexts = { "+ 1 TB for " + UPGRADE_NAMES[tbID], "- 50 % $ \"" + Upgrades.UPGRADE_NAMES[8] + "\"",
 				"+ (69 * \"" + UPGRADE_NAMES[clutchID] + "\") TS" };
 		UpgradeAction[] nosBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
-			tbRegularUpgradeText.setValue(6, tbRegularUpgradeText.getValue(6) + 0.1f, false);
+			tbRegularUpgradeText.setValue(6, tbRegularUpgradeText.getValue(6) + 1);
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Second bonus
@@ -254,7 +209,7 @@ public class Upgrades {
 		String[] pistonsTexts = { "+ 100 % HP from \"" + Upgrades.UPGRADE_NAMES[2] + "\" even if already upgraded",
 				"+ 100 % \"" + UPGRADE_NAMES[pistonsID] + "\" effects" };
 		UpgradeAction[] pistonsBonuses = { (CarRep car, boolean notRep) -> {
-			// Second bonus
+			// First bonus
 			for (int i = 0; i < fuelHP.length; i++) {
 				if (i < car.getUpgradeLVL(fuelID))
 					car.setHp(car.getHp() + fuelHP[i]);
@@ -263,21 +218,21 @@ public class Upgrades {
 			}
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
-			// Third bonus
+			// sec bonus
 			if (notRep) {
 				for (int i = 0; i < 8; i++) {
 					double value = pistonsRegularUpgradeText.getValue(i);
 					if (value != -1)
-						pistonsRegularUpgradeText.setValue(i, value * 2, pistonsRegularUpgradeText.getPercent(i));
+						pistonsRegularUpgradeText.setValue(i, value * 2);
 				}
 			}
 			return -1;
 		} };
-		String[] gearTexts = { UPGRADE_NAMES[pistonsID] + " has + 0.1 NOS boost",
+		String[] gearTexts = { UPGRADE_NAMES[pistonsID] + " has + 1 NOS boost",
 				"Sequential shifting; (use arrows + virtually no clutch)", "Direct drive (Only one gear)" };
 		UpgradeAction[] gearBonuses = { (CarRep car, boolean notRep) -> {
 			if (notRep) {
-				pistonsRegularUpgradeText.setValue(2, 0.1f, false);
+				pistonsRegularUpgradeText.setValue(2, 1);
 			}
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
@@ -310,7 +265,7 @@ public class Upgrades {
 			// Second bonus
 			car.setNosStrengthStandard(car.getNosStrengthStandard() * 2);
 			if (notRep)
-				nosRegularUpgradeText.setValue(2, nosRegularUpgradeText.getValue(2), false);
+				nosRegularUpgradeText.setValue(2, nosRegularUpgradeText.getValue(2));
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
@@ -318,22 +273,6 @@ public class Upgrades {
 			return -1;
 		} };
 
-		String[] titjuiceTexts = { "+ 100 % \"" + UPGRADE_NAMES[pistonsID] + "\" effects" };
-		UpgradeAction[] titjuiceBonuses = { (CarRep car, boolean notRep) -> {
-			// First bonus
-			car.setNosTimeStandard((int) (car.getNosTimeStandard() * 1.5));
-			return -1;
-		}, (CarRep car, boolean notRep) -> {
-			// Second bonus
-			car.setNosStrengthStandard(car.getNosStrengthStandard() * 2);
-			if (notRep)
-				nosRegularUpgradeText.setValue(2, nosRegularUpgradeText.getValue(2), false);
-			return -1;
-		}, (CarRep car, boolean notRep) -> {
-			// Third bonus
-			car.setSpeedTop(car.getSpeedTop() * 1.30);
-			return -1;
-		} };
 		String[] liftCamTexts = { "+ 200 HP from \"" + UPGRADE_NAMES[blockID] + "\" instead" };
 		UpgradeAction[] liftCamBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
@@ -343,7 +282,7 @@ public class Upgrades {
 			// Second bonus
 			car.setNosStrengthStandard(car.getNosStrengthStandard() * 2);
 			if (notRep)
-				nosRegularUpgradeText.setValue(2, nosRegularUpgradeText.getValue(2), false);
+				nosRegularUpgradeText.setValue(2, nosRegularUpgradeText.getValue(2));
 			return -1;
 		}, (CarRep car, boolean notRep) -> {
 			// Third bonus
@@ -360,7 +299,6 @@ public class Upgrades {
 		bonusText[gearID] = gearTexts;
 		bonusText[blockID] = blockTexts;
 		bonusText[tbID] = tbTexts;
-		bonusText[titjuiceID] = titjuiceTexts;
 		bonusText[gbID] = null;
 		bonusText[liftCamID] = liftCamTexts;
 		bonusText[moneyID] = null;
@@ -375,7 +313,6 @@ public class Upgrades {
 		bonusTextLVLs[gearID] = gearLVLs;
 		bonusTextLVLs[blockID] = blockLVLs;
 		bonusTextLVLs[tbID] = tbLVLs;
-		bonusTextLVLs[titjuiceID] = titjuiceLVLs;
 		bonusTextLVLs[gbID] = null;
 		bonusTextLVLs[liftCamID] = liftCamLVLs;
 		bonusTextLVLs[moneyID] = null;
@@ -395,7 +332,7 @@ public class Upgrades {
 				weightRegularUpgradeText.upgrade(car);
 				int lvl = car.iterateUpgradeLVL(weightID);
 				if (notRep)
-					weightRegularUpgradeText.setValue(1, -2 * (lvl + 1), true);
+					weightRegularUpgradeText.setValue(1, -0.02 * (lvl + 1));
 				if (car.getWeight() <= 1) {
 					car.setWeight(1);
 				}
@@ -421,7 +358,7 @@ public class Upgrades {
 
 				nosRegularUpgradeText.upgrade(car);
 				if (notRep && car.getUpgradeLVL(nosID) == 0) {
-					nosRegularUpgradeText.setValue(3, nosRegularUpgradeText.getValue(3) - 1, false);
+					nosRegularUpgradeText.setValue(3, nosRegularUpgradeText.getValue(3) - 1);
 				}
 
 				return car.iterateUpgradeLVL(nosID);
@@ -451,12 +388,6 @@ public class Upgrades {
 				
 				return car.iterateUpgradeLVL(tbID);
 			}, tbBonuses, tbID, tbRegularUpgradeText, tbTexts, tbLVLs, tbMaxLVL);
-			
-			upgradeValues[titjuiceID] = new Upgrade((CarRep car, boolean notRep) -> {
-				titjuiceRegularUpgradeText.upgrade(car);
-				
-				return car.iterateUpgradeLVL(titjuiceID);
-			}, titjuiceBonuses, titjuiceID, titjuiceRegularUpgradeText, titjuiceTexts, titjuiceLVLs, titjuiceMaxLVL);
 			
 			upgradeValues[gbID] = new Upgrade((CarRep car, boolean notRep) -> {
 				gbRegularUpgradeText.upgrade(car);

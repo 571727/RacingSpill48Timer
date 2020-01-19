@@ -1,6 +1,6 @@
 package scenes.upgrade;
 
-import player_local.car.CarRep;
+import player_local.CarRep;
 /**
  * { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip",
 			"RPM", "Aero", "Victory Money", "Victory Point"};
@@ -10,14 +10,12 @@ import player_local.car.CarRep;
 public class UpgradeRegularValues {
 
 	private double[] values;
-	private boolean[] percentOrNah;
 	private String[] tags = { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip",
 			"RPM", "Aero", "Victory Money", "Victory Point"};
 	private boolean changed;
 
-	public UpgradeRegularValues(double[] values, boolean[] percentOrNah) {
+	public UpgradeRegularValues(double[] values) {
 		this.values = values;
-		this.percentOrNah = percentOrNah;
 	}
 
 	public String getUpgradeRep() {
@@ -35,10 +33,12 @@ public class UpgradeRegularValues {
 				else
 					res += "+ ";
 
-				res += Math.abs(values[i]);
 
-				if (percentOrNah[i]) {
+				if (isPercent(values[i])) {
+					res += Math.abs(values[i] * 100.0);
 					res += " %";
+				} else {
+					res += Math.abs(values[i]);
 				}
 
 				res += " " + tags[i];
@@ -52,40 +52,34 @@ public class UpgradeRegularValues {
 		return res;
 	}
 
+	private boolean isPercent(double d) {
+		return (d % 1) == 0;
+	}
+
 	public double getValue(int i) {
 		return values[i];
 	}
 
-	public void setValue(int i, double d, boolean percent) {
+	public void setValue(int i, double d) {
 		values[i] = d;
-		setPercent(i, percent);
-	}
-
-	public boolean getPercent(int i) {
-		return percentOrNah[i];
-	}
-
-	public void setPercent(int i, boolean val) {
-		percentOrNah[i] = val;
-		changed = true;
 	}
 
 	public void upgrade(CarRep car) {
 		if (values[0] != -1) {
-			if (percentOrNah[0])
-				car.setHp(car.getHp() * (values[0] / 100.0 + 1));
+			if (isPercent(values[0]))
+				car.setHp(car.getHp() * values[0]);
 			else
 				car.setHp(car.getHp() + values[0]);
 		}
 		if (values[1] != -1) {
-			if (percentOrNah[1])
-				car.setWeight(car.getWeight() * (values[1] / 100.0 + 1));
+			if (isPercent(values[1]))
+				car.setWeight(car.getWeight() * values[1]);
 			else
 				car.setWeight(car.getWeight() + values[1]);
 		}
 		if (values[2] != -1) {
-			if (percentOrNah[2])
-				car.setNosStrengthStandard(car.getNosStrengthStandard() * (values[2] / 100.0 + 1));
+			if (isPercent(values[2]))
+				car.setNosStrengthStandard(car.getNosStrengthStandard() * values[2]);
 			else
 				car.setNosStrengthStandard(car.getNosStrengthStandard() + values[2]);
 		}
@@ -97,44 +91,44 @@ public class UpgradeRegularValues {
 		}
 		if (values[5] != -1) {
 			double speedTopPrev = car.getSpeedTop();
-			if (percentOrNah[5])
-				car.setSpeedTop(car.getSpeedTop() * (values[5] / 100.0 + 1));
+			if (isPercent(values[5]))
+				car.setSpeedTop(car.getSpeedTop() * values[5]);
 			else
 				car.setSpeedTop(car.getSpeedTop() + values[5]);
 			car.setGearsbalance(car.getGearsbalance() * (1 - ((car.getSpeedTop() - speedTopPrev) / speedTopPrev)));
 		}
 		if (values[6] != -1) {
-			if (percentOrNah[6])
-				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() * (values[6] / 100.0 + 1));
+			if (isPercent(values[6]))
+				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() * values[6]);
 			else
 				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() + values[6]);
 		}
 		if (values[7] != -1) {
-			car.upgradeRightShift(values[7] / 100.0 + 1);
+			car.upgradeRightShift(values[7]);
 		}
 
 		if (values[8] != -1) {
-			if (percentOrNah[8])
-				car.setGripStartStandard(car.getGripStartStandard() * (values[8] / 100.0 + 1));
+			if (isPercent(values[8]))
+				car.setGripStartStandard(car.getGripStartStandard() * values[8]);
 			else
 				car.setGripStartStandard(car.getGripStartStandard() + values[8]);
 		}
 		
 		if (values[9] != -1) {
-			if (percentOrNah[8])
-				car.setRpmTop((int) (car.getRpmTop() * (values[9] / 100.0 + 1)));
+			if (isPercent(values[9]))
+				car.setRpmTop((int) (car.getRpmTop() * values[9]));
 			else
 				car.setRpmTop((int) (car.getRpmTop() + values[9]));
 		}
 		
 		if (values[10] != -1) {
-			if (percentOrNah[10])
-				car.setTitjuiceStrengthStandard((int) (car.getTitjuiceStrengthStandard() * (values[10] / 100.0 + 1)));
+			if (isPercent(values[10]))
+				car.setStrutseAleStrengthStandard((int) (car.getStrutseAleStrengthStandard() * values[10]));
 			else
-				car.setTitjuiceStrengthStandard((int) (car.getTitjuiceStrengthStandard() + values[10]));
+				car.setStrutseAleStrengthStandard((int) (car.getStrutseAleStrengthStandard() + values[10]));
 			
-			if(car.getTitjuiceAmountLeft() == 0)
-				car.setTitjuiceAmountLeft(1);
+			if(car.getStrutseAleAmountLeft() == 0)
+				car.setStrutseAleAmountLeft(1);
 		}
 	}
 }

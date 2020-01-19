@@ -254,11 +254,11 @@ public class CarRep implements Cloneable {
 		this.gearTop = gearTop;
 	}
 
-	public int getTireGripTimeStandard() {
+	public int getTireboostTimeStandard() {
 		return tireGripTimeStandard;
 	}
 
-	public void setTireGripTimeStandard(int tireGripTimeStandard) {
+	public void setTireboostTimeStandard(int tireGripTimeStandard) {
 		this.tireGripTimeStandard = tireGripTimeStandard;
 	}
 
@@ -266,23 +266,23 @@ public class CarRep implements Cloneable {
 		return tireGripStrengthStandard;
 	}
 
-	public void setTireGripStrengthStandard(double tireGripStrengthStandard) {
+	public void setTireboostStrengthStandard(double tireGripStrengthStandard) {
 		this.tireGripStrengthStandard = tireGripStrengthStandard;
 	}
 
-	public double getTireGripAreaTop() {
+	public double getTireboostAreaTop() {
 		return tireGripAreaTop;
 	}
 
-	public void setTireGripAreaTop(double tireGripAreaTop) {
+	public void setTireboostAreaTop(double tireGripAreaTop) {
 		this.tireGripAreaTop = tireGripAreaTop;
 	}
 
-	public double getTireGripAreaBottom() {
+	public double getTireboostAreaBottom() {
 		return tireGripAreaBottom;
 	}
 
-	public void setTireGripAreaBottom(double tireGripAreaBottom) {
+	public void setTireGripboostBottom(double tireGripAreaBottom) {
 		this.tireGripAreaBottom = tireGripAreaBottom;
 	}
 
@@ -385,6 +385,36 @@ public class CarRep implements Cloneable {
 	public int getMoneyMails() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public double getGripStartStandard() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setGripStartStandard(double d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setStrutseAleStrengthStandard(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public double getStrutseAleStrengthStandard() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getStrutseAleAmountLeft() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setStrutseAleAmountLeft(int i) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

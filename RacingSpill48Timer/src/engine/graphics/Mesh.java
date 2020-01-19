@@ -14,8 +14,9 @@ public class Mesh {
 	private Vertex[] vertices;
 	private int[] indices;
 	// vao (vertex array object), pbo ((vertex) position buffer object), ibo
-	// (indices buffer object), cbo (color buffer object) is the buffers of a vertex to be sent to the gpu.
-	private int vao, pbo, ibo, cbo;
+	// (indices buffer object), cbo (color buffer object) is the buffers of a vertex
+	// to be sent to the gpu.
+	private int vao, pbo, ibo, cbo, tbo;
 
 	public Mesh(Vertex[] vertices, int[] indices) {
 		this.vertices = vertices;
@@ -52,6 +53,18 @@ public class Mesh {
 
 		cbo = storeData(colorBuffer, 1, 3);
 
+		// make data readable by opengl
+		FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
+		float[] textureData = new float[vertices.length * 2];
+		for (int i = 0; i < vertices.length; i++) {
+			textureData[i * 2] = vertices[i].getTextureCoord().getX();
+			textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
+		}
+		// Put data into buffer
+		textureBuffer.put(textureData).flip();
+
+		tbo = storeData(textureBuffer, 2, 2);
+
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 		indicesBuffer.put(indices).flip();
 
@@ -84,10 +97,11 @@ public class Mesh {
 		GL15.glDeleteBuffers(pbo);
 		GL15.glDeleteBuffers(cbo);
 		GL15.glDeleteBuffers(ibo);
+		GL15.glDeleteBuffers(tbo);
 		
 		GL30.glDeleteVertexArrays(vao);
 	}
-	
+
 	public Vertex[] getVertices() {
 		return vertices;
 	}
@@ -107,9 +121,13 @@ public class Mesh {
 	public int getIBO() {
 		return ibo;
 	}
-	
+
 	public int getCBO() {
 		return cbo;
+	}
+
+	public int getTBO() {
+		return tbo;
 	}
 
 

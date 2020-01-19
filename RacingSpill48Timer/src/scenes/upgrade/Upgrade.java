@@ -1,7 +1,7 @@
 package scenes.upgrade;
 
-import player_local.car.Car;
-import player_local.car.CarRep;
+import player_local.Car;
+import player_local.CarRep;
 
 public class Upgrade {
 

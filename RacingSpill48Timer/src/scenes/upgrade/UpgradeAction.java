@@ -1,6 +1,6 @@
 package scenes.upgrade;
 
-import player_local.car.CarRep;
+import player_local.CarRep;
 
 public interface UpgradeAction {
 

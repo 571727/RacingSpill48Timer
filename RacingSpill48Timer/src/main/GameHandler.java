@@ -16,6 +16,7 @@ import engine.graphics.Shader;
 import engine.graphics.Vertex;
 import engine.io.InputHandler;
 import engine.io.Window;
+import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
@@ -42,10 +43,10 @@ public class GameHandler {
 
 	private Shader testShader;
 	private Mesh testMesh = new Mesh(
-			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f)), 
-					new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
-					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)), 
-					new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f)) },
+			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f),new Vector2f(-0.5f, 0.5f)), 
+					new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f),new Vector2f(-0.5f, 0.5f)),
+					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(-0.5f, 0.5f)), 
+					new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f), new Vector2f(-0.5f, 0.5f)) },
 			new int[] { 0, 1, 2, 0, 3, 2 });
 
 	public GameHandler() {
@@ -99,8 +100,10 @@ public class GameHandler {
 	private void gameLoop() {
 		double delta;
 		while (running) {
-			if (window.isClosing())
+			if (window.isClosing()) {
 				running = false;
+				break;
+			}
 
 			delta = timer.getDelta();
 

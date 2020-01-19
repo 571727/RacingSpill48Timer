@@ -66,14 +66,14 @@ public class CarFuncs {
 		}
 
 		if (stats.getNosTimeLeft() > comparedTimeLeft) {
-			inc += rep.getNosStrengthStandard();
+			inc += rep.getNosStrengthStandard() / 10.0;
 			stats.setNOSON(true);
 		} else {
 			stats.setNOSON(false);
 		}
 
 		if (stats.getTireboostTimeLeft() > comparedTimeLeft) {
-			inc += rep.getTireboostStrengthStandard();
+			inc += rep.getTireboostStrengthStandard() / 10.0;
 			stats.setTireboostON(true);
 		} else {
 			stats.setTireboostON(false);
@@ -155,8 +155,8 @@ public class CarFuncs {
 	public boolean isTireboostRight(CarStats stats, CarRep rep) {
 		if ((stats.getGear() == 1 || stats.getGear() == 0) && stats.getSpeed() < 2) {
 			double rt = rep.getRpmTop();
-			double top = rep.getTireGripAreaTop();
-			double bot = rep.getTireGripAreaBottom();
+			double top = rep.getTireboostAreaTop();
+			double bot = rep.getTireboostAreaBottom();
 
 			if (top == -1 && stats.getRpm() > rt / 2 || (stats.getRpm()< rt - rt / top && stats.getRpm() > rt - rt / bot)) {
 				return true;
@@ -166,7 +166,7 @@ public class CarFuncs {
 	}
 	
 	public void tireboost(CarStats stats, CarRep rep, long comparedTimeValue, int divideTime) {
-		stats.setTireboostTimeLeft(comparedTimeValue + rep.getTireGripTimeStandard() / divideTime);
+		stats.setTireboostTimeLeft(comparedTimeValue + rep.getTireboostTimeStandard() / divideTime);
 	}
 
 	public void nos(CarStats stats, CarRep rep, long comparedTimeValue, int divideTime) {
@@ -175,4 +175,9 @@ public class CarFuncs {
 			stats.decreaseNosBottleAmountLeft();
 		}
 	}
+
+	public int getSoundBarrierSpeed() {
+		return soundBarrierSpeed;
+	}
+	
 }
