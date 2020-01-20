@@ -9,7 +9,7 @@ import java.net.Socket;
 import main.Main;
 import server.connection_standard.Config;
 
-public class TCPEchoClient {
+public class TCPEchoClient implements Client{
 	
 	private String ip;
 	private int port;
@@ -24,6 +24,7 @@ public class TCPEchoClient {
 		this.port = Config.SERVERPORT;
 	}
 	
+	@Override
 	public String sendRequest (String text) {
 		
 		if(text == null)

@@ -18,7 +18,7 @@ public class SceneHandler {
 	private boolean specified;
 
 	public SceneHandler() {
-		scenes = new Scene[7];
+		scenes = new Scene[8];
 	}
 	
 	public void init(Scene options, TopBar topBar) {

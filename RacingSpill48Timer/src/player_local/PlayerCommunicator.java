@@ -15,13 +15,11 @@ public class PlayerCommunicator {
 	private String ip;
 	private ClientController client;
 	private ClientThreadHandler cth;
-	private TCPEchoClient echoClient;
 
 	public PlayerCommunicator(String ip) {
 		this.ip = ip;
-		echoClient = new TCPEchoClient(ip);
 		cth = new ClientThreadHandler(-1);
-		client = new ClientController(echoClient, cth);
+		client = new ClientController(ip, cth);
 		cth.setClient(client);
 	}
 
