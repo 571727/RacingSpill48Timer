@@ -25,14 +25,14 @@ public class Upgrades {
 		int clutchID = 0;
 		int[] clutchLVLs = { 3, 5, 8 };
 		int clutchMaxLVL = 8;
-		double[] clutchRegUpgrades = { 40, -1, -1, -1, -1, 0.10, -1, 0.20, -1, -1, -1, -1, -1 };
+		double[] clutchRegUpgrades = { 40, -1, -1, -1, -1, 1.10, -1, 1.20, -1, -1, -1, -1, -1 };
 		UpgradeRegularValues clutchRegularUpgradeText = new UpgradeRegularValues(clutchRegUpgrades);
 
 		// Weight
 		int weightID = 1;
 		int[] weightLVLs = { 2, 5, 7 };
 		int weightMaxLVL = 7;
-		double[] weightRegUpgrades = { -1, -0.02, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		double[] weightRegUpgrades = { -1, 0.98, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 		UpgradeRegularValues weightRegularUpgradeText = new UpgradeRegularValues(weightRegUpgrades);
 
 		// Fuel
@@ -47,7 +47,7 @@ public class Upgrades {
 		int turboID = 3;
 		int[] turboLVLs = { 3, 5, 6 };
 		int turboMaxLVL = 20;
-		double[] turboRegUpgrades = { 100, 0.02, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		double[] turboRegUpgrades = { 100, 0.98, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 		UpgradeRegularValues turboRegularUpgradeText = new UpgradeRegularValues(turboRegUpgrades);
 
 		// NOS
@@ -61,21 +61,21 @@ public class Upgrades {
 		int pistonsID = 5;
 		int[] pistonsLVLs = { 3, 5 };
 		int pistonsMaxLVL = 10;
-		double[] pistonsRegUpgrades = { 0.08, -0.08, -1, -1, -1, -1, -1, -1, -1, 200, -1, -1, -1 };
+		double[] pistonsRegUpgrades = { 1.08, 0.92, -1, -1, -1, -1, -1, -1, -1, 200, -1, -1, -1 };
 		UpgradeRegularValues pistonsRegularUpgradeText = new UpgradeRegularValues(pistonsRegUpgrades);
 
 		// Gears
 		int gearID = 6;
 		int[] gearLVLs = { 3, 5, 10 };
 		int gearMaxLVL = 22;
-		double[] gearRegUpgrades = { -1, -0.03, -1, -1, -1, 92, -1, -1, -1, 0.02, -1, -1, -1 };
+		double[] gearRegUpgrades = { -1, 0.97, -1, -1, -1, 92, -1, -1, -1, 1.02, -1, -1, -1 };
 		UpgradeRegularValues gearRegularUpgradeText = new UpgradeRegularValues(gearRegUpgrades);
 
 		// Block
 		int blockID = 7;
 		int[] blockLVLs = { 5, 7, 8 };
 		int blockMaxLVL = 12;
-		double[] blockRegUpgrades = { 170, 0.14, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		double[] blockRegUpgrades = { 170, 1.14, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 		UpgradeRegularValues blockRegularUpgradeText = new UpgradeRegularValues(blockRegUpgrades);
 
 		// Tires
@@ -95,7 +95,7 @@ public class Upgrades {
 		int liftCamID = 11;
 		int[] liftCamLVLs = { 3 };
 		int liftCamMaxLVL = 3;
-		double[] liftCamRegUpgrades = { 0.03, -1, -1, -1, -1, -1, -1, -1, -1, 1200, -1, -1, -1 };
+		double[] liftCamRegUpgrades = { 1.03, -1, -1, -1, -1, -1, -1, -1, -1, 1200, -1, -1, -1 };
 		UpgradeRegularValues liftCamRegularUpgradeText = new UpgradeRegularValues(liftCamRegUpgrades);
 
 		// Money mails
@@ -171,7 +171,7 @@ public class Upgrades {
 		} };
 		String[] turboTexts = { "\"" + Upgrades.UPGRADE_NAMES[nosID] + "\" now contains an additional bottle",
 				"Everything gets on sale! 10 % off!",
-				Upgrades.UPGRADE_NAMES[turboID] + " no longer spools and now gives + 15 % TS" };
+				"\"Sexy Turbo Blow\"" };
 		UpgradeAction[] turboBonuses = { (CarRep car, boolean notRep) -> {
 			// First bonus
 			car.setNosBottleAmountStandard(car.getNosBottleAmountStandard() + 1);

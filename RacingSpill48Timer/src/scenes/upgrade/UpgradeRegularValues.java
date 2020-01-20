@@ -1,17 +1,19 @@
 package scenes.upgrade;
 
 import player_local.CarRep;
+
 /**
- * { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip",
-			"RPM", "Aero", "Victory Money", "Victory Point"};
+ * { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area",
+ * "Grip", "RPM", "Aero", "Victory Money", "Victory Point"};
+ * 
  * @author jhoffis
  *
  */
 public class UpgradeRegularValues {
 
 	private double[] values;
-	private String[] tags = { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip",
-			"RPM", "Aero", "Victory Money", "Victory Point"};
+	private String[] tags = { "HP", "weight", "NOS boost", "NOS bottle", "gears", "TS", "TB", "TB area", "Grip", "RPM",
+			"Aero", "Victory Money", "Victory Point" };
 	private boolean changed;
 
 	public UpgradeRegularValues(double[] values) {
@@ -28,17 +30,29 @@ public class UpgradeRegularValues {
 				else if (changed)
 					res += "<font color='rgb(0, 255, 255)'>";
 
-				if (values[i] < 0)
-					res += "- ";
-				else
-					res += "+ ";
-
 
 				if (isPercent(values[i])) {
-					res += Math.abs(values[i] * 100.0);
+					
+					if (values[i] < 1.0)
+						res += "- ";
+					else
+						res += "+ ";
+					
+					res += Math.abs((values[i] - 1) * 100.0);
 					res += " %";
+					
 				} else {
-					res += Math.abs(values[i]);
+					
+					if (values[i] < 0)
+						res += "- ";
+					else
+						res += "+ ";
+
+					if (i == 2 || i == 6)
+						res += Math.abs(values[i] / 10.0); // Is NOS or Tireboost
+					else
+						res += Math.abs(values[i]);
+
 				}
 
 				res += " " + tags[i];
@@ -81,7 +95,7 @@ public class UpgradeRegularValues {
 			if (isPercent(values[2]))
 				car.setNosStrengthStandard(car.getNosStrengthStandard() * values[2]);
 			else
-				car.setNosStrengthStandard(car.getNosStrengthStandard() + values[2]);
+				car.setNosStrengthStandard(car.getNosStrengthStandard() + values[2] / 10.0);
 		}
 		if (values[3] != -1) {
 			car.setNosBottleAmountStandard((int) (car.getNosBottleAmountStandard() + values[3]));
@@ -101,7 +115,7 @@ public class UpgradeRegularValues {
 			if (isPercent(values[6]))
 				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() * values[6]);
 			else
-				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() + values[6]);
+				car.setTireboostStrengthStandard(car.getTireboostStrengthStandard() + values[6] / 10.0);
 		}
 		if (values[7] != -1) {
 			car.upgradeRightShift(values[7]);
@@ -113,21 +127,21 @@ public class UpgradeRegularValues {
 			else
 				car.setGripStartStandard(car.getGripStartStandard() + values[8]);
 		}
-		
+
 		if (values[9] != -1) {
 			if (isPercent(values[9]))
 				car.setRpmTop((int) (car.getRpmTop() * values[9]));
 			else
 				car.setRpmTop((int) (car.getRpmTop() + values[9]));
 		}
-		
+
 		if (values[10] != -1) {
 			if (isPercent(values[10]))
 				car.setStrutseAleStrengthStandard((int) (car.getStrutseAleStrengthStandard() * values[10]));
 			else
 				car.setStrutseAleStrengthStandard((int) (car.getStrutseAleStrengthStandard() + values[10]));
-			
-			if(car.getStrutseAleAmountLeft() == 0)
+
+			if (car.getStrutseAleAmountLeft() == 0)
 				car.setStrutseAleAmountLeft(1);
 		}
 	}

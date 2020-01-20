@@ -66,14 +66,14 @@ public class CarFuncs {
 		}
 
 		if (stats.getNosTimeLeft() > comparedTimeLeft) {
-			inc += rep.getNosStrengthStandard() / 10.0;
+			inc += rep.getNosStrengthStandard();
 			stats.setNOSON(true);
 		} else {
 			stats.setNOSON(false);
 		}
 
 		if (stats.getTireboostTimeLeft() > comparedTimeLeft) {
-			inc += rep.getTireboostStrengthStandard() / 10.0;
+			inc += rep.getTireboostStrengthStandard();
 			stats.setTireboostON(true);
 		} else {
 			stats.setTireboostON(false);

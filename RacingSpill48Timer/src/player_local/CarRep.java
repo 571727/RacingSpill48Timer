@@ -15,27 +15,10 @@ import scenes.upgrade.Upgrades;
 public class CarRep implements Cloneable {
 
 	private String name;
-	private int nosTimeStandard;
-	private int nosBottleAmountStandard;
-	private double nosStrengthStandard;
-	private double hp;
-	private double weight;
-	private double speedTop;
-	private int rpmIdle;
-	private int rpmTop;
-	private int gearTop;
-	private int tireGripTimeStandard;
-	private double tireGripStrengthStandard;
-	private double tireGripAreaTop;
-	private double tireGripAreaBottom;
 	private int[] upgradeLVLs;
-	private double gearsbalance;
-	private double maxValuePitch;
-	private int highestSpeedAchived;
-	private boolean clutchSuper;
-	private double turboHP;
-	private boolean doesSpool = true;
-	private boolean sequentialShift;
+
+	private double[] stats;
+	private boolean[] changed;
 
 	/**
 	 * @param name                     ex "Supra"
@@ -61,30 +44,37 @@ public class CarRep implements Cloneable {
 			double gearsbalance, double maxValuePitch) {
 
 		this.name = name;
-		this.nosTimeStandard = nosTimeStandard;
-		this.nosBottleAmountStandard = nosBottleAmountStandard;
-		this.nosStrengthStandard = nosStrengthStandard;
-		this.hp = hp;
-		this.weight = weight;
-		this.speedTop = speedTop;
-		this.rpmIdle = rpmIdle;
-		this.rpmTop = rpmTop;
-		this.gearTop = gearTop;
-		this.tireGripTimeStandard = tireGripTimeStandard;
-		this.tireGripStrengthStandard = tireGripStrengthStandard;
-		this.tireGripAreaTop = tireGripAreaTop;
-		this.tireGripAreaBottom = tireGripAreaBottom;
 		this.upgradeLVLs = upgradeLVLs;
-		this.gearsbalance = gearsbalance;
-		this.maxValuePitch = maxValuePitch;
-	}
 
-	public double getMaxValuePitch() {
-		return maxValuePitch;
-	}
+		stats = new double[24];
+		changed = new boolean[stats.length];
 
-	public void setMaxValuePitch(double maxValuePitch) {
-		this.maxValuePitch = maxValuePitch;
+		stats[0] = nosTimeStandard;
+		stats[1] = nosBottleAmountStandard;
+		stats[2] = nosStrengthStandard;
+		stats[3] = hp;
+		stats[4] = weight;
+		stats[5] = speedTop;
+		stats[6] = rpmIdle;
+		stats[7] = rpmTop;
+		stats[8] = gearTop;
+		stats[9] = tireGripTimeStandard;
+		stats[10] = tireGripStrengthStandard;
+		stats[11] = tireGripAreaTop;
+		stats[12] = tireGripAreaBottom;
+		stats[13] = gearsbalance;
+		stats[14] = maxValuePitch;
+		stats[15] = 0; // highestSpeedAchived
+		stats[16] = 0; // super clutch
+		stats[17] = 0; // turboHP
+		stats[18] = 0; // doesSpool
+		stats[19] = 0; // sequentialShift
+		stats[20] = 0; // Point paradise
+		stats[21] = 0; // Money mails
+		stats[22] = 0; // GripStart
+		stats[23] = 0; // StrutseAle strength std
+		stats[24] = 0; // StrutseAle amount left
+
 	}
 
 	public CarRep(String cloneString, int fromIndex) {
@@ -96,7 +86,7 @@ public class CarRep implements Cloneable {
 	}
 
 	public CarRep() {
-		// TODO Auto-generated constructor stub
+		// do notnin
 	}
 
 	public void setClone(String cloneString, int fromIndex) {
@@ -104,35 +94,28 @@ public class CarRep implements Cloneable {
 	}
 
 	public void setClone(String[] values, int fromIndex) {
-		name = values[fromIndex + 0];
-		nosTimeStandard = Integer.parseInt(values[fromIndex + 1]);
-		nosBottleAmountStandard = Integer.parseInt(values[fromIndex + 2]);
-		nosStrengthStandard = Double.valueOf(values[fromIndex + 3]);
-		hp = Double.valueOf(values[fromIndex + 4]);
-		weight = Double.valueOf(values[fromIndex + 5]);
-		speedTop = Double.valueOf(values[fromIndex + 6]);
-		rpmIdle = Integer.parseInt(values[fromIndex + 7]);
-		rpmTop = Integer.parseInt(values[fromIndex + 8]);
-		gearTop = Integer.parseInt(values[fromIndex + 9]);
-		tireGripTimeStandard = Integer.parseInt(values[fromIndex + 10]);
-		tireGripStrengthStandard = Double.valueOf(values[fromIndex + 11]);
-		tireGripAreaTop = Double.valueOf(values[fromIndex + 12]);
-		tireGripAreaBottom = Double.valueOf(values[fromIndex + 13]);
-		upgradeLVLsSetString(values[fromIndex + 14]);
-		gearsbalance = Double.valueOf(values[fromIndex + 15]);
-		maxValuePitch = Double.valueOf(values[fromIndex + 16]);
-		highestSpeedAchived = Integer.parseInt(values[fromIndex + 17]);
-		turboHP = Double.valueOf(values[fromIndex + 18]);
-		doesSpool = Integer.parseInt(values[fromIndex + 19]) == 1;
-		sequentialShift = Integer.parseInt(values[fromIndex + 20]) == 1;
+
 	}
 
 	public String getCloneString() {
-		return name + "#" + nosTimeStandard + "#" + nosBottleAmountStandard + "#" + nosStrengthStandard + "#" + hp + "#"
-				+ weight + "#" + speedTop + "#" + rpmIdle + "#" + rpmTop + "#" + gearTop + "#" + tireGripTimeStandard
-				+ "#" + tireGripStrengthStandard + "#" + tireGripAreaTop + "#" + tireGripAreaBottom + "#"
-				+ upgradeLVLsGetString() + "#" + gearsbalance + "#" + maxValuePitch + "#" + highestSpeedAchived + "#"
-				+ turboHP + "#" + (doesSpool ? 1 : 0)+ "#" + (sequentialShift ? 1 : 0);
+		String res = name + "#" + upgradeLVLsGetString();
+		for (int i = 0; i < stats.length; i++) {
+			res += "#";
+			if (changed[i]) {
+				res += stats[i];
+				changed[i] = false;
+			}
+		}
+		return res;
+	}
+
+	public String getCloneStringAll() {
+		String res = name + "#" + upgradeLVLsGetString();
+		for (double v : stats) {
+			res += "#" + v;
+		}
+		changed = new boolean[changed.length];
+		return res;
 	}
 
 	public CarRep getCloneObject() throws CloneNotSupportedException {
@@ -174,6 +157,14 @@ public class CarRep implements Cloneable {
 		}
 	}
 
+	public int[] getUpgradeLVLs() {
+		return upgradeLVLs;
+	}
+
+	public void setUpgradeLVLs(int[] upgradeLVLs) {
+		this.upgradeLVLs = upgradeLVLs;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -183,121 +174,128 @@ public class CarRep implements Cloneable {
 	}
 
 	public int getNosTimeStandard() {
-		return nosTimeStandard;
+		return (int) stats[0];
 	}
 
 	public void setNosTimeStandard(int nosTimeStandard) {
-		this.nosTimeStandard = nosTimeStandard;
+		stats[0] = nosTimeStandard;
+		changed[0] = true;
 	}
 
 	public int getNosBottleAmountStandard() {
-		return nosBottleAmountStandard;
+		return (int) stats[1];
 	}
 
 	public void setNosBottleAmountStandard(int nosBottleAmountStandard) {
-		this.nosBottleAmountStandard = nosBottleAmountStandard;
+		stats[1] = nosBottleAmountStandard;
+		changed[1] = true;
 	}
 
 	public double getNosStrengthStandard() {
-		return nosStrengthStandard;
+		return stats[2];
 	}
 
 	public void setNosStrengthStandard(double nosStrengthStandard) {
-		this.nosStrengthStandard = nosStrengthStandard;
+		stats[2] = nosStrengthStandard;
+		changed[2] = true;
 	}
 
 	public double getHp() {
-		return hp;
+		return stats[3];
 	}
 
 	public void setHp(double hp) {
-		this.hp = hp;
+		stats[3] = hp;
+		changed[3] = true;
 	}
 
 	public double getWeight() {
-		return weight;
+		return stats[4];
 	}
 
 	public void setWeight(double weight) {
-		this.weight = weight;
+		stats[4] = weight;
+		changed[4] = true;
 	}
 
 	public double getSpeedTop() {
-		return speedTop;
+		return stats[5];
 	}
 
 	public void setSpeedTop(double speedTop) {
-		this.speedTop = Math.round(speedTop);
+		stats[5] = Math.round(speedTop);
+		changed[5] = true;
 	}
 
 	public int getRpmIdle() {
-		return rpmIdle;
+		return (int) stats[6];
 	}
 
 	public void setRpmIdle(int rpmIdle) {
-		this.rpmIdle = rpmIdle;
+		stats[6] = rpmIdle;
+		changed[6] = true;
 	}
 
 	public int getRpmTop() {
-		return rpmTop;
+		return (int) stats[7];
 	}
 
 	public void setRpmTop(int rpmTop) {
-		this.rpmTop = rpmTop;
+		stats[7] = rpmTop;
+		changed[7] = true;
 	}
 
 	public int getGearTop() {
-		return gearTop;
+		return (int) stats[8];
 	}
 
 	public void setGearTop(int gearTop) {
-		this.gearTop = gearTop;
+		stats[8] = gearTop;
+		changed[8] = true;
 	}
 
 	public int getTireboostTimeStandard() {
-		return tireGripTimeStandard;
+		return (int) stats[9];
 	}
 
 	public void setTireboostTimeStandard(int tireGripTimeStandard) {
-		this.tireGripTimeStandard = tireGripTimeStandard;
+		stats[9] = tireGripTimeStandard;
+		changed[9] = true;
 	}
 
 	public double getTireboostStrengthStandard() {
-		return tireGripStrengthStandard;
+		return stats[10];
 	}
 
 	public void setTireboostStrengthStandard(double tireGripStrengthStandard) {
-		this.tireGripStrengthStandard = tireGripStrengthStandard;
+		stats[10] = tireGripStrengthStandard;
+		changed[10] = true;
 	}
 
 	public double getTireboostAreaTop() {
-		return tireGripAreaTop;
+		return stats[11];
 	}
 
 	public void setTireboostAreaTop(double tireGripAreaTop) {
-		this.tireGripAreaTop = tireGripAreaTop;
+		stats[11] = tireGripAreaTop;
+		changed[11] = true;
 	}
 
 	public double getTireboostAreaBottom() {
-		return tireGripAreaBottom;
+		return stats[12];
 	}
 
 	public void setTireGripboostBottom(double tireGripAreaBottom) {
-		this.tireGripAreaBottom = tireGripAreaBottom;
+		stats[12] = tireGripAreaBottom;
+		changed[12] = true;
 	}
 
-	public int[] getUpgradeLVLs() {
-		return upgradeLVLs;
-	}
-
-	public void setUpgradeLVLs(int[] upgradeLVLs) {
-		this.upgradeLVLs = upgradeLVLs;
-	}
-
+//FIXME infos in carrep to show stats
 	public String getInfo() {
-		return name + ", " + String.format("%.1f", hp) + " HP, " + String.format("%.1f", weight) + " kg, TS: "
-				+ (int) speedTop + " km/h, NOS: " + String.format("%.1f", nosStrengthStandard) + ", TB: "
-				+ String.format("%.1f", tireGripStrengthStandard);
+//		return name + ", " + String.format("%.1f", hp) + " HP, " + String.format("%.1f", weight) + " kg, TS: "
+//				+ (int) speedTop + " km/h, NOS: " + String.format("%.1f", nosStrengthStandard) + ", TB: "
+//				+ String.format("%.1f", tireGripStrengthStandard);
+		return "fixme";
 	}
 
 	public String getStatsNew(int prevLVL, int nextLVL) {
@@ -309,10 +307,11 @@ public class CarRep implements Cloneable {
 	}
 
 	private String stats() {
-		return "HP: " + String.format("%.1f", hp) + "<br/>" + "Weight: " + String.format("%.1f", weight) + " kg<br/>"
-				+ "Topspeed: " + (int) speedTop + " km/h<br/>" + "Amount of gears: " + (int) gearTop + "<br/>"
-				+ "NOS boost: " + String.format("%.1f", nosStrengthStandard) + "<br/>" + "NOS bottles: "
-				+ (int) nosBottleAmountStandard + "<br/>Tireboost: " + String.format("%.1f", tireGripStrengthStandard);
+//		return "HP: " + String.format("%.1f", hp) + "<br/>" + "Weight: " + String.format("%.1f", weight) + " kg<br/>"
+//				+ "Topspeed: " + (int) speedTop + " km/h<br/>" + "Amount of gears: " + (int) gearTop + "<br/>"
+//				+ "NOS boost: " + String.format("%.1f", nosStrengthStandard) + "<br/>" + "NOS bottles: "
+//				+ (int) nosBottleAmountStandard + "<br/>Tireboost: " + String.format("%.1f", tireGripStrengthStandard);
+		return "fixme";
 	}
 
 	public int iterateUpgradeLVL(int LVL) {
@@ -321,101 +320,123 @@ public class CarRep implements Cloneable {
 	}
 
 	public void upgradeRightShift(double change) {
-		tireGripAreaTop = tireGripAreaTop * change;
-		tireGripAreaBottom = tireGripAreaBottom * (1 - Math.abs(1 - change));
+		stats[11] = stats[11] * change;
+		stats[12] = stats[12] * (1 - Math.abs(1 - change));
+		changed[11] = true;
+		changed[12] = true;
 	}
 
 	public void guarenteeRightShift() {
-		tireGripAreaTop = -1;
+		stats[11] = -1;
+		changed[11] = true;
 	}
 
 	public double getGearsbalance() {
-		return gearsbalance;
+		return stats[13];
 	}
 
 	public void setGearsbalance(double gearsbalance) {
-		this.gearsbalance = gearsbalance;
+		stats[13] = gearsbalance;
+		changed[13] = true;
+	}
+
+	public double getMaxValuePitch() {
+		return stats[14];
+	}
+
+	public void setMaxValuePitch(double maxValuePitch) {
+		stats[14] = maxValuePitch;
+		changed[14] = true;
 	}
 
 	public int getHighestSpeedAchived() {
-		return highestSpeedAchived;
+		return (int) stats[15];
 	}
 
 	public void setHighestSpeedAchived(int highestSpeedAchived) {
-		this.highestSpeedAchived = highestSpeedAchived;
+		stats[15] = highestSpeedAchived;
+		changed[15] = true;
 	}
 
 	public boolean isClutchSuper() {
-		return clutchSuper;
+		return stats[16] == 1;
 	}
 
 	public void setClutchSuper(boolean clutchSuper) {
-		this.clutchSuper = clutchSuper;
+		stats[16] = clutchSuper ? 1 : 0;
+		changed[16] = true;
 	}
 
 	public double getTurboHP() {
-		return turboHP;
+		return stats[17];
 	}
 
 	public void setTurboHP(double d) {
-		turboHP = d;
+		stats[17] = d;
+		changed[17] = true;
 	}
 
 	public void setDoesSpool(boolean b) {
-		doesSpool = b;
+		stats[18] = b ? 1 : 0;
+		changed[18] = true;
 	}
 
 	public boolean doesSpool() {
-		return doesSpool;
+		return stats[18] == 1;
 	}
-	
+
 	public boolean isSequentialShift() {
-		return sequentialShift;
+		return stats[19] == 1;
 	}
 
 	public void setSequentialShift(boolean sequentialShift) {
-		this.sequentialShift = sequentialShift;
+		this.stats[19] = sequentialShift ? 1 : 0;
+		changed[19] = true;
 	}
 
 	public int getPointParadise() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) stats[20];
+	}
+
+	public void setPointParadise(int pp) {
+		stats[20] = pp;
+		changed[20] = true;
 	}
 
 	public int getMoneyMails() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) stats[21];
+	}
+
+	public void setMoneyMails(int mm) {
+		stats[21] = mm;
+		changed[21] = true;
 	}
 
 	public double getGripStartStandard() {
-		// TODO Auto-generated method stub
-		return 0;
+		return stats[22];
 	}
 
 	public void setGripStartStandard(double d) {
-		// TODO Auto-generated method stub
-		
+		stats[22] = d;
+		changed[22] = true;
 	}
 
 	public void setStrutseAleStrengthStandard(int i) {
-		// TODO Auto-generated method stub
-		
+		stats[23] = i;
+		changed[23] = true;
 	}
 
 	public double getStrutseAleStrengthStandard() {
-		// TODO Auto-generated method stub
-		return 0;
+		return stats[23];
 	}
 
 	public int getStrutseAleAmountLeft() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) stats[24];
 	}
 
 	public void setStrutseAleAmountLeft(int i) {
-		// TODO Auto-generated method stub
-		
+		stats[24] = i;
+		changed[24] = true;
 	}
-
 
 }
