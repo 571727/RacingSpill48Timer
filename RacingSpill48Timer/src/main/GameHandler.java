@@ -20,14 +20,9 @@ import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
-import player_local.Bank;
-import player_local.Car;
-import player_local.CarFuncs;
-import player_local.CarRep;
-import player_local.Player;
 import scenes.SceneHandler;
-import scenes.racing.RaceScene;
 import scenes.regular.OptionsScene;
+import engine.graphics.Material;
 
 public class GameHandler {
 
@@ -43,11 +38,11 @@ public class GameHandler {
 
 	private Shader testShader;
 	private Mesh testMesh = new Mesh(
-			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f),new Vector2f(-0.5f, 0.5f)), 
-					new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f),new Vector2f(-0.5f, 0.5f)),
-					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(-0.5f, 0.5f)), 
-					new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f), new Vector2f(-0.5f, 0.5f)) },
-			new int[] { 0, 1, 2, 0, 3, 2 });
+			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f),new Vector2f(0.0f, 0.0f)), 
+					new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f),new Vector2f(0f, 1f)),
+					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1f, 1f)), 
+					new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f), new Vector2f(1f, 0f)) },
+			new int[] { 0, 1, 2, 0, 3, 2 }, new Material("/pics/e.png", 13, 16));
 
 	public GameHandler() {
 		settings = new RegularSettings();

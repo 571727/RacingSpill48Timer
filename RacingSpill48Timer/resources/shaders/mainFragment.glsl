@@ -1,8 +1,12 @@
-#version 330 core
+#version 460 core
 
 in vec3 passColor;
-out vec4 outColor;
+in vec2 passTextureCoord;
+
+out vec4 FragColor;
+
+uniform sampler2D tex;
 
 void main() {
-	outColor = vec4(passColor, 1.0); 
+	FragColor = mix(texture(tex, passTextureCoord).rgba, vec4(passColor, 1.0), 0.5); 
 }

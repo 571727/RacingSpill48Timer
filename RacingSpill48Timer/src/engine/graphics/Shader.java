@@ -54,8 +54,6 @@ public class Shader {
 			return;
 		}
 		
-		GL20.glDeleteShader(vertexID);
-		GL20.glDeleteShader(fragmentID);
 	}
 	
 	public void bind() {
@@ -67,6 +65,10 @@ public class Shader {
 	}
 	
 	public void destroy() {
+		GL20.glDetachShader(programID, vertexID);
+		GL20.glDetachShader(programID, fragmentID);
+		GL20.glDeleteShader(vertexID);
+		GL20.glDeleteShader(fragmentID);
 		GL20.glDeleteProgram(programID);
 	}
 

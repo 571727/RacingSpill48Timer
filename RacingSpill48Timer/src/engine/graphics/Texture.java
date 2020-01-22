@@ -1,57 +1,88 @@
 package engine.graphics;
 
-import static org.lwjgl.stb.STBImage.*;
+import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL15.*;
+import javax.imageio.ImageIO;
 
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
+import engine.utils.BufferUtils;
+
 public class Texture {
 
-	private int width, height, nrChannels;
+	private int width, height;
 	private String path;
-	private ByteBuffer data;
 	private int textureID;
-	
-	public Texture(String path, int width, int height, int nrChannels) {
-		IntBuffer w, h, nrCh;
-		w = MemoryUtil.memAllocInt(1);
-		h = MemoryUtil.memAllocInt(1);
-		nrCh = MemoryUtil.memAllocInt(1);
 
-		data = stbi_load((CharSequence) path, w.put(width), h.put(height), nrCh.put(nrChannels), 0);
-
-		if(data.get() == 0) {
-			System.out.println("Didnt find texture at " + path);
-		}
-		
+	public Texture(String path) {
 		this.path = path;
-		this.width = width;
-		this.height = height;
-		this.nrChannels = nrChannels;
-		
 	}
-	
-	public int generate() {
+
+	public int load() {
+		int[] pixels = null;
+		try {
+			BufferedImage image = ImageIO.read(Texture.class.getResourceAsStream(path));
+			this.width = image.getWidth();
+			this.height = image.getHeight();
+			pixels = new int[width * height];
+			image.getRGB(0, 0, width, height, pixels, 0, width);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		int[] data = new int[width * height];
+		for (int i = 0; i < width * height; i++) {
+			int a = (pixels[i] & 0xff000000) >> 24;
+			int r = (pixels[i] & 0xff0000) >> 16;
+			int g = (pixels[i] & 0xff00) >> 8;
+			int b = (pixels[i] & 0xff);
+
+			data[i] = a << 24 | b << 16 | g << 8 | r;
+		}
+
 		textureID = glGenTextures();
+
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		GL30.glGenerateMipmap(GL_TEXTURE_2D);
-		
-		stbi_image_free(data);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 		return textureID;
 	}
-	
-	
-	
+
+	public void bind() {
+		glBindTexture(GL_TEXTURE_2D, textureID);
+	}
+
+	public void unbind() {
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	public FloatBuffer createTextureBuffer(Vertex[] vertices) {
+		FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
+		float[] textureData = new float[vertices.length * 2];
+		for (int i = 0; i < vertices.length; i++) {
+			textureData[i * 2] = vertices[i].getTextureCoord().getX();
+			textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
+		}
+		// Put data into buffer
+		textureBuffer.put(textureData).flip();
+		return textureBuffer;
+	}
+
+	public void destroy() {
+		GL13.glDeleteTextures(textureID);
+	}
+
 }
