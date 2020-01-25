@@ -1,18 +1,19 @@
 package scenes.visual;
 
-import engine.graphics.Renderer;
+import engine.objects.Sprite;
 import scenes.Visual;
 
 public class MainMenuVisual extends Visual{
 
 	@Override
-	public void tick(double delta) {
-		// TODO Auto-generated method stub
-		
+	public void init() {
+		Sprite object = new Sprite("controls.png", "main");
+		object.create();
+		add(object);
 	}
-
+	
 	@Override
-	public void render(Renderer renderer) {
+	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}

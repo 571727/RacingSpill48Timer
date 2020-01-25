@@ -6,10 +6,15 @@ import scenes.visual.FinishVisual;
 public class FinishScene extends Scene{
 
 	public FinishScene() {
-		super(new FinishVisual(), "finish");
+		super(new FinishVisual(), null, "finish");
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public void init() {
+		
+	}
+	
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub
@@ -23,7 +28,7 @@ public class FinishScene extends Scene{
 	}
 
 	@Override
-	public void mouseButtonInput(int button, int action) {
+	public void mouseButtonInput(int button, int action, double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -42,6 +47,12 @@ public class FinishScene extends Scene{
 
 	@Override
 	public void mouseEnterWindowInput(boolean entered) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroy() {
 		// TODO Auto-generated method stub
 		
 	}

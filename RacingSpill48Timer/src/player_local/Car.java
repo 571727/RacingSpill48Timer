@@ -5,7 +5,7 @@ import scenes.upgrade.Upgrades;
 
 public class Car {
 
-	public static final String[] CAR_TYPES = { "Decentra", "Bentlie", "Fabulus", "Tuff Mf" };
+	public static final String[] CAR_TYPES = { "Decentra", "Bentslie", "Fabulus", "Tuff Mf" };
 	private CarStats stats;
 	private CarFuncs funcs;
 	private CarRep rep;

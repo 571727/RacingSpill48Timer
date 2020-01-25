@@ -30,15 +30,20 @@ public class SceneHandler {
 		scenes[5] = new BurnoutScene();
 		scenes[6] = new FinishScene();
 		scenes[7] = new EndScene();
+		
+		for(Scene scene : scenes) {
+			scene.init();
+		}
+		
 	}
 
 	/**
 	 * FIXME Destroy all the meshes and shaders etc
 	 */
 	public void destroy() {
-//		for(Scene scene : scenes) {
-//			scene.destroy();
-//		}		
+		for(Scene scene : scenes) {
+			scene.destroy();
+		}		
 	}
 
 	public void changeSceneAction(InputHandler input) {

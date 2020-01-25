@@ -46,7 +46,7 @@ public class ServerHandler {
 	public void close() {
 		try {
 			if (thread.isAlive()) {
-				
+				//fukkin kill
 				info.endGame();
 				infoThread.join();
 				currentServer.setRunning(false);

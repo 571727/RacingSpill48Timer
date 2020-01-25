@@ -19,9 +19,12 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import elem.Action;
+import engine.math.Matrix4f;
 import player_local.Player;
 
 public class Window {
+
+	public static int INGAME_WIDTH, INGAME_HEIGHT, CLIENT_WIDTH, CLIENT_HEIGHT;
 
 	private final int[] possibleHeights = {
 			480, 720, 900, 1080, 1152, 1440, 2160
@@ -31,8 +34,8 @@ public class Window {
 	private String title;
 	private Color clearColor;
 	private long window;
-	public static int INGAME_WIDTH, INGAME_HEIGHT, CLIENT_WIDTH, CLIENT_HEIGHT;
-
+	private Matrix4f projection;
+	
 	public Window(int width, int height, boolean fullscreen, String title, Color clearColor) {
 		this.fullscreen = fullscreen;
 		this.title = title;
@@ -49,6 +52,8 @@ public class Window {
 		}
 		CLIENT_WIDTH = CLIENT_HEIGHT * 16 / 9;
 		
+		//TODO Turn this to ingame width and height.
+		projection = Matrix4f.projection(70f, (float) CLIENT_WIDTH / (float) CLIENT_HEIGHT, 0.1f, 1000f);
 	}
 
 	public void init() {
@@ -82,6 +87,7 @@ public class Window {
 		GL.createCapabilities();
 
 		glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), 1.0f);
+		mouseState(true);
 	}
 
 	public void initCallbacks(InputHandler input) {
@@ -136,14 +142,6 @@ public class Window {
 		setFullscreen(fullscreen);
 	}
 
-	public long getWindow() {
-		return window;
-	}
-
-	public boolean isFullscreen() {
-		return fullscreen;
-	}
-
 	public void destroy() {
 		if (closingProtocol != null)
 			closingProtocol.run();
@@ -153,5 +151,22 @@ public class Window {
 	public boolean isClosing() {
 		return glfwWindowShouldClose(window);
 	}
+	
+	public void mouseState(boolean lock) {
+		glfwSetInputMode(window, GLFW_CURSOR, lock ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	}
 
+	public Matrix4f getProjectionMatrix() {
+		return projection;
+	}
+
+	public long getWindow() {
+		return window;
+	}
+
+	public boolean isFullscreen() {
+		return fullscreen;
+	}
+
+	
 }

@@ -13,20 +13,20 @@ public class Mesh {
 
 	private Vertex[] vertices;
 	private int[] indices;
-	private Material material;
+	private Texture texture;
 	// vao (vertex array object), pbo ((vertex) position buffer object), ibo
 	// (indices buffer object), cbo (color buffer object) is the buffers of a vertex
 	// to be sent to the gpu.
 	private int vao, pbo, ibo, cbo, tbo;
 
-	public Mesh(Vertex[] vertices, int[] indices, Material material) {
+	public Mesh(Vertex[] vertices, int[] indices, Texture texture) {
 		this.vertices = vertices;
 		this.indices = indices;
-		this.material = material;
+		this.texture = texture;
 	}
 
 	public void create() {
-		material.create();
+		texture.load();
 		
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -35,9 +35,9 @@ public class Mesh {
 		FloatBuffer positionBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 		float[] positionData = new float[vertices.length * 3];
 		for (int i = 0; i < vertices.length; i++) {
-			positionData[i * 3] = vertices[i].getPosition().getX();
-			positionData[i * 3 + 1] = vertices[i].getPosition().getY();
-			positionData[i * 3 + 2] = vertices[i].getPosition().getZ();
+			positionData[i * 3] = vertices[i].getPosition().x();
+			positionData[i * 3 + 1] = vertices[i].getPosition().y();
+			positionData[i * 3 + 2] = vertices[i].getPosition().z();
 		}
 		// Put data into buffer
 		positionBuffer.put(positionData).flip();
@@ -48,9 +48,9 @@ public class Mesh {
 		FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 		float[] colorData = new float[vertices.length * 3];
 		for (int i = 0; i < vertices.length; i++) {
-			colorData[i * 3] = vertices[i].getColor().getX();
-			colorData[i * 3 + 1] = vertices[i].getColor().getY();
-			colorData[i * 3 + 2] = vertices[i].getColor().getZ();
+			colorData[i * 3] = vertices[i].getColor().x();
+			colorData[i * 3 + 1] = vertices[i].getColor().y();
+			colorData[i * 3 + 2] = vertices[i].getColor().z();
 		}
 		// Put data into buffer
 		colorBuffer.put(colorData).flip();
@@ -59,7 +59,7 @@ public class Mesh {
 
 		// make data readable by opengl
 
-		tbo = storeData(material.getTexture().createTextureBuffer(vertices), 2, 2);
+		tbo = storeData(texture.createTextureBuffer(vertices), 2, 2);
 
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 		indicesBuffer.put(indices).flip();
@@ -96,7 +96,7 @@ public class Mesh {
 		GL15.glDeleteBuffers(tbo);
 		
 		GL30.glDeleteVertexArrays(vao);
-		material.destroy();
+		texture.destroy();
 	}
 
 	public Vertex[] getVertices() {
@@ -127,8 +127,8 @@ public class Mesh {
 		return tbo;
 	}
 
-	public Material getMaterial() {
-		return material;
+	public Texture getTexture() {
+		return texture;
 	}
 
 

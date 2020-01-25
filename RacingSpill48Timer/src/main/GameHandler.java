@@ -18,11 +18,12 @@ import engine.io.InputHandler;
 import engine.io.Window;
 import engine.math.Vector2f;
 import engine.math.Vector3f;
+import engine.objects.Camera;
+import engine.objects.GameObject;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
 import scenes.SceneHandler;
 import scenes.regular.OptionsScene;
-import engine.graphics.Material;
 
 public class GameHandler {
 
@@ -36,21 +37,12 @@ public class GameHandler {
 	private InputHandler input;
 	private Renderer renderer;
 
-	private Shader testShader;
-	private Mesh testMesh = new Mesh(
-			new Vertex[] { new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f),new Vector2f(0.0f, 0.0f)), 
-					new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f),new Vector2f(0f, 1f)),
-					new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1f, 1f)), 
-					new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f), new Vector2f(1f, 0f)) },
-			new int[] { 0, 1, 2, 0, 3, 2 }, new Material("/pics/e.png", 13, 16));
-
 	public GameHandler() {
 		settings = new RegularSettings();
 		audio = new AudioHandler(settings);
 		options = new OptionsScene();
 		timer = new Timer();
 		sceneHandler = new SceneHandler();
-		renderer = new Renderer();
 	}
 
 	public void start(String checksum) {
@@ -71,6 +63,8 @@ public class GameHandler {
 				Color.RED);
 		window.init();
 
+		renderer = new Renderer(window);
+		
 		TopBar topBar = new TopBar(window.getWindow());
 
 		sceneHandler.init(options, topBar);
@@ -86,10 +80,6 @@ public class GameHandler {
 
 		running = true;
 
-		// TESTING
-		testShader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
-		testShader.create();
-		testMesh.create();
 	}
 
 	private void gameLoop() {
@@ -121,7 +111,6 @@ public class GameHandler {
 	}
 
 	private void render() {
-		renderer.renderMesh(testMesh, testShader);
 		sceneHandler.getCurrentScene().render(renderer);
 	}
 
@@ -131,9 +120,6 @@ public class GameHandler {
 		input.free();
 		window.destroy();
 		sceneHandler.destroy();
-		
-		testMesh.destroy();
-		testShader.destroy();
 		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();

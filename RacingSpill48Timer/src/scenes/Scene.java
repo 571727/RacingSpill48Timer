@@ -1,16 +1,19 @@
 package scenes;
 
 import engine.graphics.Renderer;
+import engine.objects.Camera;
 
 public abstract class Scene {
 
 	protected SceneChangeAction sceneChange;
 	protected Visual visual;
+	protected Camera camera;
 	protected String sceneName;
 	
-	public Scene(Visual visual, String sceneName) {
+	public Scene(Visual visual, Camera camera, String sceneName) {
 		this.visual = visual;
 		this.sceneName = sceneName; 
+		this.camera = camera;
 	}
 	
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {
@@ -18,8 +21,10 @@ public abstract class Scene {
 	}
 
 	public void render(Renderer renderer) {
-		visual.render(renderer);
+		visual.render(renderer, camera);
 	}
+	
+	public abstract void init();
 	
 	public abstract void tick(double delta);
 

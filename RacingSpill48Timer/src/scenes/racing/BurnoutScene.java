@@ -6,10 +6,15 @@ import scenes.visual.BurnoutVisual;
 public class BurnoutScene extends Scene{
 
 	public BurnoutScene() {
-		super(new BurnoutVisual(), "burnout");
+		super(new BurnoutVisual(), null,"burnout");
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public void init() {
+		
+	}
+	
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub

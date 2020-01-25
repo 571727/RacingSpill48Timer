@@ -21,6 +21,10 @@ public class Upgrades {
 		bonusText = new String[UPGRADE_NAMES.length][4];
 		bonusTextLVLs = new int[UPGRADE_NAMES.length][4];
 
+		/*
+		 * When a upgrade value is not an integer it is persumed to be a percentage. Otherwise it is a addition.
+		 */
+		
 		// Clutch
 		int clutchID = 0;
 		int[] clutchLVLs = { 3, 5, 8 };
@@ -86,26 +90,26 @@ public class Upgrades {
 		UpgradeRegularValues tbRegularUpgradeText = new UpgradeRegularValues(tbRegUpgrades);
 
 		// Grippy Bombady
-		int gbID = 10;
+		int gbID = 9;
 		int gbMaxLVL = 4;
 		double[] gbRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1 };
 		UpgradeRegularValues gbRegularUpgradeText = new UpgradeRegularValues(gbRegUpgrades);
 
 		// Lift that cam
-		int liftCamID = 11;
+		int liftCamID = 10;
 		int[] liftCamLVLs = { 3 };
 		int liftCamMaxLVL = 3;
 		double[] liftCamRegUpgrades = { 1.03, -1, -1, -1, -1, -1, -1, -1, -1, 1200, -1, -1, -1 };
 		UpgradeRegularValues liftCamRegularUpgradeText = new UpgradeRegularValues(liftCamRegUpgrades);
 
 		// Money mails
-		int moneyID = 12;
+		int moneyID = 11;
 		int moneyMaxLVL = 3;
 		double[] moneyRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1 };
 		UpgradeRegularValues moneyRegularUpgradeText = new UpgradeRegularValues(moneyRegUpgrades);
 
 		// Point paradise
-		int paradiseID = 13;
+		int paradiseID = 12;
 		int paradiseMaxLVL = 1;
 		double[] paradiseRegUpgrades = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 };
 		UpgradeRegularValues paradiseRegularUpgradeText = new UpgradeRegularValues(paradiseRegUpgrades);

@@ -28,16 +28,38 @@ public class LobbyScene extends Scene {
 
 	
 	public LobbyScene() {
-		super(new LobbyVisual(), "Lobby");
+		super(new LobbyVisual(), null, "Lobby");
 	}
 	
 	public void init() {
-		store.init(player);
+//		store.init(player);
 	}
 	
+	
+
+	private void goBack() {
+		player.getCar().reset();
+		clearChat();
+//		player.stopAllClientHandlerOperations();
+		player.endClientHandler();
+		player.leaveServer();
+		player = null;
+		if (server != null) {
+			server.close();
+			server = null;
+		}
+		sceneChange.run(-1);
+	}
+	
+	private void clearChat() {
+		chatOutput.setText("");
+		chatText = "";
+	}
+
 	@Override
 	public void tick(double delta) {
-		visual.tick(delta);
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -47,7 +69,7 @@ public class LobbyScene extends Scene {
 	}
 
 	@Override
-	public void mouseButtonInput(int button, int action) {
+	public void mouseButtonInput(int button, int action, double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -70,23 +92,10 @@ public class LobbyScene extends Scene {
 		
 	}
 
-	private void goBack() {
-		player.getCar().reset();
-		clearChat();
-//		player.stopAllClientHandlerOperations();
-		player.endClientHandler();
-		player.leaveServer();
-		player = null;
-		if (server != null) {
-			server.close();
-			server = null;
-		}
-		sceneChange.run(-1);
-	}
-	
-	private void clearChat() {
-		chatOutput.setText("");
-		chatText = "";
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

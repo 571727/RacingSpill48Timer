@@ -1,6 +1,5 @@
 package scenes.visual;
 
-import engine.graphics.Renderer;
 import scenes.Visual;
 
 public class OptionsVisual extends Visual{
@@ -11,10 +10,5 @@ public class OptionsVisual extends Visual{
 		
 	}
 
-	@Override
-	public void render(Renderer renderer) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

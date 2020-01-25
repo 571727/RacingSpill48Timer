@@ -93,6 +93,7 @@ public class CarRep implements Cloneable {
 		setClone(cloneString.split("#"), fromIndex);
 	}
 
+	//TODO
 	public void setClone(String[] values, int fromIndex) {
 
 	}

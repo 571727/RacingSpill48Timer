@@ -10,13 +10,18 @@ import scenes.visual.OptionsVisual;
 public class OptionsScene extends Scene {
 
 	public OptionsScene() {
-		super(new OptionsVisual(), "options");
+		super(new OptionsVisual(), null, "options");
 	}
 
 	public void init(RegularSettings settings, ControlsSettings controlsSettings, AudioHandler audio) {
 		
 	}
 
+	@Override
+	public void init() {
+		
+	}
+	
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub
@@ -30,7 +35,7 @@ public class OptionsScene extends Scene {
 	}
 
 	@Override
-	public void mouseButtonInput(int button, int action) {
+	public void mouseButtonInput(int button, int action, double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -49,6 +54,12 @@ public class OptionsScene extends Scene {
 
 	@Override
 	public void mouseEnterWindowInput(boolean entered) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroy() {
 		// TODO Auto-generated method stub
 		
 	}
