@@ -14,12 +14,16 @@ public class Sprite extends GameObject {
 	}
 
 	public Sprite(Vector3f position, Vector3f rotation, Vector3f scale, String spritePath, String shaderName) {
+		this(position, rotation, scale, new Texture("/pics/" + spritePath), shaderName);
+	}
+	
+	private Sprite(Vector3f position, Vector3f rotation, Vector3f scale, Texture sprite, String shaderName) {
 		super(position, rotation, scale, new Mesh(new Vertex[] {
-				new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector2f(0.0f, 0.0f)),
-				new Vertex(new Vector3f(0.5f, 0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0f, 1f)),
-				new Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1f, 1f)),
-				new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, 0.5f, 0.0f), new Vector2f(1f, 0f)) },
-				new int[] { 0, 1, 2, 0, 3, 2 }, new Texture("/pics/" + spritePath)),
+				new Vertex(new Vector3f(-0.5f * sprite.widthHeightRatio(), 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector2f(0.0f, 0.0f)),
+				new Vertex(new Vector3f(-0.5f* sprite.widthHeightRatio(), -0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0f, 1f)),
+				new Vertex(new Vector3f(0.5f* sprite.widthHeightRatio(), -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1f, 1f)),
+				new Vertex(new Vector3f(0.5f* sprite.widthHeightRatio(), 0.5f, 0.0f), new Vector3f(1f, 1f, 0.0f), new Vector2f(1f, 0f)) },
+				new int[] { 0, 1, 2, 0, 3, 2 }, sprite),
 				new Shader("/shaders/" + shaderName + "Vertex.glsl", "/shaders/" + shaderName + "Fragment.glsl"));
 	}
 	

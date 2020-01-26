@@ -7,7 +7,7 @@ public class MainMenuVisual extends Visual{
 
 	@Override
 	public void init() {
-		Sprite object = new Sprite("controls.png", "main");
+		Sprite object = new Sprite("tireboost.png", "main");
 		object.create();
 		add(object);
 	}

@@ -1,18 +1,15 @@
 package engine.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_BGRA;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import engine.utils.BufferUtils;
@@ -20,14 +17,9 @@ import engine.utils.BufferUtils;
 public class Texture {
 
 	private int width, height;
-	private String path;
 	private int textureID;
 
 	public Texture(String path) {
-		this.path = path;
-	}
-
-	public int load() {
 		int[] pixels = null;
 		try {
 			BufferedImage image = ImageIO.read(Texture.class.getResourceAsStream(path));
@@ -39,26 +31,18 @@ public class Texture {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		int[] data = new int[width * height];
-		for (int i = 0; i < width * height; i++) {
-			int a = (pixels[i] & 0xff000000) >> 24;
-			int r = (pixels[i] & 0xff0000) >> 16;
-			int g = (pixels[i] & 0xff00) >> 8;
-			int b = (pixels[i] & 0xff);
-
-			data[i] = a << 24 | b << 16 | g << 8 | r;
-		}
-
+		
 		textureID = glGenTextures();
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glBindTexture(GL_TEXTURE_2D, 0);
 
-		return textureID;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE,
+				BufferUtils.createIntBuffer(pixels));
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	public void bind() {
@@ -83,6 +67,20 @@ public class Texture {
 
 	public void destroy() {
 		GL13.glDeleteTextures(textureID);
+	}
+
+	public BufferedImage flip(BufferedImage image) {
+		for (int i = 0; i < image.getWidth(); i++)
+			for (int j = 0; j < image.getHeight() / 2; j++) {
+				int tmp = image.getRGB(i, j);
+				image.setRGB(i, j, image.getRGB(i, image.getHeight() - j - 1));
+				image.setRGB(i, image.getHeight() - j - 1, tmp);
+			}
+		return image;
+	}
+
+	public float widthHeightRatio() {
+		return width / height;
 	}
 
 }

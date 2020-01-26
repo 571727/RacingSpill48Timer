@@ -26,7 +26,6 @@ public class Mesh {
 	}
 
 	public void create() {
-		texture.load();
 		
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
