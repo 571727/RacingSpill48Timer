@@ -24,6 +24,7 @@ public class MainMenuScene extends Scene {
 	@Override
 	public void tick(double delta) {
 		camera.update();
+		visual.tick(delta);
 	}
 
 	@Override

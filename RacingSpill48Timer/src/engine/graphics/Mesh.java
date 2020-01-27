@@ -2,6 +2,7 @@ package engine.graphics;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -26,7 +27,7 @@ public class Mesh {
 	}
 
 	public void create() {
-		
+
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
 
@@ -43,21 +44,22 @@ public class Mesh {
 
 		pbo = storeData(positionBuffer, 0, 3);
 
-		// make data readable by opengl
-		FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
-		float[] colorData = new float[vertices.length * 3];
-		for (int i = 0; i < vertices.length; i++) {
-			colorData[i * 3] = vertices[i].getColor().x();
-			colorData[i * 3 + 1] = vertices[i].getColor().y();
-			colorData[i * 3 + 2] = vertices[i].getColor().z();
+		if (vertices[0].getColor() != null) {
+			// make data readable by opengl
+			FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+			float[] colorData = new float[vertices.length * 3];
+			for (int i = 0; i < vertices.length; i++) {
+				colorData[i * 3] = new Random().nextInt(100) / 100f;
+				colorData[i * 3 + 1] = new Random().nextInt(100) / 100f;
+				colorData[i * 3 + 2] = new Random().nextInt(100) / 100f;
+			}
+			// Put data into buffer
+			colorBuffer.put(colorData).flip();
+
+			cbo = storeData(colorBuffer, 1, 3);
+			// make data readable by opengl
 		}
-		// Put data into buffer
-		colorBuffer.put(colorData).flip();
-
-		cbo = storeData(colorBuffer, 1, 3);
-
-		// make data readable by opengl
-
+		
 		tbo = storeData(texture.createTextureBuffer(vertices), 2, 2);
 
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -87,13 +89,35 @@ public class Mesh {
 
 		return bufferID;
 	}
+	
+	public void bind() {
+		GL30.glBindVertexArray(vao);
+		
+		// Position
+		GL30.glEnableVertexAttribArray(0);
+		// shader color
+		GL30.glEnableVertexAttribArray(1);
+		// texture coord
+		GL30.glEnableVertexAttribArray(2);
+		
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
+				
+	}
+
+	public void unbind() {
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+		GL30.glDisableVertexAttribArray(0);
+		GL30.glDisableVertexAttribArray(1);
+		GL30.glDisableVertexAttribArray(2);
+		GL30.glBindVertexArray(0);		
+	}
 
 	public void destroy() {
 		GL15.glDeleteBuffers(pbo);
 		GL15.glDeleteBuffers(cbo);
 		GL15.glDeleteBuffers(ibo);
 		GL15.glDeleteBuffers(tbo);
-		
+
 		GL30.glDeleteVertexArrays(vao);
 		texture.destroy();
 	}
@@ -129,6 +153,5 @@ public class Mesh {
 	public Texture getTexture() {
 		return texture;
 	}
-
 
 }

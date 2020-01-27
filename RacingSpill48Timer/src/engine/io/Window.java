@@ -12,13 +12,24 @@ import java.awt.Color;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL40;
 import org.lwjgl.system.MemoryStack;
 
 import elem.Action;
+import engine.graphics.Texture;
 import engine.math.Matrix4f;
 import player_local.Player;
 
@@ -61,10 +72,15 @@ public class Window {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-
+		
 		window = glfwCreateWindow(CLIENT_WIDTH, CLIENT_HEIGHT, title, NULL, NULL);
 		if (window == NULL)
 			throw new RuntimeException("Failed to create the glfw window");
+
+		GLFWImage icon = icon("/pics/icon.png");
+		GLFWImage.Buffer icons = GLFWImage.malloc(1);
+		icons.put(0, icon);
+		glfwSetWindowIcon(window, icons);
 
 		// Get the thread stack and push a new frame
 		try (MemoryStack stack = stackPush()) {
@@ -86,6 +102,11 @@ public class Window {
 
 		GL.createCapabilities();
 
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL20.glEnable(GL40.GL_CULL_FACE);
+		GL40.glCullFace(GL40.GL_BACK);
+		
+		
 		glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), 1.0f);
 		mouseState(true);
 	}
@@ -150,6 +171,31 @@ public class Window {
 
 	public boolean isClosing() {
 		return glfwWindowShouldClose(window);
+	}
+	
+	private GLFWImage icon(String path) {
+		
+		BufferedImage image = null;
+		try {
+			image = ImageIO.read(Window.class.getResourceAsStream(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
+		  for (int i = 0; i < image.getHeight(); i++) {
+		    for (int j = 0; j < image.getWidth(); j++) {
+		      int colorSpace = image.getRGB(j, i);
+		      buffer.put((byte) ((colorSpace << 8) >> 24));
+		      buffer.put((byte) ((colorSpace << 16) >> 24));
+		      buffer.put((byte) ((colorSpace << 24) >> 24));
+		      buffer.put((byte) (colorSpace >> 24));
+		    }
+		  }
+		  buffer.flip();
+		  final GLFWImage result = GLFWImage.create();
+		  result.set(image.getWidth(), image.getHeight(), buffer);
+		  return result;
 	}
 	
 	public void mouseState(boolean lock) {

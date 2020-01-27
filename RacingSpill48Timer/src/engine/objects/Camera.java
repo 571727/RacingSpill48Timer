@@ -7,8 +7,8 @@ import engine.math.Vector3f;
 public class Camera {
 
 	private Vector3f position, rotation, moveState;
-	private float movespeed = 0.1f, mouseSensitivity = 0.1f;
-	private boolean fwd, bck, lft, rgt;
+	private float movespeed = 0.2f, mouseSensitivity = 0.1f;
+	private boolean fwd, bck, lft, rgt, up, dwn;
 	private double lastMouseX, lastMouseY, newMouseX, newMouseY;
 
 	public Camera() {
@@ -32,6 +32,9 @@ public class Camera {
 			movement = Vector3f.add(movement, new Vector3f(z * moveState.x(), 0, -x * moveState.x()));
 			
 			position = Vector3f.add(position, movement);
+		}
+		if(up || dwn) {
+			position = Vector3f.addY(position, moveState.y() * movespeed);
 		}
 		
 	}
@@ -62,6 +65,18 @@ public class Camera {
 				rgt = true;
 			}
 			break;
+		case GLFW.GLFW_KEY_SPACE:
+			if (!up) {
+				moveState = Vector3f.addY(moveState, 1);
+				up = true;
+			}
+			break;
+		case GLFW.GLFW_KEY_LEFT_SHIFT:
+			if (!dwn) {
+				moveState = Vector3f.addY(moveState, -1);
+				dwn = true;
+			}
+			break;
 		}
 	}
 
@@ -82,6 +97,14 @@ public class Camera {
 		case GLFW.GLFW_KEY_D:
 			moveState = Vector3f.subX(moveState, 1);
 			rgt = false;
+			break;
+		case GLFW.GLFW_KEY_SPACE:
+			moveState = Vector3f.subY(moveState, 1);
+			up = false;
+			break;
+		case GLFW.GLFW_KEY_LEFT_SHIFT:
+			moveState = Vector3f.subY(moveState, -1);
+			dwn = false;
 			break;
 		}
 	}

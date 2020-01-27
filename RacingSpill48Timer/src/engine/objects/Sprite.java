@@ -1,5 +1,7 @@
 package engine.objects;
 
+import java.awt.Color;
+
 import engine.graphics.Mesh;
 import engine.graphics.Shader;
 import engine.graphics.Vertex;
@@ -19,11 +21,11 @@ public class Sprite extends GameObject {
 	
 	private Sprite(Vector3f position, Vector3f rotation, Vector3f scale, Texture sprite, String shaderName) {
 		super(position, rotation, scale, new Mesh(new Vertex[] {
-				new Vertex(new Vector3f(-0.5f * sprite.widthHeightRatio(), 0.5f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector2f(0.0f, 0.0f)),
-				new Vertex(new Vector3f(-0.5f* sprite.widthHeightRatio(), -0.5f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector2f(0f, 1f)),
-				new Vertex(new Vector3f(0.5f* sprite.widthHeightRatio(), -0.5f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector2f(1f, 1f)),
-				new Vertex(new Vector3f(0.5f* sprite.widthHeightRatio(), 0.5f, 0.0f), new Vector3f(1f, 1f, 0.0f), new Vector2f(1f, 0f)) },
-				new int[] { 0, 1, 2, 0, 3, 2 }, sprite),
+				new Vertex(new Vector3f(-0.5f * sprite.widthHeightRatio(), 0.5f, 0.0f), new Color(1.0f, 0.0f, 0.0f), null, new Vector2f(0.0f, 0.0f)),
+				new Vertex(new Vector3f(-0.5f* sprite.widthHeightRatio(), -0.5f, 0.0f), new Color(0.0f, 1.0f, 0.0f),null, new Vector2f(0f, 1f)),
+				new Vertex(new Vector3f(0.5f* sprite.widthHeightRatio(), -0.5f, 0.0f), new Color(0.0f, 0.0f, 1.0f), null, new Vector2f(1f, 1f)),
+				new Vertex(new Vector3f(0.5f* sprite.widthHeightRatio(), 0.5f, 0.0f), new Color(1f, 1f, 0.0f), null, new Vector2f(1f, 0f)) },
+				new int[] {	0, 1, 2, 0, 2, 3}, sprite),
 				new Shader("/shaders/" + shaderName + "Vertex.glsl", "/shaders/" + shaderName + "Fragment.glsl"));
 	}
 	

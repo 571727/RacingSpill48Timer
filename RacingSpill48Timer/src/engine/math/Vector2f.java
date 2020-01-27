@@ -4,6 +4,10 @@ public class Vector2f {
 
 	private float[] xy;
 
+	public Vector2f() {
+		this(0,0);
+	}
+	
 	public Vector2f(Vector2f vec2, float modifier) {
 		xy = new float[2];
 		for (int i = 0; i < 2; i++) {

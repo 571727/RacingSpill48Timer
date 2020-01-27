@@ -31,7 +31,7 @@ public class Texture {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		textureID = glGenTextures();
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
@@ -46,6 +46,7 @@ public class Texture {
 	}
 
 	public void bind() {
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 
@@ -69,18 +70,8 @@ public class Texture {
 		GL13.glDeleteTextures(textureID);
 	}
 
-	public BufferedImage flip(BufferedImage image) {
-		for (int i = 0; i < image.getWidth(); i++)
-			for (int j = 0; j < image.getHeight() / 2; j++) {
-				int tmp = image.getRGB(i, j);
-				image.setRGB(i, j, image.getRGB(i, image.getHeight() - j - 1));
-				image.setRGB(i, image.getHeight() - j - 1, tmp);
-			}
-		return image;
-	}
-
 	public float widthHeightRatio() {
-		return width / height;
+		return (float) width / (float) height;
 	}
 
 }

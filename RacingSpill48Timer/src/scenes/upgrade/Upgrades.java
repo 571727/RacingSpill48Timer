@@ -8,7 +8,7 @@ import player_local.CarRep;
 public class Upgrades {
 
 	public static String[] UPGRADE_NAMES = { "Clutch", "Weight reduction", "Fuel", "Bigger turbo", "More NOS",
-			"Lighter pistons", "Gears", "Beefier block", "Tireboost", "Titjuice", "Grippy Bobbady", "Lift that cam",
+			"Lighter pistons", "Gears", "Beefier block", "Tireboost", "Strutse Ale", "Grippy Bobbady", "Lift that cam",
 			"Money mails", "Point paradise", };
 	private String[][] bonusText;
 	private int[][] bonusTextLVLs;
