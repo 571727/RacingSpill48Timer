@@ -28,12 +28,14 @@ public class MainMenuScene extends Scene {
 	}
 
 	@Override
-	public void keyInput(int keycode, int action) {
+	public boolean keyInput(int keycode, int action) {
 		if (action != GLFW.GLFW_RELEASE) {
 			camera.move(keycode);
 		} else {
 			camera.moveHalt(keycode);
 		}
+		
+		return true;
 	}
 
 	@Override

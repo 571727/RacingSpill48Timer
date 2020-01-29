@@ -1,5 +1,7 @@
 package engine.graphics;
 
+import static org.lwjgl.opengl.GL20C.glGetAttribLocation;
+
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
@@ -16,11 +18,11 @@ public class Shader {
 	private String vertexFile, fragmentFile;
 	private int vertexID, fragmentID, programID;
 	
-	public Shader(String vertexPath, String fragmentPath) {
-		vertexFile = FileUtils.loadAsString(vertexPath);
-		fragmentFile = FileUtils.loadAsString(fragmentPath);
+	public Shader(String shaderName) {
+		vertexFile = FileUtils.loadShaderAsString("/shaders/" + shaderName + "Vertex.glsl" );
+		fragmentFile = FileUtils.loadShaderAsString("/shaders/" + shaderName + "Fragment.glsl");
 	}
-
+	
 	public void create() {
 		programID = GL20.glCreateProgram();
 		vertexID = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
@@ -60,6 +62,10 @@ public class Shader {
 			return;
 		}
 		
+	}
+	
+	public int getAttribLocation(String name) {
+		 return glGetAttribLocation(programID, name);
 	}
 	
 	public int getUniformLocation(String name) {

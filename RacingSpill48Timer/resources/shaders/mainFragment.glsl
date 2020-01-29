@@ -1,5 +1,4 @@
-#version 460 core
-
+precision mediump float;
 in vec3 passColor;
 in vec2 passTextureCoord;
 

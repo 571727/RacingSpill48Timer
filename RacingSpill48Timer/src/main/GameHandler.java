@@ -1,6 +1,8 @@
 package main;
 
 import static org.lwjgl.glfw.GLFW.glfwInit;
+import org.lwjgl.nuklear.*;
+import static org.lwjgl.nuklear.Nuklear.*;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
@@ -70,8 +72,9 @@ public class GameHandler {
 		sceneHandler.init(options, topBar);
 		sceneHandler.changeScene(0);
 
-		input = new InputHandler(sceneHandler.getCurrentScene(), window.getWindow());
-		window.initCallbacks(input);
+		input = new InputHandler(sceneHandler.getCurrentScene(), window);
+		window.setupNkContext();
+		window.nkFont();
 
 		options.init(settings, input.getKeys(), audio);
 		sceneHandler.changeSceneAction(input);
@@ -93,8 +96,9 @@ public class GameHandler {
 			delta = timer.getDelta();
 
 			// update game
-			tick(delta);
 			window.update();
+			//check nuklear stuff in tick
+			tick(delta);
 			timer.updateTPS();
 
 			// render the game
@@ -112,12 +116,13 @@ public class GameHandler {
 
 	private void render() {
 		sceneHandler.getCurrentScene().render(renderer);
+		renderer.renderNuklear(NK_ANTI_ALIASING_ON, Window.MAX_VERTEX_BUFFER, Window.MAX_ELEMENT_BUFFER);
 	}
 
 	private void dispose() {
 //		Terminate GLFW and free the error callback
 		System.out.println("disposing");
-		input.free();
+		input.free(window.getWindow());
 		window.destroy();
 		sceneHandler.destroy();
 		

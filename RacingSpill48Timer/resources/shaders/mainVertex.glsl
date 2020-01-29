@@ -1,5 +1,3 @@
-#version 460 core
-
 in vec3 position;
 in vec3 color;
 in vec2 textureCoord;

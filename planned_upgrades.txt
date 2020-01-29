@@ -1,3 +1,10 @@
+Singleplayer:
+Balance resources that depleat and have a timer when upgrading because you are running away from something. The goal would be to get to a point as fast as possible (time).
+Go through areas.
+
+
+Multiplayer:
+
 Om det er 3 eller mindre så kan hver tre-delt bonus bare bli tatt en gang.
 Om det er 3-6 så kan de bli tatt 2 ganger.
 

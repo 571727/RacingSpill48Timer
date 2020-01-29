@@ -28,7 +28,10 @@ public abstract class Scene {
 	
 	public abstract void tick(double delta);
 
-	public abstract void keyInput(int keycode, int action);
+	/**
+	 * @return if it's NOT busy racing
+	 */
+	public abstract boolean keyInput(int keycode, int action);
 
 	public abstract void mouseButtonInput(int button, int action, double x, double y);
 	public abstract void mousePosInput(double x, double y);
