@@ -23,7 +23,7 @@ but I really like racing games. I could not find a game that satisfied both area
 - Jaco MP3 Player 0.9.4
 
 ## How to use?
-### https://www.jhoffis.dev/games/racingmaybe/
+### https://www.jhoffis.dev/racingmaybe/
 I try to update this link as often as possible.
 
 ## License
