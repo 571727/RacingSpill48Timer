@@ -12,11 +12,12 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import adt.GameMode;
 import elem.AI;
-import elem.Car;
-import elem.Upgrades;
-import startup.Main;
+import game_modes.GameMode;
+import main.Main;
+import player_local.Car;
+import player_local.PlayerInfo;
+import scenes.upgrade.Upgrades;
 
 /**
  * Holds info about who is a part of this game. Also holds info about the cars
@@ -110,7 +111,7 @@ public class ServerInfo implements Runnable {
 
 	private long generateDisconnectID(PlayerInfo player) {
 		long id = Math.abs(r.nextLong());
-		player.setDisconnectID(id);
+		player.setDiscID(id);
 		return id;
 	}
 
@@ -143,6 +144,8 @@ public class ServerInfo implements Runnable {
 		if (lostPlayers.containsKey(discID)) {
 			newPlayer = lostPlayers.remove(discID);
 
+			newPlayer.setName(input[2]);
+			
 			players.put(newPlayer.getID(), newPlayer);
 			ping.put(newPlayer.getID(), System.currentTimeMillis());
 			chat.put(newPlayer, new ConcurrentLinkedQueue<String>());
@@ -162,8 +165,9 @@ public class ServerInfo implements Runnable {
 			}
 		}
 
+		// Add new player to club
 		if (!jump) {
-			newPlayer = new PlayerInfo(input[2], generateID(), input[3]);
+			newPlayer = new PlayerInfo(input[2], generateID(), Byte.valueOf(input[3]));
 
 			players.put(newPlayer.getID(), newPlayer);
 			ping.put(newPlayer.getID(), System.currentTimeMillis());
@@ -172,9 +176,10 @@ public class ServerInfo implements Runnable {
 
 		addChat(newPlayer.getName() + " joined the game.");
 
+		//Respond with new id, discID, old car if lost.
 		String res = newPlayer.getID() + "#" + generateDisconnectID(newPlayer) + "#" + copyCar
 				+ ((copyCar == 1)
-						? "#" + newPlayer.getName() + "#" + newPlayer.getCar().getRepresentation().getCloneString()
+						? "#" + newPlayer.getCar().getRep().getCloneString()
 						: "");
 		
 		updateSortedPlayers();
@@ -185,7 +190,7 @@ public class ServerInfo implements Runnable {
 		PlayerInfo player = getPlayer(input);
 		int from = 2;
 		if (player.getCar() != null) {
-			player.getCar().getRepresentation().setClone(input, from);
+			player.getCar().getRep().setClone(input, from);
 		} else {
 			player.setCar(new Car(input, from));
 		}
@@ -402,7 +407,7 @@ public class ServerInfo implements Runnable {
 	 */
 	@SuppressWarnings("unused")
 	private void leave(PlayerInfo player) {
-		String output = "Removing player: " + player.name;
+		String output = "Removing player: " + player.getName();
 
 		if (player != null) {
 			boolean s = gm.isRacing();

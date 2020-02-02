@@ -3,7 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import connection_standard.Config;
+import server.connection_standard.Config;
 /**
  * Passer på lokal server. Kan bare brukes med en client.
  * @author jonah

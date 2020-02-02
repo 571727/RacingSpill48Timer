@@ -2,10 +2,13 @@ package elem;
 
 import java.util.Random;
 
-import handlers.StoreHandler;
+import main.Main;
+import player_local.Car;
+import player_local.CarRep;
+import player_local.PlayerInfo;
 import scenes.Race;
-import server.PlayerInfo;
-import startup.Main;
+import scenes.upgrade.StoreHandler;
+import scenes.upgrade.Upgrades;
 
 public class AI extends PlayerInfo {
 
@@ -100,7 +103,7 @@ public class AI extends PlayerInfo {
 		boolean boughtSomething = false;
 		// Needs ts?
 		while (car.getHp() / car.getWeight() / car.getSpeedTop() / ((car.getNosStrengthStandard() + 1) / 2)
-				/ (car.getTireGripStrengthStandard() / 2) > 0.001 && boughtSomething) {
+				/ (car.getTireboostStrengthStandard() / 2) > 0.001 && boughtSomething) {
 			boughtSomething = false;
 			buythis = findBestUpgrade(1, money, spend);
 
@@ -237,11 +240,11 @@ public class AI extends PlayerInfo {
 			shiftUp(false);
 			car.setEngineOnActual(true);
 			car.setRpm(car.getRepresentation().getRpmIdle());
-			car.setGas(true);
+			car.setThrottle(true);
 
 			// Tiregrip? TODO change value
 			if (chance(tbChance))
-				car.gearBoost(time, 1000 / Race.TICK_STD);
+				car.gearBoost(time, 1000 / RaceScene.TICK_STD);
 
 		}
 
@@ -249,7 +252,7 @@ public class AI extends PlayerInfo {
 		while (car.getDistance() < length) {
 
 			if (car.getNosBottleAmountLeft() > 0 && !car.isNOSON()) {
-				car.nos(time, 1000 / Race.TICK_STD);
+				car.nos(time, 1000 / RaceScene.TICK_STD);
 				System.out.println("NOS!!");
 			}
 
@@ -278,7 +281,7 @@ public class AI extends PlayerInfo {
 
 		// convert time to right timetype
 
-		long tickTime = 1000 / Race.TICK_STD;
+		long tickTime = 1000 / RaceScene.TICK_STD;
 		long fineTime = (long) (tickTime / (car.getDistance() - length + 1));
 		time = tickTime * time;
 		time += fineTime;

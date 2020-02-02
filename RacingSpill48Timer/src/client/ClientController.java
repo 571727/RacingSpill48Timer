@@ -1,27 +1,37 @@
 package client;
 
-import handlers.ClientThreadHandler;
-import startup.Main;
+import main.Main;
 
 public class ClientController {
 
-	private TCPEchoClient client;
+	private Client clientTCP, clientUDP;
 	private ClientThreadHandler cth;
-	
-	public ClientController (TCPEchoClient client, ClientThreadHandler cth) {
-		this.client = client;
+
+	public ClientController(String ip, ClientThreadHandler cth) {
+		clientTCP = new TCPEchoClient(ip);
+		clientUDP = new UDPEchoClient(ip);
 		this.cth = cth;
 	}
-	
+
+	/**
+	 * If you have an important message then it will be sent with tcp
+	 */
 	public String sendRequest(String request) {
-		String response = client.sendRequest(request);
+
+		String response = clientTCP.sendRequest(request);
 		
-		if(response != null && response.equals(Main.END_ALL_CLIENT_STRING)) {
-			System.err.println("ENDING ClientThreadHandler: " +request);
+//		@SuppressWarnings("preview")
+//		String response = switch (request.charAt(0)) {
+//		case '!' -> this.clientTCP.sendRequest(request);
+//		default -> this.clientUDP.sendRequest(request);
+//		};
+
+		if (response != null && response.equals(Main.END_ALL_CLIENT_STRING)) {
+			System.err.println("ENDING ClientThreadHandler: " + request);
 			cth.stopAll();
 			cth.end();
 		}
-		
+
 		return response;
 	}
 }

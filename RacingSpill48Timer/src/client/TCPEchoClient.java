@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import connection_standard.Config;
-import handlers.ClientThreadHandler;
-import handlers.SceneHandler;
-import startup.Main;
+import main.Main;
+import server.connection_standard.Config;
 
-public class TCPEchoClient {
+public class TCPEchoClient implements Client{
 	
 	private String ip;
 	private int port;
@@ -26,6 +24,7 @@ public class TCPEchoClient {
 		this.port = Config.SERVERPORT;
 	}
 	
+	@Override
 	public String sendRequest (String text) {
 		
 		if(text == null)
@@ -57,8 +56,6 @@ public class TCPEchoClient {
 			System.err.println("ERROR IN ECHOCLIENT:\nSENT " + text);
 			System.err.println("IN " + outtext);
 			System.err.println("TCP client: " + ex.getMessage());
-			
-			SceneHandler.instance.changeScene(0);
 			
 			outtext = Main.END_ALL_CLIENT_STRING;
 		}
