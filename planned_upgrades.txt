@@ -20,7 +20,7 @@ Om det er 3-6 så kan de bli tatt 2 ganger.
 
 "Fuel" + 2 hp	CHANGE NAMES		
 1 (98 octane) + 28 hp           2 (86 ethanol) + 206 hp                   3 (Racefuel) + 20 % TS from gears 
-4 (Soyfuel)  + 120 HP          5 (Spacefuel)  + 120 HP
+4 (Vegan Soyfuel)  + 120 HP          5 (Spacevacuumfuel)  + 120 HP
 
 "Bigger turbo + 60 HP, + 2 % weight
 1 NOS now contains an additional bottle, but half NOS strength   2 10 % off everything                    3 Turbo Blow (Blow up turbo + 50 % HP from car in a short while)

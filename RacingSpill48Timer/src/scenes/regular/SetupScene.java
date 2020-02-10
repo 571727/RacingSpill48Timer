@@ -1,7 +1,9 @@
 package scenes.regular;
 
+import org.lwjgl.nuklear.NkContext;
+
 import scenes.Scene;
-import scenes.visual.SetupVisual;
+import scenes.regular.visual.SetupVisual;
 
 public class SetupScene extends Scene{
 
@@ -10,21 +12,20 @@ public class SetupScene extends Scene{
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public void init() {
 		
 	}
-	
+
 	@Override
-	public void tick(double delta) {
+	public void tick(NkContext ctx, double delta) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void keyInput(int keycode, int action) {
+	public boolean keyInput(int keycode, int action) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override

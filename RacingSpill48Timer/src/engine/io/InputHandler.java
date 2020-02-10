@@ -58,12 +58,11 @@ public class InputHandler {
 	private Scene currentScene;
 	private ControlsSettings keys;
 
-	public InputHandler(Scene currentScene, Window win) {
+	public InputHandler(Scene currentScene, Window win, NkContext ctx) {
 		this.currentScene = currentScene;
 		keys = new ControlsSettings();
 
 		long myWindow = win.getWindow();
-		NkContext ctx = win.getNkCtx();
 
 		glfwSetCursorEnterCallback(myWindow, GLFWCursorEnterCallback.create((window, entered) -> {
 			this.currentScene.mouseEnterWindowInput(entered);
@@ -182,7 +181,7 @@ public class InputHandler {
 
 		glfwSetCharCallback(myWindow, (window, codepoint) -> nk_input_unicode(ctx, codepoint));
 
-		nk_init(ctx, Window.ALLOCATOR, null);
+		nk_init(ctx, UI.ALLOCATOR, null);
 		ctx.clip().copy((handle, text, len) -> {
 			if (len == 0) {
 				return;

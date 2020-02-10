@@ -1,11 +1,13 @@
 package scenes.regular;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.nuklear.NkContext;
 
 import elem.interactions.TopBar;
 import engine.objects.Camera;
+import engine.objects.UIWindow;
 import scenes.Scene;
-import scenes.visual.MainMenuVisual;
+import scenes.regular.visual.MainMenuVisual;
 
 public class MainMenuScene extends Scene {
 
@@ -22,9 +24,10 @@ public class MainMenuScene extends Scene {
 	}
 
 	@Override
-	public void tick(double delta) {
+	public void tick(NkContext ctx, double delta) {
 		camera.update();
 		visual.tick(delta);
+//		somewindow.layout(ctx, 10, 10);
 	}
 
 	@Override

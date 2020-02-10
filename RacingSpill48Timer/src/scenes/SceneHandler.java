@@ -2,7 +2,6 @@ package scenes;
 
 import elem.interactions.TopBar;
 import engine.io.InputHandler;
-import scenes.racing.BurnoutScene;
 import scenes.racing.EndScene;
 import scenes.racing.FinishScene;
 import scenes.racing.RaceScene;
@@ -18,7 +17,7 @@ public class SceneHandler {
 	private boolean specified;
 
 	public SceneHandler() {
-		scenes = new Scene[8];
+		scenes = new Scene[7];
 	}
 	
 	public void init(Scene options, TopBar topBar) {
@@ -27,9 +26,8 @@ public class SceneHandler {
 		scenes[2] = new SetupScene();
 		scenes[3] = new LobbyScene();
 		scenes[4] = new RaceScene();
-		scenes[5] = new BurnoutScene();
-		scenes[6] = new FinishScene();
-		scenes[7] = new EndScene();
+		scenes[5] = new FinishScene();
+		scenes[6] = new EndScene();
 		
 		for(Scene scene : scenes) {
 			scene.init();

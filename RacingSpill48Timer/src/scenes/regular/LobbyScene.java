@@ -7,7 +7,7 @@ import elem.interactions.Button;
 import player_local.Player;
 import scenes.Scene;
 import scenes.upgrade.Store;
-import scenes.visual.LobbyVisual;
+import scenes.regular.visual.LobbyVisual;
 import server.ServerHandler;
 
 public class LobbyScene extends Scene {

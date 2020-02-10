@@ -1,11 +1,11 @@
+uniform mat4 ProjMtx;
+
 in vec2 Position;
 in vec2 TexCoord;
 in vec4 Color;
 
 out vec2 passTextureCoord;
 out vec4 passColor;
-
-uniform mat4 ProjMtx;
 
 void main() {
    passTextureCoord = TexCoord;

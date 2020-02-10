@@ -1,6 +1,9 @@
 package engine.graphics;
 
 import static org.lwjgl.opengl.GL20C.glGetAttribLocation;
+import static org.lwjgl.opengl.GL20C.glUniform1i;
+import static org.lwjgl.opengl.GL20C.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20C.glUseProgram;
 
 import java.nio.FloatBuffer;
 

@@ -1,8 +1,8 @@
-package scenes.visual;
+package scenes.regular.visual;
 
 import scenes.Visual;
 
-public class OptionsVisual extends Visual{
+public class LobbyVisual extends Visual{
 
 	@Override
 	public void tick(double delta) {

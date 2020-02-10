@@ -1,14 +1,13 @@
-package scenes.visual;
+package scenes.regular.visual;
 
 import scenes.Visual;
 
-public class LobbyVisual extends Visual{
+public class SetupVisual extends Visual {
 
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}
-
 
 }

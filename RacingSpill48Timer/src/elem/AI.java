@@ -258,7 +258,7 @@ public class AI extends PlayerInfo {
 
 			car.updateSpeedInc();
 			double speedChange = 0.0;
-			if (car.isGearCorrect() || car.isTopGear()) {
+			if (car.isGearCorrect() || car.isGearTop()) {
 				speedChange = car.accelerateCar(time);
 			} else {
 				// if sequential or normal

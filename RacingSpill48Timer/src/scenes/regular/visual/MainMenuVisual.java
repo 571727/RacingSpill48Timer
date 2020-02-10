@@ -1,12 +1,13 @@
-package scenes.visual;
+package scenes.regular.visual;
 
 import engine.math.Vector3f;
 import engine.objects.Model;
 import engine.objects.Sprite;
+import engine.objects.UIWindow;
 import scenes.Visual;
 
 public class MainMenuVisual extends Visual {
-	Model model;
+	private Model model;
 
 	@Override
 	public void init() {

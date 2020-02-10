@@ -1,27 +1,19 @@
 package main;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import org.lwjgl.nuklear.*;
-import static org.lwjgl.nuklear.Nuklear.*;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 import java.awt.Color;
 
-import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.system.Callback;
 
 import audio.AudioHandler;
 import elem.interactions.TopBar;
-import engine.graphics.Mesh;
 import engine.graphics.Renderer;
-import engine.graphics.Shader;
-import engine.graphics.Vertex;
 import engine.io.InputHandler;
+import engine.io.UI;
 import engine.io.Window;
-import engine.math.Vector2f;
-import engine.math.Vector3f;
-import engine.objects.Camera;
-import engine.objects.GameObject;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
 import scenes.SceneHandler;
@@ -38,6 +30,9 @@ public class GameHandler {
 	private Timer timer;
 	private InputHandler input;
 	private Renderer renderer;
+	private UI ui;
+	
+	private Callback debugProcCallback;
 
 	public GameHandler() {
 		settings = new RegularSettings();
@@ -45,6 +40,7 @@ public class GameHandler {
 		options = new OptionsScene();
 		timer = new Timer();
 		sceneHandler = new SceneHandler();
+		ui = new UI();
 	}
 
 	public void start(String checksum) {
@@ -54,35 +50,28 @@ public class GameHandler {
 	}
 
 	private void init() {
-		// All static methods
-		GLFWErrorCallback.createPrint(System.err).set();
-
-		// Init GLFW
-		if (!glfwInit())
-			throw new IllegalStateException("Unable to initialize GLFW");
-
 		window = new Window(settings.getWidth(), settings.getHeight(), settings.getFullscreen(), Main.GAME_NAME,
 				Color.RED);
-		window.init();
+		debugProcCallback = window.init();
 
-		renderer = new Renderer(window);
 		
 		TopBar topBar = new TopBar(window.getWindow());
-
 		sceneHandler.init(options, topBar);
 		sceneHandler.changeScene(0);
 
-		input = new InputHandler(sceneHandler.getCurrentScene(), window);
-		window.setupNkContext();
-		window.nkFont();
-
+		
+		input = new InputHandler(sceneHandler.getCurrentScene(), window, ui.getNkContext());
+		renderer = new Renderer(window);
+		ui.nkFont();
+		
 		options.init(settings, input.getKeys(), audio);
 		sceneHandler.changeSceneAction(input);
 
 		timer.init();
 
+		//		Make the window visible
+		glfwShowWindow(window.getWindow());
 		running = true;
-
 	}
 
 	private void gameLoop() {
@@ -92,16 +81,17 @@ public class GameHandler {
 				running = false;
 				break;
 			}
-
+			
+			
 			delta = timer.getDelta();
 
 			// update game
 			window.update();
-			//check nuklear stuff in tick
+			
 			tick(delta);
 			timer.updateTPS();
 
-			// render the game
+			// draw the game
 			render();
 			timer.updateFPS();
 
@@ -111,12 +101,12 @@ public class GameHandler {
 	}
 
 	private void tick(double delta) {
-		sceneHandler.getCurrentScene().tick(delta);
+		sceneHandler.getCurrentScene().tick(ui.getNkContext(), delta);
 	}
 
 	private void render() {
 		sceneHandler.getCurrentScene().render(renderer);
-		renderer.renderNuklear(NK_ANTI_ALIASING_ON, Window.MAX_VERTEX_BUFFER, Window.MAX_ELEMENT_BUFFER);
+		renderer.renderNuklear(ui.getNkContext(), window.getWindow());
 	}
 
 	private void dispose() {
@@ -125,21 +115,31 @@ public class GameHandler {
 		input.free(window.getWindow());
 		window.destroy();
 		sceneHandler.destroy();
+		if (debugProcCallback != null) {
+            debugProcCallback.free();
+        }
 		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
 
-	/**
-	 * FIXME create a checksum for this program so people have a hard time cheating
-	 */
 	@Override
 	public int hashCode() {
-//		int hash = settings.hashCode() * audio.hashCode() * options.hashCode() / timer.hashCode()
-//				/ sceneHandler.hashCode() * renderer.hashCode() + new Player().hashCode() + new CarFuncs().hashCode()
-//				+ new Bank().hashCode() + new CarRep().hashCode()
-//				+ new RaceScene().hashCode() * Main.GAME_VERSION.hashCode() / Main.GAME_NAME.hashCode();
-		return 1;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((audio == null) ? 0 : audio.hashCode());
+		result = prime * result + ((debugProcCallback == null) ? 0 : debugProcCallback.hashCode());
+		result = prime * result + ((input == null) ? 0 : input.hashCode());
+		result = prime * result + ((options == null) ? 0 : options.hashCode());
+		result = prime * result + ((renderer == null) ? 0 : renderer.hashCode());
+		result = prime * result + (running ? 1231 : 1237);
+		result = prime * result + ((sceneHandler == null) ? 0 : sceneHandler.hashCode());
+		result = prime * result + ((settings == null) ? 0 : settings.hashCode());
+		result = prime * result + ((timer == null) ? 0 : timer.hashCode());
+		result = prime * result + ((ui == null) ? 0 : ui.hashCode());
+		result = prime * result + ((window == null) ? 0 : window.hashCode());
+		System.out.println(result);
+		return result;
 	}
 
 }

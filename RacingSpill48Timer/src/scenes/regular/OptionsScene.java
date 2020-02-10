@@ -1,11 +1,13 @@
 package scenes.regular;
 
+import org.lwjgl.nuklear.NkContext;
+
 import audio.AudioHandler;
 import audio.lowstuff.Audio;
 import file_manipulation.ControlsSettings;
 import file_manipulation.RegularSettings;
 import scenes.Scene;
-import scenes.visual.OptionsVisual;
+import scenes.regular.visual.OptionsVisual;
 
 public class OptionsScene extends Scene {
 
@@ -19,19 +21,20 @@ public class OptionsScene extends Scene {
 
 	@Override
 	public void init() {
-		
-	}
-	
-	@Override
-	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void keyInput(int keycode, int action) {
+	public void tick(NkContext ctx, double delta) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean keyInput(int keycode, int action) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -63,6 +66,7 @@ public class OptionsScene extends Scene {
 		// TODO Auto-generated method stub
 		
 	}
+
 	
 
 }

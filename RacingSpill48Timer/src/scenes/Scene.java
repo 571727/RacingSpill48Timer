@@ -1,5 +1,7 @@
 package scenes;
 
+import org.lwjgl.nuklear.NkContext;
+
 import engine.graphics.Renderer;
 import engine.objects.Camera;
 
@@ -26,7 +28,7 @@ public abstract class Scene {
 	
 	public abstract void init();
 	
-	public abstract void tick(double delta);
+	public abstract void tick(NkContext ctx, double delta);
 
 	/**
 	 * @return if it's NOT busy racing

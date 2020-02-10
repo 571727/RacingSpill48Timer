@@ -1,7 +1,9 @@
 package scenes.racing;
 
+import org.lwjgl.nuklear.NkContext;
+
 import scenes.Scene;
-import scenes.visual.RaceVisual;
+import scenes.racing.visual.RaceVisual;
 
 public class RaceScene extends Scene{
 
@@ -12,19 +14,20 @@ public class RaceScene extends Scene{
 
 	@Override
 	public void init() {
-		
-	}
-	
-	@Override
-	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void keyInput(int keycode, int action) {
+	public void tick(NkContext ctx, double delta) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean keyInput(int keycode, int action) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -56,5 +59,6 @@ public class RaceScene extends Scene{
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

@@ -1,13 +1,14 @@
-package scenes.visual;
+package scenes.regular.visual;
 
 import scenes.Visual;
 
-public class EndVisual extends Visual{
+public class OptionsVisual extends Visual{
 
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

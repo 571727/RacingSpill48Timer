@@ -5,7 +5,7 @@ import scenes.upgrade.Upgrades;
 
 public class Car {
 
-	public static final String[] CAR_TYPES = { "Decentra", "Bentslie", "Fabulus", "Tuff Mf" };
+	public static final String[] CAR_TYPES = { "Decentra", "Oldsroyal", "Fabulvania", "Thoroughbread", "Amourena", "Silvershield", "Devil's Rulebreaker", "Salty Jessica" };
 	private CarStats stats;
 	private CarFuncs funcs;
 	private CarRep rep;
@@ -123,7 +123,7 @@ public class Car {
 		}
 	}
 
-	public boolean isTopGear() {
+	public boolean isGearTop() {
 		return stats.getGear() == rep.getGearTop();
 	}
 
