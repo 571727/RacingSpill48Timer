@@ -4,5 +4,12 @@ import org.lwjgl.nuklear.NkContext;
 
 public abstract class UIObject {
 
-	public abstract void layout(NkContext ctx, int x, int y);
+	protected int x, y;
+	
+	public UIObject(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public abstract void layout(NkContext ctx);
 }

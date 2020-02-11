@@ -1,5 +1,6 @@
 package scenes;
 
+import elem.interactions.RegularTopBar;
 import elem.interactions.TopBar;
 import engine.io.InputHandler;
 import scenes.racing.EndScene;
@@ -20,7 +21,7 @@ public class SceneHandler {
 		scenes = new Scene[7];
 	}
 	
-	public void init(Scene options, TopBar topBar) {
+	public void init(Scene options, RegularTopBar topBar) {
 		scenes[0] = new MainMenuScene(topBar);
 		scenes[1] = options;
 		scenes[2] = new SetupScene();

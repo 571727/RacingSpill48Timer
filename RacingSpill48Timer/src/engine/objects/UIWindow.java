@@ -13,11 +13,12 @@ import org.lwjgl.system.MemoryStack;
 
 public class UIWindow extends UIObject{
 
-	public UIWindow() {
+	public UIWindow(int x, int y) {
+		super(x, y);
 	}
 	
 	@Override
-	public void layout(NkContext ctx, int x, int y) {
+	public void layout(NkContext ctx) {
 		try(MemoryStack stack = MemoryStack.stackPush()) {
 		    // Create a rectangle for the window
 		    NkRect rect = NkRect.mallocStack(stack);

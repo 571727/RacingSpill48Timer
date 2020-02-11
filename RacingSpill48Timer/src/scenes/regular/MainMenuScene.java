@@ -3,6 +3,7 @@ package scenes.regular;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 
+import elem.interactions.RegularTopBar;
 import elem.interactions.TopBar;
 import engine.objects.Camera;
 import engine.objects.UIWindow;
@@ -11,11 +12,12 @@ import scenes.regular.visual.MainMenuVisual;
 
 public class MainMenuScene extends Scene {
 
-	private TopBar topBar;
+	private RegularTopBar topBar;
 
-	public MainMenuScene(TopBar topBar) {
-		super(new MainMenuVisual(), new Camera(), "MainMenu");
+	public MainMenuScene(RegularTopBar topBar) {
+		super(new MainMenuVisual(), null, "MainMenu");
 		this.topBar = topBar;
+		visual.add(topBar);
 	}
 
 	@Override
@@ -24,21 +26,13 @@ public class MainMenuScene extends Scene {
 	}
 
 	@Override
-	public void tick(NkContext ctx, double delta) {
-		camera.update();
+	public void tick(double delta) {
 		visual.tick(delta);
-//		somewindow.layout(ctx, 10, 10);
 	}
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
-		if (action != GLFW.GLFW_RELEASE) {
-			camera.move(keycode);
-		} else {
-			camera.moveHalt(keycode);
-		}
-		
-		return true;
+		return false;
 	}
 
 	@Override
@@ -53,7 +47,6 @@ public class MainMenuScene extends Scene {
 	@Override
 	public void mousePosInput(double x, double y) {
 		topBar.move(x, y);
-		camera.rotateCameraMouseBased(x, y);
 	}
 
 	@Override

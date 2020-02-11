@@ -22,13 +22,13 @@ public abstract class Scene {
 		this.sceneChange = sceneChange;
 	}
 
-	public void render(Renderer renderer) {
-		visual.render(renderer, camera);
+	public void render(NkContext ctx, Renderer renderer) {
+		visual.render(renderer, camera, ctx);
 	}
 	
 	public abstract void init();
 	
-	public abstract void tick(NkContext ctx, double delta);
+	public abstract void tick(double delta);
 
 	/**
 	 * @return if it's NOT busy racing

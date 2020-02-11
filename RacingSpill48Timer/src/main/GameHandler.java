@@ -9,6 +9,7 @@ import java.awt.Color;
 import org.lwjgl.system.Callback;
 
 import audio.AudioHandler;
+import elem.interactions.RegularTopBar;
 import elem.interactions.TopBar;
 import engine.graphics.Renderer;
 import engine.io.InputHandler;
@@ -55,7 +56,7 @@ public class GameHandler {
 		debugProcCallback = window.init();
 
 		
-		TopBar topBar = new TopBar(window.getWindow());
+		RegularTopBar topBar = new RegularTopBar(0,0,window.getWindow(), Window.CLIENT_HEIGHT / 24);
 		sceneHandler.init(options, topBar);
 		sceneHandler.changeScene(0);
 
@@ -101,11 +102,11 @@ public class GameHandler {
 	}
 
 	private void tick(double delta) {
-		sceneHandler.getCurrentScene().tick(ui.getNkContext(), delta);
+		sceneHandler.getCurrentScene().tick(delta);
 	}
 
 	private void render() {
-		sceneHandler.getCurrentScene().render(renderer);
+		sceneHandler.getCurrentScene().render(ui.getNkContext(), renderer);
 		renderer.renderNuklear(ui.getNkContext(), window.getWindow());
 	}
 

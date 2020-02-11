@@ -72,9 +72,7 @@ public class InputHandler {
 			if (this.currentScene.keyInput(key, action)) {
 				boolean press = action == GLFW_PRESS;
 				switch (key) {
-				case GLFW_KEY_ESCAPE:
-					glfwSetWindowShouldClose(window, true);
-					break;
+				
 				case GLFW_KEY_DELETE:
 					nk_input_key(ctx, NK_KEY_DEL, press);
 					break;

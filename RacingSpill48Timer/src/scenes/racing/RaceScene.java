@@ -1,45 +1,52 @@
 package scenes.racing;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 
+import engine.objects.Camera;
 import scenes.Scene;
 import scenes.racing.visual.RaceVisual;
 
 public class RaceScene extends Scene{
 
 	public RaceScene() {
-		super(new RaceVisual(), null,"race");
-		// TODO Auto-generated constructor stub
+		super(new RaceVisual(), new Camera(),"race");
 	}
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		visual.init();
 	}
 
 	@Override
 	public void tick(NkContext ctx, double delta) {
-		// TODO Auto-generated method stub
-		
+		visual.tick(delta);
+		camera.update();
 	}
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
-		// TODO Auto-generated method stub
-		return false;
+		if (action != GLFW.GLFW_RELEASE) {
+			camera.move(keycode);
+		} else {
+			camera.moveHalt(keycode);
+		}
+		
+		return true;
 	}
 
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
-		// TODO Auto-generated method stub
-		
+//		if (action != GLFW.GLFW_RELEASE) {
+//			topBar.press(x, y);
+//		} else {
+//			topBar.release();
+//		}		
 	}
 
 	@Override
 	public void mousePosInput(double x, double y) {
-		// TODO Auto-generated method stub
-		
+		camera.rotateCameraMouseBased(x, y);		
 	}
 
 	@Override

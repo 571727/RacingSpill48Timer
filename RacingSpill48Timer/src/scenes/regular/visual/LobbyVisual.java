@@ -10,5 +10,11 @@ public class LobbyVisual extends Visual{
 		
 	}
 
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

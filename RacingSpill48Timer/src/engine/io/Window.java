@@ -173,7 +173,7 @@ public class Window {
 		glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), 1.0f);
 
 		// TESTING FIXME
-		mouseState(true);
+//		mouseState(true);
 		
 		return debugProc;
 	}
