@@ -3,7 +3,6 @@ package scenes.regular;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import elem.interactions.Button;
 import player_local.Player;
 import scenes.Scene;
 import scenes.upgrade.Store;
@@ -15,9 +14,6 @@ public class LobbyScene extends Scene {
 	private Player player;
 	private ServerHandler server;
 	private Store store;
-	private Button readyBtn;
-	private Button goBackBtn;
-	private Button optionsBtn;
 	private boolean everyoneReady;
 	private int currentLength;
 	private String currentPlace;

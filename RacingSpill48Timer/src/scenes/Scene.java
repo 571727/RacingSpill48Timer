@@ -16,6 +16,8 @@ public abstract class Scene {
 		this.visual = visual;
 		this.sceneName = sceneName; 
 		this.camera = camera;
+		
+		visual.initNuklearVisual(sceneName);
 	}
 	
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {

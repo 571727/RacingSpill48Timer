@@ -3,10 +3,16 @@ package main;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_NO_INPUT;
+import static org.lwjgl.nuklear.Nuklear.nk_begin;
+import static org.lwjgl.nuklear.Nuklear.nk_end;
+import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 
 import java.awt.Color;
 
+import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.system.Callback;
+import org.lwjgl.system.MemoryStack;
 
 import audio.AudioHandler;
 import elem.interactions.RegularTopBar;
@@ -56,8 +62,8 @@ public class GameHandler {
 		debugProcCallback = window.init();
 
 		
-		RegularTopBar topBar = new RegularTopBar(0,0,window.getWindow(), Window.CLIENT_HEIGHT / 24);
-		sceneHandler.init(options, topBar);
+		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 24);
+		sceneHandler.init(options, topBar, window.getWindow());
 		sceneHandler.changeScene(0);
 
 		
@@ -107,7 +113,7 @@ public class GameHandler {
 
 	private void render() {
 		sceneHandler.getCurrentScene().render(ui.getNkContext(), renderer);
-		renderer.renderNuklear(ui.getNkContext(), window.getWindow());
+		renderer.renderNuklear(ui.getNkContext());
 	}
 
 	private void dispose() {

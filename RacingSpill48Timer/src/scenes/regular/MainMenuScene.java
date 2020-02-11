@@ -1,11 +1,13 @@
 package scenes.regular;
 
-import org.lwjgl.glfw.GLFW;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import org.lwjgl.nuklear.NkContext;
 
 import elem.interactions.RegularTopBar;
 import elem.interactions.TopBar;
 import engine.objects.Camera;
+import engine.objects.UIButton;
 import engine.objects.UIWindow;
 import scenes.Scene;
 import scenes.regular.visual.MainMenuVisual;
@@ -14,10 +16,22 @@ public class MainMenuScene extends Scene {
 
 	private RegularTopBar topBar;
 
-	public MainMenuScene(RegularTopBar topBar) {
+	public MainMenuScene(RegularTopBar topBar, long window) {
 		super(new MainMenuVisual(), null, "MainMenu");
+
 		this.topBar = topBar;
+		UIButton singleplayerBtn = new UIButton("Singleplayer");
+		UIButton multiplayerBtn = new UIButton("Multiplayer");
+		UIButton optionsBtn = new UIButton("Options and controls");
+		UIButton exitBtn = new UIButton("Exit");
+
+		exitBtn.setAction(() -> glfwSetWindowShouldClose(window, true));
+
 		visual.add(topBar);
+		visual.add(singleplayerBtn);
+		visual.add(multiplayerBtn);
+		visual.add(optionsBtn);
+		visual.add(exitBtn);
 	}
 
 	@Override
@@ -37,7 +51,7 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
-		if (action != GLFW.GLFW_RELEASE) {
+		if (action != GLFW_RELEASE) {
 			topBar.press(x, y);
 		} else {
 			topBar.release();
@@ -63,7 +77,7 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public void destroy() {
-		
+
 	}
 
 }

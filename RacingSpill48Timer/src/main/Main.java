@@ -17,13 +17,13 @@ public class Main {
 	public static final String[] DIFFICULTY_TYPES = { "Easy", "Normal", "Hard", "Godlike" };
 	public static String[] AMOUNT_OF_AI;
 	public static boolean[] AI_NAMES_TAKEN;
-	public static final String GAME_NAME = "racingmaybe.jar";
+	public static final String GAME_NAME = "Racingmaybe.jar";
 	public static final String[] RACE_AMOUNT = { String.valueOf(18), String.valueOf(9), String.valueOf(2) };
 	public static final GameMode[] GAME_MODES = { new GolfLike(), new PointRush() };
 	public static final String UPGRADELVL_REGEX = "%";
 	public static final String STANDARD_REGEX = "#";
 	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";
-	public static final String GAME_VERSION = "1.8.4_FINAL";
+	public static final String GAME_VERSION = "2.0_ALPHA";
 	public static final int CHECKSUM = new GameHandler().hashCode();
 
 	public static long DISCONNECTED_ID = -1;

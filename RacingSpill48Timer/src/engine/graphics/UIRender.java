@@ -271,21 +271,4 @@ public class UIRender {
 		GL30.glDeleteVertexArrays(vao);
 	}
 
-	public void clearViewport(long win) {
-		try (MemoryStack stack = stackPush()) {
-            IntBuffer width  = stack.mallocInt(1);
-            IntBuffer height = stack.mallocInt(1);
-
-            glfwGetWindowSize(win, width, height);
-            glViewport(0, 0, width.get(0), height.get(0));
-
-            NkColorf bg =  NkColorf.create()
-                    .r(0.10f)
-                    .g(0.18f)
-                    .b(0.24f)
-                    .a(1.0f);
-            glClearColor(bg.r(), bg.g(), bg.b(), bg.a());
-        }
-	}
-
 }

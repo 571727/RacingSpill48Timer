@@ -90,8 +90,7 @@ public class Renderer {
 		go.getMesh().unbind();
 	}
 	
-	public void renderNuklear(NkContext ctx, long win) {
-		nkUI.clearViewport(win);
+	public void renderNuklear(NkContext ctx) {
 		nkUI.setupRender();
 		nkUI.bind(ctx, NK_ANTI_ALIASING_ON, UI.MAX_VERTEX_BUFFER, UI.MAX_ELEMENT_BUFFER);
 		nkUI.draw(ctx);

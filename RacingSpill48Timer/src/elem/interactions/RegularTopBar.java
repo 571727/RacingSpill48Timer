@@ -17,8 +17,7 @@ public class RegularTopBar extends UIObject {
 
 	private TopBar topbar;
 
-	public RegularTopBar(int x, int y, long window, int height) {
-		super(x, y);
+	public RegularTopBar(long window, int height) {
 
 		PressAction pressAction = (double X, double Y) -> {
 			if (X > Window.CLIENT_WIDTH - (Window.CLIENT_WIDTH / 40)) {
@@ -37,20 +36,7 @@ public class RegularTopBar extends UIObject {
 	}
 
 	public void layout(NkContext ctx) {
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			// Create a rectangle for the window
-			NkRect rect = NkRect.mallocStack(stack);
-			rect.x(x).y(y).w(Window.CURRENT_WIDTH).h(topbar.getHeight());
-			// Begin the window
-			if (nk_begin(ctx, "Window Name", rect, NK_WINDOW_NO_INPUT)) {
-				// Add rows here
-				float rowHeight = 50;
-				int itemsPerRow = 1;
-				nk_layout_row_dynamic(ctx, rowHeight, itemsPerRow);
-			}
-			// End the window
-			nk_end(ctx);
-		}
+		
 	}
 
 	public void press(double x, double y) {

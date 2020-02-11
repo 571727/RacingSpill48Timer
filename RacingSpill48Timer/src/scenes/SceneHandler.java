@@ -21,8 +21,8 @@ public class SceneHandler {
 		scenes = new Scene[7];
 	}
 	
-	public void init(Scene options, RegularTopBar topBar) {
-		scenes[0] = new MainMenuScene(topBar);
+	public void init(Scene options, RegularTopBar topBar, long window) {
+		scenes[0] = new MainMenuScene(topBar, window);
 		scenes[1] = options;
 		scenes[2] = new SetupScene();
 		scenes[3] = new LobbyScene();
