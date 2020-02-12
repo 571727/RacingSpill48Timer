@@ -59,12 +59,6 @@ public class LobbyScene extends Scene {
 	}
 
 	@Override
-	public void keyInput(int keycode, int action) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
 		// TODO Auto-generated method stub
 		
@@ -92,6 +86,12 @@ public class LobbyScene extends Scene {
 	public void destroy() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean keyInput(int keycode, int action) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

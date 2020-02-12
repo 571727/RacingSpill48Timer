@@ -22,7 +22,6 @@ public class RegularTopBar extends UIObject {
 		PressAction pressAction = (double X, double Y) -> {
 			if (X > Window.CLIENT_WIDTH - (Window.CLIENT_WIDTH / 40)) {
 				// FIXME exit button
-				glfwSetWindowShouldClose(window, true);
 			} else {
 				// Move window
 				topbar.setX(X);

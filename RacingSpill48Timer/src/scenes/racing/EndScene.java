@@ -20,7 +20,7 @@ public class EndScene extends Scene{
 	}
 
 	@Override
-	public void tick(NkContext ctx, double delta) {
+	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}

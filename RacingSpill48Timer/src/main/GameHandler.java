@@ -63,7 +63,7 @@ public class GameHandler {
 
 		
 		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 24);
-		sceneHandler.init(options, topBar, window.getWindow());
+		sceneHandler.init(options, topBar, ui.getNkContext(), window.getWindow());
 		sceneHandler.changeScene(0);
 
 		
@@ -112,7 +112,7 @@ public class GameHandler {
 	}
 
 	private void render() {
-		sceneHandler.getCurrentScene().render(ui.getNkContext(), renderer);
+		sceneHandler.getCurrentScene().render(ui.getNkContext(), renderer, window.getWindow());
 		renderer.renderNuklear(ui.getNkContext());
 	}
 

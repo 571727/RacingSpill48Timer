@@ -43,14 +43,14 @@ public abstract class Visual {
 
 	protected abstract void drawUILayout(NkContext ctx, ArrayList<UIObject> uiObjects);
 
-	protected abstract boolean begin(NkContext ctx, String windowTitle, NkRect rect, int windowOptions);
+	protected abstract boolean begin(NkContext ctx, String windowTitle, NkRect rect, int windowOptions, long window);
 
-	public void render(Renderer renderer, Camera camera, NkContext ctx) {
+	public void render(Renderer renderer, Camera camera, NkContext ctx , long window) {
 		for (GameObject go : gameObjects) {
 			renderer.renderMesh(go, camera);
 		}
 		// Begin the window
-		if (begin(ctx, windowTitle, windowRect, windowOptions)) {
+		if (begin(ctx, windowTitle, windowRect, windowOptions, window)) {
 
 			setBackgroundColor(ctx);
 			drawUILayout(ctx, uiObjects);
@@ -66,11 +66,14 @@ public abstract class Visual {
 		ctx.style().window().fixed_background().data().color().set(bg.r(), bg.g(), bg.b(), bg.a());
 	}
 
-	public void initNuklearVisual(String title) {
+	public void initNuklearVisual(NkContext ctx, String title) {
 		windowOptions = NK_WINDOW_NO_INPUT;
 		windowRect = NkRect.create();
 		nk_rect(0, 0, Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT, windowRect);
 
+		nk_begin(ctx, windowTitle, windowRect, windowOptions);
+	    nk_end(ctx);
+		
 		this.windowTitle = Main.GAME_NAME + " " + Main.GAME_VERSION + " - " + title;
 	}
 

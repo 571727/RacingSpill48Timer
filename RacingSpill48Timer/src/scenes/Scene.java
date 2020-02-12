@@ -17,15 +17,22 @@ public abstract class Scene {
 		this.sceneName = sceneName; 
 		this.camera = camera;
 		
-		visual.initNuklearVisual(sceneName);
+	}
+	
+	public Scene(Visual visual, Camera camera, String sceneName, NkContext ctx, long window) {
+		this.visual = visual;
+		this.sceneName = sceneName; 
+		this.camera = camera;
+		
+		visual.initNuklearVisual( ctx, sceneName);
 	}
 	
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {
 		this.sceneChange = sceneChange;
 	}
 
-	public void render(NkContext ctx, Renderer renderer) {
-		visual.render(renderer, camera, ctx);
+	public void render(NkContext ctx, Renderer renderer, long window) {
+		visual.render(renderer, camera, ctx, window);
 	}
 	
 	public abstract void init();

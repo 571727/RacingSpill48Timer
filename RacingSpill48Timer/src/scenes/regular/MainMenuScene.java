@@ -1,31 +1,40 @@
 package scenes.regular;
 
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+
 import org.lwjgl.nuklear.NkContext;
 
 import elem.interactions.RegularTopBar;
-import elem.interactions.TopBar;
-import engine.objects.Camera;
 import engine.objects.UIButton;
-import engine.objects.UIWindow;
 import scenes.Scene;
+import scenes.Scenes;
 import scenes.regular.visual.MainMenuVisual;
 
 public class MainMenuScene extends Scene {
 
+	private UIButton singleplayerBtn, multiplayerBtn, optionsBtn, exitBtn;
 	private RegularTopBar topBar;
 
-	public MainMenuScene(RegularTopBar topBar, long window) {
-		super(new MainMenuVisual(), null, "MainMenu");
+	public MainMenuScene(RegularTopBar topBar, NkContext ctx, long window) {
+		super(new MainMenuVisual(), null, "MainMenu", ctx, window);
 
 		this.topBar = topBar;
-		UIButton singleplayerBtn = new UIButton("Singleplayer");
-		UIButton multiplayerBtn = new UIButton("Multiplayer");
-		UIButton optionsBtn = new UIButton("Options and controls");
-		UIButton exitBtn = new UIButton("Exit");
+		singleplayerBtn = new UIButton("Singleplayer");
+		multiplayerBtn = new UIButton("Multiplayer");
+		optionsBtn = new UIButton("Options and controls");
+		exitBtn = new UIButton("Exit");
 
-		exitBtn.setAction(() -> glfwSetWindowShouldClose(window, true));
+		singleplayerBtn.setPressedAction(() -> {
+			sceneChange.run(Scenes.SINGLEPLAYER);
+		});
+		multiplayerBtn.setPressedAction(() -> {
+			sceneChange.run(Scenes.MULTIPLAYER);
+		});
+		optionsBtn.setPressedAction(() -> {
+			sceneChange.run(Scenes.OPTIONS);
+		});
+		exitBtn.setPressedAction(() -> glfwSetWindowShouldClose(window, true));
 
 		visual.add(topBar);
 		visual.add(singleplayerBtn);
@@ -51,8 +60,14 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
-		if (action != GLFW_RELEASE) {
+		boolean down = action != GLFW_RELEASE;
+
+		if (down) {
 			topBar.press(x, y);
+			singleplayerBtn.unpress();
+			multiplayerBtn.unpress();
+			optionsBtn.unpress();
+			exitBtn.unpress();
 		} else {
 			topBar.release();
 		}

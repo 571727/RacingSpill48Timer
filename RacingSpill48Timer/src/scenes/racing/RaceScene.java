@@ -19,7 +19,7 @@ public class RaceScene extends Scene{
 	}
 
 	@Override
-	public void tick(NkContext ctx, double delta) {
+	public void tick(double delta) {
 		visual.tick(delta);
 		camera.update();
 	}

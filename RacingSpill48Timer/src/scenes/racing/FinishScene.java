@@ -19,12 +19,6 @@ public class FinishScene extends Scene{
 	}
 
 	@Override
-	public void tick(NkContext ctx, double delta) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public boolean keyInput(int keycode, int action) {
 		// TODO Auto-generated method stub
 		return false;
@@ -56,6 +50,12 @@ public class FinishScene extends Scene{
 
 	@Override
 	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void tick(double delta) {
 		// TODO Auto-generated method stub
 		
 	}
