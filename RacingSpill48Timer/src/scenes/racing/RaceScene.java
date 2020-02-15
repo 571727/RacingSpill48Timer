@@ -15,7 +15,6 @@ public class RaceScene extends Scene{
 
 	@Override
 	public void init() {
-		visual.init();
 	}
 
 	@Override

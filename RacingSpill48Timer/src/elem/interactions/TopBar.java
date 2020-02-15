@@ -4,6 +4,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.nuklear.NkContext;
 
 public class TopBar {
 
@@ -71,5 +72,5 @@ public class TopBar {
 	public void setY(double y) {
 		this.y = y;
 	}
-	
+
 }

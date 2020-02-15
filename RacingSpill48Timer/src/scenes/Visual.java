@@ -33,31 +33,20 @@ public abstract class Visual {
 	protected ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
 	protected ArrayList<UIObject> uiObjects = new ArrayList<UIObject>();
 
-	private NkRect windowRect = null;
-	private String windowTitle = "TITLE NOT SET";
-	private int windowOptions;
-
-	public abstract void init();
+	protected NkRect windowRect = null;
+	protected String windowTitle = "TITLE NOT SET";
+	protected int windowOptions;
 
 	public abstract void tick(double delta);
 
 	protected abstract void drawUILayout(NkContext ctx, ArrayList<UIObject> uiObjects);
-
-	protected abstract boolean begin(NkContext ctx, String windowTitle, NkRect rect, int windowOptions, long window);
 
 	public void render(Renderer renderer, Camera camera, NkContext ctx , long window) {
 		for (GameObject go : gameObjects) {
 			renderer.renderMesh(go, camera);
 		}
 		// Begin the window
-		if (begin(ctx, windowTitle, windowRect, windowOptions, window)) {
-
-			setBackgroundColor(ctx);
-			drawUILayout(ctx, uiObjects);
-
-		}
-		// End the window
-		nk_end(ctx);
+		drawUILayout(ctx, uiObjects);
 
 	}
 
@@ -74,7 +63,7 @@ public abstract class Visual {
 		nk_begin(ctx, windowTitle, windowRect, windowOptions);
 	    nk_end(ctx);
 		
-		this.windowTitle = Main.GAME_NAME + " " + Main.GAME_VERSION + " - " + title;
+		this.windowTitle = title;
 	}
 
 	public void setNuklearOptions(int options) {

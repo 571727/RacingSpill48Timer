@@ -45,7 +45,7 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public void init() {
-		visual.init();
+		((MainMenuVisual) visual).init(topBar);
 	}
 
 	@Override

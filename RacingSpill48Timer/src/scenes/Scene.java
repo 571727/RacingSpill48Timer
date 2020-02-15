@@ -16,7 +16,6 @@ public abstract class Scene {
 		this.visual = visual;
 		this.sceneName = sceneName; 
 		this.camera = camera;
-		
 	}
 	
 	public Scene(Visual visual, Camera camera, String sceneName, NkContext ctx, long window) {
