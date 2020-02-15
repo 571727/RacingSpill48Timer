@@ -102,7 +102,7 @@ public class MainMenuVisual extends Visual {
 
 			if (Nuklear.nk_window_is_collapsed(ctx, windowTitle)) {
 //				GLFW.glfwIconifyWindow(window);
-				Nuklear.nk_window_collapse(ctx, windowTitle, Nuklear.NK_Window_);
+//				Nuklear.nk_window_collapse(ctx, windowTitle, Nuklear.NK_Window_);
 			}
 
 			res = nk_begin(ctx, windowTitle, rect, windowOptions);

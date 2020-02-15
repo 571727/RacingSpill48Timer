@@ -25,6 +25,7 @@ import engine.utils.Timer;
 import file_manipulation.RegularSettings;
 import scenes.SceneHandler;
 import scenes.regular.OptionsScene;
+import steam.SteamMain;
 
 public class GameHandler {
 
@@ -40,6 +41,7 @@ public class GameHandler {
 	private UI ui;
 	
 	private Callback debugProcCallback;
+	private SteamMain steam;
 
 	public GameHandler() {
 		settings = new RegularSettings();
@@ -48,6 +50,7 @@ public class GameHandler {
 		timer = new Timer();
 		sceneHandler = new SceneHandler();
 		ui = new UI();
+		steam = new SteamMain();
 	}
 
 	public void start(String checksum) {
@@ -57,6 +60,11 @@ public class GameHandler {
 	}
 
 	private void init() {
+		
+		if(!steam.init())
+			System.exit(0);
+		
+		
 		window = new Window(settings.getWidth(), settings.getHeight(), settings.getFullscreen(), Main.GAME_NAME,
 				Color.RED);
 		debugProcCallback = window.init();
@@ -92,6 +100,8 @@ public class GameHandler {
 			
 			delta = timer.getDelta();
 
+			steam.update();
+			
 			// update game
 			window.update();
 			
@@ -119,7 +129,10 @@ public class GameHandler {
 	private void dispose() {
 //		Terminate GLFW and free the error callback
 		System.out.println("disposing");
-		input.free(window.getWindow());
+		
+		steam.destroy();
+		
+		input.destroy(window.getWindow());
 		window.destroy();
 		sceneHandler.destroy();
 		if (debugProcCallback != null) {

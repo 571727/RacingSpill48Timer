@@ -201,7 +201,7 @@ public class InputHandler {
 
 	}
 
-	public void free(long win) {
+	public void destroy(long win) {
 		glfwFreeCallbacks(win);
 	}
 
