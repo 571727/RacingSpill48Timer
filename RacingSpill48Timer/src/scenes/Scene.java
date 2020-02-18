@@ -20,7 +20,7 @@ public abstract class Scene {
 	
 	public Scene(Visual visual, Camera camera, String sceneName, NkContext ctx, long window, int x, int y, int width, int height) {
 		this(visual, camera, sceneName);
-		visual.initNuklearVisual( ctx, sceneName, x, y, width, height);
+		visual.initNuklearVisual(ctx, sceneName, x, y, width, height);
 	}
 	
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {

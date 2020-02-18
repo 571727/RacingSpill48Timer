@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
+import org.lwjgl.nuklear.Nuklear;
 import org.lwjgl.system.MemoryStack;
 
 import elem.ColorBytes;
 import elem.interactions.RegularTopBar;
 import engine.io.Window;
+import engine.objects.UICollector;
 import engine.objects.UIObject;
 import scenes.Visual;
 
@@ -53,15 +55,29 @@ public class MainMenuVisual extends Visual {
 		btnHeight = Window.CURRENT_HEIGHT / 12;
 		hPadding = Window.CURRENT_WIDTH / 8;
 		this.topbar = topbar;
-		topbar.setTitle(windowTitle);
+		topbar.setTitle(sceneName);
+		uic.add(topbar.getName(), topbar);
+	}
+	
+	@Override
+	public void determineUIWindowFocusByMouse(double x, double y) {
+		if(y > topbar.getHeight()) {
+			// Give focus to the menu.
+			uic.setFocus(sceneName);
+		} else {
+			// Give focus to the topbar.
+			uic.setFocus(topbar.getName());
+		}
 	}
 
 	@Override
-	protected void drawUILayout(NkContext ctx, ArrayList<UIObject> uios) {
+	protected void drawUILayout(NkContext ctx, UICollector uic) {
 
 		topbar.layout(ctx);
 
-		if (nk_begin(ctx, windowTitle, windowRect, windowOptions)) {
+		Nuklear.nk_window_set_focus(ctx, uic.getFocus());
+		
+		if (nk_begin(ctx, sceneName, windowRect, windowOptions)) {
 
 			setBackgroundColor(ctx);
 
@@ -77,9 +93,9 @@ public class MainMenuVisual extends Visual {
 				//
 				// The group contains rows and the rows contain widgets, put those here.
 				//
-				for (int i = 0; i < uios.size(); i++) {
+				for (int i = 0; i < uic.size(sceneName); i++) {
 					nk_layout_row_dynamic(ctx, btnHeight, 1); // nested row
-					uios.get(i).layout(ctx);
+					uic.get(sceneName, i).layout(ctx);
 				}
 
 				// Unlike the window, the _end() function must be inside the if() block
@@ -104,5 +120,9 @@ public class MainMenuVisual extends Visual {
 	@Override
 	public void tick(double delta) {
 	}
+
+
+
+
 
 }

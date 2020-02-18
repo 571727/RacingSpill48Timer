@@ -41,10 +41,10 @@ public class MainMenuScene extends Scene {
 		 * FIXME add to a specific window or something 
 		 */
 		
-		visual.add(singleplayerBtn);
-		visual.add(multiplayerBtn);
-		visual.add(optionsBtn);
-		visual.add(exitBtn);
+		visual.add(singleplayerBtn, sceneName);
+		visual.add(multiplayerBtn, sceneName);
+		visual.add(optionsBtn, sceneName);
+		visual.add(exitBtn, sceneName);
 	}
 
 	@Override
@@ -80,6 +80,7 @@ public class MainMenuScene extends Scene {
 	@Override
 	public void mousePosInput(double x, double y) {
 		topBar.move(x, y);
+		visual.determineUIWindowFocusByMouse(x, y);
 	}
 
 	@Override

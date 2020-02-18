@@ -7,6 +7,7 @@ import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 import static org.lwjgl.nuklear.Nuklear.nk_rect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
 
@@ -20,6 +21,7 @@ import engine.graphics.Renderer;
 import engine.io.Window;
 import engine.objects.Camera;
 import engine.objects.GameObject;
+import engine.objects.UICollector;
 import engine.objects.UIObject;
 import main.Main;
 
@@ -31,22 +33,24 @@ public abstract class Visual {
 	protected Stack<ColorBytes> backgroundColorCache = new Stack<ColorBytes>();
 	protected Random rand = new Random();
 	protected ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
-	protected ArrayList<UIObject> uiObjects = new ArrayList<UIObject>();
-
+	
+	protected UICollector uic = new UICollector();
 	protected NkRect windowRect = null;
-	protected String windowTitle = "TITLE NOT SET";
+	protected String sceneName = "TITLE NOT SET";
 	protected int windowOptions;
 
 	public abstract void tick(double delta);
 
-	protected abstract void drawUILayout(NkContext ctx, ArrayList<UIObject> uiObjects);
+	public abstract void determineUIWindowFocusByMouse(double x, double y);
+
+	protected abstract void drawUILayout(NkContext ctx, UICollector uic);
 
 	public void render(Renderer renderer, Camera camera, NkContext ctx , long window) {
 		for (GameObject go : gameObjects) {
 			renderer.renderMesh(go, camera);
 		}
 		// Begin the window
-		drawUILayout(ctx, uiObjects);
+		drawUILayout(ctx, uic);
 
 	}
 
@@ -56,12 +60,12 @@ public abstract class Visual {
 	}
 
 	public void initNuklearVisual(NkContext ctx, String title, int x, int y, int width, int height) {
-		this.windowTitle = title;
+		this.sceneName = title;
 		windowOptions = NK_WINDOW_NO_INPUT;
 		windowRect = NkRect.create();
 		nk_rect(x, y, width, height, windowRect);
 
-		nk_begin(ctx, windowTitle, windowRect, windowOptions);
+		nk_begin(ctx, sceneName, windowRect, windowOptions);
 	    nk_end(ctx);
 		
 	}
@@ -82,14 +86,15 @@ public abstract class Visual {
 		gameObjects.add(go);
 	}
 
-	public void add(UIObject uio) {
-		uiObjects.add(uio);
+	public void add(UIObject uio, String listname) {
+		uic.add(listname, uio);
 	}
 
 	public void removeAll() {
 		gameObjects.clear();
-		uiObjects.clear();
+		uic.clear();
 	}
+
 
 
 }
