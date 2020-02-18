@@ -18,12 +18,9 @@ public abstract class Scene {
 		this.camera = camera;
 	}
 	
-	public Scene(Visual visual, Camera camera, String sceneName, NkContext ctx, long window) {
-		this.visual = visual;
-		this.sceneName = sceneName; 
-		this.camera = camera;
-		
-		visual.initNuklearVisual( ctx, sceneName);
+	public Scene(Visual visual, Camera camera, String sceneName, NkContext ctx, long window, int x, int y, int width, int height) {
+		this(visual, camera, sceneName);
+		visual.initNuklearVisual( ctx, sceneName, x, y, width, height);
 	}
 	
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {

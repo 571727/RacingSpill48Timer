@@ -1,16 +1,26 @@
 package scenes.regular.visual;
 
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_BORDER;
+import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_CLOSABLE;
+import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_MINIMIZABLE;
 import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_NO_SCROLLBAR;
+import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_TITLE;
 import static org.lwjgl.nuklear.Nuklear.nk_begin;
+import static org.lwjgl.nuklear.Nuklear.nk_button_label;
 import static org.lwjgl.nuklear.Nuklear.nk_end;
 import static org.lwjgl.nuklear.Nuklear.nk_group_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_group_end;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
+import static org.lwjgl.nuklear.Nuklear.nk_rect;
+import static org.lwjgl.system.MemoryStack.stackPush;
 
 import java.util.ArrayList;
 
 import org.lwjgl.nuklear.NkContext;
+import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
+import org.lwjgl.system.MemoryStack;
 
 import elem.ColorBytes;
 import elem.interactions.RegularTopBar;
@@ -48,27 +58,28 @@ public class MainMenuVisual extends Visual {
 
 	@Override
 	protected void drawUILayout(NkContext ctx, ArrayList<UIObject> uios) {
+
+		topbar.layout(ctx);
+
 		if (nk_begin(ctx, windowTitle, windowRect, windowOptions)) {
 
 			setBackgroundColor(ctx);
 
-			float height = 600; // The row is 30 pixels tall
-			int itemsPerRow = 1; // How many widgets can go in one row
-
 			pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x00));
 			setBackgroundColor(ctx);
 
-			nk_layout_row_dynamic(ctx, Window.CURRENT_HEIGHT, 1);
+			nk_layout_row_dynamic(ctx, Window.CURRENT_HEIGHT - topbar.getHeight(), 1);
 			// Groups have the same options available as windows
 			int options = NK_WINDOW_NO_SCROLLBAR;
+
 			if (nk_group_begin(ctx, "My Group", options)) {
 
 				//
 				// The group contains rows and the rows contain widgets, put those here.
 				//
 				for (int i = 0; i < uios.size(); i++) {
-					uios.get(i).layout(ctx);
 					nk_layout_row_dynamic(ctx, btnHeight, 1); // nested row
+					uios.get(i).layout(ctx);
 				}
 
 				// Unlike the window, the _end() function must be inside the if() block
@@ -84,11 +95,9 @@ public class MainMenuVisual extends Visual {
 			popBackgroundColor();
 			setBackgroundColor(ctx);
 
-			// End the window
-			nk_end(ctx);
 		}
-		
-		topbar.layout(ctx);
+		// End the window
+		nk_end(ctx);
 
 	}
 

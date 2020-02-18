@@ -6,6 +6,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import org.lwjgl.nuklear.NkContext;
 
 import elem.interactions.RegularTopBar;
+import engine.io.Window;
 import engine.objects.UIButton;
 import scenes.Scene;
 import scenes.Scenes;
@@ -17,7 +18,7 @@ public class MainMenuScene extends Scene {
 	private RegularTopBar topBar;
 
 	public MainMenuScene(RegularTopBar topBar, NkContext ctx, long window) {
-		super(new MainMenuVisual(), null, "MainMenu", ctx, window);
+		super(new MainMenuVisual(), null, "MainMenu", ctx, window, 0, topBar.getHeight(), Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT - topBar.getHeight());
 
 		this.topBar = topBar;
 		singleplayerBtn = new UIButton("Singleplayer");
@@ -36,7 +37,10 @@ public class MainMenuScene extends Scene {
 		});
 		exitBtn.setPressedAction(() -> glfwSetWindowShouldClose(window, true));
 
-		visual.add(topBar);
+		/*
+		 * FIXME add to a specific window or something 
+		 */
+		
 		visual.add(singleplayerBtn);
 		visual.add(multiplayerBtn);
 		visual.add(optionsBtn);

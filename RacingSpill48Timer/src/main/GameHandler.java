@@ -18,6 +18,7 @@ import audio.AudioHandler;
 import elem.interactions.RegularTopBar;
 import elem.interactions.TopBar;
 import engine.graphics.Renderer;
+import engine.graphics.UIRender;
 import engine.io.InputHandler;
 import engine.io.UI;
 import engine.io.Window;
@@ -64,27 +65,30 @@ public class GameHandler {
 		if(!steam.init())
 			System.exit(0);
 		
-		
+		//Before window setup - CLEAR
 		window = new Window(settings.getWidth(), settings.getHeight(), settings.getFullscreen(), Main.GAME_NAME,
 				Color.RED);
 		debugProcCallback = window.init();
 
-		
+		// Method setupWindow(win) - CLEAR
+		input = new InputHandler(window, ui.getNkContext());
+		// setupContext();
+		renderer = new Renderer(window, ui.setupContext());
+		// ret and continue
+		ui.nkFont();
+
+		// Get created nuklear for stuff
 		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 24);
 		sceneHandler.init(options, topBar, ui.getNkContext(), window.getWindow());
 		sceneHandler.changeScene(0);
-
-		
-		input = new InputHandler(sceneHandler.getCurrentScene(), window, ui.getNkContext());
-		renderer = new Renderer(window);
-		ui.nkFont();
+		input.setCurrent(sceneHandler.getCurrentScene());
 		
 		options.init(settings, input.getKeys(), audio);
 		sceneHandler.changeSceneAction(input);
 
 		timer.init();
 
-		//		Make the window visible
+		// Make the window visible
 		glfwShowWindow(window.getWindow());
 		running = true;
 	}
@@ -97,14 +101,9 @@ public class GameHandler {
 				break;
 			}
 			
-			
 			delta = timer.getDelta();
-
-			steam.update();
 			
 			// update game
-			window.update();
-			
 			tick(delta);
 			timer.updateTPS();
 
@@ -118,6 +117,8 @@ public class GameHandler {
 	}
 
 	private void tick(double delta) {
+		steam.update();
+		window.update();
 		sceneHandler.getCurrentScene().tick(delta);
 	}
 
@@ -138,6 +139,7 @@ public class GameHandler {
 		if (debugProcCallback != null) {
             debugProcCallback.free();
         }
+		renderer.destroy();
 		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();

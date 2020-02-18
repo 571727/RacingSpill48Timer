@@ -55,15 +55,15 @@ public abstract class Visual {
 		ctx.style().window().fixed_background().data().color().set(bg.r(), bg.g(), bg.b(), bg.a());
 	}
 
-	public void initNuklearVisual(NkContext ctx, String title) {
+	public void initNuklearVisual(NkContext ctx, String title, int x, int y, int width, int height) {
+		this.windowTitle = title;
 		windowOptions = NK_WINDOW_NO_INPUT;
 		windowRect = NkRect.create();
-		nk_rect(0, 0, Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT, windowRect);
+		nk_rect(x, y, width, height, windowRect);
 
 		nk_begin(ctx, windowTitle, windowRect, windowOptions);
 	    nk_end(ctx);
 		
-		this.windowTitle = title;
 	}
 
 	public void setNuklearOptions(int options) {

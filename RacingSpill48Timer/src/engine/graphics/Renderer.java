@@ -64,9 +64,9 @@ public class Renderer {
 	private Window window;
 	private UIRender nkUI;
 	
-	public Renderer(Window window) {
+	public Renderer(Window window, UIRender nkUI) {
 		this.window = window;
-		nkUI = new UIRender();
+		this.nkUI = nkUI;
 	}
 
 	public void renderMesh(GameObject go, Camera camera) {
@@ -96,5 +96,8 @@ public class Renderer {
 		nkUI.draw(ctx);
 		nkUI.unbind();
 	}
-
+	
+	public void destroy() {
+		nkUI.destroy();
+	}
 }

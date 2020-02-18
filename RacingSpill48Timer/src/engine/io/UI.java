@@ -47,10 +47,12 @@ import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
 import org.lwjgl.system.MemoryStack;
 
+import engine.graphics.UIRender;
 import engine.utils.FileUtils;
 
 public class UI {
 
+	public static final int BUFFER_INITIAL_SIZE = 4 * 1024;
 	public static final NkDrawVertexLayoutElement.Buffer VERTEX_LAYOUT;
 	public static final int MAX_VERTEX_BUFFER  = 512 * 1024;
 	public static final int MAX_ELEMENT_BUFFER = 128 * 1024;
@@ -77,11 +79,13 @@ public class UI {
 	public UI() {
 		try {
             this.ttf = FileUtils.ioResourceToByteBuffer("resources/fonts/BASKVILL.TTF", 512 * 1024);
-            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-		
+	}
+	
+	public UIRender setupContext() {
+		return new UIRender();
 	}
 	
 

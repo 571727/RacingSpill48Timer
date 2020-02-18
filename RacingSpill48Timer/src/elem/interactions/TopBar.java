@@ -73,4 +73,14 @@ public class TopBar {
 		this.y = y;
 	}
 
+	public long getWindow() {
+		return window;
+	}
+
+	public void setWindow(long window) {
+		this.window = window;
+	}
+
+	
+	
 }

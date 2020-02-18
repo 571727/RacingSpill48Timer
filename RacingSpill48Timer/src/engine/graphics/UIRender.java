@@ -87,7 +87,6 @@ public class UIRender {
 	private Shader nkShader;
 	private NkBuffer cmds = NkBuffer.create();
 	private NkDrawNullTexture null_texture = NkDrawNullTexture.create();
-	private static final int BUFFER_INITIAL_SIZE = 4 * 1024;
 	private int vbo, vao, ebo;
 	private int uniform_tex;
 	private int uniform_proj;
@@ -100,7 +99,7 @@ public class UIRender {
 		
 		nkShader = new Shader("nk");
 
-		nk_buffer_init(cmds, UI.ALLOCATOR, BUFFER_INITIAL_SIZE);
+		nk_buffer_init(cmds, UI.ALLOCATOR, UI.BUFFER_INITIAL_SIZE);
 		nkShader.create();
 
 		uniform_tex = nkShader.getUniformLocation("tex");
@@ -269,6 +268,7 @@ public class UIRender {
 		GL15.glDeleteBuffers(vbo);
 		GL15.glDeleteBuffers(ebo);
 		GL30.glDeleteVertexArrays(vao);
+		nkShader.destroy();
 	}
 
 }

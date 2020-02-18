@@ -58,8 +58,7 @@ public class InputHandler {
 	private Scene currentScene;
 	private ControlsSettings keys;
 
-	public InputHandler(Scene currentScene, Window win, NkContext ctx) {
-		this.currentScene = currentScene;
+	public InputHandler(Window win, NkContext ctx) {
 		keys = new ControlsSettings();
 
 		long myWindow = win.getWindow();
