@@ -18,6 +18,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import java.util.ArrayList;
 
 import org.lwjgl.nuklear.NkContext;
+import org.lwjgl.nuklear.NkImage;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
 import org.lwjgl.nuklear.Nuklear;
@@ -47,9 +48,10 @@ public class MainMenuVisual extends Visual {
 	private int hPadding;
 	private float btnHeight;
 	private RegularTopBar topbar;
+	private byte alpha = (byte) 0xDD;
 
 	public void init(RegularTopBar topbar) {
-		pushBackgroundColor(new ColorBytes(0, 0, 0, 0x66));
+		pushBackgroundColor(new ColorBytes(0x66, 0, 0, alpha));
 		setNuklearOptions(NK_WINDOW_NO_SCROLLBAR);
 
 		btnHeight = Window.CURRENT_HEIGHT / 12;
@@ -58,10 +60,10 @@ public class MainMenuVisual extends Visual {
 		topbar.setTitle(sceneName);
 		uic.add(topbar.getName(), topbar);
 	}
-	
+
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
-		if(y > topbar.getHeight()) {
+		if (y > topbar.getHeight()) {
 			// Give focus to the menu.
 			uic.setFocus(sceneName);
 		} else {
@@ -73,13 +75,28 @@ public class MainMenuVisual extends Visual {
 	@Override
 	protected void drawUILayout(NkContext ctx, UICollector uic) {
 
-		topbar.layout(ctx);
-
 		Nuklear.nk_window_set_focus(ctx, uic.getFocus());
 		
+//		NkImage image = NkImage.create();
+//		image.handle(it -> it.id(textureID)); // See NkImage for details
+
+		// Topbar
+		pushBackgroundColor(new ColorBytes(0x22, 0x22, 0x22, alpha));
+		setBackgroundColor(ctx);
+
+		topbar.layout(ctx);
+
+		popBackgroundColor();
+		setBackgroundColor(ctx);
+
+		// menu
 		if (nk_begin(ctx, sceneName, windowRect, windowOptions)) {
 
-			setBackgroundColor(ctx);
+			// Set the padding of the group
+			NkVec2 padding = ctx.style().window().group_padding();
+			padding.x(hPadding);
+			padding.y(btnHeight);
+			ctx.style().window().spacing().y(btnHeight / 2);
 
 			pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x00));
 			setBackgroundColor(ctx);
@@ -102,12 +119,6 @@ public class MainMenuVisual extends Visual {
 				nk_group_end(ctx);
 			}
 
-			// Set the padding of the group
-			NkVec2 padding = ctx.style().window().group_padding();
-			padding.x(hPadding);
-			padding.y(btnHeight);
-			ctx.style().window().spacing().y(btnHeight / 2);
-
 			popBackgroundColor();
 			setBackgroundColor(ctx);
 
@@ -120,9 +131,5 @@ public class MainMenuVisual extends Visual {
 	@Override
 	public void tick(double delta) {
 	}
-
-
-
-
 
 }

@@ -1,19 +1,30 @@
 package elem.interactions;
 
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.glfwIconifyWindow;
 import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_NO_SCROLLBAR;
 import static org.lwjgl.nuklear.Nuklear.NK_TEXT_ALIGN_LEFT;
+import static org.lwjgl.nuklear.Nuklear.NK_STATIC;
 import static org.lwjgl.nuklear.Nuklear.nk_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_button_label;
 import static org.lwjgl.nuklear.Nuklear.nk_end;
+import static org.lwjgl.nuklear.Nuklear.nk_group_begin;
+import static org.lwjgl.nuklear.Nuklear.nk_group_end;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 import static org.lwjgl.nuklear.Nuklear.nk_rect;
+import static org.lwjgl.nuklear.Nuklear.nk_layout_row_static;
+import static org.lwjgl.nuklear.Nuklear.nk_layout_row_begin;
+import static org.lwjgl.nuklear.Nuklear.nk_layout_row_push;
+import static org.lwjgl.nuklear.Nuklear.nk_layout_row_end;
+
 import static org.lwjgl.nuklear.Nuklear.nk_label;
 
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
+import org.lwjgl.nuklear.NkVec2;
 
 import engine.io.Window;
+import engine.objects.UIButton;
 import engine.objects.UIObject;
 import main.Main;
 
@@ -23,6 +34,8 @@ public class RegularTopBar extends UIObject {
 	private String windowTitle;
 	private String title;
 	private NkRect rect;
+	private UIButton minimize;
+	private UIButton close;
 	private int options;
 
 	public RegularTopBar(long window, int height) {
@@ -42,6 +55,13 @@ public class RegularTopBar extends UIObject {
 		nk_rect(0, 0, Window.CURRENT_WIDTH, height, rect);
 		options = NK_WINDOW_NO_SCROLLBAR;
 
+		// Buttons
+		minimize = new UIButton("M I N I M I Z E");
+		close = new UIButton("C L O S E");
+
+		minimize.setPressedAction(() -> glfwIconifyWindow(topbar.getWindow()));
+		close.setPressedAction(() -> glfwSetWindowShouldClose(topbar.getWindow(), true));
+	
 	}
 
 	public void setTitle(String title) {
@@ -50,14 +70,17 @@ public class RegularTopBar extends UIObject {
 
 	public void layout(NkContext ctx) {
 		if (nk_begin(ctx, windowTitle, rect, options)) {
-			nk_layout_row_dynamic(ctx, Window.CURRENT_HEIGHT, 2);
+
+			
+			int height = getHeight() * 3 / 4;
+			ctx.style().window().spacing().set(height, 0);
+			ctx.style().window().padding().set(height, (int)(height / 3 * 0.65));
+			nk_layout_row_dynamic(ctx, height, 3);
 
 			nk_label(ctx, title, NK_TEXT_ALIGN_LEFT);
-
-			if (nk_button_label(ctx, "Button")) {
-				/* event handling */
-				glfwSetWindowShouldClose(topbar.getWindow(), true);
-			}
+			minimize.layout(ctx);
+			close.layout(ctx);
+			
 		}
 		nk_end(ctx);
 	}

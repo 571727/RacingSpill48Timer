@@ -78,7 +78,6 @@ public class Window {
 
 	public static int CURRENT_WIDTH, CURRENT_HEIGHT, INGAME_WIDTH, INGAME_HEIGHT, CLIENT_WIDTH, CLIENT_HEIGHT;
 
-	private final int[] possibleHeights = { 480, 720, 900, 1080, 1152, 1440, 2160 };
 	private Action closingProtocol;
 	private boolean fullscreen;
 	private String title;
@@ -87,7 +86,7 @@ public class Window {
 	private Matrix4f projection;
 
 	public Window(int width, int height, boolean fullscreen, String title, Color clearColor) {
-		
+
 		this.fullscreen = fullscreen;
 		this.title = title;
 		this.clearColor = clearColor;
@@ -96,39 +95,38 @@ public class Window {
 
 		// Set client size to one resolution lower than the current one
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		int currHeight = gd.getDisplayMode().getHeight();
+		int currWidth = gd.getDisplayMode().getWidth();
 
-		for (int i = 0; currHeight > possibleHeights[i]; i++) {
-			CLIENT_HEIGHT = possibleHeights[i];
-		}
-		CLIENT_WIDTH = CLIENT_HEIGHT * 16 / 9;
+		CLIENT_WIDTH = currWidth * 9 / 10;
+		CLIENT_HEIGHT = CLIENT_WIDTH * 9 / 16;
 		
+
 		CURRENT_WIDTH = CLIENT_WIDTH;
 		CURRENT_HEIGHT = CLIENT_HEIGHT;
 
 		// TODO Turn this to ingame width and height.
 		projection = Matrix4f.projection(70f, (float) CLIENT_WIDTH / (float) CLIENT_HEIGHT, 0.1f, 1000f);
-	
+
 	}
 
 	public Callback init() {
 		GLFWErrorCallback.createPrint().set();
 
-        if (!glfwInit()) {
-            throw new IllegalStateException("Unable to initialize glfw");
-        }
-		
+		if (!glfwInit()) {
+			throw new IllegalStateException("Unable to initialize glfw");
+		}
+
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        if (Platform.get() == Platform.MACOSX) {
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        }
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		if (Platform.get() == Platform.MACOSX) {
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		}
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
 		window = glfwCreateWindow(CLIENT_WIDTH, CLIENT_HEIGHT, title, NULL, NULL);
 		if (window == NULL)
@@ -174,11 +172,9 @@ public class Window {
 
 		// TESTING FIXME
 //		mouseState(true);
-		
+
 		return debugProc;
 	}
-
-
 
 	public void initClosingProtocol(Player player) {
 		closingProtocol = () -> {
@@ -191,8 +187,7 @@ public class Window {
 	}
 
 	public void update() {
-		
-		
+
 //		Example of nuklear use
 //	        NkMouse mouse = ctx.input().mouse();
 //	        if (mouse.grab()) {
@@ -208,11 +203,10 @@ public class Window {
 //	        }
 //
 //	        nk_input_end(ctx);
-		
-		
+
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the framebuffer
-		
+
 	}
 
 	public void swapBuffers() {

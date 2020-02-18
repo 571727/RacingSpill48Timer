@@ -78,7 +78,7 @@ public class GameHandler {
 		ui.nkFont();
 
 		// Get created nuklear for stuff
-		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 24);
+		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
 		sceneHandler.init(options, topBar, ui.getNkContext(), window.getWindow());
 		sceneHandler.changeScene(0);
 		input.setCurrent(sceneHandler.getCurrentScene());

@@ -7,7 +7,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 
 public class TopBar {
-
 	private double x, y;
 	private boolean held;
 	private long window;
@@ -80,7 +79,6 @@ public class TopBar {
 	public void setWindow(long window) {
 		this.window = window;
 	}
-
 	
 	
 }
