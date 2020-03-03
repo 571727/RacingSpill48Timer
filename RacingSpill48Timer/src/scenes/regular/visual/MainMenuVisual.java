@@ -28,6 +28,7 @@ import elem.ColorBytes;
 import elem.interactions.RegularTopBar;
 import engine.io.Window;
 import engine.objects.UICollector;
+import engine.objects.UIExitModal;
 import engine.objects.UIObject;
 import scenes.Visual;
 
@@ -48,22 +49,29 @@ public class MainMenuVisual extends Visual {
 	private int hPadding;
 	private float btnHeight;
 	private RegularTopBar topbar;
+	private UIExitModal exitModal;
 	private byte alpha = (byte) 0xDD;
 
-	public void init(RegularTopBar topbar) {
+	public void init(RegularTopBar topbar, UIExitModal exitModal) {
 		pushBackgroundColor(new ColorBytes(0x66, 0, 0, alpha));
 		setNuklearOptions(NK_WINDOW_NO_SCROLLBAR);
+		this.exitModal = exitModal;
 
 		btnHeight = Window.CURRENT_HEIGHT / 12;
 		hPadding = Window.CURRENT_WIDTH / 8;
 		this.topbar = topbar;
 		topbar.setTitle(sceneName);
 		uic.add(topbar.getName(), topbar);
+
+//		topbar.setShowExitModal(true);
 	}
 
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
-		if (y > topbar.getHeight()) {
+		if (exitModal.isShowExitModal()) {
+			//Give all focus to the exitmodal
+			uic.setFocus(exitModal.getName());
+		} else if (y > topbar.getHeight()) {
 			// Give focus to the menu.
 			uic.setFocus(sceneName);
 		} else {
@@ -76,11 +84,13 @@ public class MainMenuVisual extends Visual {
 	protected void drawUILayout(NkContext ctx, UICollector uic) {
 
 		Nuklear.nk_window_set_focus(ctx, uic.getFocus());
-		
+
 //		NkImage image = NkImage.create();
 //		image.handle(it -> it.id(textureID)); // See NkImage for details
 
-		// Topbar
+		/*
+		 * TOPBAR
+		 */
 		pushBackgroundColor(new ColorBytes(0x22, 0x22, 0x22, alpha));
 		setBackgroundColor(ctx);
 
@@ -89,15 +99,20 @@ public class MainMenuVisual extends Visual {
 		popBackgroundColor();
 		setBackgroundColor(ctx);
 
-		// menu
+		/*
+		 * MAIN SHIT
+		 */
 		if (nk_begin(ctx, sceneName, windowRect, windowOptions)) {
-
+			
 			// Set the padding of the group
 			NkVec2 padding = ctx.style().window().group_padding();
 			padding.x(hPadding);
 			padding.y(btnHeight);
 			ctx.style().window().spacing().y(btnHeight / 2);
-
+			
+			/*
+			 * GROUP OF MAIN BUTTONS
+			 */
 			pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x00));
 			setBackgroundColor(ctx);
 
@@ -126,10 +141,23 @@ public class MainMenuVisual extends Visual {
 		// End the window
 		nk_end(ctx);
 
+		/*
+		 * EXIT MODAL
+		 */
+		if (exitModal.isShowExitModal()) {
+			pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x33));
+			setBackgroundColor(ctx);
+
+			exitModal.layout(ctx);
+
+			popBackgroundColor();
+
+		}
 	}
 
 	@Override
 	public void tick(double delta) {
 	}
+
 
 }

@@ -69,5 +69,9 @@ public class UIButton extends UIObject {
 	public void unpress() {
 		pressed = false;
 	}
+	
+	public void press() {
+		pressed = true;
+	}
 
 }

@@ -97,7 +97,7 @@ public class Window {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int currWidth = gd.getDisplayMode().getWidth();
 
-		CLIENT_WIDTH = currWidth * 9 / 10;
+		CLIENT_WIDTH = (int)(currWidth / 1.4f);
 		CLIENT_HEIGHT = CLIENT_WIDTH * 9 / 16;
 		
 

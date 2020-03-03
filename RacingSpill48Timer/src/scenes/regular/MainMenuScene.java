@@ -1,6 +1,7 @@
 package scenes.regular;
 
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 import org.lwjgl.nuklear.NkContext;
@@ -8,23 +9,30 @@ import org.lwjgl.nuklear.NkContext;
 import elem.interactions.RegularTopBar;
 import engine.io.Window;
 import engine.objects.UIButton;
+import engine.objects.UIExitModal;
+import engine.objects.UIObject;
 import scenes.Scene;
 import scenes.Scenes;
 import scenes.regular.visual.MainMenuVisual;
 
 public class MainMenuScene extends Scene {
 
-	private UIButton singleplayerBtn, multiplayerBtn, optionsBtn, exitBtn;
-	private RegularTopBar topBar;
+	private UIButton singleplayerBtn, multiplayerBtn, optionsBtn, exitBtn; 
+	private UIExitModal exitModal;
+	private RegularTopBar topbar;
 
-	public MainMenuScene(RegularTopBar topBar, NkContext ctx, long window) {
-		super(new MainMenuVisual(), null, "MainMenu", ctx, window, 0, topBar.getHeight(), Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT - topBar.getHeight());
+	public MainMenuScene(RegularTopBar topbar, NkContext ctx, long window) {
+		super(new MainMenuVisual(), null, "MainMenu", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
+				Window.CURRENT_HEIGHT - topbar.getHeight());
 
-		this.topBar = topBar;
-		singleplayerBtn = new UIButton("Singleplayer");
+		this.topbar = topbar;
+		singleplayerBtn = new UIButton("Gladiator Mode");
 		multiplayerBtn = new UIButton("Multiplayer");
 		optionsBtn = new UIButton("Options and controls");
 		exitBtn = new UIButton("Exit");
+		exitModal = new UIExitModal(
+				() -> glfwSetWindowShouldClose(window, true), 
+				() -> exitModal.setShowExitModal(false));
 
 		singleplayerBtn.setPressedAction(() -> {
 			sceneChange.run(Scenes.SINGLEPLAYER);
@@ -35,21 +43,24 @@ public class MainMenuScene extends Scene {
 		optionsBtn.setPressedAction(() -> {
 			sceneChange.run(Scenes.OPTIONS);
 		});
-		exitBtn.setPressedAction(() -> glfwSetWindowShouldClose(window, true));
+		exitBtn.setPressedAction(() -> exitModal.setShowExitModal(true));
 
 		/*
-		 * FIXME add to a specific window or something 
+		 * FIXME add to a specific window or something
 		 */
-		
+
 		visual.add(singleplayerBtn, sceneName);
+		visual.add(multiplayerBtn, sceneName);
 		visual.add(multiplayerBtn, sceneName);
 		visual.add(optionsBtn, sceneName);
 		visual.add(exitBtn, sceneName);
+		visual.add(exitModal, exitModal.getName());
+		
 	}
 
 	@Override
 	public void init() {
-		((MainMenuVisual) visual).init(topBar);
+		((MainMenuVisual) visual).init(topbar, exitModal);
 	}
 
 	@Override
@@ -67,19 +78,21 @@ public class MainMenuScene extends Scene {
 		boolean down = action != GLFW_RELEASE;
 
 		if (down) {
-			topBar.press(x, y);
+			topbar.press(x, y);
 			singleplayerBtn.unpress();
 			multiplayerBtn.unpress();
 			optionsBtn.unpress();
 			exitBtn.unpress();
+			exitModal.unpress();
+			topbar.unpress();
 		} else {
-			topBar.release();
+			topbar.release();
 		}
 	}
 
 	@Override
 	public void mousePosInput(double x, double y) {
-		topBar.move(x, y);
+		topbar.move(x, y);
 		visual.determineUIWindowFocusByMouse(x, y);
 	}
 

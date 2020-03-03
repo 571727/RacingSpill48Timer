@@ -149,6 +149,7 @@ public class GameHandler {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((Main.GAME_VERSION == null) ? 0 : Main.GAME_VERSION.hashCode());
 		result = prime * result + ((audio == null) ? 0 : audio.hashCode());
 		result = prime * result + ((debugProcCallback == null) ? 0 : debugProcCallback.hashCode());
 		result = prime * result + ((input == null) ? 0 : input.hashCode());

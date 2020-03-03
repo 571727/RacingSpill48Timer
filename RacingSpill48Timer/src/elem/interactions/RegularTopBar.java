@@ -34,8 +34,7 @@ public class RegularTopBar extends UIObject {
 	private String windowTitle;
 	private String title;
 	private NkRect rect;
-	private UIButton minimize;
-	private UIButton close;
+	private UIButton minimizeBtn;
 	private int options;
 
 	public RegularTopBar(long window, int height) {
@@ -56,11 +55,9 @@ public class RegularTopBar extends UIObject {
 		options = NK_WINDOW_NO_SCROLLBAR;
 
 		// Buttons
-		minimize = new UIButton("M I N I M I Z E");
-		close = new UIButton("C L O S E");
+		minimizeBtn = new UIButton("M I N I M I Z E");
 
-		minimize.setPressedAction(() -> glfwIconifyWindow(topbar.getWindow()));
-		close.setPressedAction(() -> glfwSetWindowShouldClose(topbar.getWindow(), true));
+		minimizeBtn.setPressedAction(() -> glfwIconifyWindow(topbar.getWindow()));
 	
 	}
 
@@ -78,11 +75,16 @@ public class RegularTopBar extends UIObject {
 			nk_layout_row_dynamic(ctx, height, 3);
 
 			nk_label(ctx, title, NK_TEXT_ALIGN_LEFT);
-			minimize.layout(ctx);
-			close.layout(ctx);
+
+			//Empty space
+			nk_label(ctx, "", NK_TEXT_ALIGN_LEFT);
+			
+			minimizeBtn.layout(ctx);
+			
 			
 		}
 		nk_end(ctx);
+
 	}
 
 	public void press(double x, double y) {
@@ -105,4 +107,7 @@ public class RegularTopBar extends UIObject {
 		return windowTitle;
 	}
 
+	public void unpress() {
+		minimizeBtn.unpress();
+	}
 }

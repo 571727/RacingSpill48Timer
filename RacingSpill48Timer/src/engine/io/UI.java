@@ -93,7 +93,7 @@ public class UI {
 		int BITMAP_W = 1024;
 		int BITMAP_H = 1024;
 
-		int FONT_HEIGHT = 18;
+		int FONT_HEIGHT = Window.CURRENT_HEIGHT / 38;
 		int fontTexID   = glGenTextures();
 
 		STBTTFontinfo          fontInfo = STBTTFontinfo.create();

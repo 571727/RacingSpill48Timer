@@ -8,25 +8,27 @@ public class SteamMain {
 
 	public boolean init() {
 
+		boolean res = true;
+		
 		try {
 		SteamAPI.loadLibraries();
 		
 			if(SteamAPI.restartAppIfNecessary(480)) {
 				System.err.println("Restarting through steam...");
-				return false;
+//				res = false;
 			}
 
 			if (!SteamAPI.init()) {
 		        System.err.println( "Steamworks initialization error, e.g. Steam client not running");
-		        return false;
+//		        res = false;
 		    }
 		} catch (SteamException e) {
 		    // Error extracting or loading native libraries
 			e.printStackTrace();
-			return false;
+//			res = false;
 		}
 		
-		return true;
+		return res;
 	}
 
 	public void update() {
