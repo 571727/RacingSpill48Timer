@@ -19,10 +19,10 @@ import elem.ColorBytes;
 import elem.interactions.RegularTopBar;
 import engine.graphics.Renderer;
 import engine.io.Window;
-import engine.objects.Camera;
-import engine.objects.GameObject;
-import engine.objects.UICollector;
-import engine.objects.UIObject;
+import elem.objects.Camera;
+import elem.objects.GameObject;
+import elem.ui.UICollector;
+import elem.ui.UIObject;
 import main.Main;
 
 public abstract class Visual {

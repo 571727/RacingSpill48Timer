@@ -1,12 +1,5 @@
 package main;
 
-import game_modes.GameMode;
-
-import java.nio.ByteBuffer;
-
-import org.lwjgl.util.meow.*;
-import game_modes.GolfLike;
-import game_modes.PointRush;
 
 public class Main {
 
@@ -19,7 +12,6 @@ public class Main {
 	public static boolean[] AI_NAMES_TAKEN;
 	public static final String GAME_NAME = "Racingmaybe.jar";
 	public static final String[] RACE_AMOUNT = { String.valueOf(18), String.valueOf(9), String.valueOf(2) };
-	public static final GameMode[] GAME_MODES = { new GolfLike(), new PointRush() };
 	public static final String UPGRADELVL_REGEX = "%";
 	public static final String STANDARD_REGEX = "#";
 	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";

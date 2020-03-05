@@ -1,6 +1,14 @@
 package scenes;
 
 public class Scenes {
-	public static final int MAIN_MENU = 0, SINGLEPLAYER = 1, MULTIPLAYER = 2, LOBBY = 3, OPTIONS = 4, SETUP_LOBBY = 5, RACE = 6, FINISH = 7, END = 8;
+	/*
+	 * REGULAR indexes
+	 */
+	public static final int MAIN_MENU = 0, SINGLEPLAYER = 1, MULTIPLAYER = 2, OPTIONS = 3, GAME = 4,
+			/*
+			 * INGAME indexes
+			 */
+			SETUP_LOBBY = 0, RACE = 1, FINISH = 2, LOBBY = 3, END = 4;
+	
 	public static int PREVIOUS = MAIN_MENU, CURRENT = MAIN_MENU;
 }

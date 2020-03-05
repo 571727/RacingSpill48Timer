@@ -1,45 +1,27 @@
 package scenes;
 
-import org.lwjgl.nuklear.NkContext;
+import java.util.ArrayList;
 
-import elem.interactions.RegularTopBar;
-import elem.interactions.TopBar;
 import engine.io.InputHandler;
-import scenes.racing.EndScene;
-import scenes.racing.FinishScene;
-import scenes.racing.RaceScene;
-import scenes.regular.LobbyScene;
-import scenes.regular.MainMenuScene;
-import scenes.regular.SetupScene;
 
 public class SceneHandler {
 
-	private Scene[] scenes;
+	private ArrayList<Scene> scenes;
 	private boolean specified;
 
 	public SceneHandler() {
-		scenes = new Scene[9];
+		scenes = new ArrayList<Scene>();
 	}
 
-	public void init(Scene options, RegularTopBar topBar, NkContext ctx, long window) {
-		scenes[Scenes.MAIN_MENU] = new MainMenuScene(topBar, ctx, window);
-		scenes[Scenes.SINGLEPLAYER] = new MainMenuScene(topBar, ctx, window);
-		scenes[Scenes.MULTIPLAYER] = new MainMenuScene(topBar,ctx,  window);
-		scenes[Scenes.LOBBY] = new LobbyScene();
-		scenes[Scenes.OPTIONS] = options;
-		scenes[Scenes.SETUP_LOBBY] = new SetupScene();
-		scenes[Scenes.RACE] = new RaceScene();
-		scenes[Scenes.FINISH] = new FinishScene();
-		scenes[Scenes.END] = new EndScene();
-
+	public void init(Scene[] scenes) {
 		for (Scene scene : scenes) {
+			this.scenes.add(scene);
 			scene.init();
 		}
-
 	}
 
 	/**
-	 * FIXME Destroy all the meshes and shaders etc
+	 * Destroy all the meshes and shaders etc
 	 */
 	public void destroy() {
 		for (Scene scene : scenes) {
@@ -50,7 +32,7 @@ public class SceneHandler {
 	public void changeSceneAction(InputHandler input) {
 		SceneChangeAction sceneChange = (scenenr) -> {
 			changeScene(scenenr);
-			input.setCurrent(scenes[Scenes.CURRENT]);
+			input.setCurrent(scenes.get(Scenes.CURRENT));
 		};
 		for (Scene scene : scenes) {
 			scene.setSceneChangeAction(sceneChange);
@@ -63,11 +45,11 @@ public class SceneHandler {
 	}
 
 	public Scene getCurrentScene() {
-		return scenes[Scenes.CURRENT];
+		return scenes.get(Scenes.CURRENT);
 	}
 
 	public Scene getLastScene() {
-		return scenes[Scenes.PREVIOUS];
+		return scenes.get(Scenes.PREVIOUS);
 	}
 
 	public boolean isSpecified() {

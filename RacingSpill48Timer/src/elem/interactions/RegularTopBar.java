@@ -23,9 +23,9 @@ import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
 
+import elem.ui.UIButton;
+import elem.ui.UIObject;
 import engine.io.Window;
-import engine.objects.UIButton;
-import engine.objects.UIObject;
 import main.Main;
 
 public class RegularTopBar extends UIObject {

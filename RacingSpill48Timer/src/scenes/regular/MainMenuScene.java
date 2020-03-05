@@ -8,9 +8,9 @@ import org.lwjgl.nuklear.NkContext;
 
 import elem.interactions.RegularTopBar;
 import engine.io.Window;
-import engine.objects.UIButton;
-import engine.objects.UIExitModal;
-import engine.objects.UIObject;
+import elem.ui.UIButton;
+import elem.ui.UIExitModal;
+import elem.ui.UIObject;
 import scenes.Scene;
 import scenes.Scenes;
 import scenes.regular.visual.MainMenuVisual;
@@ -50,7 +50,6 @@ public class MainMenuScene extends Scene {
 		 */
 
 		visual.add(singleplayerBtn, sceneName);
-		visual.add(multiplayerBtn, sceneName);
 		visual.add(multiplayerBtn, sceneName);
 		visual.add(optionsBtn, sceneName);
 		visual.add(exitBtn, sceneName);

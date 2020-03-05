@@ -26,10 +26,10 @@ import org.lwjgl.system.MemoryStack;
 
 import elem.ColorBytes;
 import elem.interactions.RegularTopBar;
+import elem.ui.UICollector;
+import elem.ui.UIExitModal;
+import elem.ui.UIObject;
 import engine.io.Window;
-import engine.objects.UICollector;
-import engine.objects.UIExitModal;
-import engine.objects.UIObject;
 import scenes.Visual;
 
 //nk_input_begin(ctx);

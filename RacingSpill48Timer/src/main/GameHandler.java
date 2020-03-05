@@ -24,7 +24,11 @@ import engine.io.UI;
 import engine.io.Window;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
+import scenes.Scene;
 import scenes.SceneHandler;
+import scenes.Scenes;
+import scenes.game.GameScene;
+import scenes.regular.MainMenuScene;
 import scenes.regular.OptionsScene;
 import steam.SteamMain;
 
@@ -79,7 +83,15 @@ public class GameHandler {
 
 		// Get created nuklear for stuff
 		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
-		sceneHandler.init(options, topBar, ui.getNkContext(), window.getWindow());
+		
+		Scene[] scenes = {
+				 new MainMenuScene(topBar, ui.getNkContext(), window.getWindow()),
+				 new MainMenuScene(topBar, ui.getNkContext(), window.getWindow()),
+				 new MainMenuScene(topBar,ui.getNkContext(),  window.getWindow()),
+				options,
+				new GameScene()
+		};
+		sceneHandler.init(scenes);
 		sceneHandler.changeScene(0);
 		input.setCurrent(sceneHandler.getCurrentScene());
 		

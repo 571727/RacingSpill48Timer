@@ -3,7 +3,7 @@ package scenes;
 import org.lwjgl.nuklear.NkContext;
 
 import engine.graphics.Renderer;
-import engine.objects.Camera;
+import elem.objects.Camera;
 
 public abstract class Scene {
 

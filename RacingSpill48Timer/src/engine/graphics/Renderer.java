@@ -56,8 +56,8 @@ import org.lwjgl.system.MemoryStack;
 import engine.io.UI;
 import engine.io.Window;
 import engine.math.Matrix4f;
-import engine.objects.Camera;
-import engine.objects.GameObject;
+import elem.objects.Camera;
+import elem.objects.GameObject;
 
 public class Renderer {
 	

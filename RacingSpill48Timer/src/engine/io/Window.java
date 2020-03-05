@@ -72,7 +72,7 @@ import org.lwjgl.system.Platform;
 
 import elem.Action;
 import engine.math.Matrix4f;
-import player_local.Player;
+import scenes.game.player_local.Player;
 
 public class Window {
 
