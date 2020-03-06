@@ -51,11 +51,12 @@ import org.lwjgl.system.MemoryStack;
 
 import file_manipulation.ControlsSettings;
 import scenes.Scene;
+import scenes.SceneManipulationI;
 
 public class InputHandler {
 
 	private double x, y;
-	private Scene currentScene;
+	private SceneManipulationI currentScene;
 	private ControlsSettings keys;
 
 	public InputHandler(Window win, NkContext ctx) {
@@ -204,7 +205,7 @@ public class InputHandler {
 		glfwFreeCallbacks(win);
 	}
 
-	public void setCurrent(Scene scene) {
+	public void setCurrent(SceneManipulationI scene) {
 		currentScene = scene;
 	}
 

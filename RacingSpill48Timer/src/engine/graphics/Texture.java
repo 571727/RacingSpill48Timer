@@ -74,4 +74,16 @@ public class Texture {
 		return (float) width / (float) height;
 	}
 
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getTextureID() {
+		return textureID;
+	}
+
 }

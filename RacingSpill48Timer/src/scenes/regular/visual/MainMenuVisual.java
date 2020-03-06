@@ -13,6 +13,8 @@ import static org.lwjgl.nuklear.Nuklear.nk_group_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_group_end;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 import static org.lwjgl.nuklear.Nuklear.nk_rect;
+import static org.lwjgl.nuklear.Nuklear.nk_layout_space_push;
+import static org.lwjgl.nuklear.Nuklear.nk_image;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import elem.ColorBytes;
 import elem.interactions.RegularTopBar;
 import elem.ui.UICollector;
 import elem.ui.UIExitModal;
+import elem.ui.UINkImage;
 import elem.ui.UIObject;
 import engine.io.Window;
 import scenes.Visual;
@@ -50,7 +53,8 @@ public class MainMenuVisual extends Visual {
 	private float btnHeight;
 	private RegularTopBar topbar;
 	private UIExitModal exitModal;
-	private byte alpha = (byte) 0xDD;
+	private byte alpha = (byte) 0x22;
+	private NkImage backgroundImage;
 
 	public void init(RegularTopBar topbar, UIExitModal exitModal) {
 		pushBackgroundColor(new ColorBytes(0x66, 0, 0, alpha));
@@ -63,6 +67,7 @@ public class MainMenuVisual extends Visual {
 		topbar.setTitle(sceneName);
 		uic.add(topbar.getName(), topbar);
 
+		backgroundImage = UINkImage.createNkImage("back/lobby.png");
 //		topbar.setShowExitModal(true);
 	}
 
@@ -85,9 +90,16 @@ public class MainMenuVisual extends Visual {
 
 		Nuklear.nk_window_set_focus(ctx, uic.getFocus());
 
-//		NkImage image = NkImage.create();
-//		image.handle(it -> it.id(textureID)); // See NkImage for details
-
+		NkRect rect = NkRect.create();
+		nk_rect(0, 0, Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT, rect);
+		
+		
+		if (nk_begin(ctx, sceneName + "background", windowRect, windowOptions)) {
+			nk_layout_row_dynamic(ctx, 100, 1);
+			nk_image(ctx, backgroundImage);
+		}
+		nk_end(ctx);
+		
 		/*
 		 * TOPBAR
 		 */
@@ -99,28 +111,26 @@ public class MainMenuVisual extends Visual {
 		popBackgroundColor();
 		setBackgroundColor(ctx);
 
+		// Set the padding of the group
+		NkVec2 padding = ctx.style().window().group_padding().set(hPadding, btnHeight);
+		ctx.style().window().spacing().set(0, btnHeight / 2);
+
 		/*
 		 * MAIN SHIT
 		 */
 		if (nk_begin(ctx, sceneName, windowRect, windowOptions)) {
-			
-			// Set the padding of the group
-			NkVec2 padding = ctx.style().window().group_padding();
-			padding.x(hPadding);
-			padding.y(btnHeight);
-			ctx.style().window().spacing().y(btnHeight / 2);
-			
 			/*
 			 * GROUP OF MAIN BUTTONS
 			 */
-			pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x00));
-			setBackgroundColor(ctx);
 
 			nk_layout_row_dynamic(ctx, Window.CURRENT_HEIGHT - topbar.getHeight(), 1);
+			
 			// Groups have the same options available as windows
 			int options = NK_WINDOW_NO_SCROLLBAR;
-
+			
 			if (nk_group_begin(ctx, "My Group", options)) {
+				pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x00));
+				setBackgroundColor(ctx);
 
 				//
 				// The group contains rows and the rows contain widgets, put those here.
@@ -133,14 +143,15 @@ public class MainMenuVisual extends Visual {
 				// Unlike the window, the _end() function must be inside the if() block
 				nk_group_end(ctx);
 			}
-
+			
 			popBackgroundColor();
 			setBackgroundColor(ctx);
 
 		}
 		// End the window
 		nk_end(ctx);
-
+		
+		
 		/*
 		 * EXIT MODAL
 		 */

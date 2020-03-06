@@ -1,6 +1,5 @@
 package elem.ui;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class UICollector {
@@ -40,12 +39,6 @@ public class UICollector {
 		return focus.equals(listname);
 	}
 
-	public void setFocus(String listname) {
-		UIWindowObjects uios = mapUI.get(listname);
-		if (uios != null)
-			focus  = listname;
-	}
-
 	public int size(String listname) {
 		UIWindowObjects uios = mapUI.get(listname);
 		if (uios != null)
@@ -55,6 +48,16 @@ public class UICollector {
 
 	public void clear() {
 		mapUI.clear();
+	}
+
+	public void setFocus(String listname) {
+		UIWindowObjects uios = mapUI.get(listname);
+		if (uios != null)
+			focus = listname;
+	}
+
+	public void forceFocus(String listname) {
+		focus = listname;
 	}
 
 	public String getFocus() {

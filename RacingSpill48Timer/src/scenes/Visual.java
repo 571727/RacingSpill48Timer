@@ -68,6 +68,7 @@ public abstract class Visual {
 		nk_begin(ctx, sceneName, windowRect, windowOptions);
 	    nk_end(ctx);
 		
+	    uic.forceFocus(sceneName);
 	}
 
 	public void setNuklearOptions(int options) {

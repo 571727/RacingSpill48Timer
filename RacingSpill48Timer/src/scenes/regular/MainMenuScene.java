@@ -10,11 +10,14 @@ import elem.interactions.RegularTopBar;
 import engine.io.Window;
 import elem.ui.UIButton;
 import elem.ui.UIExitModal;
-import elem.ui.UIObject;
 import scenes.Scene;
 import scenes.Scenes;
 import scenes.regular.visual.MainMenuVisual;
-
+/**
+ * 
+ * @author Jens Benz
+ *
+ */
 public class MainMenuScene extends Scene {
 
 	private UIButton singleplayerBtn, multiplayerBtn, optionsBtn, exitBtn; 
@@ -26,7 +29,7 @@ public class MainMenuScene extends Scene {
 				Window.CURRENT_HEIGHT - topbar.getHeight());
 
 		this.topbar = topbar;
-		singleplayerBtn = new UIButton("Gladiator Mode");
+		singleplayerBtn = new UIButton("Singleplayer");
 		multiplayerBtn = new UIButton("Multiplayer");
 		optionsBtn = new UIButton("Options and controls");
 		exitBtn = new UIButton("Exit");

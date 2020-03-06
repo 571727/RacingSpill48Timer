@@ -29,7 +29,9 @@ import scenes.SceneHandler;
 import scenes.Scenes;
 import scenes.game.GameScene;
 import scenes.regular.MainMenuScene;
+import scenes.regular.MultiplayerScene;
 import scenes.regular.OptionsScene;
+import scenes.regular.SingleplayerScene;
 import steam.SteamMain;
 
 public class GameHandler {
@@ -44,7 +46,7 @@ public class GameHandler {
 	private InputHandler input;
 	private Renderer renderer;
 	private UI ui;
-	
+
 	private Callback debugProcCallback;
 	private SteamMain steam;
 
@@ -65,17 +67,18 @@ public class GameHandler {
 	}
 
 	private void init() {
-		
-		if(!steam.init())
+
+		if (!steam.init())
 			System.exit(0);
-		
-		//Before window setup - CLEAR
+
+		// Before window setup - CLEAR
 		window = new Window(settings.getWidth(), settings.getHeight(), settings.getFullscreen(), Main.GAME_NAME,
 				Color.RED);
 		debugProcCallback = window.init();
 
 		// Method setupWindow(win) - CLEAR
 		input = new InputHandler(window, ui.getNkContext());
+		input.setCurrent(sceneHandler);
 		// setupContext();
 		renderer = new Renderer(window, ui.setupContext());
 		// ret and continue
@@ -83,20 +86,19 @@ public class GameHandler {
 
 		// Get created nuklear for stuff
 		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
-		
-		Scene[] scenes = {
-				 new MainMenuScene(topBar, ui.getNkContext(), window.getWindow()),
-				 new MainMenuScene(topBar, ui.getNkContext(), window.getWindow()),
-				 new MainMenuScene(topBar,ui.getNkContext(),  window.getWindow()),
-				options,
-				new GameScene()
-		};
+
+		Scene[] scenes = new Scene[Scenes.AMOUNT_REGULAR];
+		scenes[Scenes.MAIN_MENU] = new MainMenuScene(topBar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.SINGLEPLAYER] = new SingleplayerScene(topBar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.MULTIPLAYER] = new MultiplayerScene(topBar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.OPTIONS] = options;
+		scenes[Scenes.GAME] = new GameScene();
+
 		sceneHandler.init(scenes);
+		sceneHandler.changeSceneAction();
 		sceneHandler.changeScene(0);
-		input.setCurrent(sceneHandler.getCurrentScene());
-		
+
 		options.init(settings, input.getKeys(), audio);
-		sceneHandler.changeSceneAction(input);
 
 		timer.init();
 
@@ -112,9 +114,9 @@ public class GameHandler {
 				running = false;
 				break;
 			}
-			
+
 			delta = timer.getDelta();
-			
+
 			// update game
 			tick(delta);
 			timer.updateTPS();
@@ -131,28 +133,28 @@ public class GameHandler {
 	private void tick(double delta) {
 		steam.update();
 		window.update();
-		sceneHandler.getCurrentScene().tick(delta);
+		sceneHandler.tick(delta);
 	}
 
 	private void render() {
-		sceneHandler.getCurrentScene().render(ui.getNkContext(), renderer, window.getWindow());
+		sceneHandler.render(ui.getNkContext(), renderer, window.getWindow());
 		renderer.renderNuklear(ui.getNkContext());
 	}
 
 	private void dispose() {
 //		Terminate GLFW and free the error callback
 		System.out.println("disposing");
-		
+
 		steam.destroy();
-		
+
 		input.destroy(window.getWindow());
 		window.destroy();
 		sceneHandler.destroy();
 		if (debugProcCallback != null) {
-            debugProcCallback.free();
-        }
+			debugProcCallback.free();
+		}
 		renderer.destroy();
-		
+
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
