@@ -3,6 +3,7 @@ package main;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.nuklear.Nuklear.NK_WINDOW_NO_INPUT;
 import static org.lwjgl.nuklear.Nuklear.nk_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_end;
@@ -10,6 +11,7 @@ import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 
 import java.awt.Color;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
@@ -17,6 +19,7 @@ import org.lwjgl.system.MemoryStack;
 import audio.AudioHandler;
 import elem.interactions.RegularTopBar;
 import elem.interactions.TopBar;
+import elem.ui.UIExitModal;
 import engine.graphics.Renderer;
 import engine.graphics.UIRender;
 import engine.io.InputHandler;
@@ -49,6 +52,7 @@ public class GameHandler {
 
 	private Callback debugProcCallback;
 	private SteamMain steam;
+	private SceneGlobalFeatures features;
 
 	public GameHandler() {
 		settings = new RegularSettings();
@@ -85,20 +89,25 @@ public class GameHandler {
 
 		// Get created nuklear for stuff
 		RegularTopBar topbar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
-		SceneGlobalFeatures features = new SceneGlobalFeatures();
-		
+		UIExitModal exitModal = new UIExitModal(() -> {
+			glfwSetWindowShouldClose(window.getWindow(), true);
+			Main.CONFIRMED_EXIT = true;
+		}, () -> features.hideExitModal());
+		features = new SceneGlobalFeatures();
+		features.setPressExitModal(() -> exitModal.press());
+
 		Scene[] scenes = new Scene[Scenes.AMOUNT_REGULAR];
 		scenes[Scenes.MAIN_MENU] = new MainMenuScene(features, topbar, ui.getNkContext(), window.getWindow());
 		scenes[Scenes.SINGLEPLAYER] = new SingleplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
 		scenes[Scenes.MULTIPLAYER] = new MultiplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
-		scenes[Scenes.OPTIONS] =  new OptionsScene(features);
+		scenes[Scenes.OPTIONS] = new OptionsScene(features);
 		scenes[Scenes.GAME] = new GameScene();
 
-		sceneHandler.init(scenes, features);
+		sceneHandler.init(scenes, features, exitModal);
 		sceneHandler.changeSceneAction();
 		sceneHandler.changeScene(0);
 
-		((OptionsScene)scenes[Scenes.OPTIONS]).init(settings, input.getKeys(), audio);
+		((OptionsScene) scenes[Scenes.OPTIONS]).init(settings, input.getKeys(), audio);
 
 		timer.init();
 
@@ -111,8 +120,16 @@ public class GameHandler {
 		double delta;
 		while (running) {
 			if (window.isClosing()) {
-				running = false;
-				break;
+				if (!Main.CONFIRMED_EXIT) {
+					if (!features.isExitModalVisible())
+						features.showExitModal();
+					else
+						features.hideExitModal();
+					GLFW.glfwSetWindowShouldClose(window.getWindow(), false);
+				} else {
+					running = false;
+					break;
+				}
 			}
 
 			delta = timer.getDelta();

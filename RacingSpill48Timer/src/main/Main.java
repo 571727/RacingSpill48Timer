@@ -19,6 +19,7 @@ public class Main {
 	public static final int CHECKSUM = new GameHandler().hashCode();
 
 	public static long DISCONNECTED_ID = -1;
+	public static boolean CONFIRMED_EXIT = false;
 
 	public static void main(String[] args) {
 		AMOUNT_OF_AI = new String[9];

@@ -45,8 +45,10 @@ public abstract class Scene implements ISceneManipulation {
 
 	protected abstract void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
 			int height);
+	
 	public abstract void destroy();
 
+	public abstract void press();
 
 
 	public void add(GameObject go) {
@@ -61,4 +63,9 @@ public abstract class Scene implements ISceneManipulation {
 		gameObjects.clear();
 		uic.clear();
 	}
+
+	public UICollector getUIC() {
+		return uic;
+	}
+
 }

@@ -105,4 +105,10 @@ public class MultiplayerScene extends Scene {
 		
 	}
 
+	@Override
+	public void press() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -16,78 +16,88 @@ import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
 import org.lwjgl.nuklear.Nuklear;
+import org.lwjgl.system.MemoryStack;
 
 import elem.Action;
 import elem.interactions.PressAction;
 import engine.io.Window;
 
-public class UIExitModal extends UIObject{
+public class UIExitModal extends UIObject {
 
 	private String windowTitle;
 	private String exitLabel;
 	private UIButton okBtn, cancelBtn;
-	private NkRect rect;
 	private int options;
 	private boolean visible;
 	private boolean showExitModal;
-	
+
 	public UIExitModal(Action okAction, Action cancelAction) {
 		super("ExitModal");
 		windowTitle = getName();
 		exitLabel = "Sure you wanna to exit?";
-		
-		rect = NkRect.create();
-		nk_rect(0, 0, Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT, rect);
+
 		options = NK_WINDOW_NO_SCROLLBAR;
 
-		//Buttons
+		// Buttons
 		okBtn = new UIButton("O K,  M F");
 		cancelBtn = new UIButton("C A N C E L  T H A T  S H I T");
-		
+
 		okBtn.setPressedAction(okAction);
 		cancelBtn.setPressedAction(cancelAction);
 
 	}
-	
+
 	@Override
 	public void layout(NkContext ctx) {
-		if (nk_begin(ctx, windowTitle, rect, options)) {
 
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			// Create a rectangle for the window
+			NkRect rect = NkRect.mallocStack(stack);
+			rect.x(0).y(0).w(Window.CURRENT_WIDTH).h(Window.CURRENT_HEIGHT);
 			
-			NkVec2 padding = ctx.style().window().group_padding();
-			padding.x(100);
-			padding.y(50);
 			
-			int height = Window.CURRENT_HEIGHT * 2/ 5;
-			int heightElements =  height / 4;
-			
-			// Move group down a bit
-			nk_layout_row_dynamic(ctx, height / 2, 1);
-			
-			//Height of group
-			nk_layout_row_dynamic(ctx, height, 1);
+			if (nk_begin(ctx, windowTitle, rect, options)) {
 
-			if (nk_group_begin(ctx, "ExitGroup", options)) {
+				NkVec2 padding = ctx.style().window().group_padding();
+				padding.x(100);
+				padding.y(50);
 
-				nk_layout_row_dynamic(ctx, heightElements, 1);
+				int height = Window.CURRENT_HEIGHT * 2 / 5;
+				int heightElements = height / 4;
 
-				nk_label(ctx, exitLabel, NK_TEXT_ALIGN_LEFT);
-				
-				nk_layout_row_dynamic(ctx, heightElements, 2);
-				okBtn.layout(ctx);
-				cancelBtn.layout(ctx);
+				// Move group down a bit
+				nk_layout_row_dynamic(ctx, height / 2, 1);
 
-				// Unlike the window, the _end() function must be inside the if() block
-				nk_group_end(ctx);
+				// Height of group
+				nk_layout_row_dynamic(ctx, height, 1);
+
+				if (nk_group_begin(ctx, "ExitGroup", options)) {
+
+					nk_layout_row_dynamic(ctx, heightElements, 1);
+
+					nk_label(ctx, exitLabel, NK_TEXT_ALIGN_LEFT);
+
+					nk_layout_row_dynamic(ctx, heightElements, 2);
+					okBtn.layout(ctx);
+					cancelBtn.layout(ctx);
+
+					// Unlike the window, the _end() function must be inside the if() block
+					nk_group_end(ctx);
+				}
+
 			}
-			
+			nk_end(ctx);
 		}
-		nk_end(ctx);
 	}
 
 	public void unpress() {
 		okBtn.unpress();
 		cancelBtn.unpress();
+	}
+	
+	public void press() {
+		okBtn.press();
+		cancelBtn.press();
 	}
 
 	public boolean isVisible() {
@@ -96,13 +106,13 @@ public class UIExitModal extends UIObject{
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		
-		if(visible) {
+
+		if (visible) {
 			okBtn.press();
 			cancelBtn.press();
 		}
 	}
-	
+
 	public boolean isShowExitModal() {
 		return showExitModal;
 	}
@@ -110,5 +120,6 @@ public class UIExitModal extends UIObject{
 	public void setShowExitModal(boolean showExitModal) {
 		this.showExitModal = showExitModal;
 	}
+
 
 }

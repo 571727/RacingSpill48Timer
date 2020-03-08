@@ -105,4 +105,10 @@ public class SingleplayerScene extends Scene {
 		
 	}
 
+	@Override
+	public void press() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

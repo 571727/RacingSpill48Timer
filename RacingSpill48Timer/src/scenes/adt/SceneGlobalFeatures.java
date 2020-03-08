@@ -4,11 +4,13 @@ import java.util.Stack;
 
 import org.lwjgl.nuklear.NkContext;
 
+import elem.Action;
 import elem.ColorBytes;
 
 public class SceneGlobalFeatures {
 
 	private Stack<ColorBytes> backgroundColorCache = new Stack<ColorBytes>();
+	private Action pressExitModal;
 	private boolean showExitModal;
 
 	public void setBackgroundColor(NkContext ctx) {
@@ -24,13 +26,21 @@ public class SceneGlobalFeatures {
 		backgroundColorCache.pop();
 	}
 
-	public boolean isShowExitModal() {
+	public boolean isExitModalVisible() {
 		return showExitModal;
 	}
 
-	public void setShowExitModal(boolean showExitModal) {
-		this.showExitModal = showExitModal;
+	public void showExitModal() {
+		showExitModal = true;
+		pressExitModal.run();
 	}
 	
+	public void hideExitModal() {
+		showExitModal = false;
+	}
+
+	public void setPressExitModal(Action pressExitModal) {
+		this.pressExitModal = pressExitModal;
+	}
 	
 }

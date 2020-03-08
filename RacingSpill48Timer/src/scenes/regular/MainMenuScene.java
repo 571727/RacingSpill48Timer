@@ -40,7 +40,6 @@ import scenes.adt.SceneGlobalFeatures;
 public class MainMenuScene extends Scene {
 
 	private UIButton singleplayerBtn, multiplayerBtn, optionsBtn, exitBtn; 
-	private UIExitModal exitModal;
 	private RegularTopBar topbar;
 	
 	private int windowOptions;
@@ -58,9 +57,6 @@ public class MainMenuScene extends Scene {
 		multiplayerBtn = new UIButton("Multiplayer");
 		optionsBtn = new UIButton("Options and controls");
 		exitBtn = new UIButton("Exit");
-		exitModal = new UIExitModal(
-				() -> glfwSetWindowShouldClose(window, true), 
-				() -> exitModal.setShowExitModal(false));
 
 		singleplayerBtn.setPressedAction(() -> {
 			sceneChange.run(Scenes.SINGLEPLAYER);
@@ -71,7 +67,7 @@ public class MainMenuScene extends Scene {
 		optionsBtn.setPressedAction(() -> {
 			sceneChange.run(Scenes.OPTIONS);
 		});
-		exitBtn.setPressedAction(() -> exitModal.setShowExitModal(true));
+		exitBtn.setPressedAction(() -> features.showExitModal());
 
 		/*
 		 * Add to a specific window
@@ -81,7 +77,6 @@ public class MainMenuScene extends Scene {
 		add(sceneName, multiplayerBtn);
 		add(sceneName, optionsBtn);
 		add(sceneName, exitBtn);
-		add(sceneName, exitModal);
 		
 	}
 
@@ -124,7 +119,6 @@ public class MainMenuScene extends Scene {
 			multiplayerBtn.unpress();
 			optionsBtn.unpress();
 			exitBtn.unpress();
-			exitModal.unpress();
 			topbar.unpress();
 		} else {
 			topbar.release();
@@ -171,8 +165,6 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public void renderUILayout(NkContext ctx, UICollector uic) {
-
-		Nuklear.nk_window_set_focus(ctx, uic.getFocus());
 
 //		NkRect rect = NkRect.create();
 //		nk_rect(0, 0, Window.CURRENT_WIDTH, Window.CURRENT_HEIGHT, rect);
@@ -231,10 +223,7 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
-		if (exitModal.isShowExitModal()) {
-			//Give all focus to the exitmodal
-			uic.setFocus(exitModal.getName());
-		} else if (y > topbar.getHeight()) {
+		if (y > topbar.getHeight()) {
 			// Give focus to the menu.
 			uic.setFocus(sceneName);
 		} else {
@@ -254,6 +243,14 @@ public class MainMenuScene extends Scene {
 	    nk_end(ctx);
 		
 	    uic.forceFocus(sceneName);
+	}
+
+	@Override
+	public void press() {
+		singleplayerBtn.press();
+		multiplayerBtn.press();
+		optionsBtn.press();
+		exitBtn.press();
 	}
 
 }

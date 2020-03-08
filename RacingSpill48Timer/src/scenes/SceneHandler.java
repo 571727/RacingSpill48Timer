@@ -3,6 +3,7 @@ package scenes;
 import java.util.ArrayList;
 
 import org.lwjgl.nuklear.NkContext;
+import org.lwjgl.nuklear.Nuklear;
 
 import elem.ColorBytes;
 import elem.ui.UIExitModal;
@@ -22,13 +23,14 @@ public class SceneHandler implements ISceneManipulation{
 		scenes = new ArrayList<Scene>();
 	}
 
-	public void init(Scene[] scenes, SceneGlobalFeatures features) {
+	public void init(Scene[] scenes, SceneGlobalFeatures features, UIExitModal exitModal) {
 		for (Scene scene : scenes) {
 			this.scenes.add(scene);
 			scene.init();
 		}
 		
 		this.features = features;
+		this.exitModal = exitModal;
 	}
 
 	/**
@@ -66,10 +68,6 @@ public class SceneHandler implements ISceneManipulation{
 	 * ===========	SCENE MANIPULATION	===========
 	 */
 	
-	/**
-	 * TODO Add support for global / universal scene widgets : Modal, topbar etc
-	 * IN ALL BELOW
-	 */
 	@Override
 	public void tick(double delta) {
 		getCurrentScene().tick(delta);
@@ -81,19 +79,27 @@ public class SceneHandler implements ISceneManipulation{
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
 		
-		getCurrentScene().render(ctx, renderer, window);
+		String focus = null;
 		
 		/*
 		 * EXIT MODAL
 		 */
-		if (features.isShowExitModal()) {
+		if (features.isExitModalVisible()) {
 			features.pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x33));
 			features.setBackgroundColor(ctx);
 
+			focus = exitModal.getName();
 			exitModal.layout(ctx);
+			getCurrentScene().press();
 
 			features.popBackgroundColor();
+		} else {
+			focus = getCurrentScene().getUIC().getFocus();
 		}
+
+		Nuklear.nk_window_set_focus(ctx, focus);
+		
+		getCurrentScene().render(ctx, renderer, window);
 	}
 
 	@Override
@@ -104,6 +110,7 @@ public class SceneHandler implements ISceneManipulation{
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
 		getCurrentScene().mouseButtonInput(button, action, x, y);
+		exitModal.unpress();
 	}
 
 	@Override

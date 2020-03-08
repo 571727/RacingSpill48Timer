@@ -99,4 +99,10 @@ public class OptionsScene extends Scene {
 		
 	}
 
+	@Override
+	public void press() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
