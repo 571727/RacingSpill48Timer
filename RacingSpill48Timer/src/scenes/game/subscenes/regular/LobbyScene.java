@@ -3,13 +3,17 @@ package scenes.game.subscenes.regular;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import player_local.Player;
-import scenes.Scene;
-import scenes.upgrade.Store;
-import scenes.regular.visual.MultiplayerLobbyVisual;
-import server.ServerHandler;
+import org.lwjgl.nuklear.NkContext;
 
-public class MultiplayerLobbyScene extends Scene {
+import elem.ui.UICollector;
+import engine.graphics.Renderer;
+import scenes.game.player_local.Player;
+import scenes.adt.Scene;
+import scenes.adt.SceneGlobalFeatures;
+import scenes.game.upgrade.Store;
+import scenes.game.multiplayer.server.ServerHandler;
+
+public class LobbyScene extends Scene {
 
 	private Player player;
 	private ServerHandler server;
@@ -23,15 +27,14 @@ public class MultiplayerLobbyScene extends Scene {
 	private JLabel chatOutput;
 
 	
-	public MultiplayerLobbyScene() {
-		super(new MultiplayerLobbyVisual(), null, "Lobby");
+	public LobbyScene(SceneGlobalFeatures features) {
+		super(features, null, "Lobby");
 	}
 	
+	@Override
 	public void init() {
 //		store.init(player);
 	}
-	
-	
 
 	private void goBack() {
 		player.getCar().reset();
@@ -92,6 +95,37 @@ public class MultiplayerLobbyScene extends Scene {
 	public boolean keyInput(int keycode, int action) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void render(NkContext ctx, Renderer renderer, long window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void renderUILayout(NkContext ctx, UICollector uic) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void renderUIBackground(NkContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void determineUIWindowFocusByMouse(double x, double y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
+			int height) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

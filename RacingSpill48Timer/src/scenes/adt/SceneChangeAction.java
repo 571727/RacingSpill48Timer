@@ -1,4 +1,4 @@
-package scenes;
+package scenes.adt;
 
 public interface SceneChangeAction {
 

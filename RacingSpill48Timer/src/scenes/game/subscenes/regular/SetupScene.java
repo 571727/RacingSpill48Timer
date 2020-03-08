@@ -1,18 +1,28 @@
-package scenes.game;
+package scenes.game.subscenes.regular;
 
 import org.lwjgl.nuklear.NkContext;
 
-import elem.objects.Camera;
 import elem.ui.UICollector;
 import engine.graphics.Renderer;
 import scenes.adt.Scene;
 import scenes.adt.SceneGlobalFeatures;
 
-public class GameScene extends Scene{
+public class SetupScene extends Scene{
 
-	public GameScene() {
-		super(null, null, "");
+	public SetupScene(SceneGlobalFeatures features) {
+		super(features, null,  "setup");
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public void init() {
+		
+	}
+
+	@Override
+	public void tick(double delta) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -46,7 +56,7 @@ public class GameScene extends Scene{
 	}
 
 	@Override
-	public void tick(double delta) {
+	public void destroy() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -76,20 +86,8 @@ public class GameScene extends Scene{
 	}
 
 	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
 			int height) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void destroy() {
 		// TODO Auto-generated method stub
 		
 	}

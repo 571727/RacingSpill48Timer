@@ -24,9 +24,10 @@ import engine.io.UI;
 import engine.io.Window;
 import engine.utils.Timer;
 import file_manipulation.RegularSettings;
-import scenes.Scene;
+import scenes.adt.Scene;
 import scenes.SceneHandler;
 import scenes.Scenes;
+import scenes.adt.SceneGlobalFeatures;
 import scenes.game.GameScene;
 import scenes.regular.MainMenuScene;
 import scenes.regular.MultiplayerScene;
@@ -39,7 +40,6 @@ public class GameHandler {
 	private boolean running;
 	private RegularSettings settings;
 	private AudioHandler audio;
-	private OptionsScene options;
 	private SceneHandler sceneHandler;
 	private Window window;
 	private Timer timer;
@@ -53,7 +53,6 @@ public class GameHandler {
 	public GameHandler() {
 		settings = new RegularSettings();
 		audio = new AudioHandler(settings);
-		options = new OptionsScene();
 		timer = new Timer();
 		sceneHandler = new SceneHandler();
 		ui = new UI();
@@ -85,20 +84,21 @@ public class GameHandler {
 		ui.nkFont();
 
 		// Get created nuklear for stuff
-		RegularTopBar topBar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
-
+		RegularTopBar topbar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
+		SceneGlobalFeatures features = new SceneGlobalFeatures();
+		
 		Scene[] scenes = new Scene[Scenes.AMOUNT_REGULAR];
-		scenes[Scenes.MAIN_MENU] = new MainMenuScene(topBar, ui.getNkContext(), window.getWindow());
-		scenes[Scenes.SINGLEPLAYER] = new SingleplayerScene(topBar, ui.getNkContext(), window.getWindow());
-		scenes[Scenes.MULTIPLAYER] = new MultiplayerScene(topBar, ui.getNkContext(), window.getWindow());
-		scenes[Scenes.OPTIONS] = options;
+		scenes[Scenes.MAIN_MENU] = new MainMenuScene(features, topbar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.SINGLEPLAYER] = new SingleplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.MULTIPLAYER] = new MultiplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.OPTIONS] =  new OptionsScene(features);
 		scenes[Scenes.GAME] = new GameScene();
 
-		sceneHandler.init(scenes);
+		sceneHandler.init(scenes, features);
 		sceneHandler.changeSceneAction();
 		sceneHandler.changeScene(0);
 
-		options.init(settings, input.getKeys(), audio);
+		((OptionsScene)scenes[Scenes.OPTIONS]).init(settings, input.getKeys(), audio);
 
 		timer.init();
 
@@ -167,7 +167,6 @@ public class GameHandler {
 		result = prime * result + ((audio == null) ? 0 : audio.hashCode());
 		result = prime * result + ((debugProcCallback == null) ? 0 : debugProcCallback.hashCode());
 		result = prime * result + ((input == null) ? 0 : input.hashCode());
-		result = prime * result + ((options == null) ? 0 : options.hashCode());
 		result = prime * result + ((renderer == null) ? 0 : renderer.hashCode());
 		result = prime * result + (running ? 1231 : 1237);
 		result = prime * result + ((sceneHandler == null) ? 0 : sceneHandler.hashCode());

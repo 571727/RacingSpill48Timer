@@ -50,13 +50,13 @@ import org.lwjgl.nuklear.NkVec2;
 import org.lwjgl.system.MemoryStack;
 
 import file_manipulation.ControlsSettings;
-import scenes.Scene;
-import scenes.SceneManipulationI;
+import scenes.adt.Scene;
+import scenes.adt.ISceneManipulation;
 
 public class InputHandler {
 
 	private double x, y;
-	private SceneManipulationI currentScene;
+	private ISceneManipulation currentScene;
 	private ControlsSettings keys;
 
 	public InputHandler(Window win, NkContext ctx) {
@@ -205,7 +205,7 @@ public class InputHandler {
 		glfwFreeCallbacks(win);
 	}
 
-	public void setCurrent(SceneManipulationI scene) {
+	public void setCurrent(ISceneManipulation scene) {
 		currentScene = scene;
 	}
 

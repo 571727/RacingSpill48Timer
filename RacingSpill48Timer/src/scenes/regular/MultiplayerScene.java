@@ -7,17 +7,19 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import org.lwjgl.nuklear.NkContext;
 
 import elem.interactions.RegularTopBar;
+import elem.ui.UICollector;
+import engine.graphics.Renderer;
 import engine.io.Window;
-import scenes.Scene;
+import scenes.adt.Scene;
 import scenes.Scenes;
-import scenes.regular.visual.MainMenuVisual;
+import scenes.adt.SceneGlobalFeatures;
 
 public class MultiplayerScene extends Scene {
 
 	private RegularTopBar topbar;
 
-	public MultiplayerScene(RegularTopBar topbar, NkContext ctx, long window) {
-		super(new MainMenuVisual(), null, "MainMenu", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
+	public MultiplayerScene(SceneGlobalFeatures features, RegularTopBar topbar, NkContext ctx, long window) {
+		super(features, null, "MainMenu", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
 				Window.CURRENT_HEIGHT - topbar.getHeight());
 
 		this.topbar = topbar;
@@ -25,49 +27,82 @@ public class MultiplayerScene extends Scene {
 	}
 
 	@Override
-	public void init() {
-	}
-
-	@Override
 	public void tick(double delta) {
-		visual.tick(delta);
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void mouseButtonInput(int button, int action, double x, double y) {
-		boolean down = action != GLFW_RELEASE;
+	public void determineUIWindowFocusByMouse(double x, double y) {
+		// TODO Auto-generated method stub
+		
+	}
 
-		if (down) {
-		} else {
-		}
+	@Override
+	public void mouseButtonInput(int button, int action, double x, double y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void mousePosInput(double x, double y) {
-		topbar.move(x, y);
-		visual.determineUIWindowFocusByMouse(x, y);
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void mouseScrollInput(double x, double y) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mouseEnterWindowInput(boolean entered) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void render(NkContext ctx, Renderer renderer, long window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void renderUILayout(NkContext ctx, UICollector uic) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void renderUIBackground(NkContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
+			int height) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void destroy() {
-
+		// TODO Auto-generated method stub
+		
 	}
 
 }

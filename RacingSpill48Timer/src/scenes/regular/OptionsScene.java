@@ -3,25 +3,20 @@ package scenes.regular;
 import org.lwjgl.nuklear.NkContext;
 
 import audio.AudioHandler;
-import audio.lowstuff.Audio;
+import elem.ui.UICollector;
+import engine.graphics.Renderer;
 import file_manipulation.ControlsSettings;
 import file_manipulation.RegularSettings;
-import scenes.Scene;
-import scenes.regular.visual.OptionsVisual;
+import scenes.adt.Scene;
+import scenes.adt.SceneGlobalFeatures;
 
 public class OptionsScene extends Scene {
 
-	public OptionsScene() {
-		super(new OptionsVisual(), null, "options");
+	public OptionsScene(SceneGlobalFeatures features) {
+		super(features, null, "options");
 	}
 
 	public void init(RegularSettings settings, ControlsSettings controlsSettings, AudioHandler audio) {
-		
-	}
-
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -35,6 +30,12 @@ public class OptionsScene extends Scene {
 	public boolean keyInput(int keycode, int action) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void determineUIWindowFocusByMouse(double x, double y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -62,11 +63,40 @@ public class OptionsScene extends Scene {
 	}
 
 	@Override
-	public void destroy() {
+	public void render(NkContext ctx, Renderer renderer, long window) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	
+	@Override
+	public void renderUILayout(NkContext ctx, UICollector uic) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void renderUIBackground(NkContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
+			int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

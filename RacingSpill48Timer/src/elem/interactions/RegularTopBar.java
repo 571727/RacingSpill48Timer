@@ -16,12 +16,15 @@ import static org.lwjgl.nuklear.Nuklear.nk_layout_row_static;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_push;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_end;
+import static org.lwjgl.nuklear.Nuklear.nk_style_push_vec2;
+import static org.lwjgl.nuklear.Nuklear.nk_style_pop_vec2;
 
 import static org.lwjgl.nuklear.Nuklear.nk_label;
 
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
+import org.lwjgl.system.MemoryStack;
 
 import elem.ui.UIButton;
 import elem.ui.UIObject;
@@ -58,7 +61,7 @@ public class RegularTopBar extends UIObject {
 		minimizeBtn = new UIButton("M I N I M I Z E");
 
 		minimizeBtn.setPressedAction(() -> glfwIconifyWindow(topbar.getWindow()));
-	
+
 	}
 
 	public void setTitle(String title) {
@@ -68,23 +71,37 @@ public class RegularTopBar extends UIObject {
 	public void layout(NkContext ctx) {
 		if (nk_begin(ctx, windowTitle, rect, options)) {
 
-			
-			int height = getHeight() * 3 / 4;
-			ctx.style().window().spacing().set(height, 0);
-			ctx.style().window().padding().set(height, (int)(height / 3 * 0.65));
-			nk_layout_row_dynamic(ctx, height, 3);
+			try (MemoryStack stack = MemoryStack.stackPush()) {
 
-			nk_label(ctx, title, NK_TEXT_ALIGN_LEFT);
+				int height = getHeight() * 3 / 4;
+				// Set own custom styling
+				NkVec2 spacing = NkVec2.mallocStack(stack).set(2, 2);
+				NkVec2 padding = NkVec2.mallocStack(stack).set(0, 0);
 
-			//Empty space
-			nk_label(ctx, "", NK_TEXT_ALIGN_LEFT);
-			
-			minimizeBtn.layout(ctx);
-			
-			
+				spacing.set(height, 0);
+				padding.set(height, (int) (height / 3 * 0.65));
+
+				nk_style_push_vec2(ctx, ctx.style().window().spacing(), spacing);
+				nk_style_push_vec2(ctx, ctx.style().window().padding(), padding);
+
+				// Layout
+				nk_layout_row_dynamic(ctx, height, 3);
+
+				nk_label(ctx, title, NK_TEXT_ALIGN_LEFT);
+
+				// Empty space
+				nk_label(ctx, "", NK_TEXT_ALIGN_LEFT);
+
+				minimizeBtn.layout(ctx);
+
+				// Reset styling
+				nk_style_pop_vec2(ctx);
+				nk_style_pop_vec2(ctx);
+			}
 		}
 		nk_end(ctx);
 
+//			
 	}
 
 	public void press(double x, double y) {

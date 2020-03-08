@@ -4,22 +4,31 @@ import java.util.ArrayList;
 
 import org.lwjgl.nuklear.NkContext;
 
+import elem.ColorBytes;
+import elem.ui.UIExitModal;
 import engine.graphics.Renderer;
-import engine.io.InputHandler;
+import scenes.adt.ISceneManipulation;
+import scenes.adt.Scene;
+import scenes.adt.SceneChangeAction;
+import scenes.adt.SceneGlobalFeatures;
 
-public class SceneHandler implements SceneManipulationI{
+public class SceneHandler implements ISceneManipulation{
 
 	private ArrayList<Scene> scenes;
+	private SceneGlobalFeatures features;
+	private UIExitModal exitModal;
 
 	public SceneHandler() {
 		scenes = new ArrayList<Scene>();
 	}
 
-	public void init(Scene[] scenes) {
+	public void init(Scene[] scenes, SceneGlobalFeatures features) {
 		for (Scene scene : scenes) {
 			this.scenes.add(scene);
 			scene.init();
 		}
+		
+		this.features = features;
 	}
 
 	/**
@@ -53,6 +62,10 @@ public class SceneHandler implements SceneManipulationI{
 		return scenes.get(Scenes.PREVIOUS_REGULAR);
 	}
 	
+	/*
+	 * ===========	SCENE MANIPULATION	===========
+	 */
+	
 	/**
 	 * TODO Add support for global / universal scene widgets : Modal, topbar etc
 	 * IN ALL BELOW
@@ -67,7 +80,20 @@ public class SceneHandler implements SceneManipulationI{
 	 */
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
+		
 		getCurrentScene().render(ctx, renderer, window);
+		
+		/*
+		 * EXIT MODAL
+		 */
+		if (features.isShowExitModal()) {
+			features.pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x33));
+			features.setBackgroundColor(ctx);
+
+			exitModal.layout(ctx);
+
+			features.popBackgroundColor();
+		}
 	}
 
 	@Override
@@ -94,5 +120,6 @@ public class SceneHandler implements SceneManipulationI{
 	public void mouseEnterWindowInput(boolean entered) {
 		getCurrentScene().mouseEnterWindowInput(entered);
 	}
+
 
 }

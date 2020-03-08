@@ -1,13 +1,13 @@
-package scenes;
+package scenes.adt;
 
 import org.lwjgl.nuklear.NkContext;
 
+import elem.objects.Camera;
+import elem.ui.UICollector;
 import engine.graphics.Renderer;
 
-public interface SceneManipulationI {
-	public void render(NkContext ctx, Renderer renderer, long window);
+public interface ISceneManipulation {
 
-	public void tick(double delta);
 
 	/**
 	 * @return if it's NOT busy racing
@@ -21,5 +21,9 @@ public interface SceneManipulationI {
 	public void mouseScrollInput(double x, double y);
 
 	public void mouseEnterWindowInput(boolean entered);
+
+	public void tick(double delta);
+	
+	public abstract void render(NkContext ctx, Renderer renderer, long window);
 
 }
