@@ -31,16 +31,16 @@ import elem.ui.UIObject;
 import engine.io.Window;
 import main.Main;
 
-public class RegularTopBar extends UIObject {
+public class RegularTopbar extends UIObject {
 
-	private TopBar topbar;
+	private TopbarInteraction topbar;
 	private String windowTitle;
 	private String title;
 	private NkRect rect;
 	private UIButton minimizeBtn;
 	private int options;
 
-	public RegularTopBar(long window, int height) {
+	public RegularTopbar(long window, int height) {
 
 		PressAction pressAction = (double X, double Y) -> {
 			// Move window
@@ -49,7 +49,7 @@ public class RegularTopBar extends UIObject {
 			topbar.setHeld(true);
 		};
 
-		topbar = new TopBar(window, height, pressAction);
+		topbar = new TopbarInteraction(window, height, pressAction);
 
 		// Layout settings
 		windowTitle = "topbar";
@@ -72,11 +72,11 @@ public class RegularTopBar extends UIObject {
 		if (nk_begin(ctx, windowTitle, rect, options)) {
 
 			try (MemoryStack stack = MemoryStack.stackPush()) {
+				// Set own custom styling
+				NkVec2 spacing = NkVec2.mallocStack(stack);
+				NkVec2 padding = NkVec2.mallocStack(stack);
 
 				int height = getHeight() * 3 / 4;
-				// Set own custom styling
-				NkVec2 spacing = NkVec2.mallocStack(stack).set(2, 2);
-				NkVec2 padding = NkVec2.mallocStack(stack).set(0, 0);
 
 				spacing.set(height, 0);
 				padding.set(height, (int) (height / 3 * 0.65));

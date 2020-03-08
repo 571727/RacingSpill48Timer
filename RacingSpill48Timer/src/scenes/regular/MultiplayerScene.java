@@ -6,8 +6,10 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 import org.lwjgl.nuklear.NkContext;
 
-import elem.interactions.RegularTopBar;
+import elem.interactions.RegularTopbar;
 import elem.ui.UICollector;
+import elem.ui.UINkImage;
+import elem.ui.UIObject;
 import engine.graphics.Renderer;
 import engine.io.Window;
 import scenes.adt.Scene;
@@ -16,20 +18,20 @@ import scenes.adt.SceneGlobalFeatures;
 
 public class MultiplayerScene extends Scene {
 
-	private RegularTopBar topbar;
+	private RegularTopbar topbar;
 
-	public MultiplayerScene(SceneGlobalFeatures features, RegularTopBar topbar, NkContext ctx, long window) {
-		super(features, null, "MainMenu", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
+	public MultiplayerScene(SceneGlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
+		super(features, null, "Multiplayer", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
 				Window.CURRENT_HEIGHT - topbar.getHeight());
 
 		this.topbar = topbar;
-		
+		update();
 	}
 
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -41,74 +43,75 @@ public class MultiplayerScene extends Scene {
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
-		// TODO Auto-generated method stub
-		
+		boolean down = action != GLFW_RELEASE;
+
+		if (down) {
+			topbar.press(x, y);
+			topbar.unpress();
+		} else {
+			topbar.release();
+		}
 	}
 
 	@Override
 	public void mousePosInput(double x, double y) {
-		// TODO Auto-generated method stub
-		
+		topbar.move(x, y);
+		determineUIWindowFocusByMouse(x, y);
 	}
 
 	@Override
 	public void mouseScrollInput(double x, double y) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEnterWindowInput(boolean entered) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
-		// TODO Auto-generated method stub
-		
+		renderUIBackground(ctx);
 	}
 
 	@Override
 	public void renderUILayout(NkContext ctx, UICollector uic) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void renderUIBackground(NkContext ctx) {
-		// TODO Auto-generated method stub
-		
+	public void update() {
+		topbar.setTitle(sceneName);
 	}
 
 	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void init(NkContext ctx, int x, int y, int width, int height) {
+		backgroundImage = UINkImage.createNkImage("back/lobby.png");
 
-	@Override
-	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
-			int height) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+		removeAll();
 	}
 
 	@Override
 	public void press() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public UIObject getTopbar() {
+		return topbar;
 	}
 
 }

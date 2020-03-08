@@ -15,7 +15,7 @@ public class SetupScene extends Scene{
 	}
 	
 	@Override
-	public void init() {
+	public void update() {
 		
 	}
 
@@ -86,7 +86,7 @@ public class SetupScene extends Scene{
 	}
 
 	@Override
-	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
+	protected void init(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
 			int height) {
 		// TODO Auto-generated method stub
 		

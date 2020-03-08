@@ -17,8 +17,8 @@ import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
 
 import audio.AudioHandler;
-import elem.interactions.RegularTopBar;
-import elem.interactions.TopBar;
+import elem.interactions.RegularTopbar;
+import elem.interactions.TopbarInteraction;
 import elem.ui.UIExitModal;
 import engine.graphics.Renderer;
 import engine.graphics.UIRender;
@@ -88,12 +88,12 @@ public class GameHandler {
 		ui.nkFont();
 
 		// Get created nuklear for stuff
-		RegularTopBar topbar = new RegularTopBar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
-		UIExitModal exitModal = new UIExitModal(() -> {
+		RegularTopbar topbar = new RegularTopbar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
+		features = new SceneGlobalFeatures();
+		UIExitModal exitModal = new UIExitModal(features, () -> {
 			glfwSetWindowShouldClose(window.getWindow(), true);
 			Main.CONFIRMED_EXIT = true;
 		}, () -> features.hideExitModal());
-		features = new SceneGlobalFeatures();
 		features.setPressExitModal(() -> exitModal.press());
 
 		Scene[] scenes = new Scene[Scenes.AMOUNT_REGULAR];
@@ -105,9 +105,9 @@ public class GameHandler {
 
 		sceneHandler.init(scenes, features, exitModal);
 		sceneHandler.changeSceneAction();
-		sceneHandler.changeScene(0);
+		sceneHandler.changeScene(Scenes.MAIN_MENU);
 
-		((OptionsScene) scenes[Scenes.OPTIONS]).init(settings, input.getKeys(), audio);
+		((OptionsScene) scenes[Scenes.OPTIONS]).initOptions(settings, input.getKeys(), audio);
 
 		timer.init();
 

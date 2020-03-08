@@ -1,5 +1,7 @@
 package elem;
 
+import org.lwjgl.nuklear.NkColor;
+
 public class ColorBytes {
 
 	private byte r, g, b, a;
@@ -41,6 +43,10 @@ public class ColorBytes {
 
 	public void setA(byte a) {
 		this.a = a;
+	}
+
+	public NkColor create() {
+		return NkColor.create().r(r).g(g).b(b).a(a);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.lwjgl.nuklear.Nuklear;
 
 import elem.ColorBytes;
 import elem.ui.UIExitModal;
+import elem.ui.UIObject;
 import engine.graphics.Renderer;
 import scenes.adt.ISceneManipulation;
 import scenes.adt.Scene;
@@ -26,7 +27,6 @@ public class SceneHandler implements ISceneManipulation{
 	public void init(Scene[] scenes, SceneGlobalFeatures features, UIExitModal exitModal) {
 		for (Scene scene : scenes) {
 			this.scenes.add(scene);
-			scene.init();
 		}
 		
 		this.features = features;
@@ -45,6 +45,7 @@ public class SceneHandler implements ISceneManipulation{
 	public void changeSceneAction() {
 		SceneChangeAction sceneChange = (scenenr) -> {
 			changeScene(scenenr);
+			return getCurrentScene();
 		};
 		for (Scene scene : scenes) {
 			scene.setSceneChangeAction(sceneChange);
@@ -54,6 +55,9 @@ public class SceneHandler implements ISceneManipulation{
 	public void changeScene(int scenenr) {
 		Scenes.PREVIOUS_REGULAR = Scenes.CURRENT_REGULAR;
 		Scenes.CURRENT_REGULAR = scenenr;
+		
+		getCurrentScene().update();
+		getCurrentScene().press();
 	}
 
 	public Scene getCurrentScene() {
@@ -79,27 +83,34 @@ public class SceneHandler implements ISceneManipulation{
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
 		
-		String focus = null;
+		String focus1 = null;
+		String focus2 = null;
+		UIObject topbar = getCurrentScene().getTopbar();
 		
 		/*
 		 * EXIT MODAL
 		 */
 		if (features.isExitModalVisible()) {
-			features.pushBackgroundColor(new ColorBytes(0x00, 0x00, 0x00, 0x33));
-			features.setBackgroundColor(ctx);
 
-			focus = exitModal.getName();
+			focus1 = exitModal.getName();
+			focus2 = focus1;
 			exitModal.layout(ctx);
 			getCurrentScene().press();
 
-			features.popBackgroundColor();
 		} else {
-			focus = getCurrentScene().getUIC().getFocus();
+			focus1 = getCurrentScene().getUIC().getFocus();
+			focus2 = topbar.getName();
 		}
 
-		Nuklear.nk_window_set_focus(ctx, focus);
+		Nuklear.nk_window_set_focus(ctx, focus1);
 		
 		getCurrentScene().render(ctx, renderer, window);
+
+		Nuklear.nk_window_set_focus(ctx, focus2 );
+		if(topbar != null) {
+			topbar.layout(ctx);
+		}
+		
 	}
 
 	@Override

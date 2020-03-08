@@ -4,6 +4,7 @@ import org.lwjgl.nuklear.NkContext;
 
 import elem.objects.Camera;
 import elem.ui.UICollector;
+import elem.ui.UIObject;
 import engine.graphics.Renderer;
 import scenes.adt.Scene;
 import scenes.adt.SceneGlobalFeatures;
@@ -13,6 +14,10 @@ public class GameScene extends Scene{
 	public GameScene() {
 		super(null, null, "");
 		// TODO Auto-generated constructor stub
+	}
+
+	public void createGame(int gameType) {
+		
 	}
 
 	@Override
@@ -64,26 +69,19 @@ public class GameScene extends Scene{
 	}
 
 	@Override
-	public void renderUIBackground(NkContext ctx) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void init() {
+	public void update() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
-			int height) {
+	protected void init(NkContext ctx, int x, int y, int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -92,6 +90,18 @@ public class GameScene extends Scene{
 	public void destroy() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void press() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public UIObject getTopbar() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

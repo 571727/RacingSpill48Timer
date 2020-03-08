@@ -4,6 +4,7 @@ import org.lwjgl.nuklear.NkContext;
 
 import audio.AudioHandler;
 import elem.ui.UICollector;
+import elem.ui.UIObject;
 import engine.graphics.Renderer;
 import file_manipulation.ControlsSettings;
 import file_manipulation.RegularSettings;
@@ -16,26 +17,14 @@ public class OptionsScene extends Scene {
 		super(features, null, "options");
 	}
 
-	public void init(RegularSettings settings, ControlsSettings controlsSettings, AudioHandler audio) {
-		
-	}
+	public void initOptions(RegularSettings settings, ControlsSettings controlsSettings, AudioHandler audio) {
 
-	@Override
-	public void tick(double delta) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public void determineUIWindowFocusByMouse(double x, double y) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -63,6 +52,12 @@ public class OptionsScene extends Scene {
 	}
 
 	@Override
+	public void tick(double delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
 		// TODO Auto-generated method stub
 		
@@ -75,20 +70,19 @@ public class OptionsScene extends Scene {
 	}
 
 	@Override
-	public void renderUIBackground(NkContext ctx) {
+	public void determineUIWindowFocusByMouse(double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void init() {
+	public void update() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void initNuklearVisual(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
-			int height) {
+	protected void init(NkContext ctx, int x, int y, int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -104,5 +98,12 @@ public class OptionsScene extends Scene {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public UIObject getTopbar() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

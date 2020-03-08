@@ -6,14 +6,14 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 
-public class TopBar {
+public class TopbarInteraction {
 	private double x, y;
 	private boolean held;
 	private long window;
 	private int height;
 	private PressAction pressedWithin;
 
-	public TopBar(long window, int height, PressAction pressAction) {
+	public TopbarInteraction(long window, int height, PressAction pressAction) {
 		this.window = window;
 		this.height = height;
 		this.pressedWithin = pressAction;

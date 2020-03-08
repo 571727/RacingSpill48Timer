@@ -3,6 +3,7 @@ package scenes.adt;
 import java.util.Stack;
 
 import org.lwjgl.nuklear.NkContext;
+import org.lwjgl.nuklear.Nuklear;
 
 import elem.Action;
 import elem.ColorBytes;
@@ -18,12 +19,19 @@ public class SceneGlobalFeatures {
 		ctx.style().window().fixed_background().data().color().set(bg.r(), bg.g(), bg.b(), bg.a());
 	}
 	
+	public void pushBackgroundColor(NkContext ctx, ColorBytes color) {
+		pushBackgroundColor(color);
+		Nuklear.nk_style_push_color(ctx, ctx.style().window().fixed_background().data().color(),
+				getBackgroundColorCache().peek().create());
+	}
+
 	public void pushBackgroundColor(ColorBytes color) {
 		backgroundColorCache.push(color);
 	}
 
-	public void popBackgroundColor() {
+	public void popBackgroundColor(NkContext ctx) {
 		backgroundColorCache.pop();
+		Nuklear.nk_style_pop_color(ctx);
 	}
 
 	public boolean isExitModalVisible() {
@@ -42,5 +50,10 @@ public class SceneGlobalFeatures {
 	public void setPressExitModal(Action pressExitModal) {
 		this.pressExitModal = pressExitModal;
 	}
+
+	public Stack<ColorBytes> getBackgroundColorCache() {
+		return backgroundColorCache;
+	}
+
 	
 }

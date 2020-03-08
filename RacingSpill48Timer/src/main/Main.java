@@ -16,6 +16,9 @@ public class Main {
 	public static final String STANDARD_REGEX = "#";
 	public static final String END_ALL_CLIENT_STRING = "!ENDALL!";
 	public static final String GAME_VERSION = "2.0_ALPHA";
+	public static final String[] GAME_MODES = {
+			"Gladiator", "Sequence", "Timeattack", "Golf", "Pointrush", "Speedrush", "Moneyrush"
+	};
 	public static final int CHECKSUM = new GameHandler().hashCode();
 
 	public static long DISCONNECTED_ID = -1;

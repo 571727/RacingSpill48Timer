@@ -1,6 +1,8 @@
 package scenes.adt;
 
 public interface SceneChangeAction {
-
-	public void run(int scenenr);
+	/**
+	 * @return Scene it changes into
+	 */
+	public Scene run(int scenenr);
 }
