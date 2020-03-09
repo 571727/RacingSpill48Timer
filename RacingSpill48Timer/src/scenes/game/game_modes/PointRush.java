@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import elem.AI;
 import player_local.PlayerInfo;
 
-public class PointRush extends GameMode {
+public class PointRush extends GameModeLegacy {
 
 	private int currentRace;
 	private int pointGoal;

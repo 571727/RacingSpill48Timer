@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import scenes.game.game_modes.GameMode;
+import scenes.game.game_modes.GameModeLegacy;
 import main.Main;
 import scenes.game.player_local.Car;
 import scenes.game.player_local.PlayerInfo;
@@ -45,7 +45,7 @@ public class ServerInfo implements Runnable {
 	private String[] places;
 	private int[] upgradePrices;
 	private Random r;
-	private GameMode gm;
+	private GameModeLegacy gm;
 	private byte nextID;
 	private boolean raceLobbyStringFinalized;
 	private List<PlayerInfo> sortedPlayers;

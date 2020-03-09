@@ -11,6 +11,7 @@ import static org.lwjgl.nuklear.Nuklear.nk_group_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_group_end;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 import static org.lwjgl.nuklear.Nuklear.nk_rect;
+import static scenes.game.multiplayer.MultiplayerType.*;
 
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
@@ -30,6 +31,7 @@ import scenes.adt.Scene;
 import scenes.Scenes;
 import scenes.adt.SceneGlobalFeatures;
 import scenes.game.GameScene;
+
 
 public class SingleplayerScene extends Scene {
 
@@ -56,11 +58,11 @@ public class SingleplayerScene extends Scene {
 		
 		btns = new UIButton[Main.GAME_MODES.length];
 		for(int i = 0; i < btns.length; i++) {
-			btns[i] = new UIButton("Play \"" + Main.GAME_MODES[i] + " mode\"");
+			btns[i] = new UIButton("Play \"" + Main.GAME_MODES[i] + "\" mode");
 			int gameType = i;
 			btns[i].setPressedAction(() -> {
 				GameScene game = (GameScene) sceneChange.run(Scenes.GAME);
-				game.createGame(gameType);
+//				game.createGame(gameType, SINGLEPLAYER);
 			});
 			add(sceneName, btns[i]);
 		}

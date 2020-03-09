@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import elem.AI;
 import player_local.PlayerInfo;
 
-public class GolfLike extends GameMode {
+public class GolfLike extends GameModeLegacy {
 
 	private int races;
 	private int totalRaces;
