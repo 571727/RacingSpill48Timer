@@ -86,7 +86,11 @@ public class MultiplayerScene extends Scene {
 		add(sceneName, createLANBtn);
 		add(sceneName, gobackBtn);
 		add(sceneName, refreshBtn);
+		
+		// FIXME fake TEST LOBBYS
 
+		
+		
 		update();
 	}
 

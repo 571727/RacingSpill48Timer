@@ -15,6 +15,7 @@ import static org.lwjgl.nuklear.Nuklear.nk_rect;
 import static org.lwjgl.nuklear.Nuklear.nk_style_pop_vec2;
 import static org.lwjgl.nuklear.Nuklear.nk_style_push_vec2;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkColor;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkImage;
@@ -92,6 +93,14 @@ public class MainMenuScene extends Scene {
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
+		
+		if(action == 0) {
+//			upstroke
+			if(keycode == GLFW.GLFW_KEY_UP) {
+				singleplayerBtn.hover();
+			}
+		}
+		
 		return false;
 	}
 

@@ -4,15 +4,46 @@ import java.util.HashMap;
 
 public class UICollector {
 
+	// Holder alle ui elementer i ett vindu
 	private HashMap<String, UIWindowObjects> mapUI = new HashMap<String, UIWindowObjects>();
-	private String focus = "";
+	private String windowFocus = "";
 
+	// Holder en referanse til en knapp per vindu. Kan være null. Send inn actions
+	// til knappene når de addes inn i systemet, slik at de kan selv si ifra om de
+	// er hovered av mus eller ikke.
+	private HashMap<String, UIButton> hoveredButton = new HashMap<String, UIButton>();
+
+	/**
+	 * Adds object to a focusable window if the object does not already exist.
+	 */
 	public void add(String listname, UIObject o) {
 		if (!mapUI.containsKey(listname)) {
 			mapUI.put(listname, new UIWindowObjects());
 		}
 
 		mapUI.get(listname).add(o);
+	}
+
+	/**
+	 * Adds object like normal, but since it is a button it designates extra actions
+	 * for changes in hoverstate
+	 */
+	public void add(String listname, UIButton btn) {
+		add(listname, (UIObject) btn);
+		btn.setChangeHoverButtonAction(() -> changeHoveredButton(listname, btn));
+	}
+	
+	public void changeHoveredButton(String listname, UIButton newButton) {
+		if (hoveredButton.containsKey(listname)) {
+			UIButton lastButton = hoveredButton.get(listname);
+			
+			//Run actions
+			lastButton.unhover();
+			
+			hoveredButton.remove(listname);
+		}
+		
+		hoveredButton.put(listname, newButton);
 	}
 
 	public void remove(String listname, UIObject o) {
@@ -34,9 +65,13 @@ public class UICollector {
 			return uios.getFirst();
 		return null;
 	}
+	
+	public UIButton getHoveredButton(String listname) {
+		return hoveredButton.get(listname);
+	}
 
 	public boolean isFocus(String listname) {
-		return focus.equals(listname);
+		return windowFocus.equals(listname);
 	}
 
 	public int size(String listname) {
@@ -53,15 +88,15 @@ public class UICollector {
 	public void setFocus(String listname) {
 		UIWindowObjects uios = mapUI.get(listname);
 		if (uios != null)
-			focus = listname;
+			windowFocus = listname;
 	}
 
 	public void forceFocus(String listname) {
-		focus = listname;
+		windowFocus = listname;
 	}
 
 	public String getFocus() {
-		return focus;
+		return windowFocus;
 	}
 
 }

@@ -22,6 +22,7 @@ import org.lwjgl.system.MemoryStack;
 import elem.interactions.TopbarInteraction;
 import elem.objects.Camera;
 import elem.objects.GameObject;
+import elem.ui.UIButton;
 import elem.ui.UICollector;
 import elem.ui.UIObject;
 import engine.io.Window;
@@ -105,6 +106,10 @@ public abstract class Scene implements ISceneManipulation {
 
 	public void add(String listname, UIObject uio) {
 		uic.add(listname, uio);
+	}
+	
+	public void add(String listname, UIButton btn) {
+		uic.add(listname, btn);
 	}
 
 	public void removeAll() {

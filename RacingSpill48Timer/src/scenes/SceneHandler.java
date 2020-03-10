@@ -2,10 +2,12 @@ package scenes;
 
 import java.util.ArrayList;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.Nuklear;
 
 import elem.ColorBytes;
+import elem.ui.UICollector;
 import elem.ui.UIExitModal;
 import elem.ui.UIObject;
 import engine.graphics.Renderer;
@@ -14,11 +16,12 @@ import scenes.adt.Scene;
 import scenes.adt.SceneChangeAction;
 import scenes.adt.SceneGlobalFeatures;
 
-public class SceneHandler implements ISceneManipulation{
+public class SceneHandler implements ISceneManipulation {
 
 	private ArrayList<Scene> scenes;
 	private SceneGlobalFeatures features;
 	private UIExitModal exitModal;
+	private UICollector uic;
 
 	public SceneHandler() {
 		scenes = new ArrayList<Scene>();
@@ -28,7 +31,7 @@ public class SceneHandler implements ISceneManipulation{
 		for (Scene scene : scenes) {
 			this.scenes.add(scene);
 		}
-		
+
 		this.features = features;
 		this.exitModal = exitModal;
 	}
@@ -55,7 +58,7 @@ public class SceneHandler implements ISceneManipulation{
 	public void changeScene(int scenenr) {
 		Scenes.PREVIOUS_REGULAR = Scenes.CURRENT_REGULAR;
 		Scenes.CURRENT_REGULAR = scenenr;
-		
+
 		getCurrentScene().update();
 		getCurrentScene().press();
 	}
@@ -67,26 +70,26 @@ public class SceneHandler implements ISceneManipulation{
 	public Scene getLastScene() {
 		return scenes.get(Scenes.PREVIOUS_REGULAR);
 	}
-	
+
 	/*
-	 * ===========	SCENE MANIPULATION	===========
+	 * =========== SCENE MANIPULATION ===========
 	 */
-	
+
 	@Override
 	public void tick(double delta) {
 		getCurrentScene().tick(delta);
 	}
-	
+
 	/**
 	 * TODO set global theme here... If it has to be done each cycle
 	 */
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
-		
+
 		String focus1 = null;
 		String focus2 = null;
 		UIObject topbar = getCurrentScene().getTopbar();
-		
+
 		/*
 		 * EXIT MODAL
 		 */
@@ -103,19 +106,30 @@ public class SceneHandler implements ISceneManipulation{
 		}
 
 		Nuklear.nk_window_set_focus(ctx, focus1);
-		
+
 		getCurrentScene().render(ctx, renderer, window);
 
-		Nuklear.nk_window_set_focus(ctx, focus2 );
-		if(topbar != null) {
+		Nuklear.nk_window_set_focus(ctx, focus2);
+		if (topbar != null) {
 			topbar.layout(ctx);
 		}
-		
+
 	}
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
-		return getCurrentScene().keyInput(keycode, action);
+		if (features.isExitModalVisible()) {
+			
+			if (keycode == GLFW.GLFW_KEY_UP || keycode == GLFW.GLFW_KEY_LEFT)
+				
+			else if (keycode == GLFW.GLFW_KEY_DOWN || keycode == GLFW.GLFW_KEY_RIGHT)
+				
+			else if (keycode == GLFW.GLFW_KEY_ENTER)
+			
+			return false;
+		} else {
+			return getCurrentScene().keyInput(keycode, action);
+		}
 	}
 
 	@Override
@@ -138,6 +152,5 @@ public class SceneHandler implements ISceneManipulation{
 	public void mouseEnterWindowInput(boolean entered) {
 		getCurrentScene().mouseEnterWindowInput(entered);
 	}
-
 
 }
