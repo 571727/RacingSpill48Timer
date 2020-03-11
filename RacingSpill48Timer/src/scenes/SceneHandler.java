@@ -21,7 +21,6 @@ public class SceneHandler implements ISceneManipulation {
 	private ArrayList<Scene> scenes;
 	private SceneGlobalFeatures features;
 	private UIExitModal exitModal;
-	private UICollector uic;
 
 	public SceneHandler() {
 		scenes = new ArrayList<Scene>();
@@ -101,7 +100,7 @@ public class SceneHandler implements ISceneManipulation {
 			getCurrentScene().press();
 
 		} else {
-			focus1 = getCurrentScene().getUIC().getFocus();
+			focus1 = features.getUIC().getFocus();
 			focus2 = topbar.getName();
 		}
 
@@ -118,18 +117,29 @@ public class SceneHandler implements ISceneManipulation {
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
+		boolean res = false;
+		
 		if (features.isExitModalVisible()) {
 			
 			if (keycode == GLFW.GLFW_KEY_UP || keycode == GLFW.GLFW_KEY_LEFT)
-				
+				exitModal.getOkBtn().hover();
 			else if (keycode == GLFW.GLFW_KEY_DOWN || keycode == GLFW.GLFW_KEY_RIGHT)
-				
-			else if (keycode == GLFW.GLFW_KEY_ENTER)
+				exitModal.getCancelBtn().hover();
+			else if (keycode == GLFW.GLFW_KEY_ENTER) {
+				features.pressFindHoveredButtonUIC(exitModal.getName());
+				features.clearHoveredButtonUIC(exitModal.getName());
+			}
 			
-			return false;
 		} else {
-			return getCurrentScene().keyInput(keycode, action);
+			res = getCurrentScene().keyInput(keycode, action);
 		}
+		
+		//Upstroke
+		if (action == 0) {
+			features.releaseHoveredButtonUIC();
+		}
+		
+		return res;
 	}
 
 	@Override

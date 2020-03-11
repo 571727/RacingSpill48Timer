@@ -30,6 +30,7 @@ import elem.interactions.RegularTopbar;
 import elem.objects.GameObject;
 import engine.graphics.Renderer;
 import engine.io.Window;
+import elem.ui.ButtonNavigation;
 import elem.ui.UIButton;
 import elem.ui.UICollector;
 import elem.ui.UIExitModal;
@@ -84,6 +85,11 @@ public class MainMenuScene extends Scene {
 		add(sceneName, optionsBtn);
 		add(sceneName, exitBtn);
 		
+		singleplayerBtn.setNavigations(null, null, null, multiplayerBtn);
+		multiplayerBtn.setNavigations(null, null, singleplayerBtn, optionsBtn);
+		optionsBtn.setNavigations(null, null, multiplayerBtn, exitBtn);
+		exitBtn.setNavigations(null, null, optionsBtn, null);
+		
 		update();
 	}
 
@@ -94,11 +100,13 @@ public class MainMenuScene extends Scene {
 	@Override
 	public boolean keyInput(int keycode, int action) {
 		
-		if(action == 0) {
-//			upstroke
-			if(keycode == GLFW.GLFW_KEY_UP) {
-				singleplayerBtn.hover();
-			}
+		if(action == 1) {
+			// Downstroke for quicker input
+			UIButton hoveredButton = features.getUIC().getHoveredButton(sceneName); 
+			if(hoveredButton == null)
+				hoveredButton = singleplayerBtn;
+			
+			generalHoveredButtonNavigation(hoveredButton, keycode);
 		}
 		
 		return false;
@@ -153,7 +161,7 @@ public class MainMenuScene extends Scene {
 //			renderer.renderMesh(go, camera);
 //		}
 		// Begin the window
-		renderUILayout(ctx, uic);
+		renderUILayout(ctx, features.getUIC());
 		renderUIBackground(ctx);
 	}
 
@@ -205,10 +213,10 @@ public class MainMenuScene extends Scene {
 	public void determineUIWindowFocusByMouse(double x, double y) {
 		if (y > topbar.getHeight()) {
 			// Give focus to the menu.
-			uic.setFocus(sceneName);
+			features.getUIC().setFocus(sceneName);
 		} else {
 			// Give focus to the topbar.
-			uic.setFocus(topbar.getName());
+			features.getUIC().setFocus(topbar.getName());
 		}
 	}
 
@@ -232,7 +240,7 @@ public class MainMenuScene extends Scene {
 		nk_begin(ctx, sceneName, windowRect, windowOptions);
 		nk_end(ctx);
 
-		uic.forceFocus(sceneName);
+		features.getUIC().forceFocus(sceneName);
 	}
 
 	@Override

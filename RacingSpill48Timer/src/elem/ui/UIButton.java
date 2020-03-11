@@ -14,8 +14,9 @@ public class UIButton extends UIObject {
 
 	private String title;
 	private Action pressedAction, hoveredAction, changeHoverButtonAction;
-	private boolean mouseHover, keyHover, pressed, hasRunHover;
+	private boolean mouseHover, keyHover, pressed, hasRunHover, disabled; // TODO impl disabled look & func on button
 	private NkColor normal, active, hover;
+	private UIButton left, right, above, below;
 
 	public UIButton(String title) {
 		this.title = title;
@@ -124,6 +125,37 @@ public class UIButton extends UIObject {
 
 	public void press() {
 		pressed = true;
+	}
+
+	public void setNavigations(UIButton left, UIButton right, UIButton above, UIButton below) {
+		this.left = left;
+		this.right = right;
+		this.above = above;
+		this.below = below;
+	}
+
+	public void hoverNavigate(ButtonNavigation nav) {
+		switch (nav) {
+		case LEFT:
+			navigate(left);
+			break;
+		case RIGHT:
+			navigate(right);
+			break;
+		case ABOVE:
+			navigate(above);
+			break;
+		case BELOW:
+			navigate(below);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void navigate(UIButton btn) {
+		if(btn != null)
+			btn.hover();
 	}
 
 }

@@ -13,6 +13,7 @@ import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 import static org.lwjgl.nuklear.Nuklear.nk_rect;
 import static scenes.game.multiplayer.MultiplayerType.*;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.nuklear.NkVec2;
@@ -20,6 +21,7 @@ import org.lwjgl.nuklear.Nuklear;
 
 import elem.ColorBytes;
 import elem.interactions.RegularTopbar;
+import elem.ui.ButtonNavigation;
 import elem.ui.UIButton;
 import elem.ui.UICollector;
 import elem.ui.UINkImage;
@@ -56,6 +58,8 @@ public class SingleplayerScene extends Scene {
 		});
 		add(sceneName, gobackBtn);
 		
+		//FIXME Moneyrush button is missing
+		
 		btns = new UIButton[Main.GAME_MODES.length];
 		for(int i = 0; i < btns.length; i++) {
 			btns[i] = new UIButton("Play \"" + Main.GAME_MODES[i] + "\" mode");
@@ -65,6 +69,25 @@ public class SingleplayerScene extends Scene {
 //				game.createGame(gameType, SINGLEPLAYER);
 			});
 			add(sceneName, btns[i]);
+			
+		}
+		
+		//Navigation
+		gobackBtn.setNavigations(null, null, null, btns[0]);
+
+		for(int i = 0; i < btns.length; i++) {
+			UIButton aboveBtn = null;
+			UIButton belowBtn = null;
+			
+			if(i > 0)
+				aboveBtn = btns[i - 1];
+			else
+				aboveBtn = gobackBtn;
+			
+			if (i + 1 < btns.length)
+				belowBtn = btns[i + 1];
+			
+			btns[i].setNavigations(null, null, aboveBtn, belowBtn);
 		}
 		
 		update();
@@ -78,14 +101,27 @@ public class SingleplayerScene extends Scene {
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
-		// TODO Auto-generated method stub
+		if(action == 1) {
+			// Downstroke for quicker input
+			UIButton hoveredButton = features.getUIC().getHoveredButton(sceneName); 
+			if(hoveredButton == null)
+				hoveredButton = gobackBtn;
+			
+			generalHoveredButtonNavigation(hoveredButton, keycode);
+		}
+		
 		return false;
 	}
 
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
-		// TODO Auto-generated method stub
-
+		if (y > topbar.getHeight()) {
+			// Give focus to the menu.
+			features.getUIC().setFocus(sceneName);
+		} else {
+			// Give focus to the topbar.
+			features.getUIC().setFocus(topbar.getName());
+		}
 	}
 
 	@Override
@@ -124,7 +160,7 @@ public class SingleplayerScene extends Scene {
 
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
-		renderUILayout(ctx, uic);
+		renderUILayout(ctx, features.getUIC());
 		renderUIBackground(ctx);
 	}
 
@@ -190,7 +226,7 @@ public class SingleplayerScene extends Scene {
 		nk_begin(ctx, sceneName, windowRect, windowOptions);
 		nk_end(ctx);
 
-		uic.forceFocus(sceneName);
+		features.getUIC().forceFocus(sceneName);
 	}
 
 	@Override

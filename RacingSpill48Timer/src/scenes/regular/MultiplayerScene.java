@@ -87,9 +87,15 @@ public class MultiplayerScene extends Scene {
 		add(sceneName, gobackBtn);
 		add(sceneName, refreshBtn);
 		
-		// FIXME fake TEST LOBBYS
-
+		joinOnlineBtn.setNavigations(null, createOnlineBtn, null, joinLANBtn);
+		createOnlineBtn.setNavigations(joinOnlineBtn, null, null, createLANBtn);
+		joinLANBtn.setNavigations(null, createLANBtn, joinOnlineBtn, gobackBtn);
+		createLANBtn.setNavigations(joinLANBtn, null, createOnlineBtn, refreshBtn);
+		gobackBtn.setNavigations(null, refreshBtn, joinLANBtn, null);
+		refreshBtn.setNavigations(gobackBtn, null, createLANBtn, null);
 		
+		
+		// TODO fake TEST LOBBYS
 		
 		update();
 	}
@@ -102,14 +108,27 @@ public class MultiplayerScene extends Scene {
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
-		// TODO Auto-generated method stub
+		if(action == 1) {
+			// Downstroke for quicker input
+			UIButton hoveredButton = features.getUIC().getHoveredButton(sceneName); 
+			if(hoveredButton == null)
+				hoveredButton = joinOnlineBtn;
+			
+			generalHoveredButtonNavigation(hoveredButton, keycode);
+		}
+		
 		return false;
 	}
 
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
-		// TODO Auto-generated method stub
-
+		if (y > topbar.getHeight()) {
+			// Give focus to the menu.
+			features.getUIC().setFocus(sceneName);
+		} else {
+			// Give focus to the topbar.
+			features.getUIC().setFocus(topbar.getName());
+		}
 	}
 
 	@Override
@@ -148,7 +167,7 @@ public class MultiplayerScene extends Scene {
 
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
-		renderUILayout(ctx, uic);
+		renderUILayout(ctx, features.getUIC());
 		renderUIBackground(ctx);
 	}
 
@@ -241,7 +260,7 @@ public class MultiplayerScene extends Scene {
 		nk_begin(ctx, sceneName, windowRect, windowOptions);
 		nk_end(ctx);
 
-		uic.forceFocus(sceneName);
+		features.getUIC().forceFocus(sceneName);
 	}
 
 	@Override

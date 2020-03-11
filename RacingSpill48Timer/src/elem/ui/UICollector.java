@@ -32,18 +32,19 @@ public class UICollector {
 		add(listname, (UIObject) btn);
 		btn.setChangeHoverButtonAction(() -> changeHoveredButton(listname, btn));
 	}
-	
+
 	public void changeHoveredButton(String listname, UIButton newButton) {
 		if (hoveredButton.containsKey(listname)) {
 			UIButton lastButton = hoveredButton.get(listname);
-			
-			//Run actions
+
+			// Run actions
 			lastButton.unhover();
-			
+
 			hoveredButton.remove(listname);
 		}
 		
-		hoveredButton.put(listname, newButton);
+		if (newButton != null)
+			hoveredButton.put(listname, newButton);
 	}
 
 	public void remove(String listname, UIObject o) {
@@ -65,7 +66,7 @@ public class UICollector {
 			return uios.getFirst();
 		return null;
 	}
-	
+
 	public UIButton getHoveredButton(String listname) {
 		return hoveredButton.get(listname);
 	}

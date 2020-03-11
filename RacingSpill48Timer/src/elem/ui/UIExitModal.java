@@ -52,6 +52,9 @@ public class UIExitModal extends UIObject {
 
 		okBtn.setPressedAction(okAction);
 		cancelBtn.setPressedAction(cancelAction);
+		
+		features.addUIC(getName(), okBtn);
+		features.addUIC(getName(), cancelBtn);
 
 	}
 
@@ -142,6 +145,22 @@ public class UIExitModal extends UIObject {
 
 	public void setShowExitModal(boolean showExitModal) {
 		this.showExitModal = showExitModal;
+	}
+
+	public UIButton getOkBtn() {
+		return okBtn;
+	}
+
+	public void setOkBtn(UIButton okBtn) {
+		this.okBtn = okBtn;
+	}
+
+	public UIButton getCancelBtn() {
+		return cancelBtn;
+	}
+
+	public void setCancelBtn(UIButton cancelBtn) {
+		this.cancelBtn = cancelBtn;
 	}
 
 }
