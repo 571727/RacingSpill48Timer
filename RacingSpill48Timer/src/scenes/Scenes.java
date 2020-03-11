@@ -4,7 +4,7 @@ public class Scenes {
 	/*
 	 * REGULAR indexes
 	 */
-	public static final int MAIN_MENU = 0, SINGLEPLAYER = 1, MULTIPLAYER = 2, OPTIONS = 3, GAME = 4, AMOUNT_REGULAR = 5,
+	public static final int MAIN_MENU = 0, MULTIPLAYER = 1, OPTIONS = 2, GAME = 3, AMOUNT_REGULAR = 4,
 			/*
 			 * INGAME indexes
 			 */

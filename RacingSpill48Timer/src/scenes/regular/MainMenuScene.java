@@ -39,6 +39,8 @@ import elem.ui.UIObject;
 import scenes.adt.Scene;
 import scenes.Scenes;
 import scenes.adt.SceneGlobalFeatures;
+import scenes.game.GameScene;
+import scenes.game.multiplayer.MultiplayerType;
 
 /**
  * 
@@ -66,7 +68,9 @@ public class MainMenuScene extends Scene {
 		exitBtn = new UIButton("Exit");
 
 		singleplayerBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.SINGLEPLAYER);
+			GameScene game = (GameScene) sceneChange.run(Scenes.GAME);
+			game.createGame(MultiplayerType.SINGLEPLAYER);
+
 		});
 		multiplayerBtn.setPressedAction(() -> {
 			sceneChange.run(Scenes.MULTIPLAYER);

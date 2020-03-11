@@ -101,26 +101,28 @@ public class SceneHandler implements ISceneManipulation {
 
 		} else {
 			focus1 = features.getUIC().getFocus();
-			focus2 = topbar.getName();
+			if (topbar != null)
+				focus2 = topbar.getName();
 		}
 
 		Nuklear.nk_window_set_focus(ctx, focus1);
 
 		getCurrentScene().render(ctx, renderer, window);
 
-		Nuklear.nk_window_set_focus(ctx, focus2);
-		if (topbar != null) {
-			topbar.layout(ctx);
+		if (focus2 != null) {
+			Nuklear.nk_window_set_focus(ctx, focus2);
+			if (topbar != null) {
+				topbar.layout(ctx);
+			}
 		}
-
 	}
 
 	@Override
 	public boolean keyInput(int keycode, int action) {
 		boolean res = false;
-		
+
 		if (features.isExitModalVisible()) {
-			
+
 			if (keycode == GLFW.GLFW_KEY_UP || keycode == GLFW.GLFW_KEY_LEFT)
 				exitModal.getOkBtn().hover();
 			else if (keycode == GLFW.GLFW_KEY_DOWN || keycode == GLFW.GLFW_KEY_RIGHT)
@@ -129,16 +131,16 @@ public class SceneHandler implements ISceneManipulation {
 				features.pressFindHoveredButtonUIC(exitModal.getName());
 				features.clearHoveredButtonUIC(exitModal.getName());
 			}
-			
+
 		} else {
 			res = getCurrentScene().keyInput(keycode, action);
 		}
-		
-		//Upstroke
+
+		// Upstroke
 		if (action == 0) {
 			features.releaseHoveredButtonUIC();
 		}
-		
+
 		return res;
 	}
 

@@ -98,7 +98,6 @@ public class GameHandler {
 
 		Scene[] scenes = new Scene[Scenes.AMOUNT_REGULAR];
 		scenes[Scenes.MAIN_MENU] = new MainMenuScene(features, topbar, ui.getNkContext(), window.getWindow());
-		scenes[Scenes.SINGLEPLAYER] = new SingleplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
 		scenes[Scenes.MULTIPLAYER] = new MultiplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
 		scenes[Scenes.OPTIONS] = new OptionsScene(features);
 		scenes[Scenes.GAME] = new GameScene();

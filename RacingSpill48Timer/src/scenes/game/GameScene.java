@@ -19,7 +19,7 @@ public class GameScene extends Scene {
 	/**
 	 * @param multiplayerStatusType
 	 */
-	public void createGame(GameMode gamemode, MultiplayerType type) {
+	public void createGame(MultiplayerType type) {
 
 		switch (type) {
 		case SINGLEPLAYER:
