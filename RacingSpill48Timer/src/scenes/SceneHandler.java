@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.Nuklear;
 
+import elem.Action;
 import elem.ColorBytes;
 import elem.ui.UICollector;
 import elem.ui.UIExitModal;
@@ -14,19 +15,19 @@ import engine.graphics.Renderer;
 import scenes.adt.ISceneManipulation;
 import scenes.adt.Scene;
 import scenes.adt.SceneChangeAction;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.adt.GlobalFeatures;
 
 public class SceneHandler implements ISceneManipulation {
 
 	private ArrayList<Scene> scenes;
-	private SceneGlobalFeatures features;
+	private GlobalFeatures features;
 	private UIExitModal exitModal;
 
 	public SceneHandler() {
 		scenes = new ArrayList<Scene>();
 	}
 
-	public void init(Scene[] scenes, SceneGlobalFeatures features, UIExitModal exitModal) {
+	public void init(Scene[] scenes, GlobalFeatures features, UIExitModal exitModal) {
 		for (Scene scene : scenes) {
 			this.scenes.add(scene);
 		}
@@ -45,21 +46,32 @@ public class SceneHandler implements ISceneManipulation {
 	}
 
 	public void changeSceneAction() {
-		SceneChangeAction sceneChange = (scenenr) -> {
+		Action sceneUpdate = () -> {
+			getCurrentScene().update();
+			getCurrentScene().press();
+		};
+
+		SceneChangeAction sceneChange = (scenenr, update) -> {
 			changeScene(scenenr);
+			
+			if(update)
+				sceneUpdate.run();
+			
 			return getCurrentScene();
 		};
+		
+		
 		for (Scene scene : scenes) {
 			scene.setSceneChangeAction(sceneChange);
+			scene.setSceneUpdateAction(sceneUpdate);
 		}
+		
+		sceneChange.run(Scenes.MAIN_MENU, true);
 	}
 
-	public void changeScene(int scenenr) {
+	private void changeScene(int scenenr) {
 		Scenes.PREVIOUS_REGULAR = Scenes.CURRENT_REGULAR;
 		Scenes.CURRENT_REGULAR = scenenr;
-
-		getCurrentScene().update();
-		getCurrentScene().press();
 	}
 
 	public Scene getCurrentScene() {

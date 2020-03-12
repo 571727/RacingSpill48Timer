@@ -10,7 +10,7 @@ import static org.lwjgl.nuklear.Nuklear.nk_group_begin;
 import static org.lwjgl.nuklear.Nuklear.nk_group_end;
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 import static org.lwjgl.nuklear.Nuklear.nk_rect;
-import static scenes.game.multiplayer.MultiplayerType.SINGLEPLAYER;
+import static scenes.game.multiplayer.GameType.SINGLEPLAYER;
 
 import java.util.ArrayList;
 
@@ -31,8 +31,9 @@ import engine.io.Window;
 import main.Main;
 import scenes.adt.Scene;
 import scenes.Scenes;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.adt.GlobalFeatures;
 import scenes.game.GameScene;
+import scenes.game.multiplayer.GameType;
 
 public class MultiplayerScene extends Scene {
 
@@ -46,38 +47,40 @@ public class MultiplayerScene extends Scene {
 	private NkRect windowRect;
 	private String lobbiesTitle;
 
-	public MultiplayerScene(SceneGlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
+	public MultiplayerScene(GlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
 		super(features, null, "Multiplayer", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
 				Window.CURRENT_HEIGHT - topbar.getHeight());
 
 		this.topbar = topbar;
-		lobbiesTitle = "Lobbies";
+		lobbiesTitle = features.getLobbiesText();
 		lobbiesBtns = new ArrayList<UIButton>();
 
-		joinOnlineBtn = new UIButton("Join selected lobby");
-		createOnlineBtn = new UIButton("Create online lobby");
-		joinLANBtn = new UIButton("Join lobby via IP");
-		createLANBtn = new UIButton("Create lobby on the LAN");
-		gobackBtn = new UIButton("Go back");
-		refreshBtn = new UIButton("Refresh");
+		joinOnlineBtn = new UIButton(features.getJoinOnlineText());
+		createOnlineBtn = new UIButton(features.getCreateOnlineText());
+		joinLANBtn = new UIButton(features.getJoinLANText());
+		createLANBtn = new UIButton(features.getCreateLANText());
+		gobackBtn = new UIButton(features.getGobackText());
+		refreshBtn = new UIButton(features.getRefreshText());
 
 		joinOnlineBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU);
+			sceneChange.run(Scenes.MAIN_MENU, true);
 		});
 		createOnlineBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU);
+			sceneChange.run(Scenes.MAIN_MENU, true);
 		});
 		joinLANBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU);
+			sceneChange.run(Scenes.MAIN_MENU, true);
 		});
 		createLANBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU);
+			GameScene game = (GameScene) sceneChange.run(Scenes.GAME, false);
+			game.initGame(GameType.SINGLEPLAYER);
+			sceneUpdate.run();
 		});
 		gobackBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU);
+			sceneChange.run(Scenes.MAIN_MENU, true);
 		});
 		refreshBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU);
+			sceneChange.run(Scenes.MAIN_MENU, true);
 		});
 
 		add(sceneName, joinOnlineBtn);

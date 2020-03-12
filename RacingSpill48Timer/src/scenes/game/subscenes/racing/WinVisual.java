@@ -1,4 +1,4 @@
-package scenes.game.subscenes.racing.visual;
+package scenes.game.subscenes.racing;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

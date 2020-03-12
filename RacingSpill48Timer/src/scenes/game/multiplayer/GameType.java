@@ -1,5 +1,5 @@
 package scenes.game.multiplayer;
 
-public enum MultiplayerType {
+public enum GameType {
 	SINGLEPLAYER, HOSTING, JOINING
 }

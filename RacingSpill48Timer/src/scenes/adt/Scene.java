@@ -20,6 +20,7 @@ import org.lwjgl.nuklear.NkVec2;
 import org.lwjgl.nuklear.Nuklear;
 import org.lwjgl.system.MemoryStack;
 
+import elem.Action;
 import elem.interactions.TopbarInteraction;
 import elem.objects.Camera;
 import elem.objects.GameObject;
@@ -33,26 +34,27 @@ public abstract class Scene implements ISceneManipulation {
 
 	protected Random rand = new Random();
 	protected SceneChangeAction sceneChange;
-	protected SceneGlobalFeatures features;
+	protected Action sceneUpdate;
+	protected GlobalFeatures features;
 	protected Camera camera;
 	protected ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
 	protected String sceneName = "TITLE NOT SET";
 	protected NkImage backgroundImage;
 
-	public Scene(SceneGlobalFeatures features, Camera camera, String sceneName) {
+	public Scene(GlobalFeatures features, Camera camera, String sceneName, NkContext ctx, long window, int x,
+			int y, int width, int height) {
 		this.sceneName = sceneName;
 		this.camera = camera;
 		this.features = features;
-	}
-
-	public Scene(SceneGlobalFeatures features, Camera camera, String sceneName, NkContext ctx, long window, int x,
-			int y, int width, int height) {
-		this(features, camera, sceneName);
 		init(ctx, x, y, width, height);
 	}
 
 	public void setSceneChangeAction(SceneChangeAction sceneChange) {
 		this.sceneChange = sceneChange;
+	}
+	
+	public void setSceneUpdateAction(Action sceneUpdate) {
+		this.sceneUpdate = sceneUpdate;
 	}
 
 	public abstract void renderUILayout(NkContext ctx, UICollector uic);
@@ -137,5 +139,6 @@ public abstract class Scene implements ISceneManipulation {
 		gameObjects.clear();
 		features.clearUIC();
 	}
+
 
 }

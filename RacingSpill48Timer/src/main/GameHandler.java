@@ -17,8 +17,11 @@ import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
 
 import audio.AudioHandler;
+import elem.interactions.LobbyTopbar;
+import elem.interactions.PressAction;
 import elem.interactions.RegularTopbar;
 import elem.interactions.TopbarInteraction;
+import elem.interactions.TransparentTopbar;
 import elem.ui.UIExitModal;
 import engine.graphics.Renderer;
 import engine.graphics.UIRender;
@@ -30,12 +33,11 @@ import file_manipulation.RegularSettings;
 import scenes.adt.Scene;
 import scenes.SceneHandler;
 import scenes.Scenes;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.adt.GlobalFeatures;
 import scenes.game.GameScene;
 import scenes.regular.MainMenuScene;
 import scenes.regular.MultiplayerScene;
 import scenes.regular.OptionsScene;
-import scenes.regular.SingleplayerScene;
 import steam.SteamMain;
 
 public class GameHandler {
@@ -52,7 +54,7 @@ public class GameHandler {
 
 	private Callback debugProcCallback;
 	private SteamMain steam;
-	private SceneGlobalFeatures features;
+	private GlobalFeatures features;
 
 	public GameHandler() {
 		settings = new RegularSettings();
@@ -88,8 +90,13 @@ public class GameHandler {
 		ui.nkFont();
 
 		// Get created nuklear for stuff
-		RegularTopbar topbar = new RegularTopbar(window.getWindow(), Window.CLIENT_HEIGHT / 18);
-		features = new SceneGlobalFeatures();
+		features = new GlobalFeatures();
+		
+		int topbarHeight = Window.CLIENT_HEIGHT / 18;
+		RegularTopbar topbar = new RegularTopbar(features, window.getWindow(), topbarHeight);
+		LobbyTopbar lobbyTopbar = new LobbyTopbar(features, window.getWindow());
+		TransparentTopbar transparentTopbar = new TransparentTopbar(window.getWindow(), topbarHeight);
+		
 		UIExitModal exitModal = new UIExitModal(features, () -> {
 			glfwSetWindowShouldClose(window.getWindow(), true);
 			Main.CONFIRMED_EXIT = true;
@@ -99,12 +106,11 @@ public class GameHandler {
 		Scene[] scenes = new Scene[Scenes.AMOUNT_REGULAR];
 		scenes[Scenes.MAIN_MENU] = new MainMenuScene(features, topbar, ui.getNkContext(), window.getWindow());
 		scenes[Scenes.MULTIPLAYER] = new MultiplayerScene(features, topbar, ui.getNkContext(), window.getWindow());
-		scenes[Scenes.OPTIONS] = new OptionsScene(features);
-		scenes[Scenes.GAME] = new GameScene();
+		scenes[Scenes.OPTIONS] = new OptionsScene(features, topbar, ui.getNkContext(), window.getWindow());
+		scenes[Scenes.GAME] = new GameScene(features, topbar, lobbyTopbar, transparentTopbar, ui.getNkContext(), window.getWindow());
 
 		sceneHandler.init(scenes, features, exitModal);
 		sceneHandler.changeSceneAction();
-		sceneHandler.changeScene(Scenes.MAIN_MENU);
 
 		((OptionsScene) scenes[Scenes.OPTIONS]).initOptions(settings, input.getKeys(), audio);
 

@@ -25,11 +25,11 @@ import elem.Action;
 import elem.ColorBytes;
 import elem.interactions.PressAction;
 import engine.io.Window;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.adt.GlobalFeatures;
 
 public class UIExitModal extends UIObject {
 
-	private SceneGlobalFeatures features;
+	private GlobalFeatures features;
 	private String windowTitle;
 	private String exitLabel;
 	private UIButton okBtn, cancelBtn;
@@ -37,18 +37,18 @@ public class UIExitModal extends UIObject {
 	private boolean visible;
 	private boolean showExitModal;
 
-	public UIExitModal(SceneGlobalFeatures features, Action okAction, Action cancelAction) {
+	public UIExitModal(GlobalFeatures features, Action okAction, Action cancelAction) {
 		super("ExitModal");
 		windowTitle = getName();
-		exitLabel = "Sure you wanna to exit?";
+		exitLabel = features.getExitLabelText();
 
 		options = NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_NO_INPUT;
 
 		this.features = features;
 
 		// Buttons
-		okBtn = new UIButton("O K,  M F");
-		cancelBtn = new UIButton("C A N C E L  T H A T  S H I T");
+		okBtn = new UIButton(features.getExitOKText());
+		cancelBtn = new UIButton(features.getExitCancelText());
 
 		okBtn.setPressedAction(okAction);
 		cancelBtn.setPressedAction(cancelAction);

@@ -12,13 +12,53 @@ import elem.ui.UIButton;
 import elem.ui.UICollector;
 import elem.ui.UIObject;
 
-public class SceneGlobalFeatures {
+public class GlobalFeatures {
+
+	private String readyText, optionsText, gobackText, singleplayerText, multiplayerText, exitText, exitOKText,
+			exitCancelText, createOnlineText, joinOnlineText, createLANText, joinLANText, refreshText, minimizeText,
+			lobbiesText, exitLabelText;
 
 	private Stack<ColorBytes> backgroundColorCache = new Stack<ColorBytes>();
 	private UICollector uic = new UICollector();
 	private Action pressExitModal;
 	private boolean showExitModal;
 	private boolean pressedHoveredButton;
+
+	public GlobalFeatures() {
+		setLanguage(0);
+	}
+
+	public void setLanguage(int lang) {
+		switch (lang) {
+		case 0:
+			// English
+			readyText = "Ready";
+			optionsText = "Options and controls";
+			gobackText = "Go back";
+			singleplayerText = "Singleplayer";
+			multiplayerText = "Multiplayer";
+			exitText = "Exit";
+			exitOKText = "O K, M F";
+			exitCancelText = "C A N C E L  T H A T  S H I T";
+			createOnlineText = "Create online lobby";
+			createLANText = "Create lobby on the LAN";
+			joinOnlineText = "Join selected lobby";
+			joinLANText = "Join lobby via IP";
+			refreshText = "Refresh";
+			minimizeText = "M I N I M I Z E";
+			lobbiesText = "Lobbies";
+			exitLabelText = "Sure you wanna exit?";
+			break;
+		case 1:
+			// vietnamese
+
+			break;
+		case 2:
+			// german
+
+			break;
+		}
+	}
 
 	public void setBackgroundColor(NkContext ctx) {
 		ColorBytes bg = backgroundColorCache.peek();
@@ -95,6 +135,70 @@ public class SceneGlobalFeatures {
 
 	public UICollector getUIC() {
 		return uic;
+	}
+
+	public String getReadyText() {
+		return readyText;
+	}
+
+	public String getOptionsText() {
+		return optionsText;
+	}
+
+	public String getGobackText() {
+		return gobackText;
+	}
+
+	public String getSingleplayerText() {
+		return singleplayerText;
+	}
+
+	public String getMultiplayerText() {
+		return multiplayerText;
+	}
+
+	public String getExitText() {
+		return exitText;
+	}
+
+	public String getExitOKText() {
+		return exitOKText;
+	}
+
+	public String getExitCancelText() {
+		return exitCancelText;
+	}
+
+	public String getCreateOnlineText() {
+		return createOnlineText;
+	}
+
+	public String getJoinOnlineText() {
+		return joinOnlineText;
+	}
+
+	public String getCreateLANText() {
+		return createLANText;
+	}
+
+	public String getJoinLANText() {
+		return joinLANText;
+	}
+
+	public String getRefreshText() {
+		return refreshText;
+	}
+
+	public String getMinimizeText() {
+		return minimizeText;
+	}
+
+	public String getLobbiesText() {
+		return lobbiesText;
+	}
+
+	public String getExitLabelText() {
+		return exitLabelText;
 	}
 
 }

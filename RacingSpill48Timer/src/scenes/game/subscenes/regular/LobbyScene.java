@@ -5,15 +5,20 @@ import javax.swing.JTextField;
 
 import org.lwjgl.nuklear.NkContext;
 
+import elem.interactions.LobbyTopbar;
 import elem.ui.UICollector;
+import elem.ui.UIObject;
 import engine.graphics.Renderer;
+import engine.io.Window;
 import scenes.game.player_local.Player;
+import scenes.game.subscenes.SubScene;
 import scenes.adt.Scene;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.Scenes;
+import scenes.adt.GlobalFeatures;
 import scenes.game.upgrade.Store;
 import scenes.game.multiplayer.server.ServerHandler;
 
-public class LobbyScene extends Scene {
+public class LobbyScene extends SubScene {
 
 	private Player player;
 	private ServerHandler server;
@@ -21,16 +26,18 @@ public class LobbyScene extends Scene {
 	private boolean everyoneReady;
 	private int currentLength;
 	private String currentPlace;
-	
+
 	private String chatText = "";
 	private JTextField chatInput;
 	private JLabel chatOutput;
+	private LobbyTopbar lobbyTopbar;
 
-	
-	public LobbyScene(SceneGlobalFeatures features) {
-		super(features, null, "Lobby");
+	public LobbyScene(GlobalFeatures features, LobbyTopbar lobbyTopbar, NkContext ctx, long window) {
+		super(features, null, "Lobby", ctx, window, 0, lobbyTopbar.getHeight(), Window.CURRENT_WIDTH,
+				Window.CURRENT_HEIGHT - lobbyTopbar.getHeight());
+		this.lobbyTopbar = lobbyTopbar;
 	}
-	
+
 	@Override
 	public void update() {
 //		store.init(player);
@@ -47,9 +54,9 @@ public class LobbyScene extends Scene {
 			server.close();
 			server = null;
 		}
-		sceneChange.run(-1);
+		sceneChange.run(Scenes.PREVIOUS_REGULAR, true);
 	}
-	
+
 	private void clearChat() {
 		chatOutput.setText("");
 		chatText = "";
@@ -58,37 +65,37 @@ public class LobbyScene extends Scene {
 	@Override
 	public void tick(double delta) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseButtonInput(int button, int action, double x, double y) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePosInput(double x, double y) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseScrollInput(double x, double y) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEnterWindowInput(boolean entered) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -100,32 +107,42 @@ public class LobbyScene extends Scene {
 	@Override
 	public void render(NkContext ctx, Renderer renderer, long window) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void renderUILayout(NkContext ctx, UICollector uic) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void renderUIBackground(NkContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void determineUIWindowFocusByMouse(double x, double y) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	protected void init(NkContext ctx, SceneGlobalFeatures features, String title, int x, int y, int width,
-			int height) {
+	protected void init(NkContext ctx, int x, int y, int width, int height) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void press() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public UIObject getTopbar() {
+		return lobbyTopbar;
 	}
 
 }

@@ -3,18 +3,26 @@ package scenes.regular;
 import org.lwjgl.nuklear.NkContext;
 
 import audio.AudioHandler;
+import elem.interactions.RegularTopbar;
 import elem.ui.UICollector;
 import elem.ui.UIObject;
 import engine.graphics.Renderer;
+import engine.io.Window;
 import file_manipulation.ControlsSettings;
 import file_manipulation.RegularSettings;
 import scenes.adt.Scene;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.adt.GlobalFeatures;
 
 public class OptionsScene extends Scene {
+	
+	private RegularTopbar topbar;
 
-	public OptionsScene(SceneGlobalFeatures features) {
-		super(features, null, "options");
+	public OptionsScene(GlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
+		super(features, null, "Options", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
+				Window.CURRENT_HEIGHT - topbar.getHeight());
+		// TODO fullscreen checks? 
+		this.topbar = topbar;
+
 	}
 
 	public void initOptions(RegularSettings settings, ControlsSettings controlsSettings, AudioHandler audio) {

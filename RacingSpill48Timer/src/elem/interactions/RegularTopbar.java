@@ -30,6 +30,7 @@ import elem.ui.UIButton;
 import elem.ui.UIObject;
 import engine.io.Window;
 import main.Main;
+import scenes.adt.GlobalFeatures;
 
 public class RegularTopbar extends UIObject {
 
@@ -40,7 +41,7 @@ public class RegularTopbar extends UIObject {
 	private UIButton minimizeBtn;
 	private int options;
 
-	public RegularTopbar(long window, int height) {
+	public RegularTopbar(GlobalFeatures features, long window, int height) {
 
 		PressAction pressAction = (double X, double Y) -> {
 			// Move window
@@ -58,7 +59,7 @@ public class RegularTopbar extends UIObject {
 		options = NK_WINDOW_NO_SCROLLBAR;
 
 		// Buttons
-		minimizeBtn = new UIButton("M I N I M I Z E");
+		minimizeBtn = new UIButton(features.getMinimizeText());
 
 		minimizeBtn.setPressedAction(() -> glfwIconifyWindow(topbar.getWindow()));
 

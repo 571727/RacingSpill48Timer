@@ -3,7 +3,7 @@ package scenes.game.subscenes.racing;
 import java.util.ArrayList;
 
 import file_manipulation.ControlsSettings;
-import player_local.Car;
+import scenes.game.player_local.Car;
 
 public class RaceKeysHandler {
 

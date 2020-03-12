@@ -38,9 +38,9 @@ import elem.ui.UINkImage;
 import elem.ui.UIObject;
 import scenes.adt.Scene;
 import scenes.Scenes;
-import scenes.adt.SceneGlobalFeatures;
+import scenes.adt.GlobalFeatures;
 import scenes.game.GameScene;
-import scenes.game.multiplayer.MultiplayerType;
+import scenes.game.multiplayer.GameType;
 
 /**
  * 
@@ -57,26 +57,26 @@ public class MainMenuScene extends Scene {
 	private int hPadding;
 	private NkRect windowRect;
 
-	public MainMenuScene(SceneGlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
+	public MainMenuScene(GlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
 		super(features, null, "MainMenu", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
 				Window.CURRENT_HEIGHT - topbar.getHeight());
 
 		this.topbar = topbar;
-		singleplayerBtn = new UIButton("Singleplayer");
-		multiplayerBtn = new UIButton("Multiplayer");
-		optionsBtn = new UIButton("Options and controls");
-		exitBtn = new UIButton("Exit");
+		singleplayerBtn = new UIButton(features.getSingleplayerText());
+		multiplayerBtn = new UIButton(features.getMultiplayerText());
+		optionsBtn = new UIButton(features.getOptionsText());
+		exitBtn = new UIButton(features.getExitText());
 
 		singleplayerBtn.setPressedAction(() -> {
-			GameScene game = (GameScene) sceneChange.run(Scenes.GAME);
-			game.createGame(MultiplayerType.SINGLEPLAYER);
-
+			GameScene game = (GameScene) sceneChange.run(Scenes.GAME, false);
+			game.initGame(GameType.SINGLEPLAYER);
+			sceneUpdate.run();
 		});
 		multiplayerBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MULTIPLAYER);
+			sceneChange.run(Scenes.MULTIPLAYER, true);
 		});
 		optionsBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.OPTIONS);
+			sceneChange.run(Scenes.OPTIONS, true);
 		});
 		exitBtn.setPressedAction(() -> features.showExitModal());
 
