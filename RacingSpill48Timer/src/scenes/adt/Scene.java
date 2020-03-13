@@ -137,8 +137,6 @@ public abstract class Scene implements ISceneManipulation {
 
 	public void removeAll() {
 		gameObjects.clear();
-		features.clearUIC();
 	}
-
 
 }

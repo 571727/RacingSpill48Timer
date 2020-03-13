@@ -4,6 +4,7 @@ import org.lwjgl.nuklear.NkContext;
 
 import audio.AudioHandler;
 import elem.interactions.RegularTopbar;
+import elem.ui.UIButton;
 import elem.ui.UICollector;
 import elem.ui.UIObject;
 import engine.graphics.Renderer;
@@ -11,17 +12,33 @@ import engine.io.Window;
 import file_manipulation.ControlsSettings;
 import file_manipulation.RegularSettings;
 import scenes.adt.Scene;
+import scenes.game.GameScene;
+import scenes.game.multiplayer.GameType;
+import scenes.Scenes;
 import scenes.adt.GlobalFeatures;
 
 public class OptionsScene extends Scene {
 	
 	private RegularTopbar topbar;
+	private UIButton gobackBtn;
 
 	public OptionsScene(GlobalFeatures features, RegularTopbar topbar, NkContext ctx, long window) {
 		super(features, null, "Options", ctx, window, 0, topbar.getHeight(), Window.CURRENT_WIDTH,
 				Window.CURRENT_HEIGHT - topbar.getHeight());
 		// TODO fullscreen checks? 
 		this.topbar = topbar;
+		
+		gobackBtn = new UIButton(features.getGobackText());
+
+		gobackBtn.setPressedAction(() -> {
+			sceneChange.run(Scenes.PREVIOUS_REGULAR, true);
+		});
+
+		/*
+		 * Add to a specific window
+		 */
+
+		add(sceneName, gobackBtn);
 
 	}
 

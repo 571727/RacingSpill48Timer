@@ -129,8 +129,8 @@ public class GlobalFeatures {
 		uic.changeHoveredButton(listname, null);
 	}
 
-	public void clearUIC() {
-		uic.clear();
+	public void clearUIC(String listname) {
+		uic.clear(listname);
 	}
 
 	public UICollector getUIC() {

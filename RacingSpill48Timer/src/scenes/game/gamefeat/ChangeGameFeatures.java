@@ -1,4 +1,4 @@
-package scenes.game.adt;
+package scenes.game.gamefeat;
 
 public interface ChangeGameFeatures {
 

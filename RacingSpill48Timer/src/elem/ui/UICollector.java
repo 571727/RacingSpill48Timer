@@ -82,8 +82,8 @@ public class UICollector {
 		return -1;
 	}
 
-	public void clear() {
-		mapUI.clear();
+	public void clear(String listname) {
+		mapUI.remove(listname);
 	}
 
 	public void setFocus(String listname) {

@@ -2,6 +2,9 @@ package scenes.game;
 
 import org.lwjgl.nuklear.NkContext;
 
+import static scenes.Scenes.*;
+
+import elem.Action;
 import elem.interactions.LobbyTopbar;
 import elem.interactions.RegularTopbar;
 import elem.interactions.TopbarInteraction;
@@ -11,11 +14,13 @@ import elem.ui.UIObject;
 import engine.graphics.Renderer;
 import scenes.adt.GlobalFeatures;
 import scenes.adt.Scene;
-import scenes.game.adt.GameFeatures;
-import scenes.game.adt.HostFeatures;
-import scenes.game.adt.JoinFeatures;
-import scenes.game.adt.SingleFeatures;
+import scenes.adt.SceneChangeAction;
+import scenes.game.gamefeat.GameFeatures;
+import scenes.game.gamefeat.HostFeatures;
+import scenes.game.gamefeat.JoinFeatures;
+import scenes.game.gamefeat.SingleFeatures;
 import scenes.game.multiplayer.GameType;
+import scenes.game.subscenes.SubScene;
 import scenes.game.subscenes.racing.EndScene;
 import scenes.game.subscenes.racing.FinishScene;
 import scenes.game.subscenes.racing.RaceScene;
@@ -24,6 +29,7 @@ import scenes.game.subscenes.regular.SetupScene;
 
 public class GameScene extends Scene {
 
+	private GameFeatures gameFeat;
 	private SetupScene setupScene;
 	private LobbyScene lobbyScene;
 	private RaceScene raceScene;
@@ -62,22 +68,52 @@ public class GameScene extends Scene {
 
 		// FIXME må kjøre destroy her om du går vekk fra spillet...
 
-		GameFeatures gameFeat = null;
+		gameFeat = null;
 		// GameMode later
 
 		currentScene = setupScene;
 
+		Action destroyAction = () -> destroy();
+		Action subSceneUpdate = () -> {
+			currentScene.update();
+			currentScene.press();
+		};
+		SceneChangeAction subSceneChange = (scenenr, update) -> {
+			
+			SubScene scene = null;
+			
+			switch(scenenr) {
+			case RACE:
+				currentScene = raceScene;
+				break;
+			case FINISH:
+				currentScene = finishScene;
+				break;
+			case LOBBY:
+				currentScene = lobbyScene;
+				break;
+			case END:
+				currentScene = endScene;
+				break;
+			}
+			
+			if(update)
+				subSceneUpdate.run();
+			
+			return scene;
+		};
+		
 		switch (type) {
 		case HOSTING:
-			gameFeat = new HostFeatures();
+			gameFeat = new HostFeatures(destroyAction);
 			break;
 		case SINGLEPLAYER:
-			gameFeat = new SingleFeatures();
+			gameFeat = new SingleFeatures(destroyAction, sceneChange, subSceneChange, subSceneUpdate);
 
 			break;
 		case JOINING:
 			// this depends on where the game is. If new: setup, if running lobby, osv.
-			gameFeat = new JoinFeatures((feat) -> setGameFeatures(feat));
+			gameFeat = new JoinFeatures((feat) -> setGameFeatures(feat), destroyAction);
 
 			break;
 		}
@@ -153,6 +189,8 @@ public class GameScene extends Scene {
 		if (setupScene != null) {
 			// If setup does not exist, nothing does
 
+			gameFeat.leave(false);
+			
 			setupScene.destroy();
 			lobbyScene.destroy();
 			raceScene.destroy();

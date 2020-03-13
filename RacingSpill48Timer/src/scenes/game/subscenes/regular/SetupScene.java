@@ -24,7 +24,7 @@ import engine.graphics.Renderer;
 import engine.io.Window;
 import scenes.adt.Scene;
 import scenes.game.GameScene;
-import scenes.game.adt.GameFeatures;
+import scenes.game.gamefeat.GameFeatures;
 import scenes.game.multiplayer.GameType;
 import scenes.game.subscenes.SubScene;
 import scenes.Scenes;
@@ -51,12 +51,10 @@ public class SetupScene extends SubScene{
 		gobackBtn = new UIButton(features.getGobackText());
 		
 		readyBtn.setPressedAction(() -> {
-			GameScene game = (GameScene) sceneChange.run(Scenes.GAME, false);
-			game.initGame(GameType.SINGLEPLAYER);
-			sceneUpdate.run();
+			gameFeat.ready();
 		});
 		gobackBtn.setPressedAction(() -> {
-			sceneChange.run(Scenes.MAIN_MENU, true);
+			gameFeat.leave(true);
 		});
 		optionsBtn.setPressedAction(() -> {
 			sceneChange.run(Scenes.OPTIONS, true);
@@ -209,6 +207,8 @@ public class SetupScene extends SubScene{
 	@Override
 	public void destroy() {
 		removeAll();
+		features.clearHoveredButtonUIC(sceneName);
+		features.clearUIC(sceneName);
 	}
 
 	@Override

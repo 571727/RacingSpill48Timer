@@ -5,7 +5,7 @@ import org.lwjgl.nuklear.NkContext;
 import elem.objects.Camera;
 import scenes.adt.GlobalFeatures;
 import scenes.adt.Scene;
-import scenes.game.adt.GameFeatures;
+import scenes.game.gamefeat.GameFeatures;
 
 public abstract class SubScene extends Scene{
 
