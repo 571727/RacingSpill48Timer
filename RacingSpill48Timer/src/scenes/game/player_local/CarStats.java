@@ -23,6 +23,7 @@ public class CarStats {
 	private long tireboostTimeLeft;
 	private double drag;
 	private double spool;
+	private double spdinc;
 	
 	public void reset(CarRep rep) {
 		brake = false;
@@ -36,7 +37,7 @@ public class CarStats {
 		speed = 0;
 		distance = 0;
 		gear = 0;
-		rpm = 0;
+		rpm = rep.getRpmIdle();
 		tireboostTimeLeft = 0;
 		resistance = 1.0;
 		drag = 1;
@@ -233,6 +234,14 @@ public class CarStats {
 	
 	public void addSpool(double spool) {
 		this.spool += spool;
+	}
+
+	public double getSpdinc() {
+		return spdinc;
+	}
+
+	public void setSpdinc(double spdinc) {
+		this.spdinc = spdinc;
 	}
 	
 }

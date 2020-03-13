@@ -19,7 +19,7 @@ public class RaceAudio {
 //	private float wavgain;
 //	private double turbospooling;
 
-	public RaceAudio() {
+	public RaceAudio(String string) {
 //		// Maybe use action for something later, cause it's awesome
 //		gear = new MP3Audio[4];
 //

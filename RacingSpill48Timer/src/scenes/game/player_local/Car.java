@@ -5,7 +5,7 @@ import scenes.game.upgrade.Upgrades;
 
 public class Car {
 
-	public static final String[] CAR_TYPES = { "Decentra", "Oldsroyal", "Fabulvania", "Thoroughbread", "Amourena", "Silvershield", "Devil's Rulebreaker", "Salty Jessica" };
+	public static final String[] CAR_TYPES = { "Decentra", "Oldsroyal", "Fabulvania", "Thoroughbred" };
 	private CarStats stats;
 	private CarFuncs funcs;
 	private CarRep rep;
@@ -16,13 +16,12 @@ public class Car {
 	 * nosStrengthStandard + "#" + totalGear + "#" + topSpeed + "#" +
 	 * highestSpeedAchived;
 	 */
-	public Car(String[] cloneToServerString, int fromIndex) {
-		init();
+	public Car(String[] cloneToServerString, int fromIndex, boolean user) {
 		rep = new CarRep(cloneToServerString, fromIndex);
+		init(user);
 	}
 
-	public Car(String cartype) {
-		init();
+	public Car(String cartype, boolean user) {
 		String name;
 		int nosTimeStandard;
 		int nosBottleAmountStandard;
@@ -85,20 +84,23 @@ public class Car {
 			speedTop = 259;
 		}
 
-		rep = new CarRep(name, nosTimeStandard, nosBottleAmountStandard, nosStrengthStandard, hp, weight,
-				speedTop, rpmIdle, rpmTop, gearTop, tireGripTimeStandard, tireGripStrengthStandard, tireGripAreaTop,
+		rep = new CarRep(name, nosTimeStandard, nosBottleAmountStandard, nosStrengthStandard, hp, weight, speedTop,
+				rpmIdle, rpmTop, gearTop, tireGripTimeStandard, tireGripStrengthStandard, tireGripAreaTop,
 				tireGripAreaBottom, upgradeLVLs, gearsbalance, maxValuePitch);
 
 		if (name.equals(CAR_TYPES[1])) {
 			rep.guarenteeRightShift();
 		}
 
+		init(user);
+
 	}
-	
-	public void init() {
+
+	public void init(boolean user) {
 		stats = new CarStats();
 		funcs = new CarFuncs();
-		audio = new RaceAudio();
+		if (user)
+			audio = new RaceAudio(rep.getName());
 	}
 
 	public void reset() {
@@ -192,7 +194,7 @@ public class Car {
 
 				stats.setGear(gear);
 				stats.setFailedShift(false);
-					audio.gearSound();
+				audio.gearSound();
 			} else {
 				stats.setFailedShift(true);
 				audio.grind();
@@ -221,7 +223,6 @@ public class Car {
 		return rep.getStatsCurrent();
 	}
 
-
 	public CarRep clone() throws CloneNotSupportedException {
 		return rep.getCloneObject();
 	}
@@ -241,18 +242,18 @@ public class Car {
 
 	public void strutsAle() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void blowTurbo() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/*
 	 * GETTERS AND SETTERS
 	 */
-	
+
 	public CarStats getStats() {
 		return stats;
 	}
@@ -265,5 +266,12 @@ public class Car {
 		return rep;
 	}
 
-	
+	public void openLines() {
+		audio.openLines(stats.isHasTurbo(), rep.isSequentialShift());
+	}
+
+	public boolean isTireboostRight() {
+		return funcs.isTireboostRight(stats, rep);
+	}
+
 }

@@ -11,6 +11,7 @@ public class CarFuncs {
 	public void updateSpeed(CarStats stats, CarRep rep, double tickFactor) {
 
 		double speedInc = speedInc(stats, rep);
+		stats.setSpdinc(speedInc);
 		double speedChange = 0;
 
 		// MOVEMENT
@@ -106,11 +107,11 @@ public class CarFuncs {
 	private void updateRPM(CarStats stats, CarRep rep, double tickFactor) {
 		double rpmChange = 0;
 
-		if (stats.getResistance() == 0) {
+		if (stats.getResistance() == 0 && stats.getSpeed() > 2) {
 
 			// If clutch engaged
 			double gearFactor = stats.getSpeed() / (gearMax(stats, rep) + 1);
-			stats.setRpm(rep.getRpmTop() * gearFactor);
+			stats.setRpm(rep.getRpmTop() * gearFactor + rep.getRpmIdle());
 
 		} else if (stats.isThrottle()) {
 
@@ -130,7 +131,7 @@ public class CarFuncs {
 
 			// Not engaged and throttle not down
 			if (stats.getRpm() > rep.getRpmIdle())
-				rpmChange = -(rep.getHp() * 0.5 * stats.getResistance());
+				rpmChange = -(rep.getHp() * 0.5);
 			else
 				// Sets RPM to for instance 1000 rpm as standard.
 				stats.setRpm(rep.getRpmIdle());

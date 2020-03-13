@@ -46,7 +46,7 @@ public class CarRep implements Cloneable {
 		this.name = name;
 		this.upgradeLVLs = upgradeLVLs;
 
-		stats = new double[24];
+		stats = new double[25];
 		changed = new boolean[stats.length];
 
 		stats[0] = nosTimeStandard;
